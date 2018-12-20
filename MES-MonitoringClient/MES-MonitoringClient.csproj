@@ -45,14 +45,49 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Common\CommonFunction.cs" />
+    <Compile Include="Common\Component\CircularButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Common\MachineProcedure.cs" />
+    <Compile Include="Common\MachineProduceStatusHandler.cs" />
+    <Compile Include="Common\MachineReportHandler.cs" />
+    <Compile Include="Common\MachineStatusHandler.cs" />
+    <Compile Include="Common\MongodbHandler.cs" />
+    <Compile Include="Common\RabbitMQClientHandler.cs" />
+    <Compile Include="Common\SerialPortHandler.cs" />
+    <Compile Include="Common\SerialPortHelper.cs" />
+    <Compile Include="Common\ThreadHandler.cs" />
+    <Compile Include="Common\TimmerHandler.cs" />
+    <Compile Include="frmChangeStatus.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="frmChangeStatus.Designer.cs">
+      <DependentUpon>frmChangeStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmScanRFID.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmScanRFID.Designer.cs">
+      <DependentUpon>frmScanRFID.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmChangeStatus.resx">
+      <DependentUpon>frmChangeStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmScanRFID.resx">
+      <DependentUpon>frmScanRFID.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -61,6 +96,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
