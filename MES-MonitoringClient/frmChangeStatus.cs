@@ -24,11 +24,17 @@ namespace MES_MonitoringClient
             InitializeComponent();
         }
 
+        /*窗口公共方法*/
+        /*---------------------------------------------------------------------------------------*/
+
         private void frmChangeStatus_Load(object sender, EventArgs e)
         {
             try
             {
                 this.WindowState = FormWindowState.Maximized;
+
+                //设置按钮
+                SettingButton();
             }
             catch (Exception ex)
             {
@@ -37,27 +43,6 @@ namespace MES_MonitoringClient
         }
 
 
-        private void changeStatus(string pi_newStatusCode,string pi_newStatusString)
-        {
-            //getRFIDData();
-            OperatePersonCardID = string.Empty;
-            OperatePersonName = string.Empty;
-            lab_OperatePersonCardID.Text = "未刷卡";
-
-            frmScanRFID newfrmScanRFID = new frmScanRFID();
-            newfrmScanRFID.ShowDialog();
-
-            //获取弹出窗口的参数
-            OperatePersonCardID = newfrmScanRFID.OperatePersonCardID;
-            OperatePersonName = newfrmScanRFID.OperatePersonName;
-
-            //状态
-            NewStatusCode = pi_newStatusCode;
-            NewStatusString = pi_newStatusString;
-
-            //显示参数
-            lab_OperatePersonCardID.Text = OperatePersonCardID;
-        }
 
 
         /*窗口公共方法*/
@@ -72,6 +57,66 @@ namespace MES_MonitoringClient
         {
             MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        /// <summary>
+        /// 设置按钮的颜色
+        /// </summary>
+        private void SettingButton()
+        {
+            btn_Stop.BackColor = Color.Yellow;
+            btn_Run.BackColor = Color.Green;
+            btn_Error.BackColor = Color.Red;
+        }
+
+        /// <summary>
+        /// 更改状态
+        /// </summary>
+        /// <param name="pi_newStatusCode"></param>
+        /// <param name="pi_newStatusString"></param>
+        private void changeStatus(string pi_newStatusCode, string pi_newStatusString)
+        {
+            //getRFIDData();
+            OperatePersonCardID = string.Empty;
+            OperatePersonName = string.Empty;
+            lab_OperatePersonCardID.Text = "未刷卡";
+            lab_SelectStatus.Text = "已选择：" + pi_newStatusString;
+
+
+            frmScanRFID newfrmScanRFID = new frmScanRFID();
+            newfrmScanRFID.ShowDialog();
+
+            //获取弹出窗口的参数
+            OperatePersonCardID = newfrmScanRFID.OperatePersonCardID;
+            OperatePersonName = newfrmScanRFID.OperatePersonName;
+
+            //状态
+            NewStatusCode = pi_newStatusCode;
+            NewStatusString = pi_newStatusString;
+
+            //显示参数
+            lab_OperatePersonCardID.Text = "已刷卡：" + OperatePersonCardID;
+        }
+
+        /*窗口公共方法*/
+        /*---------------------------------------------------------------------------------------*/
+
+        private void btn_Stop_Click(object sender, EventArgs e)
+        {
+            changeStatus("StopProduce", "停机");
+        }
+
+        private void btn_Error_Click(object sender, EventArgs e)
+        {
+            changeStatus("MachineError", "故障");
+        }
+
+        private void btn_Run_Click(object sender, EventArgs e)
+        {
+            changeStatus("StartProduce", "运行");
+        }
+
+        /*窗口公共方法*/
+        /*---------------------------------------------------------------------------------------*/
 
         private void btn_Confirm_Click(object sender, EventArgs e)
         {
@@ -101,40 +146,6 @@ namespace MES_MonitoringClient
             OperatePersonName = string.Empty;
 
             this.Close();
-        }
-
-        private void btn_StartProduct_Click(object sender, EventArgs e)
-        {
-            //getRFIDData();
-            OperatePersonCardID = string.Empty;
-            OperatePersonName = string.Empty;
-            lab_OperatePersonCardID.Text = "未刷卡";
-
-            frmScanRFID newfrmScanRFID = new frmScanRFID();
-            newfrmScanRFID.ShowDialog();
-
-            //获取弹出窗口的参数
-            OperatePersonCardID = newfrmScanRFID.OperatePersonCardID;
-            OperatePersonName = newfrmScanRFID.OperatePersonName;
-
-            //状态
-            NewStatusCode = "StartProduce";
-            NewStatusString = "运行";
-
-            //显示参数
-            lab_OperatePersonCardID.Text = OperatePersonCardID;
-
-            changeStatus("StartProduce", "运行");
-        }
-
-        private void btn_Stop_Click(object sender, EventArgs e)
-        {
-            changeStatus("StopProduce", "停机");
-        }
-
-        private void btn_Error_Click(object sender, EventArgs e)
-        {
-            changeStatus("MachineError", "故障");
         }
     }
 }

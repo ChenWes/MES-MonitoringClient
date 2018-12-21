@@ -271,19 +271,19 @@ namespace MES_MonitoringClient
         /// </summary>
         private void SettingLight()
         {
-            circularButton2.Text = mc_MachineStatusHander.StatusDescription;            
+            btn_StatusLight.Text = mc_MachineStatusHander.StatusDescription;            
 
             if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Red)
             {                
-                circularButton2.BackColor = Color.Red;
+                btn_StatusLight.BackColor = Color.Red;
             }
             else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Green)
             {
-                circularButton2.BackColor = Color.Green;                
+                btn_StatusLight.BackColor = Color.Green;                
             }
             else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Yellow)
             {
-                circularButton2.BackColor = Color.Yellow;                
+                btn_StatusLight.BackColor = Color.Yellow;                
             }
         }
 
@@ -389,6 +389,11 @@ namespace MES_MonitoringClient
         /*按钮事件*/
         /*---------------------------------------------------------------------------------------*/
 
+        /// <summary>
+        /// 模拟信号，验证生产逻辑
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {            
             //X03
@@ -431,17 +436,33 @@ namespace MES_MonitoringClient
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            mc_MachineStatusHander.ChangeStatus("Error", "故障", "Wes", "A02");
-        }
-
+        /// <summary>
+        /// 关闭系统
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_CloseWindow_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void btn_ChangeStatus_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 验证上传队列
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("newQueue", "i am weschen");
+
+        }
+
+        /// <summary>
+        /// 更改机器状态
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_StatusLight_Click(object sender, EventArgs e)
         {
             frmChangeStatus newfrmChangeStatus = new frmChangeStatus();
             newfrmChangeStatus.ShowDialog();
@@ -458,12 +479,6 @@ namespace MES_MonitoringClient
 
                 SettingLight();
             }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("newQueue", "i am weschen");
-
         }
     }
 }
