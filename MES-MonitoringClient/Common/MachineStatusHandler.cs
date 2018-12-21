@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 
 using System.Diagnostics;
+using MongoDB.Bson;
 
 namespace MES_MonitoringClient.Common
 {
@@ -28,11 +29,14 @@ namespace MES_MonitoringClient.Common
         }
 
         /// <summary>
+        /// 灯
+        /// </summary>
+        public enumStatusLight mc_StatusLight = enumStatusLight.Green;
+
+        /// <summary>
         /// 机器生产状态
         /// </summary>
         public MachineProduceStatusHandler mc_MachineProduceStatusHandler = null;
-
-        public enumStatusLight mc_StatusLight = enumStatusLight.Green;
 
         /// <summary>
         /// 状态编码
@@ -86,14 +90,16 @@ namespace MES_MonitoringClient.Common
 
 
 
+        /*-------------------------------------------------------------------------------------*/
 
         public MachineStatusHandler()
         {
             //生产状态
-            mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();            
-        }        
+            mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();
+        }
 
 
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 计算时间定时器
@@ -111,31 +117,80 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private delegate void SetDateTimeDelegate();
         private void AddDateTime()
-        {            
+        {
             HoldStatusTotalMilliseconds += 1000;
         }
 
         /// <summary>
-        /// 
+        /// 主动修改当前机器状态
+        /// ##会将修改的状态保存至DB中
         /// </summary>
         /// <param name="newStatusCode"></param>
         /// <param name="newStatusDescription"></param>
-        public void ChangeStatus(string newStatusCode, string newStatusDescription,string newOperatePerson,string newOperateCardID)
+        public void ChangeStatus(string newStatusCode, string newStatusDescription, string newOperatePerson, string newOperateCardID)
         {
-            //当前时间
-            StartDateTime = System.DateTime.Now;
+            try
+            {
+                //重新开始计时器及线程
+                if (DateTimeThreadHandler != null && DateTimeThreadStart != null)
+                {
+                    //线程
+                    DateTimeThreadHandler._TThread.Abort();
+                    DateTimeThreadHandler._TThread.Join();
+                    //定时器
+                    TTimerClass.StopTimmer();
+                    TTimerClass = null;
 
-            //更新状态
-            StatusCode = newStatusCode;
-            StatusDescription = newStatusDescription;
+                    //更新最后时间
+                    EndDateTime = System.DateTime.Now;
 
-            //更新人员
-            OperatePerson = newOperatePerson;
-            OperatePersonCardID = newOperateCardID;
+                    //保存至DB中/*******************/嫁动率的主要数据来源
 
-            //清空时间开始计时
-            HoldStatusTotalMilliseconds = 0;
+                    //数据实体
+                    DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
+                    newDateLineClass.Status = StatusDescription;
+                    newDateLineClass.StartDateTime = StartDateTime;
+                    newDateLineClass.EndDateTime = EndDateTime;
+                    newDateLineClass.IsUploadToServer = false;
 
+                    //获取数据集，并插入数据
+                    var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
+                    Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+                }
+
+
+                //当前时间
+                StartDateTime = System.DateTime.Now;
+
+                //更新状态
+                StatusCode = newStatusCode;
+                StatusDescription = newStatusDescription;
+
+                //更新人员
+                OperatePerson = newOperatePerson;
+                OperatePersonCardID = newOperateCardID;
+
+                //清空时间开始计时
+                HoldStatusTotalMilliseconds = 0;
+
+                //修改灯
+                if (newStatusDescription == "运行") mc_StatusLight = enumStatusLight.Green;
+                else if (newStatusDescription == "故障") mc_StatusLight = enumStatusLight.Red;
+                else if (newStatusDescription == "停机") mc_StatusLight = enumStatusLight.Yellow;
+
+                //开始一个新线程，处理状态的时间
+                DateTimeThreadStart = new ThreadStart(DateTimeTimer);
+                DateTimeThreadHandler = new ThreadHandler(DateTimeThreadStart, false, true);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public void AppWillClose_SaveData()
+        {
             //重新开始计时器及线程
             if (DateTimeThreadHandler != null && DateTimeThreadStart != null)
             {
@@ -151,10 +206,17 @@ namespace MES_MonitoringClient.Common
 
                 //保存至DB中/*******************/嫁动率的主要数据来源
 
-            }
+                //数据实体
+                DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
+                newDateLineClass.Status = StatusDescription;
+                newDateLineClass.StartDateTime = StartDateTime;
+                newDateLineClass.EndDateTime = EndDateTime;
+                newDateLineClass.IsUploadToServer = false;
 
-            DateTimeThreadStart = new ThreadStart(DateTimeTimer);
-            DateTimeThreadHandler = new ThreadHandler(DateTimeThreadStart, false, true);
-        }
+                //获取数据集，并插入数据
+                var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
+                Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+            }
+        }       
     }
 }

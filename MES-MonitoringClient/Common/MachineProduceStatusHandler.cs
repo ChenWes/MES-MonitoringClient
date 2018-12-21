@@ -14,13 +14,22 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class MachineProduceStatusHandler
     {
+        /// <summary>
+        /// 回复信号前缀
+        /// </summary>
         private static string singnalDefaultStart = "AA";
+        /// <summary>
+        /// 回复信号后缀
+        /// </summary>
         private static string singnalDefaultEnd = "ZZ";
+
+        /*-------------------------------------------------------------------------------------*/
+
 
         /// <summary>
         /// 计时（类内部使用）
         /// </summary>
-        private Stopwatch _lifeCycleTime = null;
+        //private Stopwatch _lifeCycleTime = null;
 
         /// <summary>
         /// 产品周期列表
@@ -40,8 +49,10 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 单次产品周期秒数
         /// </summary>
-        public int LastLifeCycleSecond = 0;
+        public long LastLifeCycleMilliseconds = 0;
 
+
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 构造函数，处理初始化的参数
@@ -52,6 +63,8 @@ namespace MES_MonitoringClient.Common
             _MachineProcedureList = new List<MachineProcedure>();
         }
 
+
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 更新信号方法
@@ -75,15 +88,15 @@ namespace MES_MonitoringClient.Common
                         {
                             _MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds = (System.DateTime.Now - _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime).Milliseconds;
                             _MachineProcedureList[_MachineProcedureList.Count - 1].EndDateTime = _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime.AddMilliseconds(_MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds);
-                            _lifeCycleTime.Stop();
+                            //_lifeCycleTime.Stop();
 
 
-                            LastLifeCycleSecond = 0;
+                            LastLifeCycleMilliseconds = 0;
                             //结束产品周期
                             foreach (MachineProcedure getMachineProcedure in _MachineProcedureList)
                             {
                                 //最后一次产品周期的秒数
-                                LastLifeCycleSecond += ((Int32)getMachineProcedure.UseMilliseconds / 1000);
+                                LastLifeCycleMilliseconds += getMachineProcedure.UseMilliseconds;
                             }
 
                             //计数
@@ -93,7 +106,7 @@ namespace MES_MonitoringClient.Common
                             _MachineProcedureList.Clear();
 
                             /************************************************************/
-                            _lifeCycleTime.Start();
+                            //_lifeCycleTime.Start();
                             
                             //清空后增加第一个工序
                             //开始产品周期
@@ -108,8 +121,8 @@ namespace MES_MonitoringClient.Common
                         }
                         else
                         {
-                            _lifeCycleTime = Stopwatch.StartNew();
-                            _lifeCycleTime.Start();                            
+                            //_lifeCycleTime = Stopwatch.StartNew();
+                            //_lifeCycleTime.Start();                            
 
                             //开始产品周期
                             //开模信号                        
@@ -131,8 +144,8 @@ namespace MES_MonitoringClient.Common
                         {
                             _MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds = (System.DateTime.Now - _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime).Milliseconds;
                             _MachineProcedureList[_MachineProcedureList.Count - 1].EndDateTime = _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime.AddMilliseconds(_MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds);
-                            _lifeCycleTime.Stop();
-                            _lifeCycleTime.Start();
+                            //_lifeCycleTime.Stop();
+                            //_lifeCycleTime.Start();
 
 
                             //射胶信号
@@ -154,8 +167,8 @@ namespace MES_MonitoringClient.Common
                         {
                             _MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds = (System.DateTime.Now - _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime).Milliseconds;
                             _MachineProcedureList[_MachineProcedureList.Count - 1].EndDateTime = _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime.AddMilliseconds(_MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds);
-                            _lifeCycleTime.Stop();
-                            _lifeCycleTime.Start();
+                            //_lifeCycleTime.Stop();
+                            //_lifeCycleTime.Start();
 
                             //自动信号
                             _MachineProcedureList.Add(new MachineProcedure()

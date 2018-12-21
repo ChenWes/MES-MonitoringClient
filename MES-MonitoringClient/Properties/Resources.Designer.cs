@@ -59,15 +59,5 @@ namespace MES_MonitoringClient.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap Search_32px {
-            get {
-                object obj = ResourceManager.GetObject("Search_32px", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

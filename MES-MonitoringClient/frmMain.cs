@@ -59,30 +59,31 @@ namespace MES_MonitoringClient
         {
             try
             {
+                //检测代码运行时间
+                //var sw = Stopwatch.StartNew();
+
+                //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
 
-                var sw = Stopwatch.StartNew();
                 //检测端口
-
+                CheckSerialPort(mc_DefaultRequiredSerialPortName);
 
                 //打开端口
                 serialPort7.Open();                
 
-                //开始后台进程
+                //开始后台进程（更新时间及定时发送指定数据至指定串口，并自动获取结果）
                 DateTimeThreadHandler = new Common.ThreadHandler(new ThreadStart(DateTimeTimer), true, true);
                 //SerialPort1ThreadHandler = new Common.ThreadHandler(new ThreadStart(GetRFIDDataTimer), true, true);
-
                 SerialPort7ThreadHandler = new Common.ThreadHandler(new ThreadStart(SendDataToSerialPortTimer), true, true);
 
-                //label2.Text = DateTimeThreadHandler.ThreadState();
-
-                //MessageBox.Show("初始化共使用" + sw.ElapsedMilliseconds.ToString() + "毫秒");
-
-                //状态
+                //设置默认状态
                 mc_MachineStatusHander = new Common.MachineStatusHandler();
                 mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
+                SettingLight();
 
-                sw.Stop();
+                //停止检测代码运行时间
+                //MessageBox.Show("初始化共使用" + sw.ElapsedMilliseconds.ToString() + "毫秒");
+                //sw.Stop();
             }
             catch (Exception ex)
             {
@@ -98,19 +99,32 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (DateTimeThreadHandler != null)
+            if (MessageBox.Show("退出系统后，暂时不会收集到机器的数据，请知悉", "系统退出提醒", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
-                DateTimeThreadHandler.ThreadJoin();
-            }
-            //SerialPort1ThreadHandler.ThreadJoin();
-            if (SerialPort1ThreadHandler != null)
-            {
-                SerialPort7ThreadHandler.ThreadJoin();
-            }
+                //定时器
+                if (DateTimeThreadHandler != null)
+                {
+                    DateTimeThreadHandler.ThreadJoin();
+                }
+                //SerialPort1ThreadHandler.ThreadJoin();
+                //定时器
+                if (SerialPort1ThreadHandler != null)
+                {
+                    SerialPort7ThreadHandler.ThreadJoin();
+                }
 
-            if (serialPort7.IsOpen)
+                //串口关闭
+                if (serialPort7.IsOpen)
+                {
+                    serialPort7.Close();
+                }
+
+                //关闭程序前先保存数据
+                mc_MachineStatusHander.AppWillClose_SaveData();
+            }
+            else
             {
-                serialPort7.Close();
+                e.Cancel = true;
             }
         }
 
@@ -163,7 +177,7 @@ namespace MES_MonitoringClient
                 try
                 {
                     lab_DateTime.Text = string.Format("当前时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    label7.Text = "当前状态:["+ mc_MachineStatusHander.StatusDescription + "][" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.HoldStatusTotalMilliseconds) + "]";
+                    lab_CurrentStatusTotalTime.Text = "当前状态:["+ mc_MachineStatusHander.StatusDescription + "][" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.HoldStatusTotalMilliseconds) + "]";
                 }
                 catch (Exception ex)
                 {
@@ -226,6 +240,54 @@ namespace MES_MonitoringClient
         /*---------------------------------------------------------------------------------------*/
 
         /// <summary>
+        /// 检测串口
+        /// </summary>
+        /// <param name="checkPortList"></param>
+        private void CheckSerialPort(string[] checkPortList)
+        {
+            string[] havePortList = System.IO.Ports.SerialPort.GetPortNames();
+
+            foreach (string needPort in checkPortList)
+            {
+                bool checkErrorFlag = true;
+                foreach (string havePort in havePortList)
+                {
+                    if (havePort.ToUpper() == needPort.ToUpper())
+                    {
+                        checkErrorFlag = false;
+                        continue;
+                    }
+                }
+
+                if (checkErrorFlag)
+                {
+                    throw new Exception("电脑无法检测到串口[" + needPort + "]，请联系管理员");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 设置红绿灯
+        /// </summary>
+        private void SettingLight()
+        {
+            circularButton2.Text = mc_MachineStatusHander.StatusDescription;            
+
+            if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Red)
+            {                
+                circularButton2.BackColor = Color.Red;
+            }
+            else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Green)
+            {
+                circularButton2.BackColor = Color.Green;                
+            }
+            else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Yellow)
+            {
+                circularButton2.BackColor = Color.Yellow;                
+            }
+        }
+
+        /// <summary>
         /// 显示系统错误信息
         /// </summary>
         /// <param name="errorTitle">错误标题</param>
@@ -234,6 +296,7 @@ namespace MES_MonitoringClient
         {
             MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
 
         /*获取串口数据事件*/
         /*---------------------------------------------------------------------------------------*/
@@ -269,14 +332,14 @@ namespace MES_MonitoringClient
 
                 this.Invoke((EventHandler)(delegate
                 {
-                    richTextBox1.AppendText(stringBuilder.ToString() + "\r");
+                    richTextBox1.AppendText(stringBuilder.ToString() + "\r\n");
 
                     COM7_ReceiveDataCount += 1;
                     lab_ReceviedDataCount.Text = "接收成功：" + COM7_ReceiveDataCount;
 
 
                     lab_ProductCount.Text = "累计生产数量：" + mc_MachineStatusHander.mc_MachineProduceStatusHandler.LifeCycleCount;
-                    lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastLifeCycleSecond);
+                    lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastLifeCycleMilliseconds);
                 }
                    )
                 );
@@ -320,13 +383,14 @@ namespace MES_MonitoringClient
                 //响铃并显示异常给用户
                 System.Media.SystemSounds.Beep.Play();
             }
-        }    
+        }
 
+
+        /*按钮事件*/
+        /*---------------------------------------------------------------------------------------*/
 
         private void button1_Click(object sender, EventArgs e)
-        {
-            mc_MachineStatusHander = new Common.MachineStatusHandler();
-
+        {            
             //X03
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
 
@@ -391,7 +455,15 @@ namespace MES_MonitoringClient
             if (!string.IsNullOrEmpty(strNewStatusString) && strNewStatusString != mc_MachineStatusHander.StatusDescription)
             {
                 mc_MachineStatusHander.ChangeStatus(strNewStatusCode, strNewStatusString, newOperatePersonName, newOperatePersonCardID);
+
+                SettingLight();
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("newQueue", "i am weschen");
+
         }
     }
 }

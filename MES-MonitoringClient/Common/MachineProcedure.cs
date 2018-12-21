@@ -11,6 +11,9 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class MachineProcedure
     {
+        /*-------------------------------------------------------------------------------------*/
+
+
         /// <summary>
         /// 0800/0400/0222等原本的信号
         /// </summary>
@@ -41,6 +44,13 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public DateTime EndDateTime { get; set; }
 
+
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 方便查看总体的工序
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "[" + ProcedureName + "]从[" + StartDateTime.ToString("yyyy-MM-dd HH:mm:tt") + "]至[" + EndDateTime.ToString("yyyy-MM-dd HH:mm:ss") + "]，共使用了" + (UseMilliseconds / 1000).ToString() + "秒";

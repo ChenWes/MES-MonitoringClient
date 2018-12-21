@@ -14,6 +14,7 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class TimmerHandler
     {
+
         //定时器
         System.Timers.Timer _TTimer = null;
 
@@ -27,6 +28,7 @@ namespace MES_MonitoringClient.Common
         private const bool default_autoRun = false;
 
 
+        /*-------------------------------------------------------------------------------------*/
 
         public TimmerHandler(System.Timers.ElapsedEventHandler elapseEvent) : this(default_interval, elapseEvent, default_autoRun)
         { }
@@ -65,7 +67,7 @@ namespace MES_MonitoringClient.Common
         }
 
 
-
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 定时器是否可用

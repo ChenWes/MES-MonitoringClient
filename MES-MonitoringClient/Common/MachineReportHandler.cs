@@ -11,5 +11,8 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class MachineReportHandler
     {
+
+        /*-------------------------------------------------------------------------------------*/
+
     }
 }

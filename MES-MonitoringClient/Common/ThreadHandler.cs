@@ -13,6 +13,8 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class ThreadHandler
     {
+        /*-------------------------------------------------------------------------------------*/
+
         //
         public Thread _TThread = null;
 
@@ -23,6 +25,7 @@ namespace MES_MonitoringClient.Common
         private const bool default_autoRun = false;
 
 
+        /*-------------------------------------------------------------------------------------*/
 
         public ThreadHandler(System.Threading.ThreadStart startFunction) : this(startFunction, default_isBackground, default_autoRun)
         { }
@@ -51,7 +54,7 @@ namespace MES_MonitoringClient.Common
         }
 
 
-
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 开始线程

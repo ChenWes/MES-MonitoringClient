@@ -19,10 +19,10 @@ namespace MES_MonitoringClient.Common.Component
             grpath.AddEllipse(0, 0, ClientSize.Width, ClientSize.Height);
             this.Region = new System.Drawing.Region(grpath);
 
-            this.FlatStyle = FlatStyle.Flat;            
+            //this.FlatStyle = FlatStyle.Flat;            
 
             //不设边框
-            this.FlatAppearance.BorderSize = 0;            
+            //this.FlatAppearance.BorderSize = 0;            
 
 
             base.OnPaint(pevent);

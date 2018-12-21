@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace MES_MonitoringClient.Common
 {
+    /// <summary>
+    /// 公共方法类
+    /// </summary>
     public static class CommonFunction
     {
+        /*-------------------------------------------------------------------------------------*/
+
+
         /// <summary>
         /// 格式化时间显示
         /// </summary>

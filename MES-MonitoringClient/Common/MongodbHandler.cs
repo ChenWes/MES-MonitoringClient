@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using MongoDB.Driver;
+using MongoDB.Bson;
+
 namespace MES_MonitoringClient.Common
 {
     /// <summary>
@@ -12,14 +15,34 @@ namespace MES_MonitoringClient.Common
     public class MongodbHandler
     {
         // 定义一个静态变量来保存类的实例
-        private static MongodbHandler uniqueInstance;        
-
-        // 定义一个标识确保线程同步
+        private static MongodbHandler uniqueInstance;
+        //定义一个标识确保线程同步 
         private static readonly object locker = new object();
 
-        // 定义私有构造函数，使外界不能创建该类实例
+
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// mongo连接客户端
+        /// </summary>
+        public static MongoClient mc_MongoClient = null;
+
+        /// <summary>
+        /// mongo数据库
+        /// </summary>
+        public IMongoDatabase mc_MongoDatabase = null;
+
+
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 定义私有构造函数，使外界不能创建该类实例
+        /// </summary>
         private MongodbHandler()
         {
+            mc_MongoClient = new MongoClient("mongodb://localhost:27017");
+
+            mc_MongoDatabase = mc_MongoClient.GetDatabase("MES");            
         }
 
         /// <summary>
@@ -47,9 +70,29 @@ namespace MES_MonitoringClient.Common
         }
 
 
-        public static void RunSQL(string l_sql)
-        {
+        /*-------------------------------------------------------------------------------------*/
 
+
+
+
+        /// <summary>
+        /// 获取数据集
+        /// </summary>
+        /// <param name="collectionName"></param>
+        /// <returns></returns>
+        public IMongoCollection<BsonDocument> GetCollection(string collectionName)
+        {
+            return mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
         }
+
+        /// <summary>
+        /// 数据集插入一条数据
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="newDocument"></param>
+        public void InsertOne(IMongoCollection<BsonDocument> collection,BsonDocument newDocument)
+        {
+            collection.InsertOne(newDocument);
+        }        
     }
 }
