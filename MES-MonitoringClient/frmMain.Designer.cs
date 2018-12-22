@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            this.serialPort7 = new System.IO.Ports.SerialPort(this.components);
+            this.serialPort6 = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -69,11 +69,11 @@
             this.tableLayoutPanel5.SuspendLayout();
             this.SuspendLayout();
             // 
-            // serialPort7
+            // serialPort6
             // 
-            this.serialPort7.BaudRate = 115200;
-            this.serialPort7.PortName = "COM7";
-            this.serialPort7.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort7_DataReceived);
+            this.serialPort6.BaudRate = 115200;
+            this.serialPort6.PortName = "COM6";
+            this.serialPort6.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort6_DataReceived);
             // 
             // panel1
             // 
@@ -88,10 +88,10 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 8.333333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.66667F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 8.333333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel1.Controls.Add(this.panel2, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel3, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel4, 0, 0);
@@ -108,9 +108,9 @@
             // 
             this.panel2.Controls.Add(this.lab_DateTime);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(497, 3);
+            this.panel2.Location = new System.Drawing.Point(498, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(406, 44);
+            this.panel2.Size = new System.Drawing.Size(390, 44);
             this.panel2.TabIndex = 0;
             // 
             // lab_DateTime
@@ -119,25 +119,24 @@
             this.lab_DateTime.AutoSize = true;
             this.lab_DateTime.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_DateTime.ForeColor = System.Drawing.Color.White;
-            this.lab_DateTime.Location = new System.Drawing.Point(124, 10);
+            this.lab_DateTime.Location = new System.Drawing.Point(151, 12);
             this.lab_DateTime.Name = "lab_DateTime";
             this.lab_DateTime.Size = new System.Drawing.Size(89, 20);
-            this.lab_DateTime.TabIndex = 0;
+            this.lab_DateTime.TabIndex = 1;
             this.lab_DateTime.Text = "当前时间";
             // 
             // panel3
             // 
             this.panel3.Controls.Add(this.lab_Title);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(85, 3);
+            this.panel3.Location = new System.Drawing.Point(102, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(406, 44);
+            this.panel3.Size = new System.Drawing.Size(390, 44);
             this.panel3.TabIndex = 1;
             // 
             // lab_Title
             // 
-            this.lab_Title.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_Title.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lab_Title.AutoSize = true;
             this.lab_Title.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_Title.ForeColor = System.Drawing.Color.White;
@@ -152,16 +151,16 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(3, 3);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(76, 44);
+            this.panel4.Size = new System.Drawing.Size(93, 44);
             this.panel4.TabIndex = 2;
             // 
             // panel5
             // 
             this.panel5.Controls.Add(this.btn_CloseWindow);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(909, 3);
+            this.panel5.Location = new System.Drawing.Point(894, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(79, 44);
+            this.panel5.Size = new System.Drawing.Size(94, 44);
             this.panel5.TabIndex = 3;
             // 
             // btn_CloseWindow
@@ -169,7 +168,7 @@
             this.btn_CloseWindow.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_CloseWindow.Location = new System.Drawing.Point(0, 0);
             this.btn_CloseWindow.Name = "btn_CloseWindow";
-            this.btn_CloseWindow.Size = new System.Drawing.Size(79, 44);
+            this.btn_CloseWindow.Size = new System.Drawing.Size(94, 44);
             this.btn_CloseWindow.TabIndex = 0;
             this.btn_CloseWindow.Text = "退出系统";
             this.btn_CloseWindow.UseVisualStyleBackColor = true;
@@ -428,11 +427,10 @@
 
         #endregion
 
-        private System.IO.Ports.SerialPort serialPort7;
+        private System.IO.Ports.SerialPort serialPort6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label lab_DateTime;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label lab_Title;
         private System.Windows.Forms.Panel panel4;
@@ -455,6 +453,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Label lab_DateTime;
     }
 }
 

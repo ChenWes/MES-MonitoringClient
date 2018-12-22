@@ -21,17 +21,23 @@ namespace MES_MonitoringClient
 
         /*---------------------------------------------------------------------------------------*/
 
-        //向串口7发送的默认信号
+        //向串口6发送的默认信号
         static string mc_DefaultSignal = "AA1086";
 
         //必须的串口端口
-        static string[] mc_DefaultRequiredSerialPortName = new string[] { "COM1", "COM7" };
+        static string[] mc_DefaultRequiredSerialPortName = new string[] { "COM1", "COM6" };
 
         //三个后台线程
-        static Common.ThreadHandler DateTimeThreadHandler = null;
-        static Common.ThreadHandler SerialPort1ThreadHandler = null;
-        static Common.ThreadHandler SerialPort7ThreadHandler = null;
+        static Common.ThreadHandler DateTimeThreadHandler = null;        
+        static Common.ThreadHandler SendDataThreadHandler = null;
+        //时间线程方法
+        ThreadStart DateTimeThreadStart = null;
+        Common.TimmerHandler TTimerClass = null;
+        //发送数据线程方法
+        ThreadStart SendDataThreadStart = null;
+        Common.TimmerHandler SendDataTimerClass = null;
 
+        //状态操作类
         static Common.MachineStatusHandler mc_MachineStatusHander = null;
 
         /*---------------------------------------------------------------------------------------*/
@@ -39,7 +45,8 @@ namespace MES_MonitoringClient
         Thread timerThread = null;
 
         //定时器变量
-        System.Timers.Timer TTimer;
+        //System.Timers.Timer TTimer;
+        //System.Timers.Timer SendDataTimer;
 
 
         /*主窗口方法*/
@@ -65,21 +72,34 @@ namespace MES_MonitoringClient
                 //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
 
-                //检测端口
-                CheckSerialPort(mc_DefaultRequiredSerialPortName);
-
-                //打开端口
-                serialPort7.Open();                
-
-                //开始后台进程（更新时间及定时发送指定数据至指定串口，并自动获取结果）
-                DateTimeThreadHandler = new Common.ThreadHandler(new ThreadStart(DateTimeTimer), true, true);
-                //SerialPort1ThreadHandler = new Common.ThreadHandler(new ThreadStart(GetRFIDDataTimer), true, true);
-                SerialPort7ThreadHandler = new Common.ThreadHandler(new ThreadStart(SendDataToSerialPortTimer), true, true);
-
                 //设置默认状态
                 mc_MachineStatusHander = new Common.MachineStatusHandler();
                 mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
                 SettingLight();
+
+                //检测端口
+                CheckSerialPort(mc_DefaultRequiredSerialPortName);
+
+                //检测MongoDB服务
+                //if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                //{
+                //    if (MessageBox.Show("MongoDB服务安装或未运行，是否继续运行应用？", "MongoDB服务", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                //    {
+                //        this.Close();
+                //    }
+                //}
+
+                //打开端口
+                serialPort6.Open();
+
+                //开始后台进程（更新时间及定时发送指定数据至指定串口，并自动获取结果）                
+                DateTimeThreadStart = new ThreadStart(DateTimeTimer);
+                DateTimeThreadHandler = new Common.ThreadHandler(DateTimeThreadStart, true, true);
+
+                //开始后台进程
+                SendDataThreadStart = new ThreadStart(SendDataToSerialPortTimer);
+                SendDataThreadHandler = new Common.ThreadHandler(SendDataThreadStart, true, true);
+
 
                 //停止检测代码运行时间
                 //MessageBox.Show("初始化共使用" + sw.ElapsedMilliseconds.ToString() + "毫秒");
@@ -104,23 +124,41 @@ namespace MES_MonitoringClient
                 //定时器
                 if (DateTimeThreadHandler != null)
                 {
+                    DateTimeThreadHandler.ThreadAbort();
                     DateTimeThreadHandler.ThreadJoin();
-                }
-                //SerialPort1ThreadHandler.ThreadJoin();
-                //定时器
-                if (SerialPort1ThreadHandler != null)
-                {
-                    SerialPort7ThreadHandler.ThreadJoin();
+                    //线程
+                    DateTimeThreadHandler._TThread.Abort();
+                    DateTimeThreadHandler._TThread.Join();
+                    //定时器
+                    TTimerClass.StopTimmer();
+                    TTimerClass = null;
                 }
 
-                //串口关闭
-                if (serialPort7.IsOpen)
+                //发送数据
+                if (SendDataThreadHandler != null)
                 {
-                    serialPort7.Close();
+                    SendDataThreadHandler.ThreadAbort();
+                    SendDataThreadHandler.ThreadJoin();
+
+                    SendDataThreadHandler._TThread.Abort();
+                    SendDataThreadHandler._TThread.Join();
+
+                    SendDataTimerClass.StopTimmer();
+                    SendDataTimerClass = null;
+                }
+
+
+                //串口关闭
+                if (serialPort6.IsOpen)
+                {
+                    serialPort6.Close();
                 }
 
                 //关闭程序前先保存数据
-                mc_MachineStatusHander.AppWillClose_SaveData();
+                if (mc_MachineStatusHander.AppWillClose_SaveData())
+                {
+                    e.Cancel = false;
+                }
             }
             else
             {
@@ -136,7 +174,7 @@ namespace MES_MonitoringClient
         /// </summary>
         private void DateTimeTimer()
         {            
-            Common.TimmerHandler TTimerClass = new Common.TimmerHandler(1000, true, (o, a) => {
+            TTimerClass = new Common.TimmerHandler(1000, true, (o, a) => {
                 SetDateTime();
             }, true);
         }
@@ -146,7 +184,7 @@ namespace MES_MonitoringClient
         /// </summary>
         private void SendDataToSerialPortTimer()
         {
-            Common.TimmerHandler TTimerClass = new Common.TimmerHandler(1000, true, (o, a) => {
+            SendDataTimerClass = new Common.TimmerHandler(1000, true, (o, a) => {
                 SendDataToSerialPort(mc_DefaultSignal);
             }, true);
         }
@@ -211,14 +249,14 @@ namespace MES_MonitoringClient
             {
                 try
                 {
-                    if (serialPort7.IsOpen)
+                    if (serialPort6.IsOpen)
                     {
                         //转码后再发送
                         //byte[] byteArray = System.Text.Encoding.Default.GetBytes(defaultSignal);
                         //serialPort7.Write(byteArray, 0, byteArray.Length);
 
                         //不转码直接发送
-                        serialPort7.Write(defaultSignal);
+                        serialPort6.Write(defaultSignal);
 
                         //发送的大小
                         COM7_SendDataCount += 1;
@@ -271,19 +309,20 @@ namespace MES_MonitoringClient
         /// </summary>
         private void SettingLight()
         {
-            btn_StatusLight.Text = mc_MachineStatusHander.StatusDescription;            
+            btn_StatusLight.Text = mc_MachineStatusHander.StatusDescription;
+            btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);            
 
             if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Red)
-            {                
-                btn_StatusLight.BackColor = Color.Red;
+            {
+                btn_StatusLight.BackColor = System.Drawing.Color.FromArgb(255, 61, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(255, 61, 0));
             }
             else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Green)
             {
-                btn_StatusLight.BackColor = Color.Green;                
+                btn_StatusLight.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(0, 230, 118));
             }
             else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Yellow)
             {
-                btn_StatusLight.BackColor = Color.Yellow;                
+                btn_StatusLight.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(221, 221, 0));
             }
         }
 
@@ -302,11 +341,11 @@ namespace MES_MonitoringClient
         /*---------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// 串口7获取数据
+        /// 串口6获取数据
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void serialPort7_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        private void serialPort6_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             try
             {
@@ -442,7 +481,7 @@ namespace MES_MonitoringClient
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btn_CloseWindow_Click(object sender, EventArgs e)
-        {
+        {            
             this.Close();
         }
 

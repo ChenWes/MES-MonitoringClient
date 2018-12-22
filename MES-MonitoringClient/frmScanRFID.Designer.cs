@@ -32,10 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmScanRFID));
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.btn_Cancel = new System.Windows.Forms.Button();
             this.btn_Confirm = new System.Windows.Forms.Button();
+            this.btn_Cancel = new System.Windows.Forms.Button();
             this.lab_CardID = new System.Windows.Forms.Label();
             this.lab_ScanStatus = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,6 +54,7 @@
             this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -62,17 +64,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1048, 685);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // btn_Cancel
-            // 
-            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Cancel.Location = new System.Drawing.Point(137, 623);
-            this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btn_Cancel.TabIndex = 3;
-            this.btn_Cancel.Text = "取消";
-            this.btn_Cancel.UseVisualStyleBackColor = true;
-            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
             // 
             // btn_Confirm
             // 
@@ -84,6 +75,17 @@
             this.btn_Confirm.Text = "确定";
             this.btn_Confirm.UseVisualStyleBackColor = true;
             this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
+            // 
+            // btn_Cancel
+            // 
+            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Cancel.Location = new System.Drawing.Point(137, 623);
+            this.btn_Cancel.Name = "btn_Cancel";
+            this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
+            this.btn_Cancel.TabIndex = 3;
+            this.btn_Cancel.Text = "取消";
+            this.btn_Cancel.UseVisualStyleBackColor = true;
+            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
             // 
             // lab_CardID
             // 
@@ -107,6 +109,15 @@
             this.lab_ScanStatus.Size = new System.Drawing.Size(89, 20);
             this.lab_ScanStatus.TabIndex = 0;
             this.lab_ScanStatus.Text = "等待刷卡";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(343, 286);
+            this.richTextBox1.TabIndex = 6;
+            this.richTextBox1.Text = "";
             // 
             // frmScanRFID
             // 
@@ -136,5 +147,6 @@
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button btn_Confirm;
         private System.Windows.Forms.Label lab_CardID;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

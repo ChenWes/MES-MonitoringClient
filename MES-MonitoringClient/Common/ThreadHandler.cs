@@ -99,5 +99,10 @@ namespace MES_MonitoringClient.Common
         {
             _TThread.Join();
         }
+
+        public void ThreadAbort()
+        {
+            _TThread.Abort();
+        }
     }
 }

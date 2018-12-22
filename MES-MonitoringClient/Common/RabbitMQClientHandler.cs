@@ -18,7 +18,6 @@ namespace MES_MonitoringClient.Common
         //定义一个标识确保线程同步 
         private static readonly object locker = new object();
 
-
         /*-------------------------------------------------------------------------------------*/
 
         //ConnectionFactory
@@ -90,14 +89,15 @@ namespace MES_MonitoringClient.Common
                 //创建一个持久化的频道
                 bool durable = true;
                 Channel.QueueDeclare(queueName, durable, false, false, null);
+                
 
                 //设置消息持久性
-                var properties = Channel.CreateBasicProperties();
-                properties.SetPersistent(true);
+                //var properties = Channel.CreateBasicProperties();
+                //properties.SetPersistent(true);
 
                 //消息内容转码，并发送至服务器
                 var messageBody = Encoding.UTF8.GetBytes(message);
-                Channel.BasicPublish("", "newrouter", null, messageBody);
+                Channel.BasicPublish("", queueName, null, messageBody);
 
                 return true;
             }

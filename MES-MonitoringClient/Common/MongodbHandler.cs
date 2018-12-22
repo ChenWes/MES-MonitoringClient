@@ -14,6 +14,10 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class MongodbHandler
     {
+        public static string MongodbServiceName = "MongoDB";
+        private static string MongodbDefaultUrl = "mongodb://localhost:27017";
+        private static string MongodbDefaultDBName = "MES";
+
         // 定义一个静态变量来保存类的实例
         private static MongodbHandler uniqueInstance;
         //定义一个标识确保线程同步 
@@ -40,9 +44,9 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private MongodbHandler()
         {
-            mc_MongoClient = new MongoClient("mongodb://localhost:27017");
+            mc_MongoClient = new MongoClient(MongodbDefaultUrl);
 
-            mc_MongoDatabase = mc_MongoClient.GetDatabase("MES");            
+            mc_MongoDatabase = mc_MongoClient.GetDatabase(MongodbDefaultDBName);            
         }
 
         /// <summary>
@@ -71,8 +75,6 @@ namespace MES_MonitoringClient.Common
 
 
         /*-------------------------------------------------------------------------------------*/
-
-
 
 
         /// <summary>

@@ -19,13 +19,14 @@ namespace MES_MonitoringClient
         public string OperatePersonCardID = string.Empty;
         public string OperatePersonName = string.Empty;
 
+
+        /*窗口公共方法*/
+        /*---------------------------------------------------------------------------------------*/
+
         public frmChangeStatus()
         {
             InitializeComponent();
         }
-
-        /*窗口公共方法*/
-        /*---------------------------------------------------------------------------------------*/
 
         private void frmChangeStatus_Load(object sender, EventArgs e)
         {
@@ -41,8 +42,6 @@ namespace MES_MonitoringClient
                 throw;
             }
         }
-
-
 
 
         /*窗口公共方法*/
@@ -63,9 +62,15 @@ namespace MES_MonitoringClient
         /// </summary>
         private void SettingButton()
         {
-            btn_Stop.BackColor = Color.Yellow;
-            btn_Run.BackColor = Color.Green;
-            btn_Error.BackColor = Color.Red;
+            //字体
+            btn_Stop.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            btn_Run.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            btn_Error.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+
+            //背景
+            btn_Stop.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(221, 221, 0));
+            btn_Run.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(0, 230, 118));
+            btn_Error.BackColor = System.Drawing.Color.FromArgb(255, 61, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(255, 61, 0));
         }
 
         /// <summary>
@@ -97,6 +102,7 @@ namespace MES_MonitoringClient
             lab_OperatePersonCardID.Text = "已刷卡：" + OperatePersonCardID;
         }
 
+
         /*窗口公共方法*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -114,6 +120,7 @@ namespace MES_MonitoringClient
         {
             changeStatus("StartProduce", "运行");
         }
+
 
         /*窗口公共方法*/
         /*---------------------------------------------------------------------------------------*/

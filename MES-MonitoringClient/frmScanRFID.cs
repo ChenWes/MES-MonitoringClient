@@ -105,6 +105,8 @@ namespace MES_MonitoringClient
                     lab_ScanStatus.Text = "刷卡成功";
                     lab_CardID.Text = "卡号:" + COM1_DataStringBuilder.ToString();
                     OperatePersonCardID = COM1_DataStringBuilder.ToString();
+
+                    richTextBox1.AppendText(COM1_DataStringBuilder.ToString());
                 }
                     )
                 );

@@ -146,16 +146,23 @@ namespace MES_MonitoringClient.Common
 
                     //保存至DB中/*******************/嫁动率的主要数据来源
 
-                    //数据实体
-                    DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
-                    newDateLineClass.Status = StatusDescription;
-                    newDateLineClass.StartDateTime = StartDateTime;
-                    newDateLineClass.EndDateTime = EndDateTime;
-                    newDateLineClass.IsUploadToServer = false;
+                    //如果有Mongodb才保存至DB中
+                    if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                    {
+                        //数据实体
+                        DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
+                        newDateLineClass.Status = StatusDescription;
+                        newDateLineClass.StartDateTime = StartDateTime;
+                        newDateLineClass.EndDateTime = EndDateTime;
+                        newDateLineClass.IsUploadToServer = false;
 
-                    //获取数据集，并插入数据
-                    var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
-                    Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+                        //获取数据集，并插入数据
+                        var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
+                        Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+                    }
+
+                    //上传
+                    Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("UploadMachineStatus", newStatusDescription);
                 }
 
 
@@ -189,14 +196,17 @@ namespace MES_MonitoringClient.Common
 
         }
 
-        public void AppWillClose_SaveData()
+        public bool AppWillClose_SaveData()
         {
+            bool returnFlag = false;
+
             //重新开始计时器及线程
             if (DateTimeThreadHandler != null && DateTimeThreadStart != null)
             {
                 //线程
                 DateTimeThreadHandler._TThread.Abort();
                 DateTimeThreadHandler._TThread.Join();
+
                 //定时器
                 TTimerClass.StopTimmer();
                 TTimerClass = null;
@@ -205,18 +215,26 @@ namespace MES_MonitoringClient.Common
                 EndDateTime = System.DateTime.Now;
 
                 //保存至DB中/*******************/嫁动率的主要数据来源
+                if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                {
+                    //数据实体
+                    DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
+                    newDateLineClass.Status = StatusDescription;
+                    newDateLineClass.StartDateTime = StartDateTime;
+                    newDateLineClass.EndDateTime = EndDateTime;
+                    newDateLineClass.IsUploadToServer = false;
 
-                //数据实体
-                DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
-                newDateLineClass.Status = StatusDescription;
-                newDateLineClass.StartDateTime = StartDateTime;
-                newDateLineClass.EndDateTime = EndDateTime;
-                newDateLineClass.IsUploadToServer = false;
+                    //获取数据集，并插入数据
+                    var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
+                    Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+                }
 
-                //获取数据集，并插入数据
-                var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
-                Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+                //上传
+                //returnFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("UploadMachineStatus", StatusDescription);
+                returnFlag = true;
             }
+
+            return returnFlag;
         }       
     }
 }
