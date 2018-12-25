@@ -4,16 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using MongoDB.Driver;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
-namespace MES_MonitoringClient.Common
+namespace MES_MonitoringService.Common
 {
     /// <summary>
     /// Mongodb操作类
     /// </summary>
     public class MongodbHandler
     {
+        /*默认MongoDB参数*/
+        /*-------------------------------------------------------------------------------------*/
+
         public static string MongodbServiceName = Common.ConfigFileHandler.GetAppConfig("MongodbServiceName");
         private static string MongodbDefaultUrl = Common.ConfigFileHandler.GetAppConfig("MongodbURL");
         private static string MongodbDefaultDBName = Common.ConfigFileHandler.GetAppConfig("MongodbName");
@@ -24,6 +27,7 @@ namespace MES_MonitoringClient.Common
         private static readonly object locker = new object();
 
 
+        /*构造函数*/
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -37,6 +41,7 @@ namespace MES_MonitoringClient.Common
         public IMongoDatabase mc_MongoDatabase = null;
 
 
+        /*构造函数*/
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -44,10 +49,15 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private MongodbHandler()
         {
+            if (!Common.CommonFunction.ServiceRunning(MongodbServiceName))
+            {
+                throw new Exception("Mongodb 服务未安装或未运行，无法连接至Mongodb");
+            }
+
             //client
             mc_MongoClient = new MongoClient(MongodbDefaultUrl);
             //database
-            mc_MongoDatabase = mc_MongoClient.GetDatabase(MongodbDefaultDBName);            
+            mc_MongoDatabase = mc_MongoClient.GetDatabase(MongodbDefaultDBName);
         }
 
         /// <summary>
@@ -75,11 +85,6 @@ namespace MES_MonitoringClient.Common
         }
 
 
-        /*-------------------------------------------------------------------------------------*/
-        public static void CloseData()
-        {
-            
-        }
 
 
         /// <summary>
@@ -90,6 +95,64 @@ namespace MES_MonitoringClient.Common
         public IMongoCollection<BsonDocument> GetCollection(string collectionName)
         {
             return mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
-        }      
+        }
+
+
+        /*操作数据*/
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 数据集插入一条数据
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="newDocument"></param>
+        public void InsertOne(IMongoCollection<BsonDocument> collection, BsonDocument newDocument)
+        {
+            collection.InsertOne(newDocument);
+        }
+
+        /// <summary>
+        /// 找到所有
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public MongoDB.Driver.Linq.IMongoQueryable FindAll(IMongoCollection<BsonDocument> collection)
+        {
+            return collection.AsQueryable<BsonDocument>();
+        }
+
+        /// <summary>
+        /// 找到一条
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFindFluent<BsonDocument,BsonDocument> Find(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
+        {            
+            return collection.Find(filter);
+        }
+
+        /// <summary>
+        /// 找到并更新
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        public BsonDocument FindOneAndUpdate(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter,UpdateDefinition<BsonDocument> update)
+        {
+            return collection.FindOneAndUpdate(filter, update);
+        }
+
+        /// <summary>
+        /// 找到并删除
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public BsonDocument FindOneAndDelete(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
+        {
+            return collection.FindOneAndDelete(filter);
+        }
     }
 }

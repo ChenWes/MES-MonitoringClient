@@ -59,14 +59,14 @@
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(936, 703);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
             // btn_Confirm
             // 
             this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Confirm.Location = new System.Drawing.Point(742, 641);
+            this.btn_Confirm.Location = new System.Drawing.Point(742, 591);
             this.btn_Confirm.Name = "btn_Confirm";
             this.btn_Confirm.Size = new System.Drawing.Size(75, 23);
             this.btn_Confirm.TabIndex = 8;
@@ -77,7 +77,7 @@
             // btn_Cancel
             // 
             this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Cancel.Location = new System.Drawing.Point(118, 641);
+            this.btn_Cancel.Location = new System.Drawing.Point(118, 591);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
             this.btn_Cancel.TabIndex = 7;
@@ -102,7 +102,7 @@
             this.btn_Stop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Stop.FlatAppearance.BorderSize = 0;
             this.btn_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Stop.Location = new System.Drawing.Point(105, 276);
+            this.btn_Stop.Location = new System.Drawing.Point(105, 226);
             this.btn_Stop.Name = "btn_Stop";
             this.btn_Stop.Size = new System.Drawing.Size(100, 100);
             this.btn_Stop.TabIndex = 11;
@@ -115,7 +115,7 @@
             this.btn_Run.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Run.FlatAppearance.BorderSize = 0;
             this.btn_Run.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Run.Location = new System.Drawing.Point(417, 276);
+            this.btn_Run.Location = new System.Drawing.Point(417, 226);
             this.btn_Run.Name = "btn_Run";
             this.btn_Run.Size = new System.Drawing.Size(100, 100);
             this.btn_Run.TabIndex = 12;
@@ -128,7 +128,7 @@
             this.btn_Error.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Error.FlatAppearance.BorderSize = 0;
             this.btn_Error.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Error.Location = new System.Drawing.Point(729, 276);
+            this.btn_Error.Location = new System.Drawing.Point(729, 226);
             this.btn_Error.Name = "btn_Error";
             this.btn_Error.Size = new System.Drawing.Size(100, 100);
             this.btn_Error.TabIndex = 13;

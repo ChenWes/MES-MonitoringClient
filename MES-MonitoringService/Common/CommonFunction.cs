@@ -1,31 +1,16 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Net.NetworkInformation;
-using Microsoft.Win32;
-using System.ServiceProcess;
-
-namespace MES_MonitoringClient.Common
+namespace MES_MonitoringService.Common
 {
-    /// <summary>
-    /// 公共方法类
-    /// </summary>
     public static class CommonFunction
     {
-        public enum ServiceStatus
-        {
-            NoInstall = 0,
-            Stopped = 1,
-            StartPending = 2,
-            StopPending = 3,
-            Running = 4,
-            ContinuePending = 5,
-            PausePending = 6,
-            Paused = 7
-        }
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -60,8 +45,8 @@ namespace MES_MonitoringClient.Common
             //返回标准化的时间
             StringBuilder strTime = new StringBuilder();
             strTime.Append(day > 0 ? (strDay + "天") : "");
-            strTime.Append(hour > 0 ? (strHour + "小时") : "");
-            strTime.Append(minute > 0 ? (strMinute + "分钟") : "");
+            strTime.Append(hour > 0 ? (strHour + "时") : "");
+            strTime.Append(minute > 0 ? (strMinute + "分") : "");
             strTime.Append(second > 0 ? (strSecond + "秒") : "");
             strTime.Append(milliSecond > 0 ? (strMilliSecond + "毫秒") : "");
 
@@ -111,47 +96,6 @@ namespace MES_MonitoringClient.Common
             return macAddress;
         }
 
-
-        /*-------------------------------------------------------------------------------------*/
-        /*颜色转换*/
-
-        /// <summary>
-        /// HTML颜色转换成ARGB颜色
-        /// </summary>
-        /// <param name="strHxColor"></param>
-        /// <returns></returns>
-        public static System.Drawing.Color colorHx16toRGB(string strHxColor)
-        {
-            try
-            {
-                if (strHxColor.Length == 0)
-                {//如果为空
-                    return System.Drawing.Color.FromArgb(0, 0, 0);//设为黑色
-                }
-                else
-                {//转换颜色
-                    return System.Drawing.Color.FromArgb(System.Int32.Parse(strHxColor.Substring(1, 2), System.Globalization.NumberStyles.AllowHexSpecifier), System.Int32.Parse(strHxColor.Substring(3, 2), System.Globalization.NumberStyles.AllowHexSpecifier), System.Int32.Parse(strHxColor.Substring(5, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
-                }
-            }
-            catch
-            {//设为黑色
-                return System.Drawing.Color.FromArgb(0, 0, 0);
-            }
-        }
-
-        /// <summary>
-        /// RGB颜色转换成HTML颜色结构
-        /// </summary>
-        /// <param name="R">红</param>
-        /// <param name="G">绿</param>
-        /// <param name="B">蓝</param>
-        /// <returns></returns>
-        public static string colorRGBtoHx16(int R, int G, int B)
-        {
-            
-return System.Drawing.ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(R, G, B));
-        }
-
         /// <summary>
         /// 确认服务是否在运行
         /// </summary>
@@ -172,27 +116,7 @@ return System.Drawing.ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(R, G,
                 returnFlag = false;
             }
 
-
             return returnFlag;
-        }
-
-        public static ServiceStatus GetServiceStatus(string serviceName)
-        {
-            ServiceStatus returnFlag = ServiceStatus.NoInstall;
-
-            ServiceController[] services = ServiceController.GetServices();
-            var service = services.FirstOrDefault(s => s.ServiceName == serviceName);
-
-            if (service == null)
-            {
-                returnFlag = ServiceStatus.NoInstall;
-            }
-            else
-            {
-                returnFlag = (ServiceStatus)service.Status;
-            }
-
-            return returnFlag;
-        }
+        }        
     }
 }

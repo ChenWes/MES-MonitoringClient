@@ -8,8 +8,9 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Threading;
 
-using System.Diagnostics;
+using MongoDB;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace MES_MonitoringClient.Common
 {
@@ -27,6 +28,15 @@ namespace MES_MonitoringClient.Common
             Yellow,
             Red
         }
+
+        //机器状态Mongodb集合
+        private IMongoCollection<DataModel.MachineStatus> machineStatusLogCollection;
+        
+
+        /// <summary>
+        /// 机器状态默认Mongodb集合名
+        /// </summary>
+        private static string defaultMachineStatusMongodbCollectionName = "StatusLog";
 
         /// <summary>
         /// 灯
@@ -64,41 +74,60 @@ namespace MES_MonitoringClient.Common
         public string OperatePerson { get; set; }
 
         /// <summary>
-        /// 当前状态时间
+        /// 操作人卡号
+        /// </summary>
+        public string OperatePersonCardID { get; set; }
+
+        /// <summary>
+        /// 当前状态等待时间（毫秒级）
         /// </summary>
         public long HoldStatusTotalMilliseconds { get; set; }
 
         /// <summary>
-        /// 时间线程
+        /// 最后操作的数据库ID
         /// </summary>
-        ThreadHandler DateTimeThreadHandler = null;
+        public string LastOperationMachineStatusID { get; set; }
+
+        /*处理线程等*/
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 时间线程
+        /// </summary>        
+        Thread DateTimeThreadClass = null;
 
         /// <summary>
         /// 时间线程方法
         /// </summary>
-        ThreadStart DateTimeThreadStart = null;
+        ThreadStart DateTimeThreadFunction = null;
 
         /// <summary>
         /// 定时器
         /// </summary>
         Common.TimmerHandler TTimerClass = null;
 
-        /// <summary>
-        /// 操作人卡号
-        /// </summary>
-        public string OperatePersonCardID { get; set; }
 
-
-
+        /*构造函数*/
         /*-------------------------------------------------------------------------------------*/
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="uiCallbackFunction"></param>
         public MachineStatusHandler()
         {
             //生产状态
             mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();
+
+            //最后操作记录ID为空
+            LastOperationMachineStatusID = string.Empty;
+
+            //机器状态集合
+            machineStatusLogCollection = MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineStatus>(defaultMachineStatusMongodbCollectionName);
         }
 
 
+        /*状态计时器*/
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -106,10 +135,17 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private void DateTimeTimer()
         {
-            TTimerClass = new Common.TimmerHandler(1000, true, (o, a) =>
+            try
             {
-                AddDateTime();
-            }, true);
+                TTimerClass = new Common.TimmerHandler(1000, true, (o, a) =>
+                {
+                    AddDateTime();
+                }, true);
+            }
+            catch (Exception ex)
+            {
+                TTimerClass = null;
+            }
         }
 
         /// <summary>
@@ -118,8 +154,20 @@ namespace MES_MonitoringClient.Common
         private delegate void SetDateTimeDelegate();
         private void AddDateTime()
         {
-            HoldStatusTotalMilliseconds += 1000;
-        }
+            try
+            {
+                //增加时间
+                HoldStatusTotalMilliseconds += 1000;                
+            }
+            catch (Exception ex)
+            {                
+                TTimerClass = null;
+            }
+        }        
+
+
+        /*修改机器状态*/
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 主动修改当前机器状态
@@ -131,12 +179,15 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+                #region 上一条记录操作
+
                 //重新开始计时器及线程
-                if (DateTimeThreadHandler != null && DateTimeThreadStart != null)
+                if (DateTimeThreadClass != null && TTimerClass != null)
                 {
                     //线程
-                    DateTimeThreadHandler._TThread.Abort();
-                    DateTimeThreadHandler._TThread.Join();
+                    DateTimeThreadClass.Abort();
+                    Thread.SpinWait(1000);
+
                     //定时器
                     TTimerClass.StopTimmer();
                     TTimerClass = null;
@@ -149,25 +200,30 @@ namespace MES_MonitoringClient.Common
                     //如果有Mongodb才保存至DB中
                     if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
                     {
-                        //数据实体
-                        DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
-                        newDateLineClass.Status = StatusDescription;
-                        newDateLineClass.StartDateTime = StartDateTime;
-                        newDateLineClass.EndDateTime = EndDateTime;
-                        newDateLineClass.IsUploadToServer = false;
+                        //判断最后一个
+                        if (!string.IsNullOrEmpty(LastOperationMachineStatusID))
+                        {
+                            //找到单个记录
+                            //var dataID = new ObjectId(LastOperationMachineStatusID);
+                            //var getMachineStatusEntity = machineStatusLogCollection.AsQueryable<DataModel.MachineStatus>().SingleOrDefault(m => m.Id == dataID);
 
-                        //获取数据集，并插入数据
-                        var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
-                        Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
-                    }
+                            var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
 
-                    //上传
-                    Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("UploadMachineStatus", newStatusDescription);
+                            var update = Builders<DataModel.MachineStatus>.Update
+                                .Set("EndDateTime", DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc))
+                                .Set("IsStopFlag", true);
+
+                            var result = machineStatusLogCollection.UpdateOne(filterID, update);
+                        }
+                    }                                        
                 }
 
+                #endregion
+
+                #region 当前记录操作
 
                 //当前时间
-                StartDateTime = System.DateTime.Now;
+                StartDateTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
                 //更新状态
                 StatusCode = newStatusCode;
@@ -181,13 +237,35 @@ namespace MES_MonitoringClient.Common
                 HoldStatusTotalMilliseconds = 0;
 
                 //修改灯
-                if (newStatusDescription == "运行") mc_StatusLight = enumStatusLight.Green;
-                else if (newStatusDescription == "故障") mc_StatusLight = enumStatusLight.Red;
-                else if (newStatusDescription == "停机") mc_StatusLight = enumStatusLight.Yellow;
+                SettingLight(newStatusDescription);
 
                 //开始一个新线程，处理状态的时间
-                DateTimeThreadStart = new ThreadStart(DateTimeTimer);
-                DateTimeThreadHandler = new ThreadHandler(DateTimeThreadStart, false, true);
+                DateTimeThreadFunction = new ThreadStart(DateTimeTimer);
+                DateTimeThreadClass = new Thread(DateTimeThreadFunction);
+                DateTimeThreadClass.Start();
+
+                if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                {
+                    DataModel.MachineStatus newMachineStatus = new DataModel.MachineStatus();
+
+                    newMachineStatus.Status = StatusDescription;
+                    //开始与结束时间一致
+                    newMachineStatus.StartDateTime = StartDateTime;
+                    newMachineStatus.EndDateTime = StartDateTime;
+                    //未结束与上传标识
+                    newMachineStatus.IsStopFlag = false;
+                    newMachineStatus.IsUploadToServer = false;
+                    newMachineStatus.IsUpdateToServer = false;
+                    //MAC地址
+                    newMachineStatus.LocalMacAddress = Common.CommonFunction.getMacAddress();
+
+                    //插入
+                    machineStatusLogCollection.InsertOne(newMachineStatus);
+                    //暂存ID
+                    LastOperationMachineStatusID = newMachineStatus.Id.ToString();                                        
+                }
+
+                #endregion
             }
             catch (Exception ex)
             {
@@ -196,45 +274,70 @@ namespace MES_MonitoringClient.Common
 
         }
 
-        public bool AppWillClose_SaveData()
+
+        /*红绿灯操作*/
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newStatusDescription"></param>
+        public void SettingLight(string newStatusDescription)
         {
-            bool returnFlag = false;
+            if (newStatusDescription == "运行") mc_StatusLight = enumStatusLight.Green;
+            else if (newStatusDescription == "故障") mc_StatusLight = enumStatusLight.Red;
+            else if (newStatusDescription == "停机") mc_StatusLight = enumStatusLight.Yellow;
+        }
 
-            //重新开始计时器及线程
-            if (DateTimeThreadHandler != null && DateTimeThreadStart != null)
+
+        /*应用关闭时处理事件*/
+        /*-------------------------------------------------------------------------------------*/
+
+        public void AppWillClose_SaveData()
+        {
+            try
             {
-                //线程
-                DateTimeThreadHandler._TThread.Abort();
-                DateTimeThreadHandler._TThread.Join();
-
-                //定时器
-                TTimerClass.StopTimmer();
-                TTimerClass = null;
-
-                //更新最后时间
-                EndDateTime = System.DateTime.Now;
-
-                //保存至DB中/*******************/嫁动率的主要数据来源
-                if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                //重新开始计时器及线程
+                if (DateTimeThreadClass != null && TTimerClass != null)
                 {
-                    //数据实体
-                    DataModel.MachineStatuTimeLine newDateLineClass = new DataModel.MachineStatuTimeLine();
-                    newDateLineClass.Status = StatusDescription;
-                    newDateLineClass.StartDateTime = StartDateTime;
-                    newDateLineClass.EndDateTime = EndDateTime;
-                    newDateLineClass.IsUploadToServer = false;
+                    //更新最后时间
+                    EndDateTime = System.DateTime.Now;
 
-                    //获取数据集，并插入数据
-                    var collection = Common.MongodbHandler.GetInstance().GetCollection("StatusLog");
-                    Common.MongodbHandler.GetInstance().InsertOne(collection, newDateLineClass.ToBsonDocument());
+                    //保存至DB中/*******************/嫁动率的主要数据来源
+                    if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                    {
+                        //判断最后一个
+                        if (!string.IsNullOrEmpty(LastOperationMachineStatusID))
+                        {
+                            var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
+
+                            var update = Builders<DataModel.MachineStatus>.Update
+                                .Set("EndDateTime", System.DateTime.Now)
+                                .Set("IsStopFlag", true);
+
+                            var result = machineStatusLogCollection.UpdateOne(filterID, update);
+
+                            if (result.ModifiedCount == 1)
+                            {
+
+                            }
+                        }
+                    }
+
+                    //定时器
+                    TTimerClass.StopTimmer();
+                    TTimerClass = null;
+
+                    //线程
+                    DateTimeThreadClass.Abort();
+                    Thread.Sleep(1000);
+
                 }
-
-                //上传
-                //returnFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServer("UploadMachineStatus", StatusDescription);
-                returnFlag = true;
             }
-
-            return returnFlag;
-        }       
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }   
     }
 }

@@ -22,7 +22,7 @@ namespace MES_MonitoringClient.Common
         private const bool default_autoReset = false;
 
         //定时器默认一秒执行一次
-        private const int default_interval = 1000;
+        private const long default_interval = 1000;
 
         //定时器创建后即刻运行
         private const bool default_autoRun = false;
@@ -36,7 +36,7 @@ namespace MES_MonitoringClient.Common
         public TimmerHandler(System.Timers.ElapsedEventHandler elapseEvent, bool autoRun) : this(default_interval, elapseEvent, autoRun)
         { }
 
-        public TimmerHandler(int interval, System.Timers.ElapsedEventHandler elapseEvent, bool autoRun) : this(interval, default_autoReset, elapseEvent, autoRun)
+        public TimmerHandler(long interval, System.Timers.ElapsedEventHandler elapseEvent, bool autoRun) : this(interval, default_autoReset, elapseEvent, autoRun)
         { }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MES_MonitoringClient.Common
         /// <param name="autoReset">是否重复执行</param>
         /// <param name="elapseEvent">定时事件</param>
         /// <param name="autoRun">是否自动运行</param>
-        public TimmerHandler(int interval, bool autoReset, System.Timers.ElapsedEventHandler elapseEvent, bool autoRun)
+        public TimmerHandler(long interval, bool autoReset, System.Timers.ElapsedEventHandler elapseEvent, bool autoRun)
         {
             _TTimer = new System.Timers.Timer();
 

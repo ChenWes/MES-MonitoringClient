@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6AAFA40D-F340-4DC0-BE52-AF836CFEB373}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>MES_MonitoringClient</RootNamespace>
-    <AssemblyName>MES-MonitoringClient</AssemblyName>
+    <ProjectGuid>{D3303ABE-43A8-42EF-98F9-5C143E3816B4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MES_MonitoringService</RootNamespace>
+    <AssemblyName>MES-MonitoringService</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -53,95 +53,36 @@
     <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.3.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
     </Reference>
-    <Reference Include="System.ServiceProcess, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLL\System.ServiceProcess.dll</HintPath>
-    </Reference>
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Topshelf, Version=4.1.0.172, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Topshelf.4.1.0\lib\net452\Topshelf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommonFunction.cs" />
-    <Compile Include="Common\Component\CircularButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
-    <Compile Include="Common\MachineProcedure.cs" />
-    <Compile Include="Common\MachineProduceStatusHandler.cs" />
-    <Compile Include="Common\MachineReportHandler.cs" />
-    <Compile Include="Common\MachineStatusHandler.cs" />
+    <Compile Include="Common\LogHandler.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\RabbitMQClientHandler.cs" />
-    <Compile Include="Common\SerialPortHandler.cs" />
-    <Compile Include="Common\SerialPortHelper.cs" />
-    <Compile Include="Common\ThreadHandler.cs" />
-    <Compile Include="Common\TimmerHandler.cs" />
-    <Compile Include="DataModel\MachineRunTime.cs" />
-    <Compile Include="DataModel\MachineStatus.cs" />
-    <Compile Include="frmChangeStatus.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmChangeStatus.Designer.cs">
-      <DependentUpon>frmChangeStatus.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmScanRFID.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmScanRFID.Designer.cs">
-      <DependentUpon>frmScanRFID.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Model\MachineStatus.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmChangeStatus.resx">
-      <DependentUpon>frmChangeStatus.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmScanRFID.resx">
-      <DependentUpon>frmScanRFID.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <Compile Include="UploadStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLL\RabbitMQ.Client.dll" />
@@ -149,5 +90,6 @@
     <Content Include="DLL\RabbitMQ.ServiceModel.dll" />
     <Content Include="DLL\System.ServiceProcess.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

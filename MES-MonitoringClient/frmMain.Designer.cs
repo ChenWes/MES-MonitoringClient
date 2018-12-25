@@ -52,8 +52,7 @@
             this.lab_SendErrorCount = new System.Windows.Forms.Label();
             this.lab_SendSuccessCount = new System.Windows.Forms.Label();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.lab_ConnectionToServer = new System.Windows.Forms.Label();
-            this.lab_UploadStatus = new System.Windows.Forms.Label();
+            this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.panel1.SuspendLayout();
@@ -328,42 +327,29 @@
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel6.ColumnCount = 2;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel6.Controls.Add(this.lab_ConnectionToServer, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.lab_UploadStatus, 1, 0);
+            this.tableLayoutPanel6.ColumnCount = 1;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel6.Controls.Add(this.lab_UploadDataServiceStatus, 0, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(498, 635);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
             this.tableLayoutPanel6.RowCount = 1;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel6.Size = new System.Drawing.Size(490, 24);
             this.tableLayoutPanel6.TabIndex = 5;
             // 
-            // lab_ConnectionToServer
+            // lab_UploadDataServiceStatus
             // 
-            this.lab_ConnectionToServer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab_ConnectionToServer.AutoSize = true;
-            this.lab_ConnectionToServer.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_ConnectionToServer.ForeColor = System.Drawing.Color.White;
-            this.lab_ConnectionToServer.Location = new System.Drawing.Point(4, 2);
-            this.lab_ConnectionToServer.Name = "lab_ConnectionToServer";
-            this.lab_ConnectionToServer.Size = new System.Drawing.Size(237, 20);
-            this.lab_ConnectionToServer.TabIndex = 17;
-            this.lab_ConnectionToServer.Text = "正在尝试连接至服务器";
-            // 
-            // lab_UploadStatus
-            // 
-            this.lab_UploadStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab_UploadStatus.AutoSize = true;
-            this.lab_UploadStatus.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_UploadStatus.ForeColor = System.Drawing.Color.White;
-            this.lab_UploadStatus.Location = new System.Drawing.Point(248, 2);
-            this.lab_UploadStatus.Name = "lab_UploadStatus";
-            this.lab_UploadStatus.Size = new System.Drawing.Size(238, 20);
-            this.lab_UploadStatus.TabIndex = 17;
-            this.lab_UploadStatus.Text = "数据上传状态";
+            this.lab_UploadDataServiceStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_UploadDataServiceStatus.AutoSize = true;
+            this.lab_UploadDataServiceStatus.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_UploadDataServiceStatus.ForeColor = System.Drawing.Color.White;
+            this.lab_UploadDataServiceStatus.Location = new System.Drawing.Point(4, 2);
+            this.lab_UploadDataServiceStatus.Name = "lab_UploadDataServiceStatus";
+            this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(482, 20);
+            this.lab_UploadDataServiceStatus.TabIndex = 17;
+            this.lab_UploadDataServiceStatus.Text = "正在查找数据上传服务运行状态";
             // 
             // tableLayoutPanel5
             // 
@@ -448,8 +434,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private Common.Component.CircularButton circularButton1;
         private Common.Component.CircularButton btn_StatusLight;
-        private System.Windows.Forms.Label lab_ConnectionToServer;
-        private System.Windows.Forms.Label lab_UploadStatus;
+        private System.Windows.Forms.Label lab_UploadDataServiceStatus;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.RichTextBox richTextBox1;

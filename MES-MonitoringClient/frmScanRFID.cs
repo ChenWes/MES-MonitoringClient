@@ -37,6 +37,9 @@ namespace MES_MonitoringClient
             {
                 this.WindowState = FormWindowState.Maximized;
 
+                //RFID配置端口默认配置
+                RFIDSerialPortGetDefaultSetting();
+
                 if (!serialPort1.IsOpen)
                 {
                     serialPort1.Open();
@@ -44,8 +47,7 @@ namespace MES_MonitoringClient
             }
             catch (Exception ex)
             {
-
-                throw;
+                ShowErrorMessage(ex.Message, "RFID界面初始化");                
             }
         }
 
@@ -70,6 +72,67 @@ namespace MES_MonitoringClient
             MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// RFID串口默认配置
+        /// </summary>
+        private void RFIDSerialPortGetDefaultSetting()
+        {
+            //端口名称
+            serialPort1.PortName = Common.ConfigFileHandler.GetAppConfig("RFIDSerialPortName");
+
+            //波特率
+            int defaultBaudRate = 0;
+            int.TryParse(Common.ConfigFileHandler.GetAppConfig("RFIDSerialBaudRate"), out defaultBaudRate);
+            serialPort1.BaudRate = defaultBaudRate;
+
+            //奇偶性验证
+            string defaultParity = Common.ConfigFileHandler.GetAppConfig("RFIDSerialParity");
+            if (defaultParity.ToUpper() == System.IO.Ports.Parity.None.ToString().ToUpper())
+            {
+                serialPort1.Parity = System.IO.Ports.Parity.None;
+            }
+            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Odd.ToString().ToUpper())
+            {
+                serialPort1.Parity = System.IO.Ports.Parity.Odd;
+            }
+            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Even.ToString().ToUpper())
+            {
+                serialPort1.Parity = System.IO.Ports.Parity.Even;
+            }
+            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Mark.ToString().ToUpper())
+            {
+                serialPort1.Parity = System.IO.Ports.Parity.Mark;
+            }
+            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Space.ToString().ToUpper())
+            {
+                serialPort1.Parity = System.IO.Ports.Parity.Space;
+            }
+
+            //数据位
+            int defaultDataBits = 0;
+            int.TryParse(Common.ConfigFileHandler.GetAppConfig("RFIDSerialDataBits"), out defaultDataBits);
+            serialPort1.DataBits = defaultDataBits;
+
+            //停止位
+            string defaultStopBits = Common.ConfigFileHandler.GetAppConfig("RFIDSerialStopBits");
+            if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.None.ToString().ToUpper())
+            {
+                serialPort1.StopBits = System.IO.Ports.StopBits.None;
+            }
+            else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.One.ToString().ToUpper())
+            {
+                serialPort1.StopBits = System.IO.Ports.StopBits.One;
+            }
+            else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.OnePointFive.ToString().ToUpper())
+            {
+                serialPort1.StopBits = System.IO.Ports.StopBits.OnePointFive;
+            }
+            else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.Two.ToString().ToUpper())
+            {
+                serialPort1.StopBits = System.IO.Ports.StopBits.Two;
+            }
+
+        }
 
         /*获取串口数据事件*/
         /*---------------------------------------------------------------------------------------*/
@@ -104,9 +167,7 @@ namespace MES_MonitoringClient
                 {
                     lab_ScanStatus.Text = "刷卡成功";
                     lab_CardID.Text = "卡号:" + COM1_DataStringBuilder.ToString();
-                    OperatePersonCardID = COM1_DataStringBuilder.ToString();
-
-                    richTextBox1.AppendText(COM1_DataStringBuilder.ToString());
+                    OperatePersonCardID = COM1_DataStringBuilder.ToString();                    
                 }
                     )
                 );

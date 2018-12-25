@@ -36,7 +36,6 @@
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.lab_CardID = new System.Windows.Forms.Label();
             this.lab_ScanStatus = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,21 +53,20 @@
             this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 49.99999F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.00001F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1048, 685);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // btn_Confirm
             // 
             this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Confirm.Location = new System.Drawing.Point(835, 623);
+            this.btn_Confirm.Location = new System.Drawing.Point(835, 573);
             this.btn_Confirm.Name = "btn_Confirm";
             this.btn_Confirm.Size = new System.Drawing.Size(75, 23);
             this.btn_Confirm.TabIndex = 4;
@@ -79,7 +77,7 @@
             // btn_Cancel
             // 
             this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Cancel.Location = new System.Drawing.Point(137, 623);
+            this.btn_Cancel.Location = new System.Drawing.Point(137, 573);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
             this.btn_Cancel.TabIndex = 3;
@@ -93,7 +91,7 @@
             this.lab_CardID.AutoSize = true;
             this.lab_CardID.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_CardID.ForeColor = System.Drawing.Color.White;
-            this.lab_CardID.Location = new System.Drawing.Point(523, 428);
+            this.lab_CardID.Location = new System.Drawing.Point(523, 353);
             this.lab_CardID.Name = "lab_CardID";
             this.lab_CardID.Size = new System.Drawing.Size(0, 20);
             this.lab_CardID.TabIndex = 5;
@@ -104,20 +102,11 @@
             this.lab_ScanStatus.AutoSize = true;
             this.lab_ScanStatus.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_ScanStatus.ForeColor = System.Drawing.Color.White;
-            this.lab_ScanStatus.Location = new System.Drawing.Point(479, 136);
+            this.lab_ScanStatus.Location = new System.Drawing.Point(479, 111);
             this.lab_ScanStatus.Name = "lab_ScanStatus";
             this.lab_ScanStatus.Size = new System.Drawing.Size(89, 20);
             this.lab_ScanStatus.TabIndex = 0;
             this.lab_ScanStatus.Text = "等待刷卡";
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(343, 286);
-            this.richTextBox1.TabIndex = 6;
-            this.richTextBox1.Text = "";
             // 
             // frmScanRFID
             // 
@@ -147,6 +136,5 @@
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button btn_Confirm;
         private System.Windows.Forms.Label lab_CardID;
-        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
