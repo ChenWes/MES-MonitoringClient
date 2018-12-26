@@ -78,6 +78,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
+    <Compile Include="Common\LogHandler.cs" />
     <Compile Include="Common\MachineProcedure.cs" />
     <Compile Include="Common\MachineProduceStatusHandler.cs" />
     <Compile Include="Common\MachineReportHandler.cs" />

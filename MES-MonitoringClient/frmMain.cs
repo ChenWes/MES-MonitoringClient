@@ -75,16 +75,16 @@ namespace MES_MonitoringClient
                 //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
 
-                //设置默认状态
-                mc_MachineStatusHander = new Common.MachineStatusHandler();
-                mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
-                SettingLight();
-
                 //检测端口
                 CheckSerialPort(mc_DefaultRequiredSerialPortName);
 
                 //发送数据串口默认配置
                 sendDataSerialPortGetDefaultSetting();
+
+                //设置默认状态
+                mc_MachineStatusHander = new Common.MachineStatusHandler();
+                mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
+                SettingLight();
 
                 //检测MongoDB服务
                 if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
@@ -454,6 +454,8 @@ namespace MES_MonitoringClient
 
                 this.Invoke((EventHandler)(delegate
                 {
+                    Common.LogHandler.Log(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + stringBuilder.ToString());
+
                     richTextBox1.AppendText(stringBuilder.ToString() + "\r\n");
 
                     COM7_ReceiveDataCount += 1;
