@@ -107,12 +107,12 @@ namespace MES_MonitoringClient.Common
         public void ChangeSignal(string newSingnal)
         {
             string convertSingnalString = ConvertSingnalString(newSingnal);
-            //判断是正常的信号
-            if (convertSingnalString != null)
-            {
-                //判断X[]信号
-                SingnalType convertSingnalStatusType = ConvertSingnalStatus(convertSingnalString);
 
+            //判断是正常的信号
+            if (!string.IsNullOrEmpty(convertSingnalString))
+            {
+                //判断X信号
+                SingnalType convertSingnalStatusType = ConvertSingnalStatus(convertSingnalString);
 
                 if (convertSingnalStatusType != LastSingnal)
                 {
@@ -121,12 +121,13 @@ namespace MES_MonitoringClient.Common
                     if (convertSingnalStatusType == SingnalType.X03)
                     {
                         #region 自动信号（区分上一个信号）
-                                               
+
+
                         _MachineProcedureListForCount.Add(new MachineProcedure()
                         {
                             ProcedureID = convertSingnalString,
                             ProcedureCode = convertSingnalStatusType.ToString(),
-                            ProcedureName = "自动",                            
+                            ProcedureName = "自动",
                         });
 
 
@@ -141,12 +142,13 @@ namespace MES_MonitoringClient.Common
                         }
                         else if (LastSingnal == SingnalType.X02_X03)
                         {
+                            //必须包含完整的生命周期才计数
                             if (CheckHaveRealProduceProcess(_MachineProcedureListForCount))
                             {
                                 //计数
                                 ProductCount++;
-                                _MachineProcedureListForCount.Clear();
 
+                                _MachineProcedureListForCount.Clear();
                                 _MachineProcedureListForCount.Add(new MachineProcedure()
                                 {
                                     ProcedureID = convertSingnalString,
@@ -173,7 +175,7 @@ namespace MES_MonitoringClient.Common
                             {
                                 ProcedureID = convertSingnalString,
                                 ProcedureCode = convertSingnalStatusType.ToString(),
-                                ProcedureName = procedureNameString,                                
+                                ProcedureName = procedureNameString,
                             });
                         }
 
@@ -182,7 +184,7 @@ namespace MES_MonitoringClient.Common
 
                     #endregion
 
-
+                    //上一个信号
                     LastSingnal = convertSingnalStatusType;
                 }
             }
@@ -199,11 +201,11 @@ namespace MES_MonitoringClient.Common
             Regex regex = new Regex("^" + singnalDefaultStart + "[a-fA-F0-9]{4}" + singnalDefaultEnd + "$");
             Match match = regex.Match(inputSingnal);
 
-            Regex regexMiddle = new Regex("(?<=(" + singnalDefaultStart + "))[.\\s\\S]*?(?=(" + singnalDefaultEnd + "))", RegexOptions.Multiline | RegexOptions.Singleline);
-            Match matchMiddle = regexMiddle.Match(inputSingnal);
-
             if (match.Success)
             {
+                Regex regexMiddle = new Regex("(?<=(" + singnalDefaultStart + "))[.\\s\\S]*?(?=(" + singnalDefaultEnd + "))", RegexOptions.Multiline | RegexOptions.Singleline);
+                Match matchMiddle = regexMiddle.Match(inputSingnal);
+
                 return matchMiddle.Value;
             }
             else
