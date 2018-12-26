@@ -36,6 +36,7 @@
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.lab_CardID = new System.Windows.Forms.Label();
             this.lab_ScanStatus = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,6 +54,7 @@
             this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -62,6 +64,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1048, 685);
             this.tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // btn_Confirm
             // 
@@ -108,6 +111,15 @@
             this.lab_ScanStatus.TabIndex = 0;
             this.lab_ScanStatus.Text = "等待刷卡";
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(343, 236);
+            this.richTextBox1.TabIndex = 6;
+            this.richTextBox1.Text = "";
+            // 
             // frmScanRFID
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -136,5 +148,6 @@
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button btn_Confirm;
         private System.Windows.Forms.Label lab_CardID;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

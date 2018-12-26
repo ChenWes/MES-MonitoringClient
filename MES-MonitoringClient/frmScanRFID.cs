@@ -167,7 +167,9 @@ namespace MES_MonitoringClient
                 {
                     lab_ScanStatus.Text = "刷卡成功";
                     lab_CardID.Text = "卡号:" + COM1_DataStringBuilder.ToString();
-                    OperatePersonCardID = COM1_DataStringBuilder.ToString();                    
+                    OperatePersonCardID = COM1_DataStringBuilder.ToString();
+
+                    richTextBox1.AppendText(COM1_DataStringBuilder.ToString());
                 }
                     )
                 );
@@ -226,6 +228,11 @@ namespace MES_MonitoringClient
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

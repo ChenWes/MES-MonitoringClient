@@ -53,7 +53,7 @@ namespace MES_MonitoringClient.Common
         /// <returns></returns>
         public override string ToString()
         {
-            return "[" + ProcedureName + "]从[" + StartDateTime.ToString("yyyy-MM-dd HH:mm:tt") + "]至[" + EndDateTime.ToString("yyyy-MM-dd HH:mm:ss") + "]，共使用了" + (UseMilliseconds / 1000).ToString() + "秒";
+            return "[" + ProcedureCode + "][" + ProcedureName + "]从[" + StartDateTime.ToString("yyyy-MM-dd HH:mm:ss") + "]至[" + EndDateTime.ToString("yyyy-MM-dd HH:mm:ss") + "]，共使用了" + UseMilliseconds.ToString() + "毫秒";
         }
     }
 }

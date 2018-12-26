@@ -13,7 +13,7 @@ namespace MES_MonitoringClient.Common
         public static void Log(string logMessage)
         {
             //日志内容
-            string[] logString = new string[] { System.DateTime.Now.ToString() + " " + logMessage };
+            string[] logString = new string[] { logMessage };
 
             //日志文件夹
             string FolderPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName);

@@ -14,42 +14,73 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class MachineProduceStatusHandler
     {
+
+        /// <summary>
+        /// 信号类型
+        /// </summary>
+        public enum SingnalType
+        {
+            Unknow,
+
+            X01,
+            X02,
+            X03,
+
+            X01_X02,
+            X01_X03,
+
+            X02_X03,
+
+            X01_X02_X03
+        }
+
         /// <summary>
         /// 回复信号前缀
         /// </summary>
-        private static string singnalDefaultStart = "AA";
+        private static string singnalDefaultStart = Common.ConfigFileHandler.GetAppConfig("GetSerialPortDataDefaultSignal_StartPrefix");
         /// <summary>
         /// 回复信号后缀
         /// </summary>
-        private static string singnalDefaultEnd = "ZZ";
+        private static string singnalDefaultEnd = Common.ConfigFileHandler.GetAppConfig("GetSerialPortDataDefaultSignal_EndPrefix");
 
         /*-------------------------------------------------------------------------------------*/
 
 
         /// <summary>
-        /// 计时（类内部使用）
+        /// 产品生命周期（计算时间）
         /// </summary>
-        //private Stopwatch _lifeCycleTime = null;
+        //private List<MachineProcedure> _MachineProcedureListForTime=null;
 
         /// <summary>
-        /// 产品周期列表
+        /// 产品生命周期（计算次数）
         /// </summary>
-        private List<MachineProcedure> _MachineProcedureList;
+        private List<MachineProcedure> _MachineProcedureListForCount=null;
+
 
         /// <summary>
         /// 产品周期计数（生产数量）
         /// </summary>
-        public int LifeCycleCount = 0;
+        public int ProductCount = 0;
 
         /// <summary>
         /// 空产品周期计数（不完整[空啤]生产数量）
         /// </summary>
-        public int LiftCycleEmptyCount = 0;
+        public int ProductErrorCount = 0;
 
         /// <summary>
         /// 单次产品周期秒数
         /// </summary>
-        public long LastLifeCycleMilliseconds = 0;
+        public long LastProductUseMilliseconds = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Nullable<DateTime> LastX03SignalGetTime = null;
+
+        /// <summary>
+        /// 上一个信号
+        /// </summary>
+        public SingnalType LastSingnal;
 
 
         /*-------------------------------------------------------------------------------------*/
@@ -59,8 +90,11 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public MachineProduceStatusHandler()
         {
-            //产品周期
-            _MachineProcedureList = new List<MachineProcedure>();
+            //产品生命周期（计算时间）
+            //_MachineProcedureListForTime = new List<MachineProcedure>();
+
+            //产品生命周期（计算次数）
+            _MachineProcedureListForCount = new List<MachineProcedure>();
         }
 
 
@@ -72,115 +106,84 @@ namespace MES_MonitoringClient.Common
         /// <param name="newSingnal">新信号</param>
         public void ChangeSignal(string newSingnal)
         {
-            string l_convertSingnalString = ConvertSingnalString(newSingnal);
+            string convertSingnalString = ConvertSingnalString(newSingnal);
             //判断是正常的信号
-            if (l_convertSingnalString != null)
+            if (convertSingnalString != null)
             {
                 //判断X[]信号
-                string l_convertSingnalStatus = ConvertSingnalStatus(l_convertSingnalString);
-                if (l_convertSingnalStatus != null)
+                SingnalType convertSingnalStatusType = ConvertSingnalStatus(convertSingnalString);
+
+
+                if (convertSingnalStatusType != LastSingnal)
                 {
-                    if (l_convertSingnalStatus == "X01+X03")
+                    #region 与上一次信号不同
+
+                    if (convertSingnalStatusType == SingnalType.X03)
                     {
-                        #region X01+X03信号
-                        //判断是否存在产品周期
-                        if (_MachineProcedureList != null && _MachineProcedureList.Count > 0)
+                        #region 自动信号（区分上一个信号）
+                                               
+                        _MachineProcedureListForCount.Add(new MachineProcedure()
                         {
-                            _MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds = (System.DateTime.Now - _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime).Milliseconds;
-                            _MachineProcedureList[_MachineProcedureList.Count - 1].EndDateTime = _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime.AddMilliseconds(_MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds);
-                            //_lifeCycleTime.Stop();
+                            ProcedureID = convertSingnalString,
+                            ProcedureCode = convertSingnalStatusType.ToString(),
+                            ProcedureName = "自动",                            
+                        });
 
 
-                            LastLifeCycleMilliseconds = 0;
-                            //结束产品周期
-                            foreach (MachineProcedure getMachineProcedure in _MachineProcedureList)
+                        if (LastSingnal == SingnalType.X01_X03)
+                        {
+                            //结束产品周期并计时
+                            if (LastX03SignalGetTime.HasValue)
                             {
-                                //最后一次产品周期的秒数
-                                LastLifeCycleMilliseconds += getMachineProcedure.UseMilliseconds;
+                                LastProductUseMilliseconds = (System.DateTime.Now - LastX03SignalGetTime.Value).Milliseconds;
                             }
-
-                            //计数
-                            LifeCycleCount++;
-
-                            //清空产品周期列表，进入下一次产品周期
-                            _MachineProcedureList.Clear();
-
-                            /************************************************************/
-                            //_lifeCycleTime.Start();
-                            
-                            //清空后增加第一个工序
-                            //开始产品周期
-                            //开模信号                        
-                            _MachineProcedureList.Add(new MachineProcedure()
-                            {
-                                ProcedureID = l_convertSingnalString,
-                                ProcedureCode = l_convertSingnalStatus,
-                                ProcedureName = "开模完成",
-                                StartDateTime = System.DateTime.Now
-                            });
+                            LastX03SignalGetTime = System.DateTime.Now;
                         }
-                        else
+                        else if (LastSingnal == SingnalType.X02_X03)
                         {
-                            //_lifeCycleTime = Stopwatch.StartNew();
-                            //_lifeCycleTime.Start();                            
-
-                            //开始产品周期
-                            //开模信号                        
-                            _MachineProcedureList.Add(new MachineProcedure()
+                            if (CheckHaveRealProduceProcess(_MachineProcedureListForCount))
                             {
-                                ProcedureID = l_convertSingnalString,
-                                ProcedureCode = l_convertSingnalStatus,
-                                ProcedureName = "开模完成",
-                                StartDateTime = System.DateTime.Now
-                            });
+                                //计数
+                                ProductCount++;
+                                _MachineProcedureListForCount.Clear();
+
+                                _MachineProcedureListForCount.Add(new MachineProcedure()
+                                {
+                                    ProcedureID = convertSingnalString,
+                                    ProcedureCode = convertSingnalStatusType.ToString(),
+                                    ProcedureName = "自动",
+                                });
+                            }
                         }
+
                         #endregion
                     }
-                    else if (l_convertSingnalStatus == "X02+X03")
+                    else if (convertSingnalStatusType == SingnalType.X01_X03 || convertSingnalStatusType == SingnalType.X02_X03)
                     {
-                        #region X02+X03
-                        //判断是否存在产品周期
-                        if (_MachineProcedureList != null && _MachineProcedureList.Count > 0)
+                        #region 开模完成==射胶完成（不区分上一个信号）
+                        //产品生命周期（计算数量）
+                        if (_MachineProcedureListForCount != null && _MachineProcedureListForCount.Count > 0)
                         {
-                            _MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds = (System.DateTime.Now - _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime).Milliseconds;
-                            _MachineProcedureList[_MachineProcedureList.Count - 1].EndDateTime = _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime.AddMilliseconds(_MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds);
-                            //_lifeCycleTime.Stop();
-                            //_lifeCycleTime.Start();
+                            //信号
+                            string procedureNameString = string.Empty;
+                            if (convertSingnalStatusType == SingnalType.X01_X03) procedureNameString = "开模完成";
+                            else if (convertSingnalStatusType == SingnalType.X02_X03) procedureNameString = "自动射胶";
 
-
-                            //射胶信号
-                            _MachineProcedureList.Add(new MachineProcedure()
+                            _MachineProcedureListForCount.Add(new MachineProcedure()
                             {
-                                ProcedureID = l_convertSingnalString,
-                                ProcedureCode = l_convertSingnalStatus,
-                                ProcedureName = "自动射胶",
-                                StartDateTime = System.DateTime.Now
+                                ProcedureID = convertSingnalString,
+                                ProcedureCode = convertSingnalStatusType.ToString(),
+                                ProcedureName = procedureNameString,                                
                             });
                         }
-                        #endregion
-                    }
-                    else if (l_convertSingnalStatus == "X03")
-                    {
-                        #region X03
-                        //判断是否存在产品周期
-                        if (_MachineProcedureList != null && _MachineProcedureList.Count > 0)
-                        {
-                            _MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds = (System.DateTime.Now - _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime).Milliseconds;
-                            _MachineProcedureList[_MachineProcedureList.Count - 1].EndDateTime = _MachineProcedureList[_MachineProcedureList.Count - 1].StartDateTime.AddMilliseconds(_MachineProcedureList[_MachineProcedureList.Count - 1].UseMilliseconds);
-                            //_lifeCycleTime.Stop();
-                            //_lifeCycleTime.Start();
 
-                            //自动信号
-                            _MachineProcedureList.Add(new MachineProcedure()
-                            {
-                                ProcedureID = l_convertSingnalString,
-                                ProcedureCode = l_convertSingnalStatus,
-                                ProcedureName = _MachineProcedureList[_MachineProcedureList.Count - 1].ProcedureCode == "X02+X03" ? "射胶完成" : "自动信号",
-                                StartDateTime = System.DateTime.Now
-                            });
-                        }
                         #endregion
                     }
+
+                    #endregion
+
+
+                    LastSingnal = convertSingnalStatusType;
                 }
             }
         }
@@ -214,19 +217,46 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         /// <param name="inputSingnal">模式数字[0800,0400,0200,0C00,0A00,0600,0E00等模式数字]</param>
         /// <returns></returns>
-        private string ConvertSingnalStatus(string inputSingnal)
+        private SingnalType ConvertSingnalStatus(string inputSingnal)
         {
-            if (inputSingnal == "0800") return "X01";
-            else if (inputSingnal == "0400") return "X02";
-            else if (inputSingnal == "0200") return "X03";
+            if (inputSingnal == "0800") return SingnalType.X01; //开模终止信号
+            else if (inputSingnal == "0400") return SingnalType.X02;//射胶信号
+            else if (inputSingnal == "0200") return SingnalType.X03;//自动运行模式信号
 
-            else if (inputSingnal == "0C00") return "X01+X02";
-            else if (inputSingnal == "0A00") return "X01+X03";
-            else if (inputSingnal == "0600") return "X02+X03";
+            else if (inputSingnal == "0C00") return SingnalType.X01_X02;
+            else if (inputSingnal == "0A00") return SingnalType.X01_X03;
+            else if (inputSingnal == "0600") return  SingnalType.X02_X03;
 
-            else if (inputSingnal == "0E00") return "X01+X02+X03";
+            else if (inputSingnal == "0E00") return SingnalType.X01_X02_X03;
 
-            else return null;
+            else return  SingnalType.Unknow;
+        }
+
+        /// <summary>
+        /// 判断是否是真实的生产流程
+        /// </summary>
+        /// <param name="oldMachineProcedureList"></param>
+        /// <returns></returns>
+        private bool CheckHaveRealProduceProcess(List<MachineProcedure> oldMachineProcedureList)
+        {
+            bool resultFlag = false;
+
+            bool isX01_X03 = false;
+            bool isX02_X03 = false;
+            bool isX03 = false;
+
+            //判断是否有完整的信号
+            foreach (var processItem in oldMachineProcedureList)
+            {
+                if (processItem.ProcedureCode == SingnalType.X01_X03.ToString()) isX01_X03 = true;
+                if (processItem.ProcedureCode == SingnalType.X02_X03.ToString()) isX02_X03 = true;
+                if (processItem.ProcedureCode == SingnalType.X03.ToString()) isX03 = true;
+            }
+
+            //完整的信号则算正常生产流程
+            if (isX01_X03 && isX02_X03 && isX03) resultFlag = true;
+
+            return resultFlag;
         }
     }
 }

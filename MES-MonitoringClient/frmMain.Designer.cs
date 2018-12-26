@@ -33,17 +33,12 @@
             this.serialPort6 = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.lab_DateTime = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.lab_Title = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.panel8 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.lab_CurrentStatusTotalTime = new System.Windows.Forms.Label();
             this.lab_ProductCount = new System.Windows.Forms.Label();
             this.lab_LastLifeCycleTime = new System.Windows.Forms.Label();
@@ -55,10 +50,13 @@
             this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.lab_DateTime = new System.Windows.Forms.Label();
+            this.lab_Title = new System.Windows.Forms.Label();
+            this.lab_ReceviedDataErrorCount = new System.Windows.Forms.Label();
+            this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel8.SuspendLayout();
@@ -72,6 +70,7 @@
             // 
             this.serialPort6.BaudRate = 115200;
             this.serialPort6.PortName = "COM6";
+            this.serialPort6.ErrorReceived += new System.IO.Ports.SerialErrorReceivedEventHandler(this.serialPort6_ErrorReceived);
             this.serialPort6.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort6_DataReceived);
             // 
             // panel1
@@ -91,8 +90,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lab_Title, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lab_DateTime, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel4, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel5, 3, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -102,48 +101,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(991, 50);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.lab_DateTime);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(498, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(390, 44);
-            this.panel2.TabIndex = 0;
-            // 
-            // lab_DateTime
-            // 
-            this.lab_DateTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lab_DateTime.AutoSize = true;
-            this.lab_DateTime.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_DateTime.ForeColor = System.Drawing.Color.White;
-            this.lab_DateTime.Location = new System.Drawing.Point(151, 12);
-            this.lab_DateTime.Name = "lab_DateTime";
-            this.lab_DateTime.Size = new System.Drawing.Size(89, 20);
-            this.lab_DateTime.TabIndex = 1;
-            this.lab_DateTime.Text = "当前时间";
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.lab_Title);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(102, 3);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(390, 44);
-            this.panel3.TabIndex = 1;
-            // 
-            // lab_Title
-            // 
-            this.lab_Title.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lab_Title.AutoSize = true;
-            this.lab_Title.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_Title.ForeColor = System.Drawing.Color.White;
-            this.lab_Title.Location = new System.Drawing.Point(120, 10);
-            this.lab_Title.Name = "lab_Title";
-            this.lab_Title.Size = new System.Drawing.Size(189, 27);
-            this.lab_Title.TabIndex = 0;
-            this.lab_Title.Text = "MES信息收集端";
             // 
             // panel4
             // 
@@ -182,6 +139,7 @@
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel6, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel5, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.button1, 1, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 50);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -189,6 +147,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(991, 662);
             this.tableLayoutPanel2.TabIndex = 13;
             // 
@@ -220,18 +179,6 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(489, 310);
             this.tableLayoutPanel4.TabIndex = 0;
-            // 
-            // btn_StatusLight
-            // 
-            this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_StatusLight.FlatAppearance.BorderSize = 0;
-            this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_StatusLight.Location = new System.Drawing.Point(194, 12);
-            this.btn_StatusLight.Name = "btn_StatusLight";
-            this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);
-            this.btn_StatusLight.TabIndex = 0;
-            this.btn_StatusLight.UseVisualStyleBackColor = true;
-            this.btn_StatusLight.Click += new System.EventHandler(this.btn_StatusLight_Click);
             // 
             // lab_CurrentStatusTotalTime
             // 
@@ -272,19 +219,20 @@
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel3.ColumnCount = 3;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel3.ColumnCount = 4;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel3.Controls.Add(this.lab_ReceviedDataCount, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.lab_SendErrorCount, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.lab_SendSuccessCount, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.lab_ReceviedDataErrorCount, 3, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 635);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(489, 24);
             this.tableLayoutPanel3.TabIndex = 4;
             // 
@@ -292,11 +240,11 @@
             // 
             this.lab_ReceviedDataCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lab_ReceviedDataCount.AutoSize = true;
-            this.lab_ReceviedDataCount.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_ReceviedDataCount.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_ReceviedDataCount.ForeColor = System.Drawing.Color.White;
-            this.lab_ReceviedDataCount.Location = new System.Drawing.Point(328, 2);
+            this.lab_ReceviedDataCount.Location = new System.Drawing.Point(248, 5);
             this.lab_ReceviedDataCount.Name = "lab_ReceviedDataCount";
-            this.lab_ReceviedDataCount.Size = new System.Drawing.Size(157, 20);
+            this.lab_ReceviedDataCount.Size = new System.Drawing.Size(115, 14);
             this.lab_ReceviedDataCount.TabIndex = 16;
             this.lab_ReceviedDataCount.Text = "接收成功";
             // 
@@ -304,11 +252,11 @@
             // 
             this.lab_SendErrorCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lab_SendErrorCount.AutoSize = true;
-            this.lab_SendErrorCount.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_SendErrorCount.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_SendErrorCount.ForeColor = System.Drawing.Color.White;
-            this.lab_SendErrorCount.Location = new System.Drawing.Point(166, 2);
+            this.lab_SendErrorCount.Location = new System.Drawing.Point(126, 5);
             this.lab_SendErrorCount.Name = "lab_SendErrorCount";
-            this.lab_SendErrorCount.Size = new System.Drawing.Size(155, 20);
+            this.lab_SendErrorCount.Size = new System.Drawing.Size(115, 14);
             this.lab_SendErrorCount.TabIndex = 15;
             this.lab_SendErrorCount.Text = "发送失败";
             // 
@@ -316,11 +264,11 @@
             // 
             this.lab_SendSuccessCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lab_SendSuccessCount.AutoSize = true;
-            this.lab_SendSuccessCount.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_SendSuccessCount.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_SendSuccessCount.ForeColor = System.Drawing.Color.White;
-            this.lab_SendSuccessCount.Location = new System.Drawing.Point(4, 2);
+            this.lab_SendSuccessCount.Location = new System.Drawing.Point(4, 5);
             this.lab_SendSuccessCount.Name = "lab_SendSuccessCount";
-            this.lab_SendSuccessCount.Size = new System.Drawing.Size(155, 20);
+            this.lab_SendSuccessCount.Size = new System.Drawing.Size(115, 14);
             this.lab_SendSuccessCount.TabIndex = 13;
             this.lab_SendSuccessCount.Text = "发送成功";
             // 
@@ -343,11 +291,11 @@
             // 
             this.lab_UploadDataServiceStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lab_UploadDataServiceStatus.AutoSize = true;
-            this.lab_UploadDataServiceStatus.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_UploadDataServiceStatus.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_UploadDataServiceStatus.ForeColor = System.Drawing.Color.White;
-            this.lab_UploadDataServiceStatus.Location = new System.Drawing.Point(4, 2);
+            this.lab_UploadDataServiceStatus.Location = new System.Drawing.Point(4, 5);
             this.lab_UploadDataServiceStatus.Name = "lab_UploadDataServiceStatus";
-            this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(482, 20);
+            this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(482, 14);
             this.lab_UploadDataServiceStatus.TabIndex = 17;
             this.lab_UploadDataServiceStatus.Text = "正在查找数据上传服务运行状态";
             // 
@@ -377,6 +325,64 @@
             this.richTextBox1.TabIndex = 14;
             this.richTextBox1.Text = "";
             // 
+            // lab_DateTime
+            // 
+            this.lab_DateTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lab_DateTime.AutoSize = true;
+            this.lab_DateTime.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_DateTime.ForeColor = System.Drawing.Color.White;
+            this.lab_DateTime.Location = new System.Drawing.Point(498, 15);
+            this.lab_DateTime.Name = "lab_DateTime";
+            this.lab_DateTime.Size = new System.Drawing.Size(89, 20);
+            this.lab_DateTime.TabIndex = 9;
+            this.lab_DateTime.Text = "当前时间";
+            // 
+            // lab_Title
+            // 
+            this.lab_Title.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lab_Title.AutoSize = true;
+            this.lab_Title.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_Title.ForeColor = System.Drawing.Color.White;
+            this.lab_Title.Location = new System.Drawing.Point(202, 11);
+            this.lab_Title.Name = "lab_Title";
+            this.lab_Title.Size = new System.Drawing.Size(189, 27);
+            this.lab_Title.TabIndex = 7;
+            this.lab_Title.Text = "MES信息收集端";
+            // 
+            // lab_ReceviedDataErrorCount
+            // 
+            this.lab_ReceviedDataErrorCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_ReceviedDataErrorCount.AutoSize = true;
+            this.lab_ReceviedDataErrorCount.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_ReceviedDataErrorCount.ForeColor = System.Drawing.Color.White;
+            this.lab_ReceviedDataErrorCount.Location = new System.Drawing.Point(370, 5);
+            this.lab_ReceviedDataErrorCount.Name = "lab_ReceviedDataErrorCount";
+            this.lab_ReceviedDataErrorCount.Size = new System.Drawing.Size(115, 14);
+            this.lab_ReceviedDataErrorCount.TabIndex = 16;
+            this.lab_ReceviedDataErrorCount.Text = "接收失败";
+            // 
+            // btn_StatusLight
+            // 
+            this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_StatusLight.FlatAppearance.BorderSize = 0;
+            this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_StatusLight.Location = new System.Drawing.Point(194, 12);
+            this.btn_StatusLight.Name = "btn_StatusLight";
+            this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);
+            this.btn_StatusLight.TabIndex = 0;
+            this.btn_StatusLight.UseVisualStyleBackColor = true;
+            this.btn_StatusLight.Click += new System.EventHandler(this.btn_StatusLight_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(498, 319);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "测试信号";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -393,10 +399,7 @@
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
+            this.tableLayoutPanel1.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.panel8.ResumeLayout(false);
@@ -416,9 +419,6 @@
         private System.IO.Ports.SerialPort serialPort6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Label lab_Title;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
@@ -438,7 +438,10 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Label lab_Title;
         private System.Windows.Forms.Label lab_DateTime;
+        private System.Windows.Forms.Label lab_ReceviedDataErrorCount;
+        private System.Windows.Forms.Button button1;
     }
 }
 
