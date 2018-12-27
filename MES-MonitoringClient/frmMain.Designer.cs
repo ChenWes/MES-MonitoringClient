@@ -418,6 +418,7 @@
             this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_StatusLight.FlatAppearance.BorderSize = 0;
             this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_StatusLight.Font = new System.Drawing.Font("宋体", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btn_StatusLight.Location = new System.Drawing.Point(310, 8);
             this.btn_StatusLight.Name = "btn_StatusLight";
             this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);

@@ -83,8 +83,7 @@ namespace MES_MonitoringClient
                 sendDataSerialPortGetDefaultSetting();
 
                 //设置默认状态
-                mc_MachineStatusHander = new Common.MachineStatusHandler();
-                mc_MachineStatusHander.mc_MachineProduceStatusHandler = new Common.MachineProduceStatusHandler();
+                mc_MachineStatusHander = new Common.MachineStatusHandler();                
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineSignalDelegate += UpdateMachineSignalStatus;//更新方法
 
                 mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
@@ -316,6 +315,7 @@ namespace MES_MonitoringClient
                             serialPort6.Write(defaultSignal);
 
                             //发送的大小
+                            if (COM7_SendDataCount + 100 > long.MaxValue) COM7_SendDataCount = 0;
                             COM7_SendDataCount += 1;
                             lab_SendSuccessCount.Text = "发送成功：" + COM7_SendDataCount;
                             lab_SendSuccessCount.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);
@@ -323,6 +323,7 @@ namespace MES_MonitoringClient
                     }
                     catch (Exception ex)
                     {
+                        if (COM7_SendDataErrorCount + 100 > long.MaxValue) COM7_SendDataErrorCount = 0;
                         COM7_SendDataErrorCount += 1;
                         lab_SendErrorCount.Text = "发送失败：" + COM7_SendDataErrorCount;
                         lab_SendErrorCount.BackColor= System.Drawing.Color.FromArgb(221, 221, 0);
@@ -340,7 +341,10 @@ namespace MES_MonitoringClient
             }
         }
 
-
+        /// <summary>
+        /// 获取机器信号，并更新界面
+        /// </summary>
+        /// <param name="singnal">机器信号</param>
         delegate void UpdateMachineProduceSignalDelegate(Common.MachineProduceStatusHandler.SignalType singnal);
         private void UpdateMachineSignalStatus(Common.MachineProduceStatusHandler.SignalType signal)
         {
@@ -352,30 +356,38 @@ namespace MES_MonitoringClient
                     if (signal.ToString().IndexOf("X01") != -1)
                     {
                         btn_SignalX01.BackColor= System.Drawing.Color.FromArgb(255, 255, 255);
+                        btn_SignalX01.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
                     }
                     else
                     {
                         btn_SignalX01.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                        btn_SignalX01.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                     }
 
                     if (signal.ToString().IndexOf("X02") != -1)
                     {
                         btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                        btn_SignalX02.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
                     }
                     else
                     {
                         btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                        btn_SignalX02.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                     }
 
                     if (signal.ToString().IndexOf("X03") != -1)
                     {
                         btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                        btn_SignalX03.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
                     }
                     else
                     {
                         btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                        btn_SignalX03.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                     }
 
+                    lab_ProductCount.Text = "累计生产数量：" + mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProductCount;
+                    lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
 
                 }), signal);
             }
@@ -384,29 +396,39 @@ namespace MES_MonitoringClient
                 if (signal.ToString().IndexOf("X01") != -1)
                 {
                     btn_SignalX01.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    btn_SignalX01.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
                 }
                 else
                 {
                     btn_SignalX01.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                    btn_SignalX01.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                 }
 
                 if (signal.ToString().IndexOf("X02") != -1)
                 {
                     btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    btn_SignalX02.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
                 }
                 else
                 {
                     btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                    btn_SignalX02.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                 }
 
                 if (signal.ToString().IndexOf("X03") != -1)
                 {
                     btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    btn_SignalX03.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
                 }
                 else
                 {
                     btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                    btn_SignalX03.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                 }
+
+                lab_ProductCount.Text = "累计生产数量：" + mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProductCount;
+                lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
+
             }
         }
 
@@ -478,7 +500,6 @@ namespace MES_MonitoringClient
 
 
 
-
         /*获取串口数据事件*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -517,13 +538,11 @@ namespace MES_MonitoringClient
 
                     richTextBox1.AppendText(stringBuilder.ToString() + "\r\n");
 
+                    if (COM7_ReceiveDataCount + 100 > long.MaxValue) COM7_ReceiveDataCount = 0;
                     COM7_ReceiveDataCount += 1;
                     lab_ReceviedDataCount.Text = "接收成功：" + COM7_ReceiveDataCount;
                     lab_ReceviedDataCount.BackColor= System.Drawing.Color.FromArgb(0, 230, 118);
 
-
-                    lab_ProductCount.Text = "累计生产数量：" + mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProductCount;
-                    lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
                 }
                    )
                 );
@@ -571,6 +590,7 @@ namespace MES_MonitoringClient
 
         private void serialPort6_ErrorReceived(object sender, System.IO.Ports.SerialErrorReceivedEventArgs e)
         {
+            if (COM7_ReceiveDataErrorCount+100 > long.MaxValue) COM7_ReceiveDataErrorCount = 0;
             COM7_ReceiveDataErrorCount += 1;
             lab_ReceviedDataErrorCount.Text = "接收失败：" + COM7_ReceiveDataErrorCount;
             lab_ReceviedDataErrorCount.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);
@@ -751,7 +771,7 @@ namespace MES_MonitoringClient
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0600ZZ");
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0A00ZZ");
-            //mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
+            mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
 
 
         }

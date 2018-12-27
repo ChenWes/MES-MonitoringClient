@@ -117,7 +117,7 @@ namespace MES_MonitoringClient.Common
         public MachineStatusHandler()
         {
             //生产状态
-            //mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();
+            mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();
 
             //最后操作记录ID为空
             LastOperationMachineStatusID = string.Empty;

@@ -84,10 +84,10 @@ namespace MES_MonitoringClient.Common
 
 
         /// <summary>
-        /// 更新机器信号
+        /// 更新机器信号后更新界面
         /// </summary>
-        /// <param name="step"></param>
-        public delegate void UpdateMachineSignal(SignalType singnalType);
+        /// <param name="signalType"></param>
+        public delegate void UpdateMachineSignal(SignalType signalType);
         public UpdateMachineSignal UpdateMachineSignalDelegate;
 
         /*-------------------------------------------------------------------------------------*/
