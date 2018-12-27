@@ -18,7 +18,7 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 信号类型
         /// </summary>
-        public enum SingnalType
+        public enum SignalType
         {
             Unknow,
 
@@ -80,8 +80,15 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 上一个信号
         /// </summary>
-        public SingnalType LastSingnal;
+        public SignalType LastSignal;
 
+
+        /// <summary>
+        /// 更新机器信号
+        /// </summary>
+        /// <param name="step"></param>
+        public delegate void UpdateMachineSignal(SignalType singnalType);
+        public UpdateMachineSignal UpdateMachineSignalDelegate;
 
         /*-------------------------------------------------------------------------------------*/
 
@@ -112,13 +119,15 @@ namespace MES_MonitoringClient.Common
             if (!string.IsNullOrEmpty(convertSingnalString))
             {
                 //判断X信号
-                SingnalType convertSingnalStatusType = ConvertSingnalStatus(convertSingnalString);
+                SignalType convertSingnalStatusType = ConvertSingnalStatus(convertSingnalString);
 
-                if (convertSingnalStatusType != LastSingnal)
+                if (convertSingnalStatusType != LastSignal)
                 {
+                    
+
                     #region 与上一次信号不同
 
-                    if (convertSingnalStatusType == SingnalType.X03)
+                    if (convertSingnalStatusType == SignalType.X03)
                     {
                         #region 自动信号（区分上一个信号）
 
@@ -131,7 +140,7 @@ namespace MES_MonitoringClient.Common
                         });
 
 
-                        if (LastSingnal == SingnalType.X01_X03)
+                        if (LastSignal == SignalType.X01_X03)
                         {
                             //结束产品周期并计时
                             if (LastX03SignalGetTime.HasValue)
@@ -140,7 +149,7 @@ namespace MES_MonitoringClient.Common
                             }
                             LastX03SignalGetTime = System.DateTime.Now;
                         }
-                        else if (LastSingnal == SingnalType.X02_X03)
+                        else if (LastSignal == SignalType.X02_X03)
                         {
                             //必须包含完整的生命周期才计数
                             if (CheckHaveRealProduceProcess(_MachineProcedureListForCount))
@@ -160,7 +169,7 @@ namespace MES_MonitoringClient.Common
 
                         #endregion
                     }
-                    else if (convertSingnalStatusType == SingnalType.X01_X03 || convertSingnalStatusType == SingnalType.X02_X03)
+                    else if (convertSingnalStatusType == SignalType.X01_X03 || convertSingnalStatusType == SignalType.X02_X03)
                     {
                         #region 开模完成==射胶完成（不区分上一个信号）
                         //产品生命周期（计算数量）
@@ -168,8 +177,8 @@ namespace MES_MonitoringClient.Common
                         {
                             //信号
                             string procedureNameString = string.Empty;
-                            if (convertSingnalStatusType == SingnalType.X01_X03) procedureNameString = "开模完成";
-                            else if (convertSingnalStatusType == SingnalType.X02_X03) procedureNameString = "自动射胶";
+                            if (convertSingnalStatusType == SignalType.X01_X03) procedureNameString = "开模完成";
+                            else if (convertSingnalStatusType == SignalType.X02_X03) procedureNameString = "自动射胶";
 
                             _MachineProcedureListForCount.Add(new MachineProcedure()
                             {
@@ -185,7 +194,10 @@ namespace MES_MonitoringClient.Common
                     #endregion
 
                     //上一个信号
-                    LastSingnal = convertSingnalStatusType;
+                    LastSignal = convertSingnalStatusType;
+
+                    //根据信号更新界面
+                    UpdateMachineSignalDelegate(LastSignal);
                 }
             }
         }
@@ -219,19 +231,19 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         /// <param name="inputSingnal">模式数字[0800,0400,0200,0C00,0A00,0600,0E00等模式数字]</param>
         /// <returns></returns>
-        private SingnalType ConvertSingnalStatus(string inputSingnal)
+        private SignalType ConvertSingnalStatus(string inputSingnal)
         {
-            if (inputSingnal == "0800") return SingnalType.X01; //开模终止信号
-            else if (inputSingnal == "0400") return SingnalType.X02;//射胶信号
-            else if (inputSingnal == "0200") return SingnalType.X03;//自动运行模式信号
+            if (inputSingnal == "0800") return SignalType.X01; //开模终止信号
+            else if (inputSingnal == "0400") return SignalType.X02;//射胶信号
+            else if (inputSingnal == "0200") return SignalType.X03;//自动运行模式信号
 
-            else if (inputSingnal == "0C00") return SingnalType.X01_X02;
-            else if (inputSingnal == "0A00") return SingnalType.X01_X03;
-            else if (inputSingnal == "0600") return  SingnalType.X02_X03;
+            else if (inputSingnal == "0C00") return SignalType.X01_X02;
+            else if (inputSingnal == "0A00") return SignalType.X01_X03;
+            else if (inputSingnal == "0600") return SignalType.X02_X03;
 
-            else if (inputSingnal == "0E00") return SingnalType.X01_X02_X03;
+            else if (inputSingnal == "0E00") return SignalType.X01_X02_X03;
 
-            else return  SingnalType.Unknow;
+            else return SignalType.Unknow;
         }
 
         /// <summary>
@@ -250,9 +262,9 @@ namespace MES_MonitoringClient.Common
             //判断是否有完整的信号
             foreach (var processItem in oldMachineProcedureList)
             {
-                if (processItem.ProcedureCode == SingnalType.X01_X03.ToString()) isX01_X03 = true;
-                if (processItem.ProcedureCode == SingnalType.X02_X03.ToString()) isX02_X03 = true;
-                if (processItem.ProcedureCode == SingnalType.X03.ToString()) isX03 = true;
+                if (processItem.ProcedureCode == SignalType.X01_X03.ToString()) isX01_X03 = true;
+                if (processItem.ProcedureCode == SignalType.X02_X03.ToString()) isX02_X03 = true;
+                if (processItem.ProcedureCode == SignalType.X03.ToString()) isX03 = true;
             }
 
             //完整的信号则算正常生产流程

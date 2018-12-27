@@ -84,6 +84,9 @@ namespace MES_MonitoringClient
 
                 //设置默认状态
                 mc_MachineStatusHander = new Common.MachineStatusHandler();
+                mc_MachineStatusHander.mc_MachineProduceStatusHandler = new Common.MachineProduceStatusHandler();
+                mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineSignalDelegate += UpdateMachineSignalStatus;//更新方法
+
                 mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
                 SettingLight();
 
@@ -155,7 +158,10 @@ namespace MES_MonitoringClient
                 }
 
                 //关闭程序前先保存数据
-                mc_MachineStatusHander.AppWillClose_SaveData();
+                if (mc_MachineStatusHander != null)
+                {
+                    mc_MachineStatusHander.AppWillClose_SaveData();
+                }
                 
                 e.Cancel = false;
             }
@@ -335,6 +341,76 @@ namespace MES_MonitoringClient
         }
 
 
+        delegate void UpdateMachineProduceSignalDelegate(Common.MachineProduceStatusHandler.SignalType singnal);
+        private void UpdateMachineSignalStatus(Common.MachineProduceStatusHandler.SignalType signal)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new UpdateMachineProduceSignalDelegate(delegate (Common.MachineProduceStatusHandler.SignalType s)
+                {
+
+                    if (signal.ToString().IndexOf("X01") != -1)
+                    {
+                        btn_SignalX01.BackColor= System.Drawing.Color.FromArgb(255, 255, 255);
+                    }
+                    else
+                    {
+                        btn_SignalX01.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                    }
+
+                    if (signal.ToString().IndexOf("X02") != -1)
+                    {
+                        btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    }
+                    else
+                    {
+                        btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                    }
+
+                    if (signal.ToString().IndexOf("X03") != -1)
+                    {
+                        btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                    }
+                    else
+                    {
+                        btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                    }
+
+
+                }), signal);
+            }
+            else
+            {
+                if (signal.ToString().IndexOf("X01") != -1)
+                {
+                    btn_SignalX01.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                }
+                else
+                {
+                    btn_SignalX01.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                }
+
+                if (signal.ToString().IndexOf("X02") != -1)
+                {
+                    btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                }
+                else
+                {
+                    btn_SignalX02.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                }
+
+                if (signal.ToString().IndexOf("X03") != -1)
+                {
+                    btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                }
+                else
+                {
+                    btn_SignalX03.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+                }
+            }
+        }
+
+
         /*窗口公共方法*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -400,26 +476,8 @@ namespace MES_MonitoringClient
             MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        /// <summary>
-        /// 查找后台上传数据服务状态
-        /// </summary>
-        //private void ShowBackupServiceStatus()
-        //{
-        //    Common.CommonFunction.ServiceStatus getServiceStatus = Common.CommonFunction.GetServiceStatus(defaultUploadDataServiceName);
 
-        //    if (getServiceStatus == Common.CommonFunction.ServiceStatus.NoInstall)
-        //    {
-        //        lab_UploadDataServiceStatus.Text = "后台上传数据服务未安装，请联系管理员。";
-        //    }
-        //    else if (getServiceStatus == Common.CommonFunction.ServiceStatus.Running)
-        //    {
-        //        lab_UploadDataServiceStatus.Text = "后台上传数据服务正常运行";
-        //    }
-        //    else if (getServiceStatus == Common.CommonFunction.ServiceStatus.Stopped)
-        //    {
-        //        lab_UploadDataServiceStatus.Text = "后台上传数据服务已停止，请联系管理员。";
-        //    }
-        //}
+
 
         /*获取串口数据事件*/
         /*---------------------------------------------------------------------------------------*/
@@ -693,7 +751,7 @@ namespace MES_MonitoringClient
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0600ZZ");
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
             mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0A00ZZ");
-            mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
+            //mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal("AA0200ZZ");
 
 
         }

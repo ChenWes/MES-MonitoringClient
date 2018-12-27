@@ -33,6 +33,8 @@
             this.serialPort6 = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lab_Title = new System.Windows.Forms.Label();
+            this.lab_DateTime = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
@@ -46,15 +48,18 @@
             this.lab_ReceviedDataCount = new System.Windows.Forms.Label();
             this.lab_SendErrorCount = new System.Windows.Forms.Label();
             this.lab_SendSuccessCount = new System.Windows.Forms.Label();
+            this.lab_ReceviedDataErrorCount = new System.Windows.Forms.Label();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.lab_DateTime = new System.Windows.Forms.Label();
-            this.lab_Title = new System.Windows.Forms.Label();
-            this.lab_ReceviedDataErrorCount = new System.Windows.Forms.Label();
-            this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.button1 = new System.Windows.Forms.Button();
+            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_SignalX03 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_SignalX02 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_SignalX01 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -64,6 +69,8 @@
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
+            this.tableLayoutPanel7.SuspendLayout();
+            this.tableLayoutPanel8.SuspendLayout();
             this.SuspendLayout();
             // 
             // serialPort6
@@ -101,6 +108,30 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(991, 50);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // lab_Title
+            // 
+            this.lab_Title.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lab_Title.AutoSize = true;
+            this.lab_Title.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_Title.ForeColor = System.Drawing.Color.White;
+            this.lab_Title.Location = new System.Drawing.Point(202, 11);
+            this.lab_Title.Name = "lab_Title";
+            this.lab_Title.Size = new System.Drawing.Size(189, 27);
+            this.lab_Title.TabIndex = 7;
+            this.lab_Title.Text = "MES信息收集端";
+            // 
+            // lab_DateTime
+            // 
+            this.lab_DateTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lab_DateTime.AutoSize = true;
+            this.lab_DateTime.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_DateTime.ForeColor = System.Drawing.Color.White;
+            this.lab_DateTime.Location = new System.Drawing.Point(498, 15);
+            this.lab_DateTime.Name = "lab_DateTime";
+            this.lab_DateTime.Size = new System.Drawing.Size(89, 20);
+            this.lab_DateTime.TabIndex = 9;
+            this.lab_DateTime.Text = "当前时间";
             // 
             // panel4
             // 
@@ -165,10 +196,10 @@
             this.tableLayoutPanel4.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Controls.Add(this.btn_StatusLight, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.lab_CurrentStatusTotalTime, 0, 3);
             this.tableLayoutPanel4.Controls.Add(this.lab_ProductCount, 0, 1);
             this.tableLayoutPanel4.Controls.Add(this.lab_LastLifeCycleTime, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel7, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -272,6 +303,18 @@
             this.lab_SendSuccessCount.TabIndex = 13;
             this.lab_SendSuccessCount.Text = "发送成功";
             // 
+            // lab_ReceviedDataErrorCount
+            // 
+            this.lab_ReceviedDataErrorCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_ReceviedDataErrorCount.AutoSize = true;
+            this.lab_ReceviedDataErrorCount.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_ReceviedDataErrorCount.ForeColor = System.Drawing.Color.White;
+            this.lab_ReceviedDataErrorCount.Location = new System.Drawing.Point(370, 5);
+            this.lab_ReceviedDataErrorCount.Name = "lab_ReceviedDataErrorCount";
+            this.lab_ReceviedDataErrorCount.Size = new System.Drawing.Size(115, 14);
+            this.lab_ReceviedDataErrorCount.TabIndex = 16;
+            this.lab_ReceviedDataErrorCount.Text = "接收失败";
+            // 
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
@@ -325,54 +368,6 @@
             this.richTextBox1.TabIndex = 14;
             this.richTextBox1.Text = "";
             // 
-            // lab_DateTime
-            // 
-            this.lab_DateTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lab_DateTime.AutoSize = true;
-            this.lab_DateTime.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_DateTime.ForeColor = System.Drawing.Color.White;
-            this.lab_DateTime.Location = new System.Drawing.Point(498, 15);
-            this.lab_DateTime.Name = "lab_DateTime";
-            this.lab_DateTime.Size = new System.Drawing.Size(89, 20);
-            this.lab_DateTime.TabIndex = 9;
-            this.lab_DateTime.Text = "当前时间";
-            // 
-            // lab_Title
-            // 
-            this.lab_Title.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lab_Title.AutoSize = true;
-            this.lab_Title.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_Title.ForeColor = System.Drawing.Color.White;
-            this.lab_Title.Location = new System.Drawing.Point(202, 11);
-            this.lab_Title.Name = "lab_Title";
-            this.lab_Title.Size = new System.Drawing.Size(189, 27);
-            this.lab_Title.TabIndex = 7;
-            this.lab_Title.Text = "MES信息收集端";
-            // 
-            // lab_ReceviedDataErrorCount
-            // 
-            this.lab_ReceviedDataErrorCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.lab_ReceviedDataErrorCount.AutoSize = true;
-            this.lab_ReceviedDataErrorCount.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lab_ReceviedDataErrorCount.ForeColor = System.Drawing.Color.White;
-            this.lab_ReceviedDataErrorCount.Location = new System.Drawing.Point(370, 5);
-            this.lab_ReceviedDataErrorCount.Name = "lab_ReceviedDataErrorCount";
-            this.lab_ReceviedDataErrorCount.Size = new System.Drawing.Size(115, 14);
-            this.lab_ReceviedDataErrorCount.TabIndex = 16;
-            this.lab_ReceviedDataErrorCount.Text = "接收失败";
-            // 
-            // btn_StatusLight
-            // 
-            this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_StatusLight.FlatAppearance.BorderSize = 0;
-            this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_StatusLight.Location = new System.Drawing.Point(194, 12);
-            this.btn_StatusLight.Name = "btn_StatusLight";
-            this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);
-            this.btn_StatusLight.TabIndex = 0;
-            this.btn_StatusLight.UseVisualStyleBackColor = true;
-            this.btn_StatusLight.Click += new System.EventHandler(this.btn_StatusLight_Click);
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(498, 319);
@@ -382,6 +377,89 @@
             this.button1.Text = "测试信号";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tableLayoutPanel7
+            // 
+            this.tableLayoutPanel7.ColumnCount = 2;
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.Controls.Add(this.btn_StatusLight, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel8, 0, 0);
+            this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel7.Location = new System.Drawing.Point(4, 4);
+            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
+            this.tableLayoutPanel7.RowCount = 1;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 116F));
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(481, 116);
+            this.tableLayoutPanel7.TabIndex = 14;
+            // 
+            // tableLayoutPanel8
+            // 
+            this.tableLayoutPanel8.ColumnCount = 3;
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX03, 2, 0);
+            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX02, 1, 0);
+            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX01, 0, 0);
+            this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
+            this.tableLayoutPanel8.RowCount = 1;
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(234, 110);
+            this.tableLayoutPanel8.TabIndex = 1;
+            // 
+            // btn_StatusLight
+            // 
+            this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_StatusLight.FlatAppearance.BorderSize = 0;
+            this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_StatusLight.Location = new System.Drawing.Point(310, 8);
+            this.btn_StatusLight.Name = "btn_StatusLight";
+            this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);
+            this.btn_StatusLight.TabIndex = 0;
+            this.btn_StatusLight.UseVisualStyleBackColor = true;
+            this.btn_StatusLight.Click += new System.EventHandler(this.btn_StatusLight_Click);
+            // 
+            // btn_SignalX03
+            // 
+            this.btn_SignalX03.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SignalX03.FlatAppearance.BorderSize = 0;
+            this.btn_SignalX03.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SignalX03.Location = new System.Drawing.Point(169, 30);
+            this.btn_SignalX03.Name = "btn_SignalX03";
+            this.btn_SignalX03.Size = new System.Drawing.Size(50, 50);
+            this.btn_SignalX03.TabIndex = 0;
+            this.btn_SignalX03.Text = "自动";
+            this.btn_SignalX03.UseVisualStyleBackColor = true;
+            // 
+            // btn_SignalX02
+            // 
+            this.btn_SignalX02.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SignalX02.FlatAppearance.BorderSize = 0;
+            this.btn_SignalX02.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SignalX02.Location = new System.Drawing.Point(90, 30);
+            this.btn_SignalX02.Name = "btn_SignalX02";
+            this.btn_SignalX02.Size = new System.Drawing.Size(50, 50);
+            this.btn_SignalX02.TabIndex = 0;
+            this.btn_SignalX02.Text = "射胶";
+            this.btn_SignalX02.UseVisualStyleBackColor = true;
+            // 
+            // btn_SignalX01
+            // 
+            this.btn_SignalX01.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SignalX01.FlatAppearance.BorderSize = 0;
+            this.btn_SignalX01.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SignalX01.Location = new System.Drawing.Point(13, 30);
+            this.btn_SignalX01.Name = "btn_SignalX01";
+            this.btn_SignalX01.Size = new System.Drawing.Size(50, 50);
+            this.btn_SignalX01.TabIndex = 0;
+            this.btn_SignalX01.Text = "开模";
+            this.btn_SignalX01.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -410,6 +488,8 @@
             this.tableLayoutPanel6.ResumeLayout(false);
             this.tableLayoutPanel6.PerformLayout();
             this.tableLayoutPanel5.ResumeLayout(false);
+            this.tableLayoutPanel7.ResumeLayout(false);
+            this.tableLayoutPanel8.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -442,6 +522,11 @@
         private System.Windows.Forms.Label lab_DateTime;
         private System.Windows.Forms.Label lab_ReceviedDataErrorCount;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
+        private Common.Component.CircularButton btn_SignalX03;
+        private Common.Component.CircularButton btn_SignalX02;
+        private Common.Component.CircularButton btn_SignalX01;
     }
 }
 
