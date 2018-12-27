@@ -145,7 +145,12 @@ namespace MES_MonitoringClient.Common
                             //结束产品周期并计时
                             if (LastX03SignalGetTime.HasValue)
                             {
-                                LastProductUseMilliseconds = (System.DateTime.Now - LastX03SignalGetTime.Value).Milliseconds;
+                                //使用timespan计算时间
+                                TimeSpan ts = new TimeSpan();
+                                ts = System.DateTime.Now.Subtract(LastX03SignalGetTime.Value);
+
+                                LastProductUseMilliseconds= (long)ts.TotalMilliseconds;
+                                //LastProductUseMilliseconds = (System.DateTime.Now - LastX03SignalGetTime.Value).Milliseconds;
                             }
                             LastX03SignalGetTime = System.DateTime.Now;
                         }
