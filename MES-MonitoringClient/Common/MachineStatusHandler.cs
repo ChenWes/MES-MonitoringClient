@@ -36,7 +36,7 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 机器状态默认Mongodb集合名
         /// </summary>
-        private static string defaultMachineStatusMongodbCollectionName = "StatusLog";
+        private static string defaultMachineStatusMongodbCollectionName = "MachineStatusLog";
 
         /// <summary>
         /// 灯
