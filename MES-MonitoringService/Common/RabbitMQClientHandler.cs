@@ -10,6 +10,10 @@ namespace MES_MonitoringService.Common
 {
     public class RabbitMQClientHandler
     {
+        private static string defaultRabbitMQHostName = Common.ConfigFileHandler.GetAppConfig("RabbitMQServerHostName");
+        private static string defaultRabbitMQUserName = Common.ConfigFileHandler.GetAppConfig("RabbitMQUserName");
+        private static string defaultRabbitMQPassword = Common.ConfigFileHandler.GetAppConfig("RabbitMQPassword");
+
         // 定义一个静态变量来保存类的实例
         private static RabbitMQClientHandler uniqueInstance;
         //定义一个标识确保线程同步 
@@ -36,9 +40,9 @@ namespace MES_MonitoringService.Common
             mc_ConnectionFactory = new ConnectionFactory();
 
             //连接工厂信息
-            mc_ConnectionFactory.HostName = "localhost";
-            mc_ConnectionFactory.UserName = "guest";
-            mc_ConnectionFactory.Password = "guest";
+            mc_ConnectionFactory.HostName = defaultRabbitMQHostName;// "localhost";
+            mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
+            mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
 
             //创建连接
             Connection = mc_ConnectionFactory.CreateConnection();
