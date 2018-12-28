@@ -70,8 +70,6 @@ namespace MES_MonitoringService
             });
             var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
 
-            //string localMacAddressString = Common.CommonFunction.getMacAddress();
-
             //循环处理
             foreach (var data in getdocument)
             {
@@ -122,8 +120,6 @@ namespace MES_MonitoringService
                     )
             });
             var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
-
-            //string localMacAddressString = Common.CommonFunction.getMacAddress();
 
             //循环处理
             foreach (var data in getdocument)
