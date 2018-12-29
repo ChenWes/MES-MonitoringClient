@@ -193,7 +193,7 @@ namespace MES_MonitoringClient.Common
                     TTimerClass = null;
 
                     //更新最后时间
-                    EndDateTime = System.DateTime.Now;
+                    EndDateTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
                     //保存至DB中/*******************/嫁动率的主要数据来源
 
@@ -210,7 +210,7 @@ namespace MES_MonitoringClient.Common
                             var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
 
                             var update = Builders<DataModel.MachineStatus>.Update
-                                .Set("EndDateTime", DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc))
+                                .Set("EndDateTime", EndDateTime)
                                 .Set("IsStopFlag", true);
 
                             var result = machineStatusLogCollection.UpdateOne(filterID, update);
@@ -301,7 +301,7 @@ namespace MES_MonitoringClient.Common
                 if (DateTimeThreadClass != null && TTimerClass != null)
                 {
                     //更新最后时间
-                    EndDateTime = System.DateTime.Now;
+                    EndDateTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
                     //保存至DB中/*******************/嫁动率的主要数据来源
                     if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
@@ -312,7 +312,7 @@ namespace MES_MonitoringClient.Common
                             var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
 
                             var update = Builders<DataModel.MachineStatus>.Update
-                                .Set("EndDateTime", System.DateTime.Now)
+                                .Set("EndDateTime", EndDateTime)
                                 .Set("IsStopFlag", true);
 
                             var result = machineStatusLogCollection.UpdateOne(filterID, update);
