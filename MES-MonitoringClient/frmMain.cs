@@ -387,7 +387,7 @@ namespace MES_MonitoringClient
                     }
 
                     lab_ProductCount.Text = "累计生产数量：" + mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProductCount;
-                    lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
+                    lab_LastLifeCycleTime.Text = "生产周期用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
 
                 }), signal);
             }
@@ -427,7 +427,7 @@ namespace MES_MonitoringClient
                 }
 
                 lab_ProductCount.Text = "累计生产数量：" + mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProductCount;
-                lab_LastLifeCycleTime.Text = "最后一次生产用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
+                lab_LastLifeCycleTime.Text = "生产周期用时：" + Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
 
             }
         }
@@ -534,9 +534,7 @@ namespace MES_MonitoringClient
 
                 this.Invoke((EventHandler)(delegate
                 {
-                    Common.LogHandler.Log(stringBuilder.ToString());
-
-                    richTextBox1.AppendText(stringBuilder.ToString() + "\r\n");
+                    Common.LogHandler.Log(stringBuilder.ToString());                    
 
                     if (COM7_ReceiveDataCount + 100 > long.MaxValue) COM7_ReceiveDataCount = 0;
                     COM7_ReceiveDataCount += 1;

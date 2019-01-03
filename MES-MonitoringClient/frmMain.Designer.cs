@@ -44,6 +44,8 @@
             this.lab_CurrentStatusTotalTime = new System.Windows.Forms.Label();
             this.lab_ProductCount = new System.Windows.Forms.Label();
             this.lab_LastLifeCycleTime = new System.Windows.Forms.Label();
+            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_ReceviedDataCount = new System.Windows.Forms.Label();
             this.lab_SendErrorCount = new System.Windows.Forms.Label();
@@ -52,9 +54,6 @@
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_SignalX03 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_SignalX02 = new MES_MonitoringClient.Common.Component.CircularButton();
@@ -65,11 +64,10 @@
             this.tableLayoutPanel2.SuspendLayout();
             this.panel8.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
-            this.tableLayoutPanel6.SuspendLayout();
-            this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel7.SuspendLayout();
             this.tableLayoutPanel8.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            this.tableLayoutPanel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // serialPort6
@@ -241,9 +239,44 @@
             this.lab_LastLifeCycleTime.ForeColor = System.Drawing.Color.White;
             this.lab_LastLifeCycleTime.Location = new System.Drawing.Point(4, 206);
             this.lab_LastLifeCycleTime.Name = "lab_LastLifeCycleTime";
-            this.lab_LastLifeCycleTime.Size = new System.Drawing.Size(169, 20);
+            this.lab_LastLifeCycleTime.Size = new System.Drawing.Size(129, 20);
             this.lab_LastLifeCycleTime.TabIndex = 13;
-            this.lab_LastLifeCycleTime.Text = "最后一次生产用时";
+            this.lab_LastLifeCycleTime.Text = "生产周期用时";
+            // 
+            // tableLayoutPanel7
+            // 
+            this.tableLayoutPanel7.ColumnCount = 2;
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.Controls.Add(this.btn_StatusLight, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel8, 0, 0);
+            this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel7.Location = new System.Drawing.Point(4, 4);
+            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
+            this.tableLayoutPanel7.RowCount = 1;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 116F));
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(481, 116);
+            this.tableLayoutPanel7.TabIndex = 14;
+            // 
+            // tableLayoutPanel8
+            // 
+            this.tableLayoutPanel8.ColumnCount = 3;
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX03, 2, 0);
+            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX02, 1, 0);
+            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX01, 0, 0);
+            this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
+            this.tableLayoutPanel8.RowCount = 1;
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(234, 110);
+            this.tableLayoutPanel8.TabIndex = 1;
             // 
             // tableLayoutPanel3
             // 
@@ -345,7 +378,6 @@
             this.tableLayoutPanel5.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel5.ColumnCount = 1;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.Controls.Add(this.richTextBox1, 0, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 319);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -353,53 +385,6 @@
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.Size = new System.Drawing.Size(489, 310);
             this.tableLayoutPanel5.TabIndex = 6;
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(45)))), ((int)(((byte)(58)))));
-            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.ForeColor = System.Drawing.Color.White;
-            this.richTextBox1.Location = new System.Drawing.Point(4, 4);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(481, 302);
-            this.richTextBox1.TabIndex = 14;
-            this.richTextBox1.Text = "";
-            // 
-            // tableLayoutPanel7
-            // 
-            this.tableLayoutPanel7.ColumnCount = 2;
-            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.Controls.Add(this.btn_StatusLight, 1, 0);
-            this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel8, 0, 0);
-            this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel7.Location = new System.Drawing.Point(4, 4);
-            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
-            this.tableLayoutPanel7.RowCount = 1;
-            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 116F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(481, 116);
-            this.tableLayoutPanel7.TabIndex = 14;
-            // 
-            // tableLayoutPanel8
-            // 
-            this.tableLayoutPanel8.ColumnCount = 3;
-            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX03, 2, 0);
-            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX02, 1, 0);
-            this.tableLayoutPanel8.Controls.Add(this.btn_SignalX01, 0, 0);
-            this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel8.Location = new System.Drawing.Point(3, 3);
-            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
-            this.tableLayoutPanel8.RowCount = 1;
-            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-            this.tableLayoutPanel8.Size = new System.Drawing.Size(234, 110);
-            this.tableLayoutPanel8.TabIndex = 1;
             // 
             // btn_StatusLight
             // 
@@ -419,7 +404,7 @@
             this.btn_SignalX03.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_SignalX03.FlatAppearance.BorderSize = 0;
             this.btn_SignalX03.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SignalX03.Location = new System.Drawing.Point(169, 30);
+            this.btn_SignalX03.Location = new System.Drawing.Point(170, 30);
             this.btn_SignalX03.Name = "btn_SignalX03";
             this.btn_SignalX03.Size = new System.Drawing.Size(50, 50);
             this.btn_SignalX03.TabIndex = 0;
@@ -431,7 +416,7 @@
             this.btn_SignalX02.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_SignalX02.FlatAppearance.BorderSize = 0;
             this.btn_SignalX02.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SignalX02.Location = new System.Drawing.Point(90, 30);
+            this.btn_SignalX02.Location = new System.Drawing.Point(92, 30);
             this.btn_SignalX02.Name = "btn_SignalX02";
             this.btn_SignalX02.Size = new System.Drawing.Size(50, 50);
             this.btn_SignalX02.TabIndex = 0;
@@ -443,7 +428,7 @@
             this.btn_SignalX01.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_SignalX01.FlatAppearance.BorderSize = 0;
             this.btn_SignalX01.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SignalX01.Location = new System.Drawing.Point(13, 30);
+            this.btn_SignalX01.Location = new System.Drawing.Point(14, 30);
             this.btn_SignalX01.Name = "btn_SignalX01";
             this.btn_SignalX01.Size = new System.Drawing.Size(50, 50);
             this.btn_SignalX01.TabIndex = 0;
@@ -472,13 +457,12 @@
             this.panel8.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.tableLayoutPanel7.ResumeLayout(false);
+            this.tableLayoutPanel8.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel6.ResumeLayout(false);
             this.tableLayoutPanel6.PerformLayout();
-            this.tableLayoutPanel5.ResumeLayout(false);
-            this.tableLayoutPanel7.ResumeLayout(false);
-            this.tableLayoutPanel8.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -506,7 +490,6 @@
         private System.Windows.Forms.Label lab_UploadDataServiceStatus;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label lab_Title;
         private System.Windows.Forms.Label lab_DateTime;
         private System.Windows.Forms.Label lab_ReceviedDataErrorCount;
