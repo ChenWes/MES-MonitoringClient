@@ -11,6 +11,10 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
 
+using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Wpf;
+
 namespace MES_MonitoringClient
 {
     public partial class frmMain : Form
@@ -41,8 +45,16 @@ namespace MES_MonitoringClient
         ThreadStart SendDataThreadFunction = null;
         Common.TimmerHandler SDTimerClass = null;
 
+        //发送数据线程方法
+        Thread MachineTemperatureThreadClass = null;
+        ThreadStart MachineTemperatureThreadFunction = null;
+        Common.TimmerHandler MachineTemperatureTimerClass = null;
+
         //状态操作类
         static Common.MachineStatusHandler mc_MachineStatusHander = null;
+
+        //温度状态表
+        public ChartValues<DataModel.MachineTemperature> MachineTemperature1ChartValues { get; set; }
 
         /*---------------------------------------------------------------------------------------*/
         //后台线程变量
@@ -83,7 +95,7 @@ namespace MES_MonitoringClient
                 sendDataSerialPortGetDefaultSetting();
 
                 //设置默认状态
-                mc_MachineStatusHander = new Common.MachineStatusHandler();                
+                mc_MachineStatusHander = new Common.MachineStatusHandler();
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineSignalDelegate += UpdateMachineSignalStatus;//更新方法
 
                 mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
@@ -111,6 +123,49 @@ namespace MES_MonitoringClient
                 SendDataThreadClass = new Thread(SendDataThreadFunction);
                 SendDataThreadClass.Start();
 
+                //开始后台进程（定时获取机器温度）
+                MachineTemperatureThreadFunction = new ThreadStart(MachineTemperatureTimer);
+                MachineTemperatureThreadClass = new Thread(MachineTemperatureThreadFunction);
+                MachineTemperatureThreadClass.Start();
+
+                //转换成
+                var mapper = Mappers.Xy<DataModel.MachineTemperature>()
+                .X(model => model.DateTime.Ticks)   //use DateTime.Ticks as X
+                .Y(model => model.Temperature);           //use the value property as Y
+
+                //lets save the mapper globally.
+                Charting.For<DataModel.MachineTemperature>(mapper);
+
+                MachineTemperature1ChartValues = new ChartValues<DataModel.MachineTemperature>();
+
+                cartesianChart_temperature.DataTooltip.Background =System.Windows.Media.Brushes.White;
+
+                //图表数据
+                cartesianChart_temperature.Series = new SeriesCollection
+                {
+                    new LineSeries
+                    {
+                        Title="机器温度1",
+                        Values = MachineTemperature1ChartValues,
+                        PointGeometrySize = 5,
+                        //PointGeometry = null,
+                        PointGeometry = DefaultGeometries.Cross,
+                        StrokeThickness = 1,                        
+                    }
+                };
+
+                //图表时间间隔
+                cartesianChart_temperature.AxisX.Add(new Axis
+                {
+                    DisableAnimations = true,
+                    LabelFormatter = value => new System.DateTime((long)value).ToString("mm:ss"),
+                    Separator = new Separator
+                    {
+                        Step = TimeSpan.FromSeconds(10).Ticks
+                    }
+                });
+
+                SetAxisLimits(System.DateTime.Now);
 
                 //停止检测代码运行时间
                 //MessageBox.Show("初始化共使用" + sw.ElapsedMilliseconds.ToString() + "毫秒");
@@ -209,6 +264,25 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 SDTimerClass = null;
+            }
+        }
+
+        /// <summary>
+        /// 获取温度定时器
+        /// </summary>
+        private void MachineTemperatureTimer()
+        {
+            try
+            {
+                MachineTemperatureTimerClass = new Common.TimmerHandler(1000, true, (o, a) =>
+                {
+                    GetMachineTemperature();
+
+                }, true);
+            }
+            catch (Exception ex)
+            {
+                MachineTemperatureTimerClass = null;
             }
         }
 
@@ -338,6 +412,57 @@ namespace MES_MonitoringClient
                 ShowErrorMessage(ex.Message, "发送数据至串口错误");
                 
                 SDTimerClass = null;
+            }
+        }
+
+        /// <summary>
+        /// 声明获取机器温度委托
+        /// </summary>
+        private delegate void GetMachineTemperatureDelegate();
+        private void GetMachineTemperature()
+        {
+            try
+            {
+                if (this.InvokeRequired)
+                {
+                    try
+                    {
+                        this.Invoke(new GetMachineTemperatureDelegate(GetMachineTemperature));
+                    }
+                    catch (Exception ex)
+                    {
+                        //响铃并显示异常给用户
+                        System.Media.SystemSounds.Beep.Play();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        //定时增加数字
+                        MachineTemperature1ChartValues.Add(new DataModel.MachineTemperature
+                        {
+                            DateTime = System.DateTime.Now,
+                            Temperature = new System.Random().Next(90, 100)
+                        });
+
+                        //超过一定数值则删除
+                        if (MachineTemperature1ChartValues.Count > 100) MachineTemperature1ChartValues.RemoveAt(0);
+
+                        //处理横轴
+                        SetAxisLimits(System.DateTime.Now);
+                    }
+                    catch (Exception ex)
+                    {
+                        //响铃并显示异常给用户
+                        System.Media.SystemSounds.Beep.Play();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "获取当前机器温度");
+                MachineTemperatureTimerClass = null;
             }
         }
 
@@ -498,7 +623,11 @@ namespace MES_MonitoringClient
             MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-
+        private void SetAxisLimits(System.DateTime now)
+        {
+            cartesianChart_temperature.AxisX[0].MaxValue = now.Ticks + TimeSpan.FromSeconds(1).Ticks; // lets force the axis to be 100ms ahead
+            cartesianChart_temperature.AxisX[0].MinValue = now.Ticks - TimeSpan.FromSeconds(60).Ticks; //we only care about the last 8 seconds
+        }
 
         /*获取串口数据事件*/
         /*---------------------------------------------------------------------------------------*/

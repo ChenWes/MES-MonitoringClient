@@ -32,11 +32,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmScanRFID));
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.btn_Confirm = new System.Windows.Forms.Button();
-            this.btn_Cancel = new System.Windows.Forms.Button();
             this.lab_CardID = new System.Windows.Forms.Label();
             this.lab_ScanStatus = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.circularButton1 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.circularButton2 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,11 +49,10 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel1.Controls.Add(this.btn_Confirm, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.circularButton1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.circularButton2, 2, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -65,28 +63,6 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1048, 685);
             this.tableLayoutPanel1.TabIndex = 0;
             this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
-            // 
-            // btn_Confirm
-            // 
-            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Confirm.Location = new System.Drawing.Point(835, 573);
-            this.btn_Confirm.Name = "btn_Confirm";
-            this.btn_Confirm.Size = new System.Drawing.Size(75, 23);
-            this.btn_Confirm.TabIndex = 4;
-            this.btn_Confirm.Text = "确定";
-            this.btn_Confirm.UseVisualStyleBackColor = true;
-            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
-            // 
-            // btn_Cancel
-            // 
-            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Cancel.Location = new System.Drawing.Point(137, 573);
-            this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.btn_Cancel.TabIndex = 3;
-            this.btn_Cancel.Text = "取消";
-            this.btn_Cancel.UseVisualStyleBackColor = true;
-            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
             // 
             // lab_CardID
             // 
@@ -111,14 +87,29 @@
             this.lab_ScanStatus.TabIndex = 0;
             this.lab_ScanStatus.Text = "等待刷卡";
             // 
-            // richTextBox1
+            // circularButton1
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(343, 236);
-            this.richTextBox1.TabIndex = 6;
-            this.richTextBox1.Text = "";
+            this.circularButton1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.circularButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton1.BackgroundImage")));
+            this.circularButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.circularButton1.Location = new System.Drawing.Point(137, 547);
+            this.circularButton1.Name = "circularButton1";
+            this.circularButton1.Size = new System.Drawing.Size(75, 75);
+            this.circularButton1.TabIndex = 7;
+            this.circularButton1.UseVisualStyleBackColor = true;
+            this.circularButton1.Click += new System.EventHandler(this.btn_Cancel_Click);
+            // 
+            // circularButton2
+            // 
+            this.circularButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.circularButton2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton2.BackgroundImage")));
+            this.circularButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.circularButton2.Location = new System.Drawing.Point(835, 547);
+            this.circularButton2.Name = "circularButton2";
+            this.circularButton2.Size = new System.Drawing.Size(75, 75);
+            this.circularButton2.TabIndex = 7;
+            this.circularButton2.UseVisualStyleBackColor = true;
+            this.circularButton2.Click += new System.EventHandler(this.btn_Confirm_Click);
             // 
             // frmScanRFID
             // 
@@ -145,9 +136,8 @@
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lab_ScanStatus;
-        private System.Windows.Forms.Button btn_Cancel;
-        private System.Windows.Forms.Button btn_Confirm;
         private System.Windows.Forms.Label lab_CardID;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private Common.Component.CircularButton circularButton1;
+        private Common.Component.CircularButton circularButton2;
     }
 }
