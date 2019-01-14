@@ -32,7 +32,8 @@ namespace MES_MonitoringService.Model
         [BsonElement("IsStopFlag")]
         public bool IsStopFlag { get; set; }
 
-
+        [BsonElement("UseTotalSeconds")]
+        public int UseTotalSeconds { get; set; }
 
         /*上传及更新的标识*/
         /*-------------------------------------------------*/

@@ -56,6 +56,16 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private List<MachineProcedure> _MachineProcedureListForCount=null;
 
+        /// <summary>
+        /// 订单数量
+        /// </summary>
+        public int OrderCount = 0;
+
+        /// <summary>
+        /// 订单未完成数量
+        /// </summary>
+        public int OrderNoCompleteCount = 0;
+
 
         /// <summary>
         /// 产品周期计数（生产数量）
@@ -90,6 +100,24 @@ namespace MES_MonitoringClient.Common
         public delegate void UpdateMachineSignal(SignalType signalType);
         public UpdateMachineSignal UpdateMachineSignalDelegate;
 
+        /// <summary>
+        /// 更新机器生命周期
+        /// </summary>
+        public delegate void UpdateMachineLifeCycleTime();
+        public UpdateMachineLifeCycleTime UpdateMachineLifeCycleTimeDelegate;
+
+        /// <summary>
+        /// 更新良品数量
+        /// </summary>
+        public delegate void UpdateMachineNondefectiveCount();
+        public UpdateMachineNondefectiveCount UpdateMachineNondefectiveCountDelegate;
+
+        /// <summary>
+        /// 更新未完成数量
+        /// </summary>
+        public delegate void UpdateMachineNoCompleteCount();
+        public UpdateMachineNoCompleteCount UpdateMachineNoCompleteCountDelegate;
+
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -106,6 +134,46 @@ namespace MES_MonitoringClient.Common
 
 
         /*-------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// 机器良品数量设置
+        /// </summary>
+        public void SettingMachineNondefectiveCount()
+        {
+            //未完成数量与不良品有关系
+            if (ProductErrorCount > ProductCount)
+            {
+                OrderNoCompleteCount = OrderCount - ProductCount;
+            }
+            else
+            {
+                OrderNoCompleteCount = OrderCount - ProductCount + ProductErrorCount;
+            }
+
+            //更新界面
+            UpdateMachineNondefectiveCountDelegate();
+        }
+
+        /// <summary>
+        /// 机器未完成数量设置
+        /// </summary>
+        public void SettingMachineNoCompleteCount()
+        {
+            SettingMachineNondefectiveCount();
+
+            UpdateMachineNoCompleteCountDelegate();
+        }
+
+        /// <summary>
+        /// 更新机器生命周期
+        /// </summary>
+        public void SettingMachineLifeCycleTime()
+        {
+            SettingMachineNoCompleteCount();
+
+            UpdateMachineLifeCycleTimeDelegate();
+        }
+
+
 
         /// <summary>
         /// 更新信号方法
@@ -123,8 +191,7 @@ namespace MES_MonitoringClient.Common
 
                 if (convertSingnalStatusType != LastSignal)
                 {
-                    
-
+                   
                     #region 与上一次信号不同
 
                     if (convertSingnalStatusType == SignalType.X03)
@@ -150,6 +217,9 @@ namespace MES_MonitoringClient.Common
                                 ts = System.DateTime.Now.Subtract(LastX03SignalGetTime.Value);
 
                                 LastProductUseMilliseconds= (long)ts.TotalMilliseconds;
+                                //更新界面
+                                SettingMachineLifeCycleTime();
+
                                 //LastProductUseMilliseconds = (System.DateTime.Now - LastX03SignalGetTime.Value).Milliseconds;
                             }
                             LastX03SignalGetTime = System.DateTime.Now;
@@ -161,6 +231,11 @@ namespace MES_MonitoringClient.Common
                             {
                                 //计数
                                 ProductCount++;
+
+                                //订单未完成数量，等于订单数量减去已完成数量
+                                OrderNoCompleteCount = OrderCount - ProductCount - ProductErrorCount;
+                                //立刻更新界面
+                                SettingMachineNoCompleteCount();
 
                                 _MachineProcedureListForCount.Clear();
                                 _MachineProcedureListForCount.Add(new MachineProcedure()

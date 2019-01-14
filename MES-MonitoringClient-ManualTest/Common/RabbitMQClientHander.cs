@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using RabbitMQ.Client;
-using RabbitMQ.Client.Exceptions;
 
-namespace MES_MonitoringService.Common
+namespace MES_MonitoringClient_ManualTest.Common
 {
     public class RabbitMQClientHandler
     {
@@ -45,14 +44,13 @@ namespace MES_MonitoringService.Common
             mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
             mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
 
-            mc_ConnectionFactory.RequestedHeartbeat = 10;//心跳包
             mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
-            mc_ConnectionFactory.NetworkRecoveryInterval= TimeSpan.FromSeconds(5);
+            mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
 
             //创建连接
             Connection = mc_ConnectionFactory.CreateConnection();
             //创建频道
-            Channel = Connection.CreateModel();            
+            Channel = Connection.CreateModel();
         }
 
         /// <summary>
@@ -79,32 +77,6 @@ namespace MES_MonitoringService.Common
             return uniqueInstance;
         }
 
-        /// <summary>
-        /// 遇到断开连接时，需要将原有的连接信息、频道等全部删除一次，便于下次重连
-        /// </summary>
-        private void DisposeAllConnectionObjects()
-        {
-            //连接工厂
-            if (mc_ConnectionFactory != null)
-            {
-                mc_ConnectionFactory = null;
-            }
-
-            //连接
-            if (Connection != null)
-            {
-                Connection.Dispose();
-                Connection = null;
-            }
-
-            //频道
-            if (Channel != null)
-            {
-                Channel.Dispose();
-                Channel = null;
-            }
-        }
-
 
         /*-------------------------------------------------------------------------------------*/
 
@@ -120,8 +92,8 @@ namespace MES_MonitoringService.Common
             {
                 //创建一个持久化的频道
                 bool durable = true;
-                Channel.QueueDeclare(queueName, durable, false, false, null);                
-                
+                Channel.QueueDeclare(queueName, durable, false, false, null);
+
 
                 //设置消息持久性
                 //var properties = Channel.CreateBasicProperties();
@@ -132,13 +104,6 @@ namespace MES_MonitoringService.Common
                 Channel.BasicPublish("", queueName, null, messageBody);
 
                 return true;
-            }
-            catch(OperationInterruptedException ex)
-            {
-                //遇到断开连接时，需要将原有的连接信息、频道等全部删除一次，便于下次重连
-                DisposeAllConnectionObjects();
-
-                return false;
             }
             catch (Exception ex)
             {

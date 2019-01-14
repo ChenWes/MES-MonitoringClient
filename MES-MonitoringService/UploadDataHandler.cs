@@ -64,65 +64,76 @@ namespace MES_MonitoringService
         /// </summary>
         public void ProcessMachineStatusLog()
         {
-            //找到机器状态集合
-            var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);            
+            try
+            {
+                //找到机器状态集合
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
 
-            //找到没有上传的或者没有更新但已经停止的状态记录
-            var newfilter = Builders<BsonDocument>.Filter.Or(
-                new FilterDefinition<BsonDocument>[] {
+                //找到没有上传的或者没有更新但已经停止的状态记录
+                var newfilter = Builders<BsonDocument>.Filter.Or(
+                    new FilterDefinition<BsonDocument>[] {
                 Builders<BsonDocument>.Filter.Eq("IsUploadToServer", false),
 
                 Builders<BsonDocument>.Filter.And(
                     Builders<BsonDocument>.Filter.Eq("IsUpdateToServer", false),
                     Builders<BsonDocument>.Filter.Eq("IsStopFlag", true)
                     )
-            });
-            var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+                });
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
 
-            //循环处理
-            foreach (var data in getdocument)
+                //循环处理
+                foreach (var data in getdocument)
+                {
+                    //转换成类
+                    var machineStatusLogEntity = BsonSerializer.Deserialize<Model.MachineStatusLog>(data);
+
+                    //JSON类，如果不将JSON字符串中的ObjectID和ISODate去除，则Nodejs解析JSON时会出现问题
+                    Model.MachineStatusLog_JSON newMachineStatus_JSON = new Model.MachineStatusLog_JSON();
+                    newMachineStatus_JSON.Id = machineStatusLogEntity.Id.ToString();//ObjectID转换成string
+                    newMachineStatus_JSON.Status = machineStatusLogEntity.Status;
+
+                    newMachineStatus_JSON.UseTotalSeconds = machineStatusLogEntity.UseTotalSeconds;//使用秒数
+
+                    newMachineStatus_JSON.StartDateTime = machineStatusLogEntity.StartDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
+                    newMachineStatus_JSON.EndDateTime = machineStatusLogEntity.EndDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
+
+                    newMachineStatus_JSON.IsStopFlag = machineStatusLogEntity.IsStopFlag;
+                    newMachineStatus_JSON.LocalMacAddress = machineStatusLogEntity.LocalMacAddress;
+
+                    Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
+
+                    //读取Mongodb机器状态日志并上传至队列中
+                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServer(defaultMachineStatusQueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
+                    if (sendToServerFlag)
+                    {
+                        /*当上传至服务器以后，更改数据*/
+                        /*---------------------------------------------------------*/
+                        if (!machineStatusLogEntity.IsUploadToServer)
+                        {
+                            //使用ID作为条件
+                            var filterID = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(machineStatusLogEntity.Id));
+                            //更改值为已上传
+                            var update = Builders<BsonDocument>.Update.Set("IsUploadToServer", true);
+                            //查找并修改文档
+                            Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
+                            Common.LogHandler.Log("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已上传至服务器中，请查看");
+                        }
+                        else if (!machineStatusLogEntity.IsUpdateToServer && machineStatusLogEntity.IsStopFlag)
+                        {
+                            //使用ID作为条件
+                            var filterID = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(machineStatusLogEntity.Id));
+                            //更改值为已上传
+                            var update = Builders<BsonDocument>.Update.Set("IsUpdateToServer", true);
+                            //查找并修改文档
+                            Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
+                            Common.LogHandler.Log("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已更新至服务器中，请查看");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
             {
-                //转换成类
-                var machineStatusLogEntity = BsonSerializer.Deserialize<Model.MachineStatusLog>(data);
-
-                //JSON类，如果不将JSON字符串中的ObjectID和ISODate去除，则Nodejs解析JSON时会出现问题
-                Model.MachineStatusLog_JSON newMachineStatus_JSON = new Model.MachineStatusLog_JSON();
-                newMachineStatus_JSON.Id = machineStatusLogEntity.Id.ToString();//ObjectID转换成string
-                newMachineStatus_JSON.Status = machineStatusLogEntity.Status;
-
-                newMachineStatus_JSON.StartDateTime = machineStatusLogEntity.StartDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
-                newMachineStatus_JSON.EndDateTime = machineStatusLogEntity.EndDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
-
-                newMachineStatus_JSON.IsStopFlag = machineStatusLogEntity.IsStopFlag;                
-                newMachineStatus_JSON.LocalMacAddress = machineStatusLogEntity.LocalMacAddress;
-
-                Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
-
-                //读取Mongodb机器状态日志并上传至队列中
-                Common.RabbitMQClientHandler.GetInstance().publishMessageToServer(defaultMachineStatusQueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
-
-                /*当上传至服务器以后，更改数据*/
-                /*---------------------------------------------------------*/
-                if (!machineStatusLogEntity.IsUploadToServer)
-                {
-                    //使用ID作为条件
-                    var filterID = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(machineStatusLogEntity.Id));
-                    //更改值为已上传
-                    var update = Builders<BsonDocument>.Update.Set("IsUploadToServer", true);
-                    //查找并修改文档
-                    Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
-                    Common.LogHandler.Log("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已上传至服务器中，请查看");
-                }
-                else if (!machineStatusLogEntity.IsUpdateToServer && machineStatusLogEntity.IsStopFlag)
-                {
-                    //使用ID作为条件
-                    var filterID = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(machineStatusLogEntity.Id));
-                    //更改值为已上传
-                    var update = Builders<BsonDocument>.Update.Set("IsUpdateToServer", true);
-                    //查找并修改文档
-                    Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
-                    Common.LogHandler.Log("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已更新至服务器中，请查看");
-                }
+                Common.LogHandler.Log("MES数据上传服务程序发现错误，请管理员及时处理。");
             }
         }
 

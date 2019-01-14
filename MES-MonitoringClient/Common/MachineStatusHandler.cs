@@ -88,6 +88,43 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public string LastOperationMachineStatusID { get; set; }
 
+        /// <summary>
+        /// 最后操作的时间
+        /// </summary>
+        public DateTime LastOperationDateTime { get; set; }
+
+
+        /// <summary>
+        /// 起工时间
+        /// </summary>
+        public DateTime? StartWorkTime { get; set; }
+
+        /// <summary>
+        /// 预计完成时间
+        /// </summary>
+        public DateTime? PlanCompleteDateTime { get; set; }
+
+        /// <summary>
+        /// 更新机器使用时间返回至界面
+        /// </summary>
+        /// <param name="signalType"></param>
+        public delegate void UpdateMachineUseTime(List<DataModel.MachineStatusUseTime> user);
+        public UpdateMachineUseTime UpdateMachineUseTimeDelegate;
+
+
+        /// <summary>
+        /// 更新机器使用时间返回至界面
+        /// </summary>
+        public delegate void UpdateMachineCompleteDateTime();
+        public UpdateMachineCompleteDateTime UpdateMachineCompleteDateTimeDelegate;
+
+        /// <summary>
+        /// 更新机器状态持续总时间
+        /// </summary>
+        public delegate void UpdateMachineStatusTotalDateTime();
+        public UpdateMachineStatusTotalDateTime UpdateMachineStatusTotalDateTimeDelegate;
+
+
         /*处理线程等*/
         /*-------------------------------------------------------------------------------------*/
 
@@ -157,7 +194,10 @@ namespace MES_MonitoringClient.Common
             try
             {
                 //增加时间
-                HoldStatusTotalMilliseconds += 1000;                
+                HoldStatusTotalMilliseconds += 1000;
+
+                //更新界面
+                UpdateMachineStatusTotalDateTimeDelegate();
             }
             catch (Exception ex)
             {                
@@ -203,6 +243,13 @@ namespace MES_MonitoringClient.Common
                         //判断最后一个
                         if (!string.IsNullOrEmpty(LastOperationMachineStatusID))
                         {
+                            int useTotalSecond = 0;
+                            if (LastOperationDateTime != null)
+                            {
+                                TimeSpan timeSpan = EndDateTime - LastOperationDateTime;
+                                useTotalSecond = (int)timeSpan.TotalSeconds;
+                            }
+
                             //找到单个记录
                             //var dataID = new ObjectId(LastOperationMachineStatusID);
                             //var getMachineStatusEntity = machineStatusLogCollection.AsQueryable<DataModel.MachineStatus>().SingleOrDefault(m => m.Id == dataID);
@@ -211,7 +258,8 @@ namespace MES_MonitoringClient.Common
 
                             var update = Builders<DataModel.MachineStatus>.Update
                                 .Set("EndDateTime", EndDateTime)
-                                .Set("IsStopFlag", true);
+                                .Set("UseTotalSeconds", useTotalSecond)
+                                .Set("IsStopFlag", true);                              
 
                             var result = machineStatusLogCollection.UpdateOne(filterID, update);
                         }
@@ -252,6 +300,8 @@ namespace MES_MonitoringClient.Common
                     //开始与结束时间一致
                     newMachineStatus.StartDateTime = StartDateTime;
                     newMachineStatus.EndDateTime = StartDateTime;
+                    //使用的秒数
+                    newMachineStatus.UseTotalSeconds = 0;
                     //未结束与上传标识
                     newMachineStatus.IsStopFlag = false;
                     newMachineStatus.IsUploadToServer = false;
@@ -262,8 +312,13 @@ namespace MES_MonitoringClient.Common
                     //插入
                     machineStatusLogCollection.InsertOne(newMachineStatus);
                     //暂存ID
-                    LastOperationMachineStatusID = newMachineStatus.Id.ToString();                                        
+                    LastOperationMachineStatusID = newMachineStatus.Id.ToString();
+                    //最后操作时间
+                    LastOperationDateTime = StartDateTime;
                 }
+
+                //回调更新界面，各状态占比时间
+                UpdateMachineUseTimeDelegate(GetMachineUseTimeList());
 
                 #endregion
             }
@@ -274,6 +329,38 @@ namespace MES_MonitoringClient.Common
 
         }
 
+        /// <summary>
+        /// 获取机器各状态持续总时间
+        /// </summary>
+        /// <returns></returns>
+        public List<DataModel.MachineStatusUseTime> GetMachineUseTimeList()
+        {
+            List<DataModel.MachineStatusUseTime> returnList = new List<DataModel.MachineStatusUseTime>();
+
+            var result = machineStatusLogCollection.Aggregate().Group(key => key.Status,
+                value => new { Status = value.Key, UseTotalSeconds = value.Sum(key => key.UseTotalSeconds) }).ToList();
+
+            foreach (var item in result)
+            {
+                returnList.Add(new DataModel.MachineStatusUseTime()
+                {
+                    Status = item.Status,
+                    UseTotalSeconds = item.UseTotalSeconds
+                });
+            }
+
+            return returnList;
+        }
+
+
+        /// <summary>
+        /// 自动获取数据的饼图
+        /// </summary>
+        public void ShowStatusPieChart()
+        {
+            //回调更新界面，各状态占比时间
+            UpdateMachineUseTimeDelegate(GetMachineUseTimeList());
+        }
 
         /*红绿灯操作*/
         /*-------------------------------------------------------------------------------------*/
@@ -287,6 +374,14 @@ namespace MES_MonitoringClient.Common
             if (newStatusDescription == "运行") mc_StatusLight = enumStatusLight.Green;
             else if (newStatusDescription == "故障") mc_StatusLight = enumStatusLight.Red;
             else if (newStatusDescription == "停机") mc_StatusLight = enumStatusLight.Yellow;
+        }
+
+        /// <summary>
+        /// 机器预计完成时间设置
+        /// </summary>
+        public void SettingMachineCompleteDateTime()
+        {
+            UpdateMachineCompleteDateTimeDelegate();
         }
 
 
@@ -309,10 +404,22 @@ namespace MES_MonitoringClient.Common
                         //判断最后一个
                         if (!string.IsNullOrEmpty(LastOperationMachineStatusID))
                         {
+                            int useTotalSecond = 0;
+                            if (LastOperationDateTime != null)
+                            {
+                                TimeSpan timeSpan = EndDateTime - LastOperationDateTime;
+                                useTotalSecond = (int)timeSpan.TotalSeconds;
+                            }
+
+                            //找到单个记录
+                            //var dataID = new ObjectId(LastOperationMachineStatusID);
+                            //var getMachineStatusEntity = machineStatusLogCollection.AsQueryable<DataModel.MachineStatus>().SingleOrDefault(m => m.Id == dataID);
+
                             var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
 
                             var update = Builders<DataModel.MachineStatus>.Update
                                 .Set("EndDateTime", EndDateTime)
+                                .Set("UseTotalSeconds", useTotalSecond)
                                 .Set("IsStopFlag", true);
 
                             var result = machineStatusLogCollection.UpdateOne(filterID, update);

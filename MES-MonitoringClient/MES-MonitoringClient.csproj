@@ -87,6 +87,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ColorDesign.cs" />
     <Compile Include="Common\CommonFunction.cs" />
     <Compile Include="Common\Component\CircularButton.cs">
       <SubType>Component</SubType>
@@ -98,11 +99,11 @@
     <Compile Include="Common\MachineReportHandler.cs" />
     <Compile Include="Common\MachineStatusHandler.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
-    <Compile Include="Common\RabbitMQClientHandler.cs" />
     <Compile Include="Common\SerialPortHandler.cs" />
     <Compile Include="Common\SerialPortHelper.cs" />
     <Compile Include="Common\ThreadHandler.cs" />
     <Compile Include="Common\TimmerHandler.cs" />
+    <Compile Include="DataModel\MachineStatusUseTime.cs" />
     <Compile Include="DataModel\MachineRunTime.cs" />
     <Compile Include="DataModel\MachineStatus.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />

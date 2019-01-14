@@ -20,8 +20,8 @@ namespace MES_MonitoringService
             string defaultServiceDescription = Common.ConfigFileHandler.GetAppConfig("DefaultServiceDescription");
 
             //机器状态日志测试方法
-            //UploadDataHandler UploadDataHandlerClass = new UploadDataHandler();
-            //UploadDataHandlerClass.ProcessMachineStatusLog();
+            UploadDataHandler UploadDataHandlerClass = new UploadDataHandler();
+            UploadDataHandlerClass.ProcessMachineStatusLog();
 
             var exitCode = HostFactory.Run(x =>
             {
