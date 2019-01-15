@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 
+using System.Threading;
+
 namespace MES_MonitoringService.Common
 {
     public class RabbitMQClientHandler
@@ -14,6 +16,7 @@ namespace MES_MonitoringService.Common
         private static string defaultRabbitMQHostName = Common.ConfigFileHandler.GetAppConfig("RabbitMQServerHostName");
         private static string defaultRabbitMQUserName = Common.ConfigFileHandler.GetAppConfig("RabbitMQUserName");
         private static string defaultRabbitMQPassword = Common.ConfigFileHandler.GetAppConfig("RabbitMQPassword");
+        private static string defaultRabbitVirtualHost = Common.ConfigFileHandler.GetAppConfig("RabbitMQVirtualHost");
 
         // 定义一个静态变量来保存类的实例
         private static RabbitMQClientHandler uniqueInstance;
@@ -37,22 +40,38 @@ namespace MES_MonitoringService.Common
         /// </summary>
         public RabbitMQClientHandler()
         {
-            //连接工厂
-            mc_ConnectionFactory = new ConnectionFactory();
+            try
+            {
+                //连接工厂
+                mc_ConnectionFactory = new ConnectionFactory();
 
-            //连接工厂信息
-            mc_ConnectionFactory.HostName = defaultRabbitMQHostName;// "localhost";
-            mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
-            mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
+                //连接工厂信息
+                mc_ConnectionFactory.HostName = defaultRabbitMQHostName;// "localhost";
+                mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
+                mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
+                mc_ConnectionFactory.VirtualHost = defaultRabbitVirtualHost;// "/"
 
-            mc_ConnectionFactory.RequestedHeartbeat = 10;//心跳包
-            mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
-            mc_ConnectionFactory.NetworkRecoveryInterval= TimeSpan.FromSeconds(5);
+                mc_ConnectionFactory.RequestedHeartbeat = 10;//心跳包
+                mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
+                mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
 
-            //创建连接
-            Connection = mc_ConnectionFactory.CreateConnection();
-            //创建频道
-            Channel = Connection.CreateModel();            
+                //创建连接
+                Connection = mc_ConnectionFactory.CreateConnection();
+                //创建频道
+                Channel = Connection.CreateModel();
+
+                //确认模式，发送了消息后，可以收到回应
+                Channel.ConfirmSelect();
+            }
+            catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
+            {
+                Thread.Sleep(5000);
+                // apply retry logic
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -108,32 +127,46 @@ namespace MES_MonitoringService.Common
 
         /*-------------------------------------------------------------------------------------*/
 
+
         /// <summary>
         /// 发送消息至服务端
         /// </summary>
-        /// <param name="queueName"></param>
-        /// <param name="message"></param>
+        /// <param name="exchangeName">交换机名称</param>
+        /// <param name="routingKey">RoutingKey</param>
+        /// <param name="queueName">队列名称</param>
+        /// <param name="message">消息内容</param>
         /// <returns></returns>
-        public bool publishMessageToServer(string queueName, string message)
+        public bool publishMessageToServerAndWaitConfirm(string exchangeName, string routingKey, string queueName, string message)
         {
             try
             {
                 //创建一个持久化的频道
-                bool durable = true;
-                Channel.QueueDeclare(queueName, durable, false, false, null);                
-                
+                bool queueDurable = true;
+
+                string QueueName = queueName;
+                string ExchangeName = exchangeName;
+                string RoutingKey = routingKey;
+
+                //声明交换机
+                Channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
+                //声明队列
+                Channel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                //路由绑定队列
+                Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
 
                 //设置消息持久性
-                //var properties = Channel.CreateBasicProperties();
-                //properties.SetPersistent(true);
+                //IBasicProperties props = Channel.CreateBasicProperties();
+                //props.ContentType = "text/plain";
+                //props.DeliveryMode = 2;//持久性
 
                 //消息内容转码，并发送至服务器
-                var messageBody = Encoding.UTF8.GetBytes(message);
-                Channel.BasicPublish("", queueName, null, messageBody);
+                var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
+                Channel.BasicPublish(ExchangeName, QueueName, null, messageBody);
 
-                return true;
+                //等待确认
+                return Channel.WaitForConfirms();
             }
-            catch(OperationInterruptedException ex)
+            catch (OperationInterruptedException ex)
             {
                 //遇到断开连接时，需要将原有的连接信息、频道等全部删除一次，便于下次重连
                 DisposeAllConnectionObjects();

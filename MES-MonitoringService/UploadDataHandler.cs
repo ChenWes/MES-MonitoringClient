@@ -18,10 +18,13 @@ namespace MES_MonitoringService
         //服务运行间隔时间
         private static string defaultUploadDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadDataIntervalMilliseconds");
 
-        //机器状态日志队列名称
-        private static string defaultMachineStatusQueueName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLogQueueName");
         //机器状态日志Mongodb数据集名称
         private static string defaultMachineStatusMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+
+        //机器状态对应的交换机、路由、队列名称
+        private static string defaultMachineStatus_ExchangeName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_ExchangeName");
+        private static string defaultMachineStatus_RoutingKey = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_RoutingKey");
+        private static string defaultMachineStatus_QueueName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_QueueName");
 
         //定时器
         private readonly Timer _timer;
@@ -103,7 +106,7 @@ namespace MES_MonitoringService
                     Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 
                     //读取Mongodb机器状态日志并上传至队列中
-                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServer(defaultMachineStatusQueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
+                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
                     if (sendToServerFlag)
                     {
                         /*当上传至服务器以后，更改数据*/
