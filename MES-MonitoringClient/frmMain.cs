@@ -89,7 +89,7 @@ namespace MES_MonitoringClient
 
                 //检测代码运行时间
                 //var sw = Stopwatch.StartNew();
-                lab_MACAddress.Text = Common.CommonFunction.getMacAddress();
+                //lab_MACAddress.Text = Common.CommonFunction.getMacAddress();
 
                 //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
@@ -657,6 +657,7 @@ namespace MES_MonitoringClient
             else
             {
                 txt_UseTotalTime.Text = Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.HoldStatusTotalMilliseconds);
+                txt_MachineStopTotalTime.Text = Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.StopStatusTotalMilliseconds);
             }
         }
 
@@ -902,6 +903,11 @@ namespace MES_MonitoringClient
             }
         }
 
+        /// <summary>
+        /// 串口6获取数据错误
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void serialPort6_ErrorReceived(object sender, System.IO.Ports.SerialErrorReceivedEventArgs e)
         {
             if (COM7_ReceiveDataErrorCount+100 > long.MaxValue) COM7_ReceiveDataErrorCount = 0;
@@ -1091,16 +1097,6 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
-        /// 关闭系统
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btn_CloseWindow_Click(object sender, EventArgs e)
-        {            
-            this.Close();
-        }
-
-        /// <summary>
         /// 更改机器状态
         /// </summary>
         /// <param name="sender"></param>
@@ -1132,8 +1128,18 @@ namespace MES_MonitoringClient
             }
         }
 
+        /// <summary>
+        /// 应用标题事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void lab_Title_DoubleClick(object sender, EventArgs e)
+        {
+            MessageBox.Show(Common.CommonFunction.getMacAddress() + "\r\n", "系统信息");
+        }
 
-        /*按钮事件*/
+
+        /*文本框事件*/
         /*---------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -1247,12 +1253,16 @@ namespace MES_MonitoringClient
 
 
 
+
+        /*菜单按钮事件*/
+        /*---------------------------------------------------------------------------------------*/
+
         /// <summary>
-        /// 点击开始时间
+        /// 开始按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txt_StartDateTime_Click(object sender, EventArgs e)
+        private void btn_Start_Click(object sender, EventArgs e)
         {
             if(string.IsNullOrEmpty(txt_WorkOrderCount.Text.Trim()))
             {
@@ -1275,8 +1285,53 @@ namespace MES_MonitoringClient
             mc_MachineStatusHander.SettingMachineCompleteDateTime();
 
             //状态
-            mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
+            mc_MachineStatusHander.ChangeStatus("StartProduce", "运行", "WesChen", "001A");
             SettingMachineStatusLight();
+        }
+
+
+        /// <summary>
+        /// 暂停按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Stop_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
+            {
+                btn_StatusLight_Click(sender, null);
+            }
+            else
+            {
+                ShowErrorMessage("请先开始工单", "工单停止失败");
+            }
+        }
+
+        /// <summary>
+        /// 恢复按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_Recovery_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
+            {
+                btn_StatusLight_Click(sender, null);
+            }
+            else
+            {
+                ShowErrorMessage("没有暂停的工单", "工单恢复失败");
+            }
+        }
+
+        /// <summary>
+        /// 关闭系统
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_CloseWindow_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

@@ -31,7 +31,7 @@ namespace MES_MonitoringClient.Common
 
         //机器状态Mongodb集合
         private IMongoCollection<DataModel.MachineStatus> machineStatusLogCollection;
-        
+
 
         /// <summary>
         /// 机器状态默认Mongodb集合名
@@ -82,6 +82,11 @@ namespace MES_MonitoringClient.Common
         /// 当前状态等待时间（毫秒级）
         /// </summary>
         public long HoldStatusTotalMilliseconds { get; set; }
+
+        /// <summary>
+        /// 停机状态等待时间（毫秒级）
+        /// </summary>
+        public long StopStatusTotalMilliseconds{get;set;}            
 
         /// <summary>
         /// 最后操作的数据库ID
@@ -195,6 +200,10 @@ namespace MES_MonitoringClient.Common
             {
                 //增加时间
                 HoldStatusTotalMilliseconds += 1000;
+                if (this.StatusDescription == "停机" || this.StatusDescription == "故障")
+                {
+                    StopStatusTotalMilliseconds += 1000;
+                }
 
                 //更新界面
                 UpdateMachineStatusTotalDateTimeDelegate();
