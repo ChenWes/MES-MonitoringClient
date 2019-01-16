@@ -402,7 +402,7 @@ namespace MES_MonitoringClient.Common
             try
             {
                 //重新开始计时器及线程
-                if (DateTimeThreadClass != null && TTimerClass != null)
+                if (DateTimeThreadClass != null && TTimerClass != null && !string.IsNullOrEmpty(StatusCode) && !string.IsNullOrEmpty(StatusDescription))
                 {
                     //更新最后时间
                     EndDateTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);

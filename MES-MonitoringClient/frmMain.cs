@@ -111,8 +111,6 @@ namespace MES_MonitoringClient
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNondefectiveCountDelegate += UpdateMachineNondefectiveCount;//良品更新方法（良品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNoCompleteCountDelegate += UpdateMachineNoCompletedCount;//未完成产品数量更新方法（未完成产品数量）
 
-                mc_MachineStatusHander.ShowStatusPieChart();//获取饼图
-
 
                 //mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
                 //SettingMachineStatusLight();
@@ -125,6 +123,10 @@ namespace MES_MonitoringClient
                     {
                         this.Close();
                     }
+                }
+                else
+                {
+                    mc_MachineStatusHander.ShowStatusPieChart();//获取饼图
                 }
 
                 //打开端口

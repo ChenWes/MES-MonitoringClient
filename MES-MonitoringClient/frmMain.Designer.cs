@@ -37,6 +37,9 @@
             this.lab_DateTime = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
+            this.btn_Start = new System.Windows.Forms.Button();
+            this.btn_Stop = new System.Windows.Forms.Button();
+            this.btn_Recovery = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel22 = new System.Windows.Forms.TableLayoutPanel();
@@ -116,16 +119,13 @@
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
-            this.btn_Start = new System.Windows.Forms.Button();
-            this.btn_Stop = new System.Windows.Forms.Button();
-            this.btn_Recovery = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_SignalX03 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_SignalX02 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_SignalX01 = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -257,6 +257,45 @@
             this.btn_CloseWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_CloseWindow.UseVisualStyleBackColor = true;
             this.btn_CloseWindow.Click += new System.EventHandler(this.btn_CloseWindow_Click);
+            // 
+            // btn_Start
+            // 
+            this.btn_Start.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Start.FlatAppearance.BorderSize = 0;
+            this.btn_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Start.Image = ((System.Drawing.Image)(resources.GetObject("btn_Start.Image")));
+            this.btn_Start.Location = new System.Drawing.Point(597, 3);
+            this.btn_Start.Name = "btn_Start";
+            this.btn_Start.Size = new System.Drawing.Size(93, 44);
+            this.btn_Start.TabIndex = 11;
+            this.btn_Start.UseVisualStyleBackColor = true;
+            this.btn_Start.Click += new System.EventHandler(this.btn_Start_Click);
+            // 
+            // btn_Stop
+            // 
+            this.btn_Stop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Stop.FlatAppearance.BorderSize = 0;
+            this.btn_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Stop.Image = ((System.Drawing.Image)(resources.GetObject("btn_Stop.Image")));
+            this.btn_Stop.Location = new System.Drawing.Point(696, 3);
+            this.btn_Stop.Name = "btn_Stop";
+            this.btn_Stop.Size = new System.Drawing.Size(93, 44);
+            this.btn_Stop.TabIndex = 11;
+            this.btn_Stop.UseVisualStyleBackColor = true;
+            this.btn_Stop.Click += new System.EventHandler(this.btn_Stop_Click);
+            // 
+            // btn_Recovery
+            // 
+            this.btn_Recovery.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Recovery.FlatAppearance.BorderSize = 0;
+            this.btn_Recovery.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Recovery.Image = ((System.Drawing.Image)(resources.GetObject("btn_Recovery.Image")));
+            this.btn_Recovery.Location = new System.Drawing.Point(795, 3);
+            this.btn_Recovery.Name = "btn_Recovery";
+            this.btn_Recovery.Size = new System.Drawing.Size(93, 44);
+            this.btn_Recovery.TabIndex = 11;
+            this.btn_Recovery.UseVisualStyleBackColor = true;
+            this.btn_Recovery.Click += new System.EventHandler(this.btn_Recovery_Click);
             // 
             // tableLayoutPanel2
             // 
@@ -1257,7 +1296,7 @@
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 68F));
             this.tableLayoutPanel34.Controls.Add(this.label18, 0, 1);
             this.tableLayoutPanel34.Controls.Add(this.label19, 1, 1);
             this.tableLayoutPanel34.Controls.Add(this.label20, 2, 1);
@@ -1280,11 +1319,11 @@
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(51, 281);
+            this.label18.Location = new System.Drawing.Point(10, 281);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(40, 16);
+            this.label18.Size = new System.Drawing.Size(120, 16);
             this.label18.TabIndex = 2;
-            this.label18.Text = "领班";
+            this.label18.Text = "领班（吴仕红）";
             // 
             // label19
             // 
@@ -1292,11 +1331,11 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(192, 281);
+            this.label19.Location = new System.Drawing.Point(149, 281);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(40, 16);
+            this.label19.Size = new System.Drawing.Size(120, 16);
             this.label19.TabIndex = 2;
-            this.label19.Text = "员工";
+            this.label19.Text = "员工（杨仙仙）";
             // 
             // label20
             // 
@@ -1304,11 +1343,11 @@
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(333, 281);
+            this.label20.Location = new System.Drawing.Point(288, 281);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(40, 16);
+            this.label20.Size = new System.Drawing.Size(120, 16);
             this.label20.TabIndex = 2;
-            this.label20.Text = "检验";
+            this.label20.Text = "检验（蓝杰尧）";
             // 
             // label21
             // 
@@ -1316,50 +1355,44 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(441, 94);
+            this.label21.Location = new System.Drawing.Point(438, 94);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(29, 80);
             this.label21.TabIndex = 2;
             this.label21.Text = "当\r\n班\r\n人\r\n员";
             // 
-            // btn_Start
+            // pictureBox1
             // 
-            this.btn_Start.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_Start.FlatAppearance.BorderSize = 0;
-            this.btn_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Start.Image = ((System.Drawing.Image)(resources.GetObject("btn_Start.Image")));
-            this.btn_Start.Location = new System.Drawing.Point(597, 3);
-            this.btn_Start.Name = "btn_Start";
-            this.btn_Start.Size = new System.Drawing.Size(93, 44);
-            this.btn_Start.TabIndex = 11;
-            this.btn_Start.UseVisualStyleBackColor = true;
-            this.btn_Start.Click += new System.EventHandler(this.btn_Start_Click);
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(4, 4);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(132, 261);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
             // 
-            // btn_Stop
+            // pictureBox2
             // 
-            this.btn_Stop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_Stop.FlatAppearance.BorderSize = 0;
-            this.btn_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Stop.Image = ((System.Drawing.Image)(resources.GetObject("btn_Stop.Image")));
-            this.btn_Stop.Location = new System.Drawing.Point(696, 3);
-            this.btn_Stop.Name = "btn_Stop";
-            this.btn_Stop.Size = new System.Drawing.Size(93, 44);
-            this.btn_Stop.TabIndex = 11;
-            this.btn_Stop.UseVisualStyleBackColor = true;
-            this.btn_Stop.Click += new System.EventHandler(this.btn_Stop_Click);
+            this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(143, 4);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(132, 261);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 3;
+            this.pictureBox2.TabStop = false;
             // 
-            // btn_Recovery
+            // pictureBox3
             // 
-            this.btn_Recovery.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_Recovery.FlatAppearance.BorderSize = 0;
-            this.btn_Recovery.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Recovery.Image = ((System.Drawing.Image)(resources.GetObject("btn_Recovery.Image")));
-            this.btn_Recovery.Location = new System.Drawing.Point(795, 3);
-            this.btn_Recovery.Name = "btn_Recovery";
-            this.btn_Recovery.Size = new System.Drawing.Size(93, 44);
-            this.btn_Recovery.TabIndex = 11;
-            this.btn_Recovery.UseVisualStyleBackColor = true;
-            this.btn_Recovery.Click += new System.EventHandler(this.btn_Recovery_Click);
+            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(282, 4);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(132, 261);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 3;
+            this.pictureBox3.TabStop = false;
             // 
             // btn_StatusLight
             // 
@@ -1410,39 +1443,6 @@
             this.btn_SignalX01.TabIndex = 0;
             this.btn_SignalX01.Text = "开模";
             this.btn_SignalX01.UseVisualStyleBackColor = true;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(4, 4);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(134, 261);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(145, 4);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(134, 261);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 3;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(286, 4);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(134, 261);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 3;
-            this.pictureBox3.TabStop = false;
             // 
             // frmMain
             // 
