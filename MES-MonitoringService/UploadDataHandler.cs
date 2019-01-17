@@ -69,6 +69,9 @@ namespace MES_MonitoringService
         {
             try
             {
+                //Common.LogHandler.Log("开始运行定时方法[ProcessMachineStatusLog]");
+
+
                 //找到机器状态集合
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
 
@@ -103,7 +106,7 @@ namespace MES_MonitoringService
                     newMachineStatus_JSON.IsStopFlag = machineStatusLogEntity.IsStopFlag;
                     newMachineStatus_JSON.LocalMacAddress = machineStatusLogEntity.LocalMacAddress;
 
-                    Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
+                    //Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 
                     //读取Mongodb机器状态日志并上传至队列中
                     bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
@@ -136,7 +139,7 @@ namespace MES_MonitoringService
             }
             catch (Exception ex)
             {
-                Common.LogHandler.Log("MES数据上传服务程序发现错误，请管理员及时处理。");
+                Common.LogHandler.Log("MES数据上传服务程序发现错误，请管理员及时处理。" + ex.Message);
             }
         }
 

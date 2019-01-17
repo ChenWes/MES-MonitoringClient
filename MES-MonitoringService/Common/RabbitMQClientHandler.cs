@@ -53,7 +53,8 @@ namespace MES_MonitoringService.Common
 
                 mc_ConnectionFactory.RequestedHeartbeat = 10;//心跳包
                 mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
-                mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+                mc_ConnectionFactory.TopologyRecoveryEnabled = true;//技术重连
+                mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(1);
 
                 //创建连接
                 Connection = mc_ConnectionFactory.CreateConnection();
@@ -65,7 +66,10 @@ namespace MES_MonitoringService.Common
             }
             catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
             {
-                Thread.Sleep(5000);
+                //DisposeAllConnectionObjects();
+
+                throw e;
+                //Thread.Sleep(5000);
                 // apply retry logic
             }
             catch (Exception)
@@ -140,6 +144,9 @@ namespace MES_MonitoringService.Common
         {
             try
             {
+                if (Connection == null) throw new Exception("连接为空");
+                if (Channel == null) throw new Exception("通送为空");
+
                 //创建一个持久化的频道
                 bool queueDurable = true;
 
@@ -166,15 +173,10 @@ namespace MES_MonitoringService.Common
                 //等待确认
                 return Channel.WaitForConfirms();
             }
-            catch (OperationInterruptedException ex)
-            {
-                //遇到断开连接时，需要将原有的连接信息、频道等全部删除一次，便于下次重连
-                DisposeAllConnectionObjects();
-
-                return false;
-            }
             catch (Exception ex)
             {
+                LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
+
                 return false;
             }
         }
