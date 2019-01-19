@@ -13,7 +13,6 @@ namespace MES_MonitoringClient.Common
     {
         /*-------------------------------------------------------------------------------------*/
 
-
         /// <summary>
         /// 0800/0400/0222等原本的信号
         /// </summary>
@@ -43,7 +42,6 @@ namespace MES_MonitoringClient.Common
         /// 结束时间
         /// </summary>
         public DateTime EndDateTime { get; set; }
-
 
         /*-------------------------------------------------------------------------------------*/
 

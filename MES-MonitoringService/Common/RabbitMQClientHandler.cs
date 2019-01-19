@@ -162,9 +162,9 @@ namespace MES_MonitoringService.Common
                 Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
 
                 //设置消息持久性
-                //IBasicProperties props = Channel.CreateBasicProperties();
-                //props.ContentType = "text/plain";
-                //props.DeliveryMode = 2;//持久性
+                IBasicProperties props = Channel.CreateBasicProperties();
+                props.ContentType = "text/plain";
+                props.DeliveryMode = 2;//持久性
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);

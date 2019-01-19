@@ -18,12 +18,17 @@ namespace MES_MonitoringClient.Common
         private static string MongodbDefaultUrl = Common.ConfigFileHandler.GetAppConfig("MongodbURL");
         private static string MongodbDefaultDBName = Common.ConfigFileHandler.GetAppConfig("MongodbName");
 
-        // 定义一个静态变量来保存类的实例
+        /// <summary>
+        /// 定义一个静态变量来保存类的实例
+        /// </summary>
         private static MongodbHandler uniqueInstance;
-        //定义一个标识确保线程同步 
+
+        /// <summary>
+        /// 定义一个标识确保线程同步
+        /// </summary>
         private static readonly object locker = new object();
 
-
+        /*声明变量*/
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -36,7 +41,7 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public IMongoDatabase mc_MongoDatabase = null;
 
-
+        /*构造函数*/
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
@@ -74,13 +79,7 @@ namespace MES_MonitoringClient.Common
             return uniqueInstance;
         }
 
-
         /*-------------------------------------------------------------------------------------*/
-        public static void CloseData()
-        {
-            
-        }
-
 
         /// <summary>
         /// 获取数据集

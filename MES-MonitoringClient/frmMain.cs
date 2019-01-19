@@ -19,21 +19,24 @@ namespace MES_MonitoringClient
 {
     public partial class frmMain : Form
     {
-        private long COM7_SendDataCount = 0;
-        private long COM7_SendDataErrorCount = 0;
-        private long COM7_ReceiveDataCount = 0;
-        private long COM7_ReceiveDataErrorCount = 0;
+        //数字为发送及接收数据状态的灯
+        private int SendDataSuccessColor = 0;
+        private int ReceiveDataSuccessColor = 0;
 
+        //发送串口数据信号时间间隔
+        private long sendDataTimeInterval = 0;
+
+        //机器名称
         private string defaultMachineName = Common.ConfigFileHandler.GetAppConfig("MachineName");
-
+        //发送数据时间间隔，以毫秒计
         private string defaultSendDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("SendDataIntervalMilliseconds");
+        //数据上传服务名称
         private string defaultUploadDataServiceName = Common.ConfigFileHandler.GetAppConfig("UploadDataServiceName");        
 
         /*---------------------------------------------------------------------------------------*/
 
         //向串口6发送的默认信号
         static string mc_DefaultSignal = Common.ConfigFileHandler.GetAppConfig("SendDataDefaultSignal");
-
         //必须的串口端口
         static string[] mc_DefaultRequiredSerialPortName = Common.ConfigFileHandler.GetAppConfig("CheckSerialPort").Split(',');
 
@@ -52,6 +55,13 @@ namespace MES_MonitoringClient
         ThreadStart MachineTemperatureThreadFunction = null;
         Common.TimmerHandler MachineTemperatureTimerClass = null;
 
+        //状态灯
+        Thread StatusLightThreadClass = null;
+        ThreadStart StatusLightThreadFunction = null;
+        Common.TimmerHandler StatusLightTimerClass = null;
+
+        /*---------------------------------------------------------------------------------------*/
+
         //状态操作类
         static Common.MachineStatusHandler mc_MachineStatusHander = null;
 
@@ -60,7 +70,7 @@ namespace MES_MonitoringClient
 
         /*---------------------------------------------------------------------------------------*/
         //后台线程变量
-        Thread timerThread = null;
+        //Thread timerThread = null;
 
         //定时器变量
         //System.Timers.Timer TTimer;
@@ -87,10 +97,6 @@ namespace MES_MonitoringClient
                 //显示机器名称
                 btn_MachineName.Text = defaultMachineName;
 
-                //检测代码运行时间
-                //var sw = Stopwatch.StartNew();
-                //lab_MACAddress.Text = Common.CommonFunction.getMacAddress();
-
                 //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
 
@@ -100,22 +106,18 @@ namespace MES_MonitoringClient
                 //发送数据串口默认配置
                 sendDataSerialPortGetDefaultSetting();
 
-                //设置默认状态
+                //设置机器默认状态
                 mc_MachineStatusHander = new Common.MachineStatusHandler();
                 mc_MachineStatusHander.UpdateMachineUseTimeDelegate += UpdateMachineUseTime;//状态更新方法（更新饼图）
                 mc_MachineStatusHander.UpdateMachineCompleteDateTimeDelegate += UpdateMachineCompleteDateTime;//预计完成时间更新方法（预计完成时间）
                 mc_MachineStatusHander.UpdateMachineStatusTotalDateTimeDelegate += UpdateMachineStatusTotalDateTime;//状态总时间更新方法（状态总时间）
 
+                //设置机器生命周期信号状态
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineSignalDelegate += UpdateMachineSignalStatus;//信号更新方法（更新信号灯）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineLifeCycleTimeDelegate += UpdateMachineLifeCycleTime;//更新产品生命周期（实际生产时间）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNondefectiveCountDelegate += UpdateMachineNondefectiveCount;//良品更新方法（良品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNoCompleteCountDelegate += UpdateMachineNoCompletedCount;//未完成产品数量更新方法（未完成产品数量）
-
-
-                //mc_MachineStatusHander.ChangeStatus("Online", "运行", "WesChen", "001A");
-                //SettingMachineStatusLight();
-
-                //是否检测MongoDB服务
+                
                 //检测MongoDB服务
                 if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
                 {
@@ -130,17 +132,29 @@ namespace MES_MonitoringClient
                 }
 
                 //打开端口
-                serialPort6.Open();
+                if (!serialPort6.IsOpen)
+                {
+                    serialPort6.Open();
+                }
 
                 //开始后台进程（更新时间）                
                 DateTimeThreadFunction = new ThreadStart(DateTimeTimer);
                 DateTimeThreadClass = new Thread(DateTimeThreadFunction);
                 DateTimeThreadClass.Start();
 
+                //发送串口数据信号时间间隔
+                long.TryParse(defaultSendDataIntervalMilliseconds, out sendDataTimeInterval);
+
                 //开始后台进程（定时发送指定数据至指定串口，并自动获取结果）
                 SendDataThreadFunction = new ThreadStart(SendDataToSerialPortTimer);
                 SendDataThreadClass = new Thread(SendDataThreadFunction);
                 SendDataThreadClass.Start();
+
+
+                //开始后台进程（状态灯）                
+                StatusLightThreadFunction = new ThreadStart(StatusLightTimer);
+                StatusLightThreadClass = new Thread(StatusLightThreadFunction);
+                StatusLightThreadClass.Start();
 
                 #region 温度代码
                 //开始后台进程（定时获取机器温度）
@@ -188,9 +202,6 @@ namespace MES_MonitoringClient
                 //SetAxisLimits(System.DateTime.Now);
                 #endregion
 
-                //停止检测代码运行时间
-                //MessageBox.Show("初始化共使用" + sw.ElapsedMilliseconds.ToString() + "毫秒");
-                //sw.Stop();
             }
             catch (Exception ex)
             {
@@ -206,43 +217,53 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("退出系统后，暂时不会收集到机器的数据，请知悉", "系统退出提醒", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+            try
             {
-                //定时器
-                if (DateTimeThreadClass != null && TTimerClass != null)
+                if (MessageBox.Show("退出系统后，暂时不会收集到机器的数据，请知悉", "系统退出提醒", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
                 {
-                    TTimerClass.StopTimmer();                    
+                    //定时器
+                    if (DateTimeThreadClass != null && TTimerClass != null)
+                    {
+                        TTimerClass.StopTimmer();
+                        DateTimeThreadClass.Abort();
+                    }
 
-                    DateTimeThreadClass.Abort();
-                    DateTimeThreadClass.Join();                    
+                    //发送数据
+                    if (SendDataThreadClass != null && SDTimerClass != null)
+                    {
+                        SDTimerClass.StopTimmer();
+                        SendDataThreadClass.Abort();
+                    }
+
+                    //状态灯
+                    if(StatusLightThreadClass !=null && StatusLightTimerClass != null)
+                    {
+                        StatusLightTimerClass.StopTimmer();
+                        StatusLightThreadClass.Abort();
+                    }
+
+                    //串口关闭
+                    if (serialPort6.IsOpen)
+                    {
+                        serialPort6.Close();
+                    }
+
+                    //关闭程序前先保存数据
+                    if (mc_MachineStatusHander != null)
+                    {
+                        mc_MachineStatusHander.AppWillClose_SaveData();
+                    }
+
+                    e.Cancel = false;
                 }
-
-                //发送数据
-                if (SendDataThreadClass != null&& SDTimerClass!=null)
+                else
                 {
-                    SDTimerClass.StopTimmer();
-
-                    SendDataThreadClass.Abort();
-                    SendDataThreadClass.Join();
+                    e.Cancel = true;
                 }
-
-                //串口关闭
-                if (serialPort6.IsOpen)
-                {
-                    serialPort6.Close();
-                }
-
-                //关闭程序前先保存数据
-                if (mc_MachineStatusHander != null)
-                {
-                    mc_MachineStatusHander.AppWillClose_SaveData();
-                }
-                
-                e.Cancel = false;
             }
-            else
+            catch (Exception ex)
             {
-                e.Cancel = true;
+                ShowErrorMessage(ex.Message, "退出系统错误");
             }
         }
 
@@ -268,16 +289,31 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
+        /// 显示状态灯
+        /// </summary>
+        private void StatusLightTimer()
+        {
+            try
+            {
+                StatusLightTimerClass = new Common.TimmerHandler(10, true, (o, a) =>
+                {
+                    SetStatusLight();
+                }, true);
+            }
+            catch (Exception ex)
+            {
+                TTimerClass = null;
+            }
+        }
+
+        /// <summary>
         /// 发送AA1086至串口7定时器
         /// </summary>
         private void SendDataToSerialPortTimer()
         {
             try
             {
-                long timeInterval = 0;
-                long.TryParse(defaultSendDataIntervalMilliseconds, out timeInterval);
-
-                SDTimerClass = new Common.TimmerHandler(timeInterval, true, (o, a) =>
+                SDTimerClass = new Common.TimmerHandler(sendDataTimeInterval, true, (o, a) =>
                 {
                     SendDataToSerialPort(mc_DefaultSignal);
                 }, true);
@@ -338,6 +374,7 @@ namespace MES_MonitoringClient
 
                         //后台上传数据服务状态                        
                         Common.CommonFunction.ServiceStatus getServiceStatus = Common.CommonFunction.GetServiceStatus(defaultUploadDataServiceName);
+
                         //显示不同的文字及颜色
                         if (getServiceStatus == Common.CommonFunction.ServiceStatus.NoInstall)
                         {
@@ -370,6 +407,66 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
+        /// 声明显示状态灯委托
+        /// </summary>
+        private delegate void SetStatusLightDelegate();
+        private void SetStatusLight()
+        {
+            try
+            {
+                if (this.InvokeRequired)
+                {
+                    try
+                    {
+                        this.Invoke(new SetDateTimeDelegate(SetStatusLight));
+                    }
+                    catch (Exception ex)
+                    {
+                        //响铃并显示异常给用户
+                        System.Media.SystemSounds.Beep.Play();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        if (SendDataSuccessColor != 0)
+                        {
+                            btn_SendDataLight.BackColor = Color.FromArgb(SendDataSuccessColor, SendDataSuccessColor, SendDataSuccessColor);
+
+                            SendDataSuccessColor = SendDataSuccessColor - 30;
+                            if (SendDataSuccessColor <= 0)
+                            {
+                                SendDataSuccessColor = 0;
+                            }
+                        }
+
+                        if (ReceiveDataSuccessColor != 0)
+                        {
+                            btn_ReceiveDataLight.BackColor = Color.FromArgb(ReceiveDataSuccessColor, ReceiveDataSuccessColor, ReceiveDataSuccessColor);
+
+                            ReceiveDataSuccessColor = ReceiveDataSuccessColor - 30;
+                            if (ReceiveDataSuccessColor <= 0)
+                            {
+                                ReceiveDataSuccessColor = 0;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //响铃并显示异常给用户
+                        System.Media.SystemSounds.Beep.Play();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "设置当前时间错误");
+                StatusLightTimerClass = null;
+            }
+        }
+
+        /// <summary>
         /// 声明发送数据至串口委托
         /// </summary>
         /// <param name="defaultSignal"></param>
@@ -378,7 +475,6 @@ namespace MES_MonitoringClient
         {
             try
             {
-
                 if (this.InvokeRequired)
                 {
                     SendDataToSerialPortDelegate sendDataToSerialPortDelegate = SendDataToSerialPort;
@@ -404,21 +500,12 @@ namespace MES_MonitoringClient
 
                             //不转码直接发送
                             serialPort6.Write(defaultSignal);
-
-                            //发送的大小
-                            if (COM7_SendDataCount + 100 > long.MaxValue) COM7_SendDataCount = 0;
-                            COM7_SendDataCount += 1;
-                            lab_SendSuccessCount.Text = "发送成功：" + COM7_SendDataCount;
-                            lab_SendSuccessCount.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);
+                            //闪灯
+                            SendDataSuccessColor = 255;                         
                         }
                     }
                     catch (Exception ex)
                     {
-                        if (COM7_SendDataErrorCount + 100 > long.MaxValue) COM7_SendDataErrorCount = 0;
-                        COM7_SendDataErrorCount += 1;
-                        lab_SendErrorCount.Text = "发送失败：" + COM7_SendDataErrorCount;
-                        lab_SendErrorCount.BackColor= System.Drawing.Color.FromArgb(221, 221, 0);
-
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
                     }
@@ -744,6 +831,7 @@ namespace MES_MonitoringClient
         //    MessageBox.Show("You clicked (" + chartPoint.X + "," + chartPoint.Y + ")");
         //}
 
+
         /*窗口公共方法*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -849,16 +937,18 @@ namespace MES_MonitoringClient
                 {
                     //更改状态
                     mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal(stringBuilder.ToString());
+                    //闪灯
+                    ReceiveDataSuccessColor = 255;
                 }
 
                 this.Invoke((EventHandler)(delegate
                 {
                     Common.LogHandler.Log(stringBuilder.ToString());                    
 
-                    if (COM7_ReceiveDataCount + 100 > long.MaxValue) COM7_ReceiveDataCount = 0;
-                    COM7_ReceiveDataCount += 1;
-                    lab_ReceviedDataCount.Text = "接收成功：" + COM7_ReceiveDataCount;
-                    lab_ReceviedDataCount.BackColor= System.Drawing.Color.FromArgb(0, 230, 118);
+                    //if (COM7_ReceiveDataCount + 100 > long.MaxValue) COM7_ReceiveDataCount = 0;
+                    //COM7_ReceiveDataCount += 1;
+                    //lab_ReceviedDataCount.Text = "接收成功：" + COM7_ReceiveDataCount;
+                    //lab_ReceviedDataCount.BackColor= System.Drawing.Color.FromArgb(0, 230, 118);
 
                 }
                    )
@@ -912,10 +1002,6 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void serialPort6_ErrorReceived(object sender, System.IO.Ports.SerialErrorReceivedEventArgs e)
         {
-            if (COM7_ReceiveDataErrorCount+100 > long.MaxValue) COM7_ReceiveDataErrorCount = 0;
-            COM7_ReceiveDataErrorCount += 1;
-            lab_ReceviedDataErrorCount.Text = "接收失败：" + COM7_ReceiveDataErrorCount;
-            lab_ReceviedDataErrorCount.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);
         }
 
         /// <summary>
@@ -1189,6 +1275,8 @@ namespace MES_MonitoringClient
             }
         }
 
+
+
         /// <summary>
         /// 工单数==》修改
         /// </summary>
@@ -1254,8 +1342,6 @@ namespace MES_MonitoringClient
         }
 
 
-
-
         /*菜单按钮事件*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -1266,9 +1352,9 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void btn_Start_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(txt_WorkOrderCount.Text.Trim()))
+            if (string.IsNullOrEmpty(txt_WorkOrderCount.Text.Trim()))
             {
-                ShowErrorMessage("请输入[工单数]","运行参数检测");
+                ShowErrorMessage("请输入[工单数]", "运行参数检测");
                 txt_WorkOrderCount.Focus();
                 return;
             }
@@ -1280,17 +1366,23 @@ namespace MES_MonitoringClient
                 return;
             }
 
-            //开工时间
-            mc_MachineStatusHander.StartWorkTime = System.DateTime.Now;            
+            if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
+            {
+                btn_StatusLight_Click(sender, null);
+            }
+            else
+            {
+                //开工时间
+                mc_MachineStatusHander.StartWorkTime = System.DateTime.Now;
 
-            //设置机器完成时间
-            mc_MachineStatusHander.SettingMachineCompleteDateTime();
+                //设置机器完成时间
+                mc_MachineStatusHander.SettingMachineCompleteDateTime();
 
-            //状态
-            mc_MachineStatusHander.ChangeStatus("StartProduce", "运行", "WesChen", "001A");
-            SettingMachineStatusLight();
+                //状态
+                mc_MachineStatusHander.ChangeStatus("StartProduce", "运行", "WesChen", "001A");
+                SettingMachineStatusLight();
+            }
         }
-
 
         /// <summary>
         /// 暂停按钮
@@ -1324,6 +1416,16 @@ namespace MES_MonitoringClient
             {
                 ShowErrorMessage("没有暂停的工单", "工单恢复失败");
             }
+        }
+
+        /// <summary>
+        /// 窗口最小化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_MinimizeWindows_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
         }
 
         /// <summary>

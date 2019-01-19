@@ -29,24 +29,34 @@ namespace MES_MonitoringClient.Common
             Red
         }
 
-        //机器状态Mongodb集合
-        private IMongoCollection<DataModel.MachineStatus> machineStatusLogCollection;
+        /// <summary>
+        /// 灯
+        /// </summary>
+        public enumStatusLight mc_StatusLight = enumStatusLight.Green;
 
+        /*MongoDB数据库*/
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 机器状态Mongodb集合
+        /// </summary>
+        private IMongoCollection<DataModel.MachineStatus> machineStatusLogCollection;
 
         /// <summary>
         /// 机器状态默认Mongodb集合名
         /// </summary>
         private static string defaultMachineStatusMongodbCollectionName = "MachineStatusLog";
 
-        /// <summary>
-        /// 灯
-        /// </summary>
-        public enumStatusLight mc_StatusLight = enumStatusLight.Green;
+        /*机器生命周期参数处理*/
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 机器生产状态
         /// </summary>
         public MachineProduceStatusHandler mc_MachineProduceStatusHandler = null;
+
+        /*机器状态外部可访问参数声明*/
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 状态编码
@@ -98,7 +108,6 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public DateTime LastOperationDateTime { get; set; }
 
-
         /// <summary>
         /// 起工时间
         /// </summary>
@@ -109,13 +118,15 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public DateTime? PlanCompleteDateTime { get; set; }
 
+        /*更新界面委托方法*/
+        /*-------------------------------------------------------------------------------------*/
+
         /// <summary>
         /// 更新机器使用时间返回至界面
         /// </summary>
         /// <param name="signalType"></param>
         public delegate void UpdateMachineUseTime(List<DataModel.MachineStatusUseTime> user);
         public UpdateMachineUseTime UpdateMachineUseTimeDelegate;
-
 
         /// <summary>
         /// 更新机器使用时间返回至界面
@@ -158,7 +169,7 @@ namespace MES_MonitoringClient.Common
         /// <param name="uiCallbackFunction"></param>
         public MachineStatusHandler()
         {
-            //生产状态
+            //机器产品生命周期声明
             mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();
 
             //最后操作记录ID为空
@@ -338,6 +349,10 @@ namespace MES_MonitoringClient.Common
 
         }
 
+
+        /*修改机器状态*/
+        /*-------------------------------------------------------------------------------------*/
+
         /// <summary>
         /// 获取机器各状态持续总时间
         /// </summary>
@@ -361,15 +376,26 @@ namespace MES_MonitoringClient.Common
             return returnList;
         }
 
-
         /// <summary>
         /// 自动获取数据的饼图
         /// </summary>
         public void ShowStatusPieChart()
         {
-            //回调更新界面，各状态占比时间
-            UpdateMachineUseTimeDelegate(GetMachineUseTimeList());
+            if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+            {
+                //回调更新界面，各状态占比时间
+                UpdateMachineUseTimeDelegate(GetMachineUseTimeList());
+            }
         }
+
+        /// <summary>
+        /// 机器预计完成时间设置
+        /// </summary>
+        public void SettingMachineCompleteDateTime()
+        {
+            UpdateMachineCompleteDateTimeDelegate();
+        }
+
 
         /*红绿灯操作*/
         /*-------------------------------------------------------------------------------------*/
@@ -383,14 +409,6 @@ namespace MES_MonitoringClient.Common
             if (newStatusDescription == "运行") mc_StatusLight = enumStatusLight.Green;
             else if (newStatusDescription == "故障") mc_StatusLight = enumStatusLight.Red;
             else if (newStatusDescription == "停机") mc_StatusLight = enumStatusLight.Yellow;
-        }
-
-        /// <summary>
-        /// 机器预计完成时间设置
-        /// </summary>
-        public void SettingMachineCompleteDateTime()
-        {
-            UpdateMachineCompleteDateTimeDelegate();
         }
 
 

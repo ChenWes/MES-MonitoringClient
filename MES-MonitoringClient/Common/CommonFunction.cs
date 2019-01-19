@@ -29,7 +29,7 @@ namespace MES_MonitoringClient.Common
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// 格式化时间显示
+        /// 格式化时间显示（毫秒）
         /// </summary>
         /// <param name="ms">总的毫秒数</param>
         /// <returns></returns>
@@ -68,8 +68,12 @@ namespace MES_MonitoringClient.Common
             return strTime.ToString();
         }
 
-
-        public static String FormatSeconds(long ms)
+        /// <summary>
+        /// 格式化时间显示（秒）
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static String FormatSeconds(long s)
         {
             //基数
             int ss = 1000;
@@ -78,20 +82,19 @@ namespace MES_MonitoringClient.Common
             int dd = hh * 24;
 
             //计算
-            long day = ms / dd;
-            long hour = (ms - day * dd) / hh;
-            long minute = (ms - day * dd - hour * hh) / mi;
-            long second = (ms - day * dd - hour * hh - minute * mi) / ss;
-            long milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss;
+            long day = s / dd;
+            long hour = (s - day * dd) / hh;
+            long minute = (s - day * dd - hour * hh) / mi;
+            long second = (s - day * dd - hour * hh - minute * mi) / ss;
+            long milliSecond = s - day * dd - hour * hh - minute * mi - second * ss;
 
             //对应的文本
             String strDay = day < 10 ? "0" + day : "" + day; //天
             String strHour = hour < 10 ? "0" + hour : "" + hour;//小时
             String strMinute = minute < 10 ? "0" + minute : "" + minute;//分钟
             String strSecond = second < 10 ? "0" + second : "" + second;//秒
-            String strMilliSecond = milliSecond < 10 ? "0" + milliSecond : "" + milliSecond;//毫秒
-
-            strMilliSecond = milliSecond < 100 ? "0" + strMilliSecond : "" + strMilliSecond;
+            //String strMilliSecond = milliSecond < 10 ? "0" + milliSecond : "" + milliSecond;//毫秒
+            //strMilliSecond = milliSecond < 100 ? "0" + strMilliSecond : "" + strMilliSecond;
 
             //返回标准化的时间
             StringBuilder strTime = new StringBuilder();
@@ -99,7 +102,7 @@ namespace MES_MonitoringClient.Common
             strTime.Append(hour > 0 ? (strHour + "小时") : "");
             strTime.Append(minute > 0 ? (strMinute + "分钟") : "");
             strTime.Append(second > 0 ? (strSecond + "秒") : "");
-            strTime.Append(milliSecond > 0 ? (strMilliSecond + "毫秒") : "");
+            //strTime.Append(milliSecond > 0 ? (strMilliSecond + "毫秒") : "");
 
             return strTime.ToString();
         }
@@ -188,6 +191,9 @@ namespace MES_MonitoringClient.Common
 return System.Drawing.ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(R, G, B));
         }
 
+        /*-------------------------------------------------------------------------------------*/
+        /*服务状态*/
+
         /// <summary>
         /// 确认服务是否在运行
         /// </summary>
@@ -212,6 +218,11 @@ return System.Drawing.ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(R, G,
             return returnFlag;
         }
 
+        /// <summary>
+        /// 获取服务状态
+        /// </summary>
+        /// <param name="serviceName"></param>
+        /// <returns></returns>
         public static ServiceStatus GetServiceStatus(string serviceName)
         {
             ServiceStatus returnFlag = ServiceStatus.NoInstall;
