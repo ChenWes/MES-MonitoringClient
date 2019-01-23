@@ -164,16 +164,19 @@ namespace MES_MonitoringClient.Common
             try
             {
                 if (strHxColor.Length == 0)
-                {//如果为空
+                {
+                    //如果为空
                     return System.Drawing.Color.FromArgb(0, 0, 0);//设为黑色
                 }
                 else
-                {//转换颜色
+                {
+                    //转换颜色
                     return System.Drawing.Color.FromArgb(System.Int32.Parse(strHxColor.Substring(1, 2), System.Globalization.NumberStyles.AllowHexSpecifier), System.Int32.Parse(strHxColor.Substring(3, 2), System.Globalization.NumberStyles.AllowHexSpecifier), System.Int32.Parse(strHxColor.Substring(5, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
                 }
             }
             catch
-            {//设为黑色
+            {
+                //设为黑色
                 return System.Drawing.Color.FromArgb(0, 0, 0);
             }
         }
@@ -187,8 +190,7 @@ namespace MES_MonitoringClient.Common
         /// <returns></returns>
         public static string colorRGBtoHx16(int R, int G, int B)
         {
-            
-return System.Drawing.ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(R, G, B));
+            return System.Drawing.ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(R, G, B));
         }
 
         /*-------------------------------------------------------------------------------------*/
