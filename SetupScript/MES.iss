@@ -40,8 +40,59 @@ Name: "chs"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 [Files]
 ;安装文件
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\*"; DestDir: "{app}\Client"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+;Client的文件夹
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\*"; DestDir: "{app}\Client"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Program Files (x86)\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\DnsClient.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\DnsClient.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.pdb"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.WinForms.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.WinForms.pdb"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.WinForms.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.Wpf.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.Wpf.pdb"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.Wpf.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MES-MonitoringClient.exe"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MES-MonitoringClient.exe.config"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MES-MonitoringClient.pdb"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Bson.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Bson.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.Core.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.Core.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Buffers.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
+;Service的文件夹
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Program Files (x86)\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MES-MonitoringService.exe"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MES-MonitoringService.exe.config"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MES-MonitoringService.pdb"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MongoDB.Bson.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MongoDB.Bson.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MongoDB.Driver.Core.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MongoDB.Driver.Core.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MongoDB.Driver.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.pdb"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\System.Buffers.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Topshelf.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Topshelf.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
+
 ;NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -63,6 +114,10 @@ Filename: {sys}\sc.exe; Parameters: "stop MESUploadDataService" ; Flags: runhidd
 Filename: {sys}\sc.exe; Parameters: "delete MESUploadDataService" ; Flags: runhidden
 
 [Messages]
+;安装时，windows任务栏提示标题
+SetupAppTitle=MES Monitoring Client Setup
+;安装时，安装引导标题
+SetupWindowTitle=MES Monitoring Client Setup
 ;在界面左下角加文字
 BeveledLabel=GuangDong CuiFeng Robotics Technolog Limited
 ;卸载对话框说明
@@ -76,11 +131,12 @@ ConfirmUninstall=您真的想要从电脑中卸载 %1 吗?%n%n按 [是] 则完全删除 %1 以及它的
 //设置界面文字颜色
 procedure InitializeWizard(); 
 begin 
-  WizardForm.WELCOMELABEL1.Font.Color:= clGreen;//设置开始安装页面第一段文字的颜色为绿色 
-  WizardForm.WELCOMELABEL2.Font.Color:= clOlive;//设置开始安装页面第二段文字的颜色为橄榄绿 
-  WizardForm.PAGENAMELABEL.Font.Color:= clRed;//设置许可协议页面第一段文字的颜色为红色 
-  WizardForm.PAGEDESCRIPTIONLABEL.Font.Color:= clBlue; //设置许可协议页面第二段文字的颜色为蓝色 
-  WizardForm.MainPanel.Color:= clWhite;//设置窗格的颜色为白色 
+  //WizardForm.WELCOMELABEL1.Font.Color:= clGreen;//设置开始安装页面第一段文字的颜色为绿色 
+  //WizardForm.WELCOMELABEL2.Font.Color:= clOlive;//设置开始安装页面第二段文字的颜色为橄榄绿 
+  //WizardForm.PAGENAMELABEL.Font.Color:= clRed;//设置许可协议页面第一段文字的颜色为红色 
+  //WizardForm.PAGEDESCRIPTIONLABEL.Font.Color:= clBlue; //设置许可协议页面第二段文字的颜色为蓝色 
+  WizardForm.MainPanel.Color:= clWhite;//设置窗格的颜色为白色
+ 
 end;
 
 //卸载后打开网址
