@@ -133,14 +133,14 @@ namespace MES_MonitoringService.Common
 
 
         /// <summary>
-        /// 发送消息至服务端
+        /// Direct路由，发送消息至服务端
         /// </summary>
         /// <param name="exchangeName">交换机名称</param>
         /// <param name="routingKey">RoutingKey</param>
         /// <param name="queueName">队列名称</param>
         /// <param name="message">消息内容</param>
         /// <returns></returns>
-        public bool publishMessageToServerAndWaitConfirm(string exchangeName, string routingKey, string queueName, string message)
+        public bool DirectExchangePublishMessageToServerAndWaitConfirm(string exchangeName, string routingKey, string queueName, string message)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace MES_MonitoringService.Common
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                Channel.BasicPublish(ExchangeName, QueueName, null, messageBody);
+                Channel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
 
                 //等待确认
                 return Channel.WaitForConfirms();
@@ -181,5 +181,102 @@ namespace MES_MonitoringService.Common
             }
         }
 
+        /// <summary>
+        /// Fanout路由，发送消息至服务端
+        /// </summary>
+        /// <param name="exchangeName">交换机名称</param>
+        /// <param name="routingKey">RoutingKey</param>
+        /// <param name="queueName">队列名称</param>
+        /// <param name="message">消息内容</param>
+        /// <returns></returns>
+        public bool FanoutExchangePublishMessageToServerAndWaitConfirm(string exchangeName, string routingKey, string queueName, string message)
+        {
+            try
+            {
+                if (Connection == null) throw new Exception("连接为空");
+                if (Channel == null) throw new Exception("通送为空");
+
+                //创建一个持久化的频道
+                bool queueDurable = true;
+
+                string QueueName = queueName;
+                string ExchangeName = exchangeName;
+                string RoutingKey = routingKey;
+
+                //声明交换机
+                Channel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout);
+                //声明队列
+                Channel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                //路由绑定队列
+                Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
+
+                //设置消息持久性
+                IBasicProperties props = Channel.CreateBasicProperties();
+                props.ContentType = "text/plain";
+                props.DeliveryMode = 2;//持久性
+
+                //消息内容转码，并发送至服务器
+                var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
+                Channel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+
+                //等待确认
+                return Channel.WaitForConfirms();
+            }
+            catch (Exception ex)
+            {
+                LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Topic路由，发送消息至服务端
+        /// </summary>
+        /// <param name="exchangeName">交换机名称</param>
+        /// <param name="routingKey">RoutingKey</param>
+        /// <param name="queueName">队列名称</param>
+        /// <param name="message">消息内容</param>
+        /// <returns></returns>
+        public bool TopicExchangePublishMessageToServerAndWaitConfirm(string exchangeName, string routingKey, string queueName, string message)
+        {
+            try
+            {
+                if (Connection == null) throw new Exception("连接为空");
+                if (Channel == null) throw new Exception("通送为空");
+
+                //创建一个持久化的频道
+                bool queueDurable = true;
+
+                string QueueName = queueName;
+                string ExchangeName = exchangeName;
+                string RoutingKey = routingKey;
+
+                //声明交换机
+                Channel.ExchangeDeclare(ExchangeName, ExchangeType.Topic);
+                //声明队列
+                Channel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                //路由绑定队列
+                Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
+
+                //设置消息持久性
+                IBasicProperties props = Channel.CreateBasicProperties();
+                props.ContentType = "text/plain";
+                props.DeliveryMode = 2;//持久性
+
+                //消息内容转码，并发送至服务器
+                var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
+                Channel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+
+                //等待确认
+                return Channel.WaitForConfirms();
+            }
+            catch (Exception ex)
+            {
+                LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
+
+                return false;
+            }
+        }
     }
 }

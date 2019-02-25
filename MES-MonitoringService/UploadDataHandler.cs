@@ -109,7 +109,7 @@ namespace MES_MonitoringService
                     //Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 
                     //读取Mongodb机器状态日志并上传至队列中
-                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().publishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
+                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
                     if (sendToServerFlag)
                     {
                         /*当上传至服务器以后，更改数据*/
