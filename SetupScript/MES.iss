@@ -28,25 +28,25 @@ SolidCompression=yes
 ;安装包图标文件SetupIconFile=D:\document\mes\setup.ico
 
 
-[Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
+[Languages]Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "chs"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+;桌面增加快捷图标Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+;快捷方式Name: quicklaunchicon; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:CreateQuickLaunchIcon}"; Flags: unchecked
+;以下是给所有人使用还是给指定用户使用;Name: desktopicon\common; Description: "For all users"; GroupDescription: "Additional icons:"; Flags: exclusive unchecked
+;Name: desktopicon\user; Description: "For the current user only"; GroupDescription: "Additional icons:"; Flags: exclusive unchecked
+
 
 [Files]
 ;安装文件
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\*"; DestDir: "{app}\Client"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+;NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{commonprograms}\MES Monitoring Client"; Filename: "{app}\Client\MES-MonitoringClient.exe"
 Name: "{commondesktop}\MES Monitoring Client"; Filename: "{app}\Client\MES-MonitoringClient.exe"; Tasks: desktopicon
-
-[Run]
-;安装完成后启动应用
-Filename: "{app}\Client\MES-MonitoringClient.exe"; Description: "{cm:LaunchProgram,MES Monitoring Client}"; Flags: nowait postinstall skipifsilent
 
 
 [run]
@@ -54,6 +54,8 @@ Filename: "{app}\Client\MES-MonitoringClient.exe"; Description: "{cm:LaunchProgr
 ;Filename: {sys}\sc.exe; Parameters: "create MESUploadDataService start= auto binPath= ""{app}\Service\MES-MonitoringService.exe""" ; Flags: runhidden
 ;以下的方式可以直接运行
 Filename: "{app}\Service\MES-MonitoringService.exe"; Parameters: " install start"
+;安装完成后启动应用
+Filename: "{app}\Client\MES-MonitoringClient.exe"; Description: "{cm:LaunchProgram,MES Monitoring Client}"; Flags: nowait postinstall skipifsilent
 
 
 [UninstallRun]
@@ -67,11 +69,9 @@ BeveledLabel=GuangDong CuiFeng Robotics Technolog Limited
 ConfirmUninstall=您真的想要从电脑中卸载 %1 吗?%n%n按 [是] 则完全删除 %1 以及它的所有组件;%n按 [否]则让软件继续留在您的电脑上.
 
 
-;用于在用户系统中创建，修改或删除注册表健值
-;[Registry]
-;Root: HKLM ;SubKey:”Software\MESMonitoringClient”;ValueType:dword;ValueName:config;ValueData:10 ;Flags:uninsdeletevalue
-
-
+;用于在用户系统中创建，修改或删除注册表健值;[Registry]
+;Root:HKLM;Subkey:Wow6432Node\SOFTWARE\MES;ValueType: string; ValueName:TEST;ValueData:{app}\Client\MES-MonitoringClient.exe;Flags: uninsdeletevalue
+
 [Code]
 //设置界面文字颜色
 procedure InitializeWizard(); 
