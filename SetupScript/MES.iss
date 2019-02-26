@@ -43,7 +43,6 @@ Name: "chs"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 ;Client的文件夹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\*"; DestDir: "{app}\Client"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Program Files (x86)\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}\Client"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\DnsClient.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\DnsClient.xml"; DestDir: "{app}\Client"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\LiveCharts.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
@@ -70,10 +69,8 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Syste
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Client"; Flags: ignoreversion
 ;Service的文件夹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Program Files (x86)\Inno Setup 5\Examples\MyProg.exe"; DestDir: "{app}\Service"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.dll"; DestDir: "{app}\Service"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.xml"; DestDir: "{app}\Service"; Flags: ignoreversion
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MES-MonitoringService.exe"; DestDir: "{app}\Service"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MES-MonitoringService.exe.config"; DestDir: "{app}\Service"; Flags: ignoreversion
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\MES-MonitoringService.pdb"; DestDir: "{app}\Service"; Flags: ignoreversion
