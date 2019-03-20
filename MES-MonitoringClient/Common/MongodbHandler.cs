@@ -89,6 +89,50 @@ namespace MES_MonitoringClient.Common
         public IMongoCollection<BsonDocument> GetCollection(string collectionName)
         {
             return mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
-        }      
+        }
+
+        /// <summary>
+        /// 找到所有
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public MongoDB.Driver.Linq.IMongoQueryable FindAll(IMongoCollection<BsonDocument> collection)
+        {
+            return collection.AsQueryable<BsonDocument>();
+        }
+
+        /// <summary>
+        /// 找到一条
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IFindFluent<BsonDocument, BsonDocument> Find(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
+        {
+            return collection.Find(filter);
+        }
+
+        /// <summary>
+        /// 找到并更新
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <param name="update"></param>
+        /// <returns></returns>
+        public BsonDocument FindOneAndUpdate(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter, UpdateDefinition<BsonDocument> update)
+        {
+            return collection.FindOneAndUpdate(filter, update);
+        }
+
+        /// <summary>
+        /// 找到并删除
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public BsonDocument FindOneAndDelete(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
+        {
+            return collection.FindOneAndDelete(filter);
+        }
     }
 }

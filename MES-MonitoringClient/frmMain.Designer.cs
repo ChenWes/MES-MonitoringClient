@@ -117,7 +117,6 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -127,6 +126,7 @@
             this.btn_SignalX01 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_SendDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_ReceiveDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.label21 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -1289,14 +1289,14 @@
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 113F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 146F));
             this.tableLayoutPanel34.Controls.Add(this.label18, 0, 1);
             this.tableLayoutPanel34.Controls.Add(this.label19, 1, 1);
             this.tableLayoutPanel34.Controls.Add(this.label20, 2, 1);
-            this.tableLayoutPanel34.Controls.Add(this.label21, 3, 0);
             this.tableLayoutPanel34.Controls.Add(this.pictureBox1, 0, 0);
             this.tableLayoutPanel34.Controls.Add(this.pictureBox2, 1, 0);
             this.tableLayoutPanel34.Controls.Add(this.pictureBox3, 2, 0);
+            this.tableLayoutPanel34.Controls.Add(this.label21, 3, 0);
             this.tableLayoutPanel34.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel34.Location = new System.Drawing.Point(3, 319);
             this.tableLayoutPanel34.Name = "tableLayoutPanel34";
@@ -1312,7 +1312,7 @@
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(18, 273);
+            this.label18.Location = new System.Drawing.Point(13, 273);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(88, 32);
             this.label18.TabIndex = 2;
@@ -1324,7 +1324,7 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(142, 273);
+            this.label19.Location = new System.Drawing.Point(126, 273);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(88, 32);
             this.label19.TabIndex = 2;
@@ -1336,23 +1336,11 @@
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(266, 273);
+            this.label20.Location = new System.Drawing.Point(239, 273);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(88, 32);
             this.label20.TabIndex = 2;
             this.label20.Text = "检验（蓝杰尧）";
-            // 
-            // label21
-            // 
-            this.label21.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(416, 94);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(29, 80);
-            this.label21.TabIndex = 2;
-            this.label21.Text = "当\r\n班\r\n人\r\n员";
             // 
             // pictureBox1
             // 
@@ -1360,7 +1348,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(117, 261);
+            this.pictureBox1.Size = new System.Drawing.Size(106, 261);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -1369,9 +1357,9 @@
             // 
             this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(128, 4);
+            this.pictureBox2.Location = new System.Drawing.Point(117, 4);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(117, 261);
+            this.pictureBox2.Size = new System.Drawing.Size(106, 261);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 3;
             this.pictureBox2.TabStop = false;
@@ -1380,9 +1368,9 @@
             // 
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(252, 4);
+            this.pictureBox3.Location = new System.Drawing.Point(230, 4);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(117, 261);
+            this.pictureBox3.Size = new System.Drawing.Size(106, 261);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
@@ -1458,6 +1446,18 @@
             this.btn_ReceiveDataLight.Size = new System.Drawing.Size(15, 15);
             this.btn_ReceiveDataLight.TabIndex = 0;
             this.btn_ReceiveDataLight.UseVisualStyleBackColor = true;
+            // 
+            // label21
+            // 
+            this.label21.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.ForeColor = System.Drawing.Color.White;
+            this.label21.Location = new System.Drawing.Point(402, 102);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(24, 64);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "当\r\n班\r\n人\r\n员";
             // 
             // frmMain
             // 
@@ -1626,7 +1626,6 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Button btn_Start;
         private System.Windows.Forms.Button btn_Stop;
         private System.Windows.Forms.Button btn_Recovery;
@@ -1638,6 +1637,7 @@
         private System.Windows.Forms.Button btn_MinimizeWindows;
         private Common.Component.CircularButton btn_SendDataLight;
         private Common.Component.CircularButton btn_ReceiveDataLight;
+        private System.Windows.Forms.Label label21;
     }
 }
 

@@ -14,6 +14,7 @@ namespace MES_MonitoringService.Common
     public class RabbitMQClientHandler
     {
         private static string defaultRabbitMQHostName = Common.ConfigFileHandler.GetAppConfig("RabbitMQServerHostName");
+        private static string defaultRabbitMQPort = Common.ConfigFileHandler.GetAppConfig("RabbitMQServerPort");
         private static string defaultRabbitMQUserName = Common.ConfigFileHandler.GetAppConfig("RabbitMQUserName");
         private static string defaultRabbitMQPassword = Common.ConfigFileHandler.GetAppConfig("RabbitMQPassword");
         private static string defaultRabbitVirtualHost = Common.ConfigFileHandler.GetAppConfig("RabbitMQVirtualHost");
@@ -42,11 +43,17 @@ namespace MES_MonitoringService.Common
         {
             try
             {
+                Common.LogHandler.Log("获取RabbitMQ服务器参数：" + defaultRabbitMQHostName + ":" + defaultRabbitMQPort + " (" + defaultRabbitMQUserName + "/" + defaultRabbitMQPassword + ")");
                 //连接工厂
                 mc_ConnectionFactory = new ConnectionFactory();
 
                 //连接工厂信息
                 mc_ConnectionFactory.HostName = defaultRabbitMQHostName;// "localhost";
+
+                int rabbitmq_port = 5672;// 默认是5672端口
+                int.TryParse(defaultRabbitMQPort, out rabbitmq_port);
+                mc_ConnectionFactory.Port = rabbitmq_port;// "5672"
+
                 mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
                 mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
                 mc_ConnectionFactory.VirtualHost = defaultRabbitVirtualHost;// "/"
@@ -63,6 +70,8 @@ namespace MES_MonitoringService.Common
 
                 //确认模式，发送了消息后，可以收到回应
                 Channel.ConfirmSelect();
+
+                Common.LogHandler.Log("尝试连接至RabbitMQ服务器：" + defaultRabbitMQHostName);
             }
             catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
             {
@@ -147,7 +156,7 @@ namespace MES_MonitoringService.Common
                 if (Connection == null) throw new Exception("连接为空");
                 if (Channel == null) throw new Exception("通送为空");
 
-                //创建一个持久化的频道
+                //创建一个持久化的队列
                 bool queueDurable = true;
 
                 string QueueName = queueName;

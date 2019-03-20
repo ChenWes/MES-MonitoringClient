@@ -251,7 +251,7 @@ namespace MES_MonitoringClient
                     //关闭程序前先保存数据
                     if (mc_MachineStatusHander != null)
                     {
-                        mc_MachineStatusHander.AppWillClose_SaveData();
+                        //mc_MachineStatusHander.AppWillClose_SaveData();
                     }
 
                     e.Cancel = false;
@@ -364,6 +364,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("SetDateTime1");
                     }
                 }
                 else
@@ -396,6 +397,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("SetDateTime2");
                     }
                 }
             }
@@ -424,6 +426,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("SetStatusLight1");
                     }
                 }
                 else
@@ -456,6 +459,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("SetStatusLight2");
                     }
                 }
             }
@@ -486,6 +490,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("SendDataToSerialPort1");
                     }
                 }
                 else
@@ -508,6 +513,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("SendDataToSerialPort2");
                     }
                 }
             }
@@ -537,6 +543,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("GetMachineTemperature1");
                     }
                 }
                 else
@@ -560,6 +567,7 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
+                        txt_Log.AppendText("GetMachineTemperature2");
                     }
                 }
             }
@@ -941,18 +949,18 @@ namespace MES_MonitoringClient
                     ReceiveDataSuccessColor = 255;
                 }
 
-                this.Invoke((EventHandler)(delegate
-                {
-                    Common.LogHandler.Log(stringBuilder.ToString());                    
+                //this.Invoke((EventHandler)(delegate
+                //{
+                    //Common.LogHandler.Log(stringBuilder.ToString());                    
 
                     //if (COM7_ReceiveDataCount + 100 > long.MaxValue) COM7_ReceiveDataCount = 0;
                     //COM7_ReceiveDataCount += 1;
                     //lab_ReceviedDataCount.Text = "接收成功：" + COM7_ReceiveDataCount;
                     //lab_ReceviedDataCount.BackColor= System.Drawing.Color.FromArgb(0, 230, 118);
 
-                }
-                   )
-                );
+                //}
+                //   )
+                //);
 
                 #region 老代码
 
@@ -991,7 +999,9 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 //响铃并显示异常给用户
-                System.Media.SystemSounds.Beep.Play();
+                //System.Media.SystemSounds.Beep.Play();
+                //txt_Log.AppendText("serialPort6_DataReceived"+ ex.ToString());
+                //Common.LogHandler.Log(ex.ToString());
             }
         }
 

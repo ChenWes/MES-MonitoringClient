@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 
+using MongoDB;
+using MongoDB.Bson;
+using MongoDB.Driver;
+
 namespace MES_MonitoringClient.Common
 {
     /// <summary>
@@ -44,7 +48,12 @@ namespace MES_MonitoringClient.Common
         private static string singnalDefaultEnd = Common.ConfigFileHandler.GetAppConfig("GetSerialPortDataDefaultSignal_EndPrefix");
 
         /*-------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// 机器生命周期时间
+        /// </summary>
+        private IMongoCollection<DataModel.MachineProduceLifeCycle> machineProcuceLifeCycleCollection;
 
+        private static string defaultMachineProduceLifeCycleMongodbCollectionName = "MachineLifeCycle";
 
         /// <summary>
         /// 产品生命周期（计算时间）
@@ -130,6 +139,8 @@ namespace MES_MonitoringClient.Common
 
             //产品生命周期（计算次数）
             _MachineProcedureListForCount = new List<MachineProcedure>();
+
+            machineProcuceLifeCycleCollection = MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineProduceLifeCycle>(defaultMachineProduceLifeCycleMongodbCollectionName);
         }
 
 
@@ -231,6 +242,32 @@ namespace MES_MonitoringClient.Common
                             {
                                 //计数
                                 ProductCount++;
+
+                                if (LastX03SignalGetTime.HasValue)
+                                {
+                                    //处理生命周期
+                                    DataModel.MachineProduceLifeCycle produceLifeCycle = new DataModel.MachineProduceLifeCycle();
+                                    produceLifeCycle.LocalMacAddress = Common.CommonFunction.getMacAddress();
+                                    produceLifeCycle.StartDateTime = LastX03SignalGetTime.HasValue ? LastX03SignalGetTime.Value : System.DateTime.Now;
+                                    produceLifeCycle.EndDateTime = System.DateTime.Now;
+
+                                    TimeSpan timeSpan = produceLifeCycle.EndDateTime - produceLifeCycle.StartDateTime;
+                                    if (LastProductUseMilliseconds > 0)
+                                    {
+                                        produceLifeCycle.UseTotalSeconds = (decimal)LastProductUseMilliseconds / 1000;
+                                    }
+                                    else
+                                    {
+                                        produceLifeCycle.UseTotalSeconds = (decimal)timeSpan.TotalSeconds;
+                                    }
+
+
+                                    produceLifeCycle.IsUpdateToServer = false;
+                                    produceLifeCycle.IsUpdateToServer = false;
+
+                                    //保存每一个生命周期数据至数据库
+                                    SaveMachineProduceLifeCycle(produceLifeCycle);
+                                }
 
                                 //订单未完成数量，等于订单数量减去已完成数量
                                 OrderNoCompleteCount = OrderCount - ProductCount - ProductErrorCount;
@@ -351,6 +388,19 @@ namespace MES_MonitoringClient.Common
             if (isX01_X03 && isX02_X03 && isX03) resultFlag = true;
 
             return resultFlag;
+        }
+
+
+        /// <summary>
+        /// 机器生产生命周期保存
+        /// </summary>
+        /// <param name="produceLifeCycle">单个生命周期数据</param>
+        private void SaveMachineProduceLifeCycle(DataModel.MachineProduceLifeCycle produceLifeCycle)
+        {
+            if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+            {
+                machineProcuceLifeCycleCollection.InsertOne(produceLifeCycle);
+            }
         }
     }
 }

@@ -100,6 +100,7 @@
     <Compile Include="Common\MachineStatusHandler.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\TimmerHandler.cs" />
+    <Compile Include="DataModel\MachineProduceLifeCycle.cs" />
     <Compile Include="DataModel\MachineStatusUseTime.cs" />
     <Compile Include="DataModel\MachineRunTime.cs" />
     <Compile Include="DataModel\MachineStatus.cs" />
