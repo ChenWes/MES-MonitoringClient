@@ -363,8 +363,7 @@ namespace MES_MonitoringClient
                     catch (Exception ex)
                     {
                         //响铃并显示异常给用户
-                        System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("SetDateTime1");
+                        System.Media.SystemSounds.Beep.Play();                        
                     }
                 }
                 else
@@ -396,8 +395,7 @@ namespace MES_MonitoringClient
                     catch (Exception ex)
                     {
                         //响铃并显示异常给用户
-                        System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("SetDateTime2");
+                        System.Media.SystemSounds.Beep.Play();                        
                     }
                 }
             }
@@ -425,8 +423,7 @@ namespace MES_MonitoringClient
                     catch (Exception ex)
                     {
                         //响铃并显示异常给用户
-                        System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("SetStatusLight1");
+                        System.Media.SystemSounds.Beep.Play();                        
                     }
                 }
                 else
@@ -458,8 +455,7 @@ namespace MES_MonitoringClient
                     catch (Exception ex)
                     {
                         //响铃并显示异常给用户
-                        System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("SetStatusLight2");
+                        System.Media.SystemSounds.Beep.Play();                        
                     }
                 }
             }
@@ -489,8 +485,7 @@ namespace MES_MonitoringClient
                     catch (Exception ex)
                     {
                         //响铃并显示异常给用户
-                        System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("SendDataToSerialPort1");
+                        System.Media.SystemSounds.Beep.Play();                        
                     }
                 }
                 else
@@ -513,7 +508,6 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("SendDataToSerialPort2");
                     }
                 }
             }
@@ -543,7 +537,6 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("GetMachineTemperature1");
                     }
                 }
                 else
@@ -567,7 +560,6 @@ namespace MES_MonitoringClient
                     {
                         //响铃并显示异常给用户
                         System.Media.SystemSounds.Beep.Play();
-                        txt_Log.AppendText("GetMachineTemperature2");
                     }
                 }
             }
@@ -999,8 +991,7 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 //响铃并显示异常给用户
-                //System.Media.SystemSounds.Beep.Play();
-                //txt_Log.AppendText("serialPort6_DataReceived"+ ex.ToString());
+                //System.Media.SystemSounds.Beep.Play();                
                 //Common.LogHandler.Log(ex.ToString());
             }
         }
