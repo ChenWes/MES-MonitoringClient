@@ -156,6 +156,16 @@ namespace MES_MonitoringClient
                 StatusLightThreadClass = new Thread(StatusLightThreadFunction);
                 StatusLightThreadClass.Start();
 
+
+                #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
+
+                txt_WorkOrderCount.Text = "999999";
+                txt_PlanWorkTime.Text = "50";
+                
+                btn_Start_Click(null, null);
+
+                #endregion
+
                 #region 温度代码
                 //开始后台进程（定时获取机器温度）
                 //MachineTemperatureThreadFunction = new ThreadStart(MachineTemperatureTimer);
