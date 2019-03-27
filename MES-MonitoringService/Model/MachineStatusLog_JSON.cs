@@ -19,7 +19,7 @@ namespace MES_MonitoringService.Model
 
         public string EndDateTime { get; set; }
         
-        public int UseTotalSeconds { get; set; }
+        public decimal UseTotalSeconds { get; set; }
 
         public bool IsStopFlag { get; set; }
 
