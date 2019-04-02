@@ -49,6 +49,11 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private MongodbHandler()
         {
+            if (!Common.CommonFunction.ServiceRunning(MongodbServiceName))
+            {
+                throw new Exception("Mongodb 服务未安装或未运行，无法连接至Mongodb");
+            }
+
             //client
             mc_MongoClient = new MongoClient(MongodbDefaultUrl);
             //database
@@ -89,6 +94,20 @@ namespace MES_MonitoringClient.Common
         public IMongoCollection<BsonDocument> GetCollection(string collectionName)
         {
             return mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
+        }
+
+
+        /*操作数据*/
+        /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 数据集插入一条数据
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="newDocument"></param>
+        public void InsertOne(IMongoCollection<BsonDocument> collection, BsonDocument newDocument)
+        {
+            collection.InsertOne(newDocument);
         }
 
         /// <summary>
