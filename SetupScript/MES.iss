@@ -65,9 +65,7 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Mongo
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.Core.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.Core.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Buffers.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 ;如果有日志，则复制日志，如果没有，则不复制

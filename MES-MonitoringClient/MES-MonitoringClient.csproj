@@ -159,9 +159,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DLL\RabbitMQ.Client.dll" />
-    <Content Include="DLL\RabbitMQ.Client.xml" />
-    <Content Include="DLL\RabbitMQ.ServiceModel.dll" />
     <Content Include="DLL\System.ServiceProcess.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
