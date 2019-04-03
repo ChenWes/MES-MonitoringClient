@@ -31,21 +31,21 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMachineRegister));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_SelectStatus = new System.Windows.Forms.Label();
+            this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
             this.txt_MachineID = new System.Windows.Forms.TextBox();
+            this.btn_Query = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
             this.txt_MachineCode = new System.Windows.Forms.TextBox();
             this.txt_MachineName = new System.Windows.Forms.TextBox();
             this.txt_MachineDesc = new System.Windows.Forms.TextBox();
-            this.txt_Workshop = new System.Windows.Forms.TextBox();
-            this.txt_Factory = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.txt_Workshop = new System.Windows.Forms.TextBox();
+            this.txt_Factory = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_Query = new MES_MonitoringClient.Common.Component.CircularButton();
             this.txt_MACAddress = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
@@ -86,6 +86,30 @@
             this.lab_SelectStatus.TabIndex = 4;
             this.lab_SelectStatus.Text = "注册码";
             // 
+            // btn_Cancel
+            // 
+            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
+            this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Cancel.Location = new System.Drawing.Point(111, 643);
+            this.btn_Cancel.Name = "btn_Cancel";
+            this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
+            this.btn_Cancel.TabIndex = 14;
+            this.btn_Cancel.UseVisualStyleBackColor = true;
+            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
+            // 
+            // btn_Confirm
+            // 
+            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
+            this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Confirm.Location = new System.Drawing.Point(805, 643);
+            this.btn_Confirm.Name = "btn_Confirm";
+            this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
+            this.btn_Confirm.TabIndex = 14;
+            this.btn_Confirm.UseVisualStyleBackColor = true;
+            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
+            // 
             // txt_MachineID
             // 
             this.txt_MachineID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -94,7 +118,18 @@
             this.txt_MachineID.Name = "txt_MachineID";
             this.txt_MachineID.Size = new System.Drawing.Size(390, 38);
             this.txt_MachineID.TabIndex = 15;
-            this.txt_MachineID.Text = "5c7f21627d2e4914c075bb2b";
+            // 
+            // btn_Query
+            // 
+            this.btn_Query.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Query.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Query.BackgroundImage")));
+            this.btn_Query.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Query.Location = new System.Drawing.Point(827, 35);
+            this.btn_Query.Name = "btn_Query";
+            this.btn_Query.Size = new System.Drawing.Size(30, 30);
+            this.btn_Query.TabIndex = 14;
+            this.btn_Query.UseVisualStyleBackColor = true;
+            this.btn_Query.Click += new System.EventHandler(this.btn_Query_Click);
             // 
             // tableLayoutPanel2
             // 
@@ -126,6 +161,18 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(390, 475);
             this.tableLayoutPanel2.TabIndex = 16;
             // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(33, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 20);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "机器编号";
+            // 
             // txt_MachineCode
             // 
             this.txt_MachineCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -152,36 +199,6 @@
             this.txt_MachineDesc.Name = "txt_MachineDesc";
             this.txt_MachineDesc.Size = new System.Drawing.Size(228, 38);
             this.txt_MachineDesc.TabIndex = 0;
-            // 
-            // txt_Workshop
-            // 
-            this.txt_Workshop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Workshop.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_Workshop.Location = new System.Drawing.Point(159, 336);
-            this.txt_Workshop.Name = "txt_Workshop";
-            this.txt_Workshop.Size = new System.Drawing.Size(228, 38);
-            this.txt_Workshop.TabIndex = 0;
-            // 
-            // txt_Factory
-            // 
-            this.txt_Factory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Factory.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_Factory.Location = new System.Drawing.Point(159, 416);
-            this.txt_Factory.Name = "txt_Factory";
-            this.txt_Factory.Size = new System.Drawing.Size(228, 38);
-            this.txt_Factory.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(33, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 20);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "机器编号";
             // 
             // label2
             // 
@@ -219,6 +236,24 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "车间";
             // 
+            // txt_Workshop
+            // 
+            this.txt_Workshop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Workshop.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_Workshop.Location = new System.Drawing.Point(159, 336);
+            this.txt_Workshop.Name = "txt_Workshop";
+            this.txt_Workshop.Size = new System.Drawing.Size(228, 38);
+            this.txt_Workshop.TabIndex = 0;
+            // 
+            // txt_Factory
+            // 
+            this.txt_Factory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Factory.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_Factory.Location = new System.Drawing.Point(159, 416);
+            this.txt_Factory.Name = "txt_Factory";
+            this.txt_Factory.Size = new System.Drawing.Size(228, 38);
+            this.txt_Factory.TabIndex = 0;
+            // 
             // label5
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -230,42 +265,6 @@
             this.label5.Size = new System.Drawing.Size(49, 20);
             this.label5.TabIndex = 4;
             this.label5.Text = "工厂";
-            // 
-            // btn_Cancel
-            // 
-            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
-            this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Cancel.Location = new System.Drawing.Point(111, 643);
-            this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
-            this.btn_Cancel.TabIndex = 14;
-            this.btn_Cancel.UseVisualStyleBackColor = true;
-            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
-            // 
-            // btn_Confirm
-            // 
-            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
-            this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Confirm.Location = new System.Drawing.Point(805, 643);
-            this.btn_Confirm.Name = "btn_Confirm";
-            this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
-            this.btn_Confirm.TabIndex = 14;
-            this.btn_Confirm.UseVisualStyleBackColor = true;
-            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
-            // 
-            // btn_Query
-            // 
-            this.btn_Query.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Query.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Query.BackgroundImage")));
-            this.btn_Query.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Query.Location = new System.Drawing.Point(827, 35);
-            this.btn_Query.Name = "btn_Query";
-            this.btn_Query.Size = new System.Drawing.Size(30, 30);
-            this.btn_Query.TabIndex = 14;
-            this.btn_Query.UseVisualStyleBackColor = true;
-            this.btn_Query.Click += new System.EventHandler(this.btn_Query_Click);
             // 
             // txt_MACAddress
             // 
