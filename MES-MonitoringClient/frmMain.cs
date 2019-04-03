@@ -1448,5 +1448,14 @@ namespace MES_MonitoringClient
         {
             this.Close();
         }
+
+        private void btn_MachineRegister_Click(object sender, EventArgs e)
+        {
+            frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
+            newfrmMachineRegister.ShowDialog();
+
+            //返回参数
+            //newfrmMachineRegister.mc_MachineInfo;
+    }
     }
 }

@@ -101,7 +101,11 @@
             this.txt_ProductName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
+            this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.btn_SignalX03 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_SignalX02 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_SignalX01 = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_MachineName = new System.Windows.Forms.Button();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
@@ -109,6 +113,8 @@
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_SendSuccessCount = new System.Windows.Forms.Label();
             this.lab_ReceviedDataCount = new System.Windows.Forms.Label();
+            this.btn_SendDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_ReceiveDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel33 = new System.Windows.Forms.TableLayoutPanel();
@@ -120,13 +126,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.btn_StatusLight = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_SignalX03 = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_SignalX02 = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_SignalX01 = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_SendDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.btn_ReceiveDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.label21 = new System.Windows.Forms.Label();
+            this.btn_MachineRegister = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -189,22 +190,23 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
-            this.tableLayoutPanel1.ColumnCount = 7;
+            this.tableLayoutPanel1.ColumnCount = 8;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
             this.tableLayoutPanel1.Controls.Add(this.lab_Title, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lab_DateTime, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel5, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel5, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_MachineRegister, 2, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -1116,6 +1118,20 @@
             this.tableLayoutPanel7.Size = new System.Drawing.Size(481, 115);
             this.tableLayoutPanel7.TabIndex = 14;
             // 
+            // btn_StatusLight
+            // 
+            this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_StatusLight.FlatAppearance.BorderSize = 0;
+            this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_StatusLight.Font = new System.Drawing.Font("宋体", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_StatusLight.Location = new System.Drawing.Point(334, 7);
+            this.btn_StatusLight.Name = "btn_StatusLight";
+            this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);
+            this.btn_StatusLight.TabIndex = 0;
+            this.btn_StatusLight.Text = "初始化";
+            this.btn_StatusLight.UseVisualStyleBackColor = true;
+            this.btn_StatusLight.Click += new System.EventHandler(this.btn_StatusLight_Click);
+            // 
             // tableLayoutPanel8
             // 
             this.tableLayoutPanel8.ColumnCount = 4;
@@ -1134,6 +1150,42 @@
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel8.Size = new System.Drawing.Size(282, 109);
             this.tableLayoutPanel8.TabIndex = 1;
+            // 
+            // btn_SignalX03
+            // 
+            this.btn_SignalX03.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SignalX03.FlatAppearance.BorderSize = 0;
+            this.btn_SignalX03.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SignalX03.Location = new System.Drawing.Point(221, 29);
+            this.btn_SignalX03.Name = "btn_SignalX03";
+            this.btn_SignalX03.Size = new System.Drawing.Size(50, 50);
+            this.btn_SignalX03.TabIndex = 0;
+            this.btn_SignalX03.Text = "自动";
+            this.btn_SignalX03.UseVisualStyleBackColor = true;
+            // 
+            // btn_SignalX02
+            // 
+            this.btn_SignalX02.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SignalX02.FlatAppearance.BorderSize = 0;
+            this.btn_SignalX02.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SignalX02.Location = new System.Drawing.Point(150, 29);
+            this.btn_SignalX02.Name = "btn_SignalX02";
+            this.btn_SignalX02.Size = new System.Drawing.Size(50, 50);
+            this.btn_SignalX02.TabIndex = 0;
+            this.btn_SignalX02.Text = "射胶";
+            this.btn_SignalX02.UseVisualStyleBackColor = true;
+            // 
+            // btn_SignalX01
+            // 
+            this.btn_SignalX01.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SignalX01.FlatAppearance.BorderSize = 0;
+            this.btn_SignalX01.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SignalX01.Location = new System.Drawing.Point(80, 29);
+            this.btn_SignalX01.Name = "btn_SignalX01";
+            this.btn_SignalX01.Size = new System.Drawing.Size(50, 50);
+            this.btn_SignalX01.TabIndex = 0;
+            this.btn_SignalX01.Text = "开模";
+            this.btn_SignalX01.UseVisualStyleBackColor = true;
             // 
             // btn_MachineName
             // 
@@ -1230,6 +1282,28 @@
             this.lab_ReceviedDataCount.TabIndex = 16;
             this.lab_ReceviedDataCount.Text = "接收";
             // 
+            // btn_SendDataLight
+            // 
+            this.btn_SendDataLight.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_SendDataLight.FlatAppearance.BorderSize = 0;
+            this.btn_SendDataLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SendDataLight.Location = new System.Drawing.Point(176, 4);
+            this.btn_SendDataLight.Name = "btn_SendDataLight";
+            this.btn_SendDataLight.Size = new System.Drawing.Size(15, 15);
+            this.btn_SendDataLight.TabIndex = 0;
+            this.btn_SendDataLight.UseVisualStyleBackColor = true;
+            // 
+            // btn_ReceiveDataLight
+            // 
+            this.btn_ReceiveDataLight.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_ReceiveDataLight.FlatAppearance.BorderSize = 0;
+            this.btn_ReceiveDataLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_ReceiveDataLight.Location = new System.Drawing.Point(420, 4);
+            this.btn_ReceiveDataLight.Name = "btn_ReceiveDataLight";
+            this.btn_ReceiveDataLight.Size = new System.Drawing.Size(15, 15);
+            this.btn_ReceiveDataLight.TabIndex = 0;
+            this.btn_ReceiveDataLight.UseVisualStyleBackColor = true;
+            // 
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
@@ -1289,7 +1363,7 @@
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 146F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 149F));
             this.tableLayoutPanel34.Controls.Add(this.label18, 0, 1);
             this.tableLayoutPanel34.Controls.Add(this.label19, 1, 1);
             this.tableLayoutPanel34.Controls.Add(this.label20, 2, 1);
@@ -1312,7 +1386,7 @@
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(13, 273);
+            this.label18.Location = new System.Drawing.Point(12, 273);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(88, 32);
             this.label18.TabIndex = 2;
@@ -1324,7 +1398,7 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(126, 273);
+            this.label19.Location = new System.Drawing.Point(124, 273);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(88, 32);
             this.label19.TabIndex = 2;
@@ -1336,7 +1410,7 @@
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(239, 273);
+            this.label20.Location = new System.Drawing.Point(236, 273);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(88, 32);
             this.label20.TabIndex = 2;
@@ -1348,7 +1422,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(106, 261);
+            this.pictureBox1.Size = new System.Drawing.Size(105, 261);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -1357,9 +1431,9 @@
             // 
             this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(117, 4);
+            this.pictureBox2.Location = new System.Drawing.Point(116, 4);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(106, 261);
+            this.pictureBox2.Size = new System.Drawing.Size(105, 261);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 3;
             this.pictureBox2.TabStop = false;
@@ -1368,84 +1442,12 @@
             // 
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(230, 4);
+            this.pictureBox3.Location = new System.Drawing.Point(228, 4);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(106, 261);
+            this.pictureBox3.Size = new System.Drawing.Size(105, 261);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
-            // 
-            // btn_StatusLight
-            // 
-            this.btn_StatusLight.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_StatusLight.FlatAppearance.BorderSize = 0;
-            this.btn_StatusLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_StatusLight.Font = new System.Drawing.Font("宋体", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_StatusLight.Location = new System.Drawing.Point(334, 7);
-            this.btn_StatusLight.Name = "btn_StatusLight";
-            this.btn_StatusLight.Size = new System.Drawing.Size(100, 100);
-            this.btn_StatusLight.TabIndex = 0;
-            this.btn_StatusLight.Text = "初始化";
-            this.btn_StatusLight.UseVisualStyleBackColor = true;
-            this.btn_StatusLight.Click += new System.EventHandler(this.btn_StatusLight_Click);
-            // 
-            // btn_SignalX03
-            // 
-            this.btn_SignalX03.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_SignalX03.FlatAppearance.BorderSize = 0;
-            this.btn_SignalX03.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SignalX03.Location = new System.Drawing.Point(221, 29);
-            this.btn_SignalX03.Name = "btn_SignalX03";
-            this.btn_SignalX03.Size = new System.Drawing.Size(50, 50);
-            this.btn_SignalX03.TabIndex = 0;
-            this.btn_SignalX03.Text = "自动";
-            this.btn_SignalX03.UseVisualStyleBackColor = true;
-            // 
-            // btn_SignalX02
-            // 
-            this.btn_SignalX02.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_SignalX02.FlatAppearance.BorderSize = 0;
-            this.btn_SignalX02.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SignalX02.Location = new System.Drawing.Point(150, 29);
-            this.btn_SignalX02.Name = "btn_SignalX02";
-            this.btn_SignalX02.Size = new System.Drawing.Size(50, 50);
-            this.btn_SignalX02.TabIndex = 0;
-            this.btn_SignalX02.Text = "射胶";
-            this.btn_SignalX02.UseVisualStyleBackColor = true;
-            // 
-            // btn_SignalX01
-            // 
-            this.btn_SignalX01.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_SignalX01.FlatAppearance.BorderSize = 0;
-            this.btn_SignalX01.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SignalX01.Location = new System.Drawing.Point(80, 29);
-            this.btn_SignalX01.Name = "btn_SignalX01";
-            this.btn_SignalX01.Size = new System.Drawing.Size(50, 50);
-            this.btn_SignalX01.TabIndex = 0;
-            this.btn_SignalX01.Text = "开模";
-            this.btn_SignalX01.UseVisualStyleBackColor = true;
-            // 
-            // btn_SendDataLight
-            // 
-            this.btn_SendDataLight.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_SendDataLight.FlatAppearance.BorderSize = 0;
-            this.btn_SendDataLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SendDataLight.Location = new System.Drawing.Point(176, 4);
-            this.btn_SendDataLight.Name = "btn_SendDataLight";
-            this.btn_SendDataLight.Size = new System.Drawing.Size(15, 15);
-            this.btn_SendDataLight.TabIndex = 0;
-            this.btn_SendDataLight.UseVisualStyleBackColor = true;
-            // 
-            // btn_ReceiveDataLight
-            // 
-            this.btn_ReceiveDataLight.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_ReceiveDataLight.FlatAppearance.BorderSize = 0;
-            this.btn_ReceiveDataLight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ReceiveDataLight.Location = new System.Drawing.Point(420, 4);
-            this.btn_ReceiveDataLight.Name = "btn_ReceiveDataLight";
-            this.btn_ReceiveDataLight.Size = new System.Drawing.Size(15, 15);
-            this.btn_ReceiveDataLight.TabIndex = 0;
-            this.btn_ReceiveDataLight.UseVisualStyleBackColor = true;
             // 
             // label21
             // 
@@ -1453,11 +1455,23 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(402, 102);
+            this.label21.Location = new System.Drawing.Point(400, 102);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(24, 64);
             this.label21.TabIndex = 2;
             this.label21.Text = "当\r\n班\r\n人\r\n员";
+            // 
+            // btn_MachineRegister
+            // 
+            this.btn_MachineRegister.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_MachineRegister.FlatAppearance.BorderSize = 0;
+            this.btn_MachineRegister.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_MachineRegister.Location = new System.Drawing.Point(577, 3);
+            this.btn_MachineRegister.Name = "btn_MachineRegister";
+            this.btn_MachineRegister.Size = new System.Drawing.Size(63, 44);
+            this.btn_MachineRegister.TabIndex = 13;
+            this.btn_MachineRegister.UseVisualStyleBackColor = true;
+            this.btn_MachineRegister.Click += new System.EventHandler(this.btn_MachineRegister_Click);
             // 
             // frmMain
             // 
@@ -1638,6 +1652,7 @@
         private Common.Component.CircularButton btn_SendDataLight;
         private Common.Component.CircularButton btn_ReceiveDataLight;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button btn_MachineRegister;
     }
 }
 

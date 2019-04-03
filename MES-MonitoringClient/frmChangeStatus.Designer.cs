@@ -57,7 +57,7 @@
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(936, 703);
@@ -69,7 +69,7 @@
             this.lab_OperatePersonCardID.AutoSize = true;
             this.lab_OperatePersonCardID.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_OperatePersonCardID.ForeColor = System.Drawing.Color.White;
-            this.lab_OperatePersonCardID.Location = new System.Drawing.Point(745, 15);
+            this.lab_OperatePersonCardID.Location = new System.Drawing.Point(745, 40);
             this.lab_OperatePersonCardID.Name = "lab_OperatePersonCardID";
             this.lab_OperatePersonCardID.Size = new System.Drawing.Size(69, 20);
             this.lab_OperatePersonCardID.TabIndex = 4;
@@ -80,7 +80,7 @@
             this.btn_Stop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Stop.FlatAppearance.BorderSize = 0;
             this.btn_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Stop.Location = new System.Drawing.Point(105, 226);
+            this.btn_Stop.Location = new System.Drawing.Point(105, 251);
             this.btn_Stop.Name = "btn_Stop";
             this.btn_Stop.Size = new System.Drawing.Size(100, 100);
             this.btn_Stop.TabIndex = 11;
@@ -93,7 +93,7 @@
             this.btn_Run.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Run.FlatAppearance.BorderSize = 0;
             this.btn_Run.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Run.Location = new System.Drawing.Point(417, 226);
+            this.btn_Run.Location = new System.Drawing.Point(417, 251);
             this.btn_Run.Name = "btn_Run";
             this.btn_Run.Size = new System.Drawing.Size(100, 100);
             this.btn_Run.TabIndex = 12;
@@ -106,7 +106,7 @@
             this.btn_Error.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Error.FlatAppearance.BorderSize = 0;
             this.btn_Error.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Error.Location = new System.Drawing.Point(729, 226);
+            this.btn_Error.Location = new System.Drawing.Point(729, 251);
             this.btn_Error.Name = "btn_Error";
             this.btn_Error.Size = new System.Drawing.Size(100, 100);
             this.btn_Error.TabIndex = 13;
@@ -120,7 +120,7 @@
             this.lab_SelectStatus.AutoSize = true;
             this.lab_SelectStatus.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_SelectStatus.ForeColor = System.Drawing.Color.White;
-            this.lab_SelectStatus.Location = new System.Drawing.Point(101, 15);
+            this.lab_SelectStatus.Location = new System.Drawing.Point(101, 40);
             this.lab_SelectStatus.Name = "lab_SelectStatus";
             this.lab_SelectStatus.Size = new System.Drawing.Size(109, 20);
             this.lab_SelectStatus.TabIndex = 4;

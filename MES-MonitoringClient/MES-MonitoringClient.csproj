@@ -54,6 +54,9 @@
     <Reference Include="MongoDB.Driver.Core, Version=2.7.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MongoDB.Driver.Core.2.7.2\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RabbitMQ.Client, Version=3.6.14.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
@@ -93,6 +96,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
+    <Compile Include="Common\HttpHelper.cs" />
+    <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\LogHandler.cs" />
     <Compile Include="Common\MachineProcedure.cs" />
     <Compile Include="Common\MachineProduceStatusHandler.cs" />
@@ -100,6 +105,7 @@
     <Compile Include="Common\MachineStatusHandler.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\TimmerHandler.cs" />
+    <Compile Include="DataModel\MachineInfo.cs" />
     <Compile Include="DataModel\MachineProduceLifeCycle.cs" />
     <Compile Include="DataModel\MachineStatusUseTime.cs" />
     <Compile Include="DataModel\MachineRunTime.cs" />
@@ -110,6 +116,12 @@
     </Compile>
     <Compile Include="frmChangeStatus.Designer.cs">
       <DependentUpon>frmChangeStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMachineRegister.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMachineRegister.Designer.cs">
+      <DependentUpon>frmMachineRegister.cs</DependentUpon>
     </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -127,6 +139,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmChangeStatus.resx">
       <DependentUpon>frmChangeStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMachineRegister.resx">
+      <DependentUpon>frmMachineRegister.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -159,7 +174,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DLL\Newtonsoft.Json.dll" />
     <Content Include="DLL\System.ServiceProcess.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -96,7 +96,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DLL\Newtonsoft.Json.dll" />
     <Content Include="DLL\System.ServiceProcess.dll" />
   </ItemGroup>
   <ItemGroup />

@@ -243,5 +243,14 @@ namespace MES_MonitoringClient.Common
 
             return returnFlag;
         }
+
+        /// <summary>
+        /// 获取后台服务器完整URL地址
+        /// </summary>
+        /// <returns></returns>
+        public static string GenerateBackendUri()
+        {
+            return Common.ConfigFileHandler.GetAppConfig("BackendServerProtocol") + "://" + Common.ConfigFileHandler.GetAppConfig("BackendServerHost") + ":" + Common.ConfigFileHandler.GetAppConfig("BackendServerPort");
+        }
     }
 }
