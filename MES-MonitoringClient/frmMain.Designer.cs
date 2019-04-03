@@ -41,6 +41,7 @@
             this.btn_Stop = new System.Windows.Forms.Button();
             this.btn_Recovery = new System.Windows.Forms.Button();
             this.btn_MinimizeWindows = new System.Windows.Forms.Button();
+            this.btn_MachineRegister = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel22 = new System.Windows.Forms.TableLayoutPanel();
@@ -127,7 +128,6 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.btn_MachineRegister = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -315,6 +315,18 @@
             this.btn_MinimizeWindows.TabIndex = 12;
             this.btn_MinimizeWindows.UseVisualStyleBackColor = true;
             this.btn_MinimizeWindows.Click += new System.EventHandler(this.btn_MinimizeWindows_Click);
+            // 
+            // btn_MachineRegister
+            // 
+            this.btn_MachineRegister.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_MachineRegister.FlatAppearance.BorderSize = 0;
+            this.btn_MachineRegister.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_MachineRegister.Location = new System.Drawing.Point(577, 3);
+            this.btn_MachineRegister.Name = "btn_MachineRegister";
+            this.btn_MachineRegister.Size = new System.Drawing.Size(63, 44);
+            this.btn_MachineRegister.TabIndex = 13;
+            this.btn_MachineRegister.UseVisualStyleBackColor = true;
+            this.btn_MachineRegister.Click += new System.EventHandler(this.btn_MachineRegister_Click);
             // 
             // tableLayoutPanel2
             // 
@@ -1363,7 +1375,7 @@
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 149F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 152F));
             this.tableLayoutPanel34.Controls.Add(this.label18, 0, 1);
             this.tableLayoutPanel34.Controls.Add(this.label19, 1, 1);
             this.tableLayoutPanel34.Controls.Add(this.label20, 2, 1);
@@ -1398,7 +1410,7 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(124, 273);
+            this.label19.Location = new System.Drawing.Point(123, 273);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(88, 32);
             this.label19.TabIndex = 2;
@@ -1410,7 +1422,7 @@
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(236, 273);
+            this.label20.Location = new System.Drawing.Point(234, 273);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(88, 32);
             this.label20.TabIndex = 2;
@@ -1422,7 +1434,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(105, 261);
+            this.pictureBox1.Size = new System.Drawing.Size(104, 261);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -1431,9 +1443,9 @@
             // 
             this.pictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(116, 4);
+            this.pictureBox2.Location = new System.Drawing.Point(115, 4);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(105, 261);
+            this.pictureBox2.Size = new System.Drawing.Size(104, 261);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 3;
             this.pictureBox2.TabStop = false;
@@ -1442,9 +1454,9 @@
             // 
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(228, 4);
+            this.pictureBox3.Location = new System.Drawing.Point(226, 4);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(105, 261);
+            this.pictureBox3.Size = new System.Drawing.Size(104, 261);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
@@ -1455,23 +1467,11 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(400, 102);
+            this.label21.Location = new System.Drawing.Point(399, 102);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(24, 64);
             this.label21.TabIndex = 2;
             this.label21.Text = "当\r\n班\r\n人\r\n员";
-            // 
-            // btn_MachineRegister
-            // 
-            this.btn_MachineRegister.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_MachineRegister.FlatAppearance.BorderSize = 0;
-            this.btn_MachineRegister.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_MachineRegister.Location = new System.Drawing.Point(577, 3);
-            this.btn_MachineRegister.Name = "btn_MachineRegister";
-            this.btn_MachineRegister.Size = new System.Drawing.Size(63, 44);
-            this.btn_MachineRegister.TabIndex = 13;
-            this.btn_MachineRegister.UseVisualStyleBackColor = true;
-            this.btn_MachineRegister.Click += new System.EventHandler(this.btn_MachineRegister_Click);
             // 
             // frmMain
             // 

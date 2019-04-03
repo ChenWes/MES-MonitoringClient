@@ -95,7 +95,8 @@ namespace MES_MonitoringClient
             try
             {
                 //显示机器名称
-                btn_MachineName.Text = defaultMachineName;
+                //btn_MachineName.Text = defaultMachineName;
+                CheckMachineRegister();
 
                 //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
@@ -1449,13 +1450,31 @@ namespace MES_MonitoringClient
             this.Close();
         }
 
+        /// <summary>
+        /// 机器注册
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_MachineRegister_Click(object sender, EventArgs e)
         {
             frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
             newfrmMachineRegister.ShowDialog();
 
-            //返回参数
-            //newfrmMachineRegister.mc_MachineInfo;
-    }
+            CheckMachineRegister();
+        }
+
+        private void CheckMachineRegister()
+        {
+            //获取数据库
+            Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
+
+            DataModel.MachineInfo machineInfoEntity = machineRegisterInfoHelperClass.GetMachineRegisterInfo();
+
+            if (machineInfoEntity != null)
+            {
+                btn_MachineName.Text = machineInfoEntity.MachineCode;
+                btn_MachineRegister.Enabled = false;
+            }
+        }
     }
 }

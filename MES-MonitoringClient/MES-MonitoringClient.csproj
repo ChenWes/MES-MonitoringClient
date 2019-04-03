@@ -101,6 +101,7 @@
     <Compile Include="Common\LogHandler.cs" />
     <Compile Include="Common\MachineProcedure.cs" />
     <Compile Include="Common\MachineProduceStatusHandler.cs" />
+    <Compile Include="Common\MachineRegisterInfoHelper.cs" />
     <Compile Include="Common\MachineReportHandler.cs" />
     <Compile Include="Common\MachineStatusHandler.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
