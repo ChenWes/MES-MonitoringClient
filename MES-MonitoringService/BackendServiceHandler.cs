@@ -13,18 +13,29 @@ using Newtonsoft.Json;
 
 namespace MES_MonitoringService
 {
-    public class UploadDataHandler
+    public class BackendServiceHandler
     {
         //服务运行间隔时间
         private static string defaultUploadDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadDataIntervalMilliseconds");
 
         //机器状态日志Mongodb数据集名称
         private static string defaultMachineStatusMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+        //机器注册表
+        private static string defaultMachineRegisterMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCollectionName");
 
         //机器状态对应的交换机、路由、队列名称
         private static string defaultMachineStatus_ExchangeName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_ExchangeName");
         private static string defaultMachineStatus_RoutingKey = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_RoutingKey");
         private static string defaultMachineStatus_QueueName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_QueueName");
+
+
+        //同步数据对应的队列名称
+        private static string defaultUpdateData_QueueName_Prefix = Common.ConfigFileHandler.GetAppConfig("UpdateData_QueueName_Prefix");
+
+        ////数据同步标识（作用开关，标识出系统是否正在数据同步）
+        private bool MC_IsSyncDataFlag = false;
+        //机器注册码
+        private string MC_MachineRegisterID = string.Empty;
 
         //定时器
         private readonly Timer _timer;
@@ -32,7 +43,7 @@ namespace MES_MonitoringService
         /// <summary>
         /// 上传数据至服务器
         /// </summary>
-        public UploadDataHandler()
+        public BackendServiceHandler()
         {
             if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
             {
@@ -41,11 +52,14 @@ namespace MES_MonitoringService
             }
             else
             {
-                //时间
+                //MongoDB服务正常
+
+
+                //定时任务间隔时间
                 long timeInterval = 0;
                 long.TryParse(defaultUploadDataIntervalMilliseconds, out timeInterval);
 
-                //MongoDB服务正常
+                //定时任务
                 _timer = new Timer(timeInterval) { AutoReset = true };
                 _timer.Elapsed += TimerElapsed;
             }
@@ -60,6 +74,21 @@ namespace MES_MonitoringService
         {
             //处理机器状态
             ProcessMachineStatusLog();
+
+            if (MC_IsSyncDataFlag == false)
+            {
+                //检测注册
+                CheckMachineRegister();
+            }
+        }
+
+        /// <summary>
+        /// 检查DB后，调用一次的方法
+        /// </summary>
+        private void CheckDBCallOneTimeFunction()
+        {
+            //处理数据同步服务
+            ProcessSyncDataAction();
         }
 
         /// <summary>
@@ -144,13 +173,88 @@ namespace MES_MonitoringService
         }
 
         /// <summary>
+        /// 检查记录注册情况
+        /// </summary>
+        public void CheckMachineRegister()
+        {
+            try
+            {
+                if (MC_IsSyncDataFlag == false)
+                {
+                    //新增
+                    //var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineRegisterMongodbCollectionName);
+                    //var document = new BsonDocument
+                    //{
+                    //  {"MachineCode", BsonValue.Create("D1")},
+                    //  {"MachineID", new BsonString("5c7f21627d2e4914c075bb2b")}
+                    //};
+                    //Common.MongodbHandler.GetInstance().InsertOne(collection, document);
+
+                    var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineRegisterMongodbCollectionName);
+
+                    //查找机器注册信息
+                    var newfilter = Builders<BsonDocument>.Filter.Exists("MachineID", true);
+                    var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+
+                    if (getdocument != null && getdocument.Count > 0)
+                    {
+                        //注册的ID
+                        MC_MachineRegisterID = getdocument.First().GetValue("MachineID").ToString();
+
+                        //调用处理
+                        CheckDBCallOneTimeFunction();
+                    }
+                }                                
+            }
+            catch(Exception ex)
+            {
+                Common.LogHandler.Log("MES检测程序程序发现错误，请管理员及时处理。" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 同步数据操作
+        /// </summary>
+        public void ProcessSyncDataAction()
+        {
+            try
+            {
+                /*手动处理时可用*/
+                ////处理
+                //Common.RabbitMQClientHandler.GetInstance().TopicExchangeConsumeMessageFromServer(defaultUpdateData_QueueName_Prefix);
+                ////数据同步标识
+                //MC_IsSyncDataFlag = true;
+
+                //自动处理
+                if (!string.IsNullOrEmpty(MC_MachineRegisterID))
+                {
+                    //处理
+                    Common.RabbitMQClientHandler.GetInstance().TopicExchangeConsumeMessageFromServer(defaultUpdateData_QueueName_Prefix + MC_MachineRegisterID);
+
+                    //数据同步标识
+                    MC_IsSyncDataFlag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                //数据同步标识
+                MC_IsSyncDataFlag = false;                
+                
+                //出错重新调用自身
+                ProcessSyncDataAction();
+
+                Common.LogHandler.Log("MES数据同步服务程序发现错误，请管理员及时处理。" + ex.Message);
+            }
+        }
+
+        /// <summary>
         /// 开始方法
         /// </summary>
         public void Start()
         {
             if (_timer != null)
             {
-            _timer.Start();
+                _timer.Start();
             }
         }
 

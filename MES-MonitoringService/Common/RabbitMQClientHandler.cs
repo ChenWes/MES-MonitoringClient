@@ -8,6 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 
 using System.Threading;
+using RabbitMQ.Client.Events;
 
 namespace MES_MonitoringService.Common
 {
@@ -30,8 +31,12 @@ namespace MES_MonitoringService.Common
         private static ConnectionFactory mc_ConnectionFactory = null;
         //Connection
         public IConnection Connection;
-        //Channel
-        public IModel Channel;
+
+        //发送频道及接收频道分开，避免互相影响，导致整个服务不可用
+        //Send Channel
+        public IModel SendChannel;
+        //Listen Channel
+        public IModel ListenChannel;
 
 
         /*-------------------------------------------------------------------------------------*/
@@ -58,28 +63,33 @@ namespace MES_MonitoringService.Common
                 mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
                 mc_ConnectionFactory.VirtualHost = defaultRabbitVirtualHost;// "/"
 
-                mc_ConnectionFactory.RequestedHeartbeat = 10;//心跳包
+                mc_ConnectionFactory.RequestedHeartbeat = 60;//心跳包
                 mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
                 mc_ConnectionFactory.TopologyRecoveryEnabled = true;//技术重连
                 mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(1);
 
                 //创建连接
                 Connection = mc_ConnectionFactory.CreateConnection();
-                //创建频道
-                Channel = Connection.CreateModel();
+
+                //断开连接时，写入记录
+                Connection.ConnectionShutdown += (o, e) =>
+                {
+                    Common.LogHandler.Log("RabbitMQ连接已经断开，请联系管理员。" + e.ReplyText + "(" + e.ReplyCode + ")");
+                };
+
+                //创建发送频道
+                SendChannel = Connection.CreateModel();
+                //创建接收频道
+                ListenChannel = Connection.CreateModel();
 
                 //确认模式，发送了消息后，可以收到回应
-                Channel.ConfirmSelect();
+                SendChannel.ConfirmSelect();
 
                 Common.LogHandler.Log("尝试连接至RabbitMQ服务器：" + defaultRabbitMQHostName);
             }
             catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
-            {
-                //DisposeAllConnectionObjects();
-
-                throw e;
-                //Thread.Sleep(5000);
-                // apply retry logic
+            {                
+                throw e;                
             }
             catch (Exception)
             {
@@ -129,11 +139,17 @@ namespace MES_MonitoringService.Common
                 Connection = null;
             }
 
-            //频道
-            if (Channel != null)
+            //发送频道
+            if (SendChannel != null)
             {
-                Channel.Dispose();
-                Channel = null;
+                SendChannel.Dispose();
+                SendChannel = null;
+            }
+            //接收频道
+            if (ListenChannel != null)
+            {
+                ListenChannel.Dispose();
+                ListenChannel = null;
             }
         }
 
@@ -154,7 +170,7 @@ namespace MES_MonitoringService.Common
             try
             {
                 if (Connection == null) throw new Exception("连接为空");
-                if (Channel == null) throw new Exception("通送为空");
+                if (SendChannel == null) throw new Exception("通道为空");
 
                 //创建一个持久化的队列
                 bool queueDurable = true;
@@ -164,23 +180,23 @@ namespace MES_MonitoringService.Common
                 string RoutingKey = routingKey;
 
                 //声明交换机
-                Channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
+                SendChannel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
                 //声明队列
-                Channel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                SendChannel.QueueDeclare(QueueName, queueDurable, false, false, null);
                 //路由绑定队列
-                Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
+                SendChannel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
 
                 //设置消息持久性
-                IBasicProperties props = Channel.CreateBasicProperties();
+                IBasicProperties props = SendChannel.CreateBasicProperties();
                 props.ContentType = "text/plain";
                 props.DeliveryMode = 2;//持久性
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                Channel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+                SendChannel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
 
                 //等待确认
-                return Channel.WaitForConfirms();
+                return SendChannel.WaitForConfirms();
             }
             catch (Exception ex)
             {
@@ -203,7 +219,7 @@ namespace MES_MonitoringService.Common
             try
             {
                 if (Connection == null) throw new Exception("连接为空");
-                if (Channel == null) throw new Exception("通送为空");
+                if (SendChannel == null) throw new Exception("通道为空");
 
                 //创建一个持久化的频道
                 bool queueDurable = true;
@@ -213,23 +229,23 @@ namespace MES_MonitoringService.Common
                 string RoutingKey = routingKey;
 
                 //声明交换机
-                Channel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout);
+                SendChannel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout);
                 //声明队列
-                Channel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                SendChannel.QueueDeclare(QueueName, queueDurable, false, false, null);
                 //路由绑定队列
-                Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
+                SendChannel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
 
                 //设置消息持久性
-                IBasicProperties props = Channel.CreateBasicProperties();
+                IBasicProperties props = SendChannel.CreateBasicProperties();
                 props.ContentType = "text/plain";
                 props.DeliveryMode = 2;//持久性
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                Channel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+                SendChannel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
 
                 //等待确认
-                return Channel.WaitForConfirms();
+                return SendChannel.WaitForConfirms();
             }
             catch (Exception ex)
             {
@@ -252,7 +268,7 @@ namespace MES_MonitoringService.Common
             try
             {
                 if (Connection == null) throw new Exception("连接为空");
-                if (Channel == null) throw new Exception("通送为空");
+                if (SendChannel == null) throw new Exception("通道为空");
 
                 //创建一个持久化的频道
                 bool queueDurable = true;
@@ -262,29 +278,133 @@ namespace MES_MonitoringService.Common
                 string RoutingKey = routingKey;
 
                 //声明交换机
-                Channel.ExchangeDeclare(ExchangeName, ExchangeType.Topic);
+                SendChannel.ExchangeDeclare(ExchangeName, ExchangeType.Topic);
                 //声明队列
-                Channel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                SendChannel.QueueDeclare(QueueName, queueDurable, false, false, null);
                 //路由绑定队列
-                Channel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
+                SendChannel.QueueBind(QueueName, ExchangeName, RoutingKey, null);
 
                 //设置消息持久性
-                IBasicProperties props = Channel.CreateBasicProperties();
+                IBasicProperties props = SendChannel.CreateBasicProperties();
                 props.ContentType = "text/plain";
                 props.DeliveryMode = 2;//持久性
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                Channel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+                SendChannel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
 
                 //等待确认
-                return Channel.WaitForConfirms();
+                return SendChannel.WaitForConfirms();
             }
             catch (Exception ex)
             {
                 LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
 
                 return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Topic路由消息接收端
+        /// </summary>
+        /// <param name="queueName">监听的队列</param>
+        public void TopicExchangeConsumeMessageFromServer(string queueName)
+        {
+            try
+            {
+                if (Connection == null) throw new Exception("连接为空");
+                if (ListenChannel == null) throw new Exception("通道为空");
+
+                SyncDataHandler syncDataHandlerClass = new SyncDataHandler();
+
+
+                bool queueDurable = true;
+                string QueueName = queueName;
+
+                //在MQ上定义一个持久化队列，如果名称相同不会重复创建
+                ListenChannel.QueueDeclare(QueueName, queueDurable, false, false, null);
+                //输入1，那如果接收一个消息，但是没有应答，则客户端不会收到下一个消息
+                ListenChannel.BasicQos(0, 1, false);
+
+                //创建基于该队列的消费者，绑定事件
+                var consumer = new EventingBasicConsumer(ListenChannel);
+
+                //绑定消费者
+                ListenChannel.BasicConsume(QueueName, //队列名
+                                      false,    //false：手动应答；true：自动应答
+                                      consumer);
+
+                consumer.Received += (model, ea) =>
+                {
+                    try
+                    {
+                        //TOOD 验证程序退出后消费者是否退出去了
+                        var body = ea.Body; //消息主体
+                        var message = Encoding.UTF8.GetString(body);
+
+                        Console.WriteLine("[x] Receive Message：" + message.ToString());
+
+                        //处理数据
+                        bool processSuccessFlag = syncDataHandlerClass.ProcessData(message);
+                        if (processSuccessFlag)
+                        {
+                            //回复确认
+                            ListenChannel.BasicAck(ea.DeliveryTag, false);
+                        }
+                        else
+                        {
+                            //未正常处理的消息，重新放回队列
+                            ListenChannel.BasicReject(ea.DeliveryTag, true);
+                        }
+                    }
+                    catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex1)
+                    {
+                        Thread.Sleep(5000);
+                        ListenChannel.BasicNack(ea.DeliveryTag, false, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Thread.Sleep(5000);
+                        ListenChannel.BasicNack(ea.DeliveryTag, false, true);
+                    }
+                };
+
+
+
+                /*------------------------------------------------*/
+                //输入1，那如果接收一个消息，但是没有应答，则客户端不会收到下一个消息
+                //ListenChannel.BasicQos(0, 1, false);
+
+                //在队列上定义一个消费者
+                //QueueingBasicConsumer basicConsumer = new QueueingBasicConsumer(ListenChannel);
+
+                //消费队列，并设置应答模式为程序主动应答
+                //ListenChannel.BasicConsume(QueueName, false, basicConsumer);
+
+                //while (true)
+                //{
+                    //阻塞函数，获取队列中的消息
+                    //BasicDeliverEventArgs ea = (BasicDeliverEventArgs)basicConsumer.Queue.Dequeue();
+
+                    //byte[] bytes = ea.Body;
+                    //string str = Encoding.UTF8.GetString(bytes);
+
+                    //Console.WriteLine("接收到消息：" + str.ToString());
+
+                    //处理数据
+                    //bool processSuccessFlag = syncDataHandlerClass.ProcessData(str);
+                    //if (processSuccessFlag)
+                    //{
+                        //回复确认
+                //        ListenChannel.BasicAck(ea.DeliveryTag, false);
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message);
+                throw ex;
             }
         }
     }

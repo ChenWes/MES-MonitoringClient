@@ -77,20 +77,26 @@
   <ItemGroup>
     <Compile Include="Common\CommonFunction.cs" />
     <Compile Include="Common\ConfigFileHandler.cs" />
+    <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\LogHandler.cs" />
+    <Compile Include="Common\ModelPropertyHelper.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\RabbitMQClientHandler.cs" />
+    <Compile Include="Model\MachineStatus.cs" />
     <Compile Include="Model\MachineStatusLog.cs" />
     <Compile Include="Model\MachineStatusLog_JSON.cs" />
+    <Compile Include="Model\SyncData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UploadDataHandler.cs" />
+    <Compile Include="SyncDataHandler.cs" />
+    <Compile Include="BackendServiceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DLL\Newtonsoft.Json.dll" />
     <Content Include="DLL\System.ServiceProcess.dll" />
   </ItemGroup>
   <ItemGroup />

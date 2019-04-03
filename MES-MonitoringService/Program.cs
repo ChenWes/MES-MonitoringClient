@@ -19,21 +19,23 @@ namespace MES_MonitoringService
             string defaultServiceDisplayName = Common.ConfigFileHandler.GetAppConfig("DefaultServiceDisplayName");
             string defaultServiceDescription = Common.ConfigFileHandler.GetAppConfig("DefaultServiceDescription");
 
-            //机器状态日志测试方法
-            //UploadDataHandler UploadDataHandlerClass = new UploadDataHandler();
-            //UploadDataHandlerClass.ProcessMachineStatusLog();
+            //后台测试方法
+            BackendServiceHandler BackendServiceHandlerClass = new BackendServiceHandler();
+            //BackendServiceHandlerClass.ProcessMachineStatusLog();
+            //BackendServiceHandlerClass.ProcessUpdateDateAction();
+            //BackendServiceHandlerClass.CheckMachineRegister();
 
             var exitCode = HostFactory.Run(x =>
             {
                 //配置服务
-                x.Service<UploadDataHandler>(s =>
+                x.Service<BackendServiceHandler>(s =>
                 {
                     //配置服务运行方法
-                    s.ConstructUsing(uploadstatus => new UploadDataHandler());
+                    s.ConstructUsing(uploadstatus => new BackendServiceHandler());
 
                     //配置服务开始与结束
                     s.WhenStarted(uploadstatus => uploadstatus.Start());
-                    s.WhenStopped(uploadstatus => uploadstatus.Stop());                    
+                    s.WhenStopped(uploadstatus => uploadstatus.Stop());                       
                 });
 
                 //运行在本地系统
