@@ -50,7 +50,7 @@ namespace MES_MonitoringClient.Common
             catch (Exception ex)
             {
                 Common.LogHandler.Log("HTTP请求出错，原因是：" + ex.Message);
-                return "";
+                throw ex;
             }
         }
 
