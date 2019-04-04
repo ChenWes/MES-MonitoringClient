@@ -91,6 +91,9 @@ namespace MES_MonitoringClient
             }
             catch (Exception ex)
             {
+                //显示红色
+                txt_MachineID.BackColor = Color.Red;
+
                 ShowErrorMessage(ex.Message, "查询注册码出错");
             }
         }
