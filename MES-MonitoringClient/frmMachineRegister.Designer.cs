@@ -33,7 +33,6 @@
             this.lab_SelectStatus = new System.Windows.Forms.Label();
             this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.txt_MachineID = new System.Windows.Forms.TextBox();
             this.btn_Query = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
@@ -48,6 +47,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txt_MACAddress = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.txt_MachineID = new System.Windows.Forms.MaskedTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -61,9 +61,9 @@
             this.tableLayoutPanel1.Controls.Add(this.lab_SelectStatus, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.btn_Confirm, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.txt_MachineID, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.btn_Query, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txt_MachineID, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -109,16 +109,6 @@
             this.btn_Confirm.TabIndex = 14;
             this.btn_Confirm.UseVisualStyleBackColor = true;
             this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
-            // 
-            // txt_MachineID
-            // 
-            this.txt_MachineID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_MachineID.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_MachineID.Location = new System.Drawing.Point(300, 31);
-            this.txt_MachineID.Name = "txt_MachineID";
-            this.txt_MachineID.Size = new System.Drawing.Size(390, 38);
-            this.txt_MachineID.TabIndex = 15;
-            this.txt_MachineID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_MachineID_KeyPress);
             // 
             // btn_Query
             // 
@@ -288,6 +278,16 @@
             this.label6.TabIndex = 4;
             this.label6.Text = "MAC地址";
             // 
+            // txt_MachineID
+            // 
+            this.txt_MachineID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_MachineID.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_MachineID.Location = new System.Drawing.Point(300, 31);
+            this.txt_MachineID.Mask = ">aaaa-aaaa-aaaa-aaaa-aaaa-aaaa";
+            this.txt_MachineID.Name = "txt_MachineID";
+            this.txt_MachineID.Size = new System.Drawing.Size(390, 38);
+            this.txt_MachineID.TabIndex = 17;
+            // 
             // frmMachineRegister
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -313,7 +313,6 @@
         private System.Windows.Forms.Label lab_SelectStatus;
         private Common.Component.CircularButton btn_Cancel;
         private Common.Component.CircularButton btn_Confirm;
-        private System.Windows.Forms.TextBox txt_MachineID;
         private Common.Component.CircularButton btn_Query;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TextBox txt_MachineCode;
@@ -328,5 +327,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txt_MACAddress;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.MaskedTextBox txt_MachineID;
     }
 }

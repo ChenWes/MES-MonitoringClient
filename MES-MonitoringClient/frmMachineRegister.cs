@@ -51,7 +51,8 @@ namespace MES_MonitoringClient
 
                 //机器ID验证注册，拿回Json数据（无论是正常的还是不正常的）
                 Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
-                string getJsonString = machineRegisterInfoHelperClass.MachineIDCheck(txt_MachineID.Text.Trim());
+                string getJsonString = machineRegisterInfoHelperClass.MachineIDCheck(txt_MachineID.Text.Trim().Replace("-", ""));
+
 
                 if (!string.IsNullOrEmpty(getJsonString))
                 {
@@ -114,7 +115,7 @@ namespace MES_MonitoringClient
 
                 //机器ID注册，拿回Json数据（无论是正常的还是不正常的）
                 Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
-                string getJsonString = machineRegisterInfoHelperClass.MachineRegister(txt_MachineID.Text.Trim());
+                string getJsonString = machineRegisterInfoHelperClass.MachineRegister(txt_MachineID.Text.Trim().Replace("-", ""));
 
                 if (!string.IsNullOrEmpty(getJsonString))
                 {
