@@ -66,7 +66,7 @@ namespace MES_MonitoringClient.Common
                 Common.HttpHelper httpHelperClass = new HttpHelper();
                 FormUrlEncodedContent bodyData = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    { "id", machineID},                    
+                    { "id", machineID.Trim()},                    
                 });
 
                 return httpHelperClass.HttpPost(l_machineRegisterUrlPath, bodyData);
@@ -93,7 +93,7 @@ namespace MES_MonitoringClient.Common
                 Common.HttpHelper httpHelperClass = new HttpHelper();
                 FormUrlEncodedContent bodyData = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    { "id", machineID},
+                    { "id", machineID.Trim()},
                     { "MACAddress", Common.CommonFunction.getMacAddress()},
                     { "IPAddress",Common.CommonFunction.getIPAddress()}
                 });

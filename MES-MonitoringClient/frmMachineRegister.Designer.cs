@@ -287,6 +287,7 @@
             this.txt_MachineID.Name = "txt_MachineID";
             this.txt_MachineID.Size = new System.Drawing.Size(390, 38);
             this.txt_MachineID.TabIndex = 17;
+            this.txt_MachineID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_MachineID_KeyPress_1);
             // 
             // frmMachineRegister
             // 

@@ -32,7 +32,7 @@ namespace MES_MonitoringClient
         private void frmMachineRegister_Load(object sender, EventArgs e)
         {
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.WindowState = FormWindowState.Maximized;
+            this.WindowState = FormWindowState.Maximized;            
         }
 
 
@@ -87,13 +87,13 @@ namespace MES_MonitoringClient
                     txt_Factory.Text = mc_MachineInfo.FactoryName + "(" + mc_MachineInfo.FactoryCode + ")";
 
                     //显示绿色
-                    txt_MachineID.BackColor = Color.Green;
+                    txt_MachineID.BackColor = Color.Green;                    
                 }
             }
             catch (Exception ex)
             {
                 //显示红色
-                txt_MachineID.BackColor = Color.Red;
+                txt_MachineID.BackColor = Color.Red;                
 
                 ShowErrorMessage(ex.Message, "查询注册码出错");
             }
@@ -172,6 +172,11 @@ namespace MES_MonitoringClient
             txt_MACAddress.Text = "";
             txt_Workshop.Text = "";
             txt_Factory.Text = "";
+        }
+
+        private void txt_MachineID_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            txt_MachineID.BackColor = Color.White;            
         }
     }
 }
