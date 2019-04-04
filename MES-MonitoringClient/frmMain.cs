@@ -1358,6 +1358,19 @@ namespace MES_MonitoringClient
         /*---------------------------------------------------------------------------------------*/
 
         /// <summary>
+        /// 机器注册按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_MachineName_Click(object sender, EventArgs e)
+        {
+            frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
+            newfrmMachineRegister.ShowDialog();
+
+            CheckMachineRegister();
+        }
+
+        /// <summary>
         /// 开始按钮
         /// </summary>
         /// <param name="sender"></param>
@@ -1463,18 +1476,26 @@ namespace MES_MonitoringClient
             CheckMachineRegister();
         }
 
+        /*检测机器注册*/
+        /*---------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 检测机器是否注册
+        /// </summary>
         private void CheckMachineRegister()
         {
-            //获取数据库
+            //获取数据库机器注册信息
             Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
-
             DataModel.MachineInfo machineInfoEntity = machineRegisterInfoHelperClass.GetMachineRegisterInfo();
 
             if (machineInfoEntity != null)
             {
+                //如果存在机器注册信息，则显示机器名，也不可再注册
                 btn_MachineName.Text = machineInfoEntity.MachineCode;
-                btn_MachineRegister.Enabled = false;
+                btn_MachineName.Enabled = false;
             }
         }
+
+
     }
 }

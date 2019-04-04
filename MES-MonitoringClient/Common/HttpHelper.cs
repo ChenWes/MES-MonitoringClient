@@ -17,8 +17,15 @@ namespace MES_MonitoringClient.Common
             ERROR
         }
 
+        //基础服务器API地址
+        private string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
 
-        public string HttpPost(string UrlPath,string MachineID)
+        /// <summary>
+        /// Http Post请求
+        /// </summary>
+        /// <param name="UrlPath">除主机地址以外的逻辑地址(URL可以增加参数条件)</param>
+        /// <returns></returns>
+        public string HttpGet(string UrlPath)
         {
             try
             {
@@ -26,14 +33,42 @@ namespace MES_MonitoringClient.Common
                 {
                     string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
                     //post
-                    var url = new Uri(basicHttpUrl+ UrlPath);
+                    var url = new Uri(basicHttpUrl + UrlPath);
 
-                    var body = new FormUrlEncodedContent(new Dictionary<string, string>
-                    {
-                        { "id", MachineID},
-                        { "MACAddress", Common.CommonFunction.getMacAddress()},
-                        { "IPAddress","127.0.0.1"}                        
-                    });                                       
+                    // response
+                    var response = httpClient.GetAsync(url).Result;
+
+                    //接口调用成功数据
+                    var data = response.Content.ReadAsStringAsync().Result;
+
+                    //检测返回JSON数据
+                    string resultJson = CheckHttpPostResult(data);
+
+                    return resultJson;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.Log("HTTP请求出错，原因是：" + ex.Message);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Http Post请求
+        /// </summary>
+        /// <param name="UrlPath">除主机地址以外的逻辑地址</param>
+        /// <param name="body">发送的Body数据</param>
+        /// <returns></returns>
+        public string HttpPost(string UrlPath, FormUrlEncodedContent body)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+                    //post
+                    var url = new Uri(basicHttpUrl+ UrlPath);                                     
 
                     // response
                     var response = httpClient.PostAsync(url, body).Result;
@@ -54,6 +89,18 @@ namespace MES_MonitoringClient.Common
             }
         }
 
+        /// <summary>
+        /// 检测返回的数据实体
+        /// 
+        /// {
+        /// "resultType": "ERROR"/"SUCCESS",
+        /// "results": null/数据实体,
+        /// "resultMsg": "错误信息",
+        /// "exceptionDetail": {}
+        /// }
+        /// </summary>
+        /// <param name="jsonString">返回的Json完整数据</param>
+        /// <returns></returns>
         public string CheckHttpPostResult(string jsonString)
         {
             if (string.IsNullOrEmpty(jsonString)) return string.Empty;
@@ -65,7 +112,6 @@ namespace MES_MonitoringClient.Common
             if (l_resultType == HttpResultType.SUCCESS.ToString())
             {
                 //正常返回了，处理返回的数据（JSON格式）
-
                 if (!string.IsNullOrEmpty(Common.JsonHelper.GetJsonValue(jsonString, "results"))) return Common.JsonHelper.GetJsonValue(jsonString, "results");
                 else return string.Empty;
             }

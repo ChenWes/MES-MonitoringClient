@@ -46,31 +46,32 @@ namespace MES_MonitoringClient
         {
             try
             {
-                //查询方法，调用HTTP，注册至DB
-                Common.HttpHelper httpHelperClass = new Common.HttpHelper();
-                string l_machineRegisterUrlPath = Common.ConfigFileHandler.GetAppConfig("MachineRegisterUrlPath");
+                if (string.IsNullOrEmpty(txt_MachineID.Text)) throw new Exception("机器注册码为空");
 
-                //拿到返回的JSON数据（无论是正常的还是不正常的）
-                string getJsonString = httpHelperClass.HttpPost(l_machineRegisterUrlPath, txt_MachineID.Text.Trim());
+
+                //机器ID验证注册，拿回Json数据（无论是正常的还是不正常的）
+                Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
+                string getJsonString = machineRegisterInfoHelperClass.MachineIDCheck(txt_MachineID.Text.Trim());
 
                 if (!string.IsNullOrEmpty(getJsonString))
                 {
                     //转换成Class，显示至界面上
                     mc_MachineInfo = new DataModel.MachineInfo();
 
+                    //机器本身信息
                     mc_MachineInfo.MachineID = Common.JsonHelper.GetJsonValue(getJsonString, "_id");
                     mc_MachineInfo.MachineCode = Common.JsonHelper.GetJsonValue(getJsonString, "MachineCode");
                     mc_MachineInfo.MachineName = Common.JsonHelper.GetJsonValue(getJsonString, "MachineName");
                     mc_MachineInfo.MachineDesc = Common.JsonHelper.GetJsonValue(getJsonString, "MachineDesc");
-                    mc_MachineInfo.MACAddress = Common.JsonHelper.GetJsonValue(getJsonString, "MACAddress");
+                    mc_MachineInfo.MACAddress = Common.CommonFunction.getMacAddress();
 
-
-                    string workshopJsonString= Common.JsonHelper.GetJsonValue(getJsonString, "WorkshopID");
-                    mc_MachineInfo.WorkshopCode= Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopCode");
+                    //车间信息
+                    string workshopJsonString = Common.JsonHelper.GetJsonValue(getJsonString, "WorkshopID");
+                    mc_MachineInfo.WorkshopCode = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopCode");
                     mc_MachineInfo.WorkshopName = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopName");
 
-
-                    string factoryJsonString= Common.JsonHelper.GetJsonValue(workshopJsonString, "FactoryID");
+                    //工厂信息
+                    string factoryJsonString = Common.JsonHelper.GetJsonValue(workshopJsonString, "FactoryID");
                     mc_MachineInfo.FactoryCode = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryCode");
                     mc_MachineInfo.FactoryName = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryName");
 
@@ -81,8 +82,11 @@ namespace MES_MonitoringClient
                     txt_MachineDesc.Text = mc_MachineInfo.MachineDesc;
                     txt_MACAddress.Text = mc_MachineInfo.MACAddress;
 
-                    txt_Workshop.Text = mc_MachineInfo.WorkshopName + "("+mc_MachineInfo.WorkshopCode+")";
+                    txt_Workshop.Text = mc_MachineInfo.WorkshopName + "(" + mc_MachineInfo.WorkshopCode + ")";
                     txt_Factory.Text = mc_MachineInfo.FactoryName + "(" + mc_MachineInfo.FactoryCode + ")";
+
+                    //显示绿色
+                    txt_MachineID.BackColor = Color.Green;
                 }
             }
             catch (Exception ex)
@@ -100,18 +104,70 @@ namespace MES_MonitoringClient
 
         private void btn_Confirm_Click(object sender, EventArgs e)
         {
-            if (mc_MachineInfo == null)
+            try
             {
-                ShowErrorMessage("请输入正确的机器注册码", "机器注册错误");
+                //清空数据实体
+                mc_MachineInfo = null;
+
+                //机器ID注册，拿回Json数据（无论是正常的还是不正常的）
+                Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
+                string getJsonString = machineRegisterInfoHelperClass.MachineRegister(txt_MachineID.Text.Trim());
+
+                if (!string.IsNullOrEmpty(getJsonString))
+                {
+                    //转换成Class，显示至界面上
+                    mc_MachineInfo = new DataModel.MachineInfo();
+
+                    //机器本身信息
+                    mc_MachineInfo.MachineID = Common.JsonHelper.GetJsonValue(getJsonString, "_id");
+                    mc_MachineInfo.MachineCode = Common.JsonHelper.GetJsonValue(getJsonString, "MachineCode");
+                    mc_MachineInfo.MachineName = Common.JsonHelper.GetJsonValue(getJsonString, "MachineName");
+                    mc_MachineInfo.MachineDesc = Common.JsonHelper.GetJsonValue(getJsonString, "MachineDesc");
+                    mc_MachineInfo.MACAddress = Common.JsonHelper.GetJsonValue(getJsonString, "MACAddress");
+
+                    //车间信息
+                    string workshopJsonString = Common.JsonHelper.GetJsonValue(getJsonString, "WorkshopID");
+                    mc_MachineInfo.WorkshopCode = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopCode");
+                    mc_MachineInfo.WorkshopName = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopName");
+
+                    //工厂信息
+                    string factoryJsonString = Common.JsonHelper.GetJsonValue(workshopJsonString, "FactoryID");
+                    mc_MachineInfo.FactoryCode = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryCode");
+                    mc_MachineInfo.FactoryName = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryName");
+                }
+
+
+                if (mc_MachineInfo == null)
+                {
+                    ShowErrorMessage("请输入正确的机器注册码", "机器注册错误");
+                }
+                else
+                {
+                    machineRegisterCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineInfo>(defaultMachineRegisterMongodbCollectionName);
+
+                    machineRegisterCollection.InsertOne(mc_MachineInfo);
+
+                    this.Close();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                machineRegisterCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineInfo>(defaultMachineRegisterMongodbCollectionName);
-
-                machineRegisterCollection.InsertOne(mc_MachineInfo);
-
-                this.Close();
+                ShowErrorMessage(ex.Message, "机器注册出错");
             }
+
+        }
+
+        private void txt_MachineID_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            txt_MachineID.BackColor = Color.White;
+
+            txt_MachineCode.Text = "";
+            txt_MachineName.Text = "";
+            txt_MachineDesc.Text = "";
+
+            txt_MACAddress.Text = "";
+            txt_Workshop.Text = "";
+            txt_Factory.Text = "";
         }
     }
 }

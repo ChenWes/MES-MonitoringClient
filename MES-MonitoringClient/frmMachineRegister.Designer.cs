@@ -118,15 +118,16 @@
             this.txt_MachineID.Name = "txt_MachineID";
             this.txt_MachineID.Size = new System.Drawing.Size(390, 38);
             this.txt_MachineID.TabIndex = 15;
+            this.txt_MachineID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_MachineID_KeyPress);
             // 
             // btn_Query
             // 
             this.btn_Query.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Query.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Query.BackgroundImage")));
             this.btn_Query.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Query.Location = new System.Drawing.Point(827, 35);
+            this.btn_Query.Location = new System.Drawing.Point(817, 25);
             this.btn_Query.Name = "btn_Query";
-            this.btn_Query.Size = new System.Drawing.Size(30, 30);
+            this.btn_Query.Size = new System.Drawing.Size(50, 50);
             this.btn_Query.TabIndex = 14;
             this.btn_Query.UseVisualStyleBackColor = true;
             this.btn_Query.Click += new System.EventHandler(this.btn_Query_Click);
