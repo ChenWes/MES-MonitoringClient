@@ -104,14 +104,25 @@
     <Compile Include="Common\MachineRegisterInfoHelper.cs" />
     <Compile Include="Common\MachineReportHandler.cs" />
     <Compile Include="Common\MachineStatusHandler.cs" />
+    <Compile Include="Common\ModelPropertyHelper.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
+    <Compile Include="Common\SyncDataDBHelper.cs" />
+    <Compile Include="Common\SyncDataHelper.cs" />
     <Compile Include="Common\TimmerHandler.cs" />
+    <Compile Include="DataModel\WorkShift.cs" />
+    <Compile Include="DataModel\JobPosition.cs" />
+    <Compile Include="DataModel\Employee.cs" />
+    <Compile Include="DataModel\Department.cs" />
+    <Compile Include="DataModel\Group.cs" />
     <Compile Include="DataModel\MachineInfo.cs" />
     <Compile Include="DataModel\MachineProduceLifeCycle.cs" />
+    <Compile Include="DataModel\MachineStatus.cs" />
     <Compile Include="DataModel\MachineStatusUseTime.cs" />
     <Compile Include="DataModel\MachineRunTime.cs" />
     <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
+    <Compile Include="DataModel\SyncData.cs" />
+    <Compile Include="DataModel\SyncData_LoopHelper.cs" />
     <Compile Include="frmChangeStatus.cs">
       <SubType>Form</SubType>
     </Compile>

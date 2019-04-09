@@ -55,6 +55,44 @@ namespace MES_MonitoringClient.Common
         }
 
         /// <summary>
+        /// 加入Token的Http Get请求
+        /// </summary>
+        /// <param name="UrlPath"></param>
+        /// <returns></returns>
+        public string HttpGetWithToken(string UrlPath)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+
+                    //token
+                    httpClient.DefaultRequestHeaders.Add("Authorization", Common.ConfigFileHandler.GetAppConfig("BackendServerToken"));
+
+                    //post
+                    var url = new Uri(basicHttpUrl + UrlPath);
+
+                    // response
+                    var response = httpClient.GetAsync(url).Result;
+
+                    //接口调用成功数据
+                    var data = response.Content.ReadAsStringAsync().Result;
+
+                    //检测返回JSON数据
+                    string resultJson = CheckHttpPostResult(data);
+
+                    return resultJson;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.Log("HTTP请求出错，原因是：" + ex.Message);
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// Http Post请求
         /// </summary>
         /// <param name="UrlPath">除主机地址以外的逻辑地址</param>
@@ -67,8 +105,48 @@ namespace MES_MonitoringClient.Common
                 using (var httpClient = new HttpClient())
                 {
                     string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+
                     //post
                     var url = new Uri(basicHttpUrl+ UrlPath);                                     
+
+                    // response
+                    var response = httpClient.PostAsync(url, body).Result;
+
+                    //接口调用成功数据
+                    var data = response.Content.ReadAsStringAsync().Result;
+
+                    //检测返回JSON数据
+                    string resultJson = CheckHttpPostResult(data);
+
+                    return resultJson;
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.Log("HTTP请求出错，原因是：" + ex.Message);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 加入Token的Http Post请求
+        /// </summary>
+        /// <param name="UrlPath"></param>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public string HttpPostWithToken(string UrlPath, FormUrlEncodedContent body)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+
+                    //token
+                    httpClient.DefaultRequestHeaders.Add("Authorization", Common.ConfigFileHandler.GetAppConfig("BackendServerToken"));
+
+                    //post
+                    var url = new Uri(basicHttpUrl + UrlPath);
 
                     // response
                     var response = httpClient.PostAsync(url, body).Result;

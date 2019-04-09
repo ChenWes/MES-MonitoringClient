@@ -140,18 +140,22 @@ namespace MES_MonitoringClient
                     mc_MachineInfo.FactoryName = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryName");
                 }
 
-
                 if (mc_MachineInfo == null)
                 {
                     ShowErrorMessage("请输入正确的机器注册码", "机器注册错误");
                 }
                 else
                 {
-                    machineRegisterCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineInfo>(defaultMachineRegisterMongodbCollectionName);
+                    //先同步数据
+                    bool syncdata_Flag = Common.SyncDataHelper.SyncData_AllCollection();
+                    if (syncdata_Flag)
+                    {
+                        //后写入注册数据
+                        machineRegisterCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineInfo>(defaultMachineRegisterMongodbCollectionName);
+                        machineRegisterCollection.InsertOne(mc_MachineInfo);
 
-                    machineRegisterCollection.InsertOne(mc_MachineInfo);
-
-                    this.Close();
+                        this.Close();
+                    }
                 }
             }
             catch (Exception ex)
