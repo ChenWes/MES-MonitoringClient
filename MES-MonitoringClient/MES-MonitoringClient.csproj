@@ -110,7 +110,7 @@
     <Compile Include="DataModel\MachineProduceLifeCycle.cs" />
     <Compile Include="DataModel\MachineStatusUseTime.cs" />
     <Compile Include="DataModel\MachineRunTime.cs" />
-    <Compile Include="DataModel\MachineStatus.cs" />
+    <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
     <Compile Include="frmChangeStatus.cs">
       <SubType>Form</SubType>

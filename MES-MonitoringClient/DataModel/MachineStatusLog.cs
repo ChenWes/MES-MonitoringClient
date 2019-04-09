@@ -15,7 +15,7 @@ namespace MES_MonitoringClient.DataModel
     /// <summary>
     /// 机器状态（本地数据库保存）
     /// </summary>
-    public class MachineStatus
+    public class MachineStatusLog
     {
         public ObjectId Id { get; set; }
 

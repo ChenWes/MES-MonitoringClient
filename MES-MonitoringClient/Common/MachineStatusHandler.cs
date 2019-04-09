@@ -41,7 +41,7 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 机器状态Mongodb集合
         /// </summary>
-        private IMongoCollection<DataModel.MachineStatus> machineStatusLogCollection;
+        private IMongoCollection<DataModel.MachineStatusLog> machineStatusLogCollection;
 
         /// <summary>
         /// 机器状态默认Mongodb集合名
@@ -102,7 +102,7 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 最后操作的数据库ID
         /// </summary>
-        public string LastOperationMachineStatusID { get; set; }
+        public string LastOperationMachineStatusLogID { get; set; }
 
         /// <summary>
         /// 最后操作的时间
@@ -174,10 +174,10 @@ namespace MES_MonitoringClient.Common
             mc_MachineProduceStatusHandler = new MachineProduceStatusHandler();
 
             //最后操作记录ID为空
-            LastOperationMachineStatusID = string.Empty;
+            LastOperationMachineStatusLogID = string.Empty;
 
             //机器状态集合
-            machineStatusLogCollection = MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineStatus>(defaultMachineStatusMongodbCollectionName);
+            machineStatusLogCollection = MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineStatusLog>(defaultMachineStatusMongodbCollectionName);
         }
 
 
@@ -262,7 +262,7 @@ namespace MES_MonitoringClient.Common
                     if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
                     {
                         //判断最后一个（来自于没有关闭应用程序）
-                        if (!string.IsNullOrEmpty(LastOperationMachineStatusID))
+                        if (!string.IsNullOrEmpty(LastOperationMachineStatusLogID))
                         {
                             int useTotalSecond = 0;
                             if (LastOperationDateTime != null)
@@ -272,12 +272,12 @@ namespace MES_MonitoringClient.Common
                             }
 
                             //找到单个记录
-                            //var dataID = new ObjectId(LastOperationMachineStatusID);
+                            //var dataID = new ObjectId(LastOperationMachineStatusLogID);
                             //var getMachineStatusEntity = machineStatusLogCollection.AsQueryable<DataModel.MachineStatus>().SingleOrDefault(m => m.Id == dataID);
 
-                            var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
+                            var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
 
-                            var update = Builders<DataModel.MachineStatus>.Update
+                            var update = Builders<DataModel.MachineStatusLog>.Update
                                 .Set("EndDateTime", EndDateTime)
                                 .Set("UseTotalSeconds", useTotalSecond)
                                 .Set("IsStopFlag", true);
@@ -316,7 +316,7 @@ namespace MES_MonitoringClient.Common
                 if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
                 {
                     //查询数据库，是否有未完成的数据，如果有，完成未完成的数据，如果没有，直接新增
-                    if (string.IsNullOrEmpty(LastOperationMachineStatusID))
+                    if (string.IsNullOrEmpty(LastOperationMachineStatusLogID))
                     {
                         var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
                         var filter = Builders<BsonDocument>.Filter.And(new FilterDefinition<BsonDocument>[] {
@@ -327,7 +327,7 @@ namespace MES_MonitoringClient.Common
 
                         if (result != null)
                         {
-                            var dataEntity = BsonSerializer.Deserialize<DataModel.MachineStatus>(result);
+                            var dataEntity = BsonSerializer.Deserialize<DataModel.MachineStatusLog>(result);
                             decimal useTotalSecond = 0;
                             if (dataEntity.StartDateTime != null)
                             {
@@ -350,25 +350,25 @@ namespace MES_MonitoringClient.Common
 
 
                     //存在上一次的ID，说明
-                    DataModel.MachineStatus newMachineStatus = new DataModel.MachineStatus();
+                    DataModel.MachineStatusLog newMachineStatusLog = new DataModel.MachineStatusLog();
 
-                    newMachineStatus.Status = StatusDescription;
+                    newMachineStatusLog.Status = StatusDescription;
                     //开始与结束时间一致
-                    newMachineStatus.StartDateTime = StartDateTime;
+                    newMachineStatusLog.StartDateTime = StartDateTime;
                     //newMachineStatus.EndDateTime = StartDateTime;
                     //使用的秒数
-                    newMachineStatus.UseTotalSeconds = 0;
+                    newMachineStatusLog.UseTotalSeconds = 0;
                     //未结束与上传标识
-                    newMachineStatus.IsStopFlag = false;
-                    newMachineStatus.IsUploadToServer = false;
-                    newMachineStatus.IsUpdateToServer = false;
+                    newMachineStatusLog.IsStopFlag = false;
+                    newMachineStatusLog.IsUploadToServer = false;
+                    newMachineStatusLog.IsUpdateToServer = false;
                     //MAC地址
-                    newMachineStatus.LocalMacAddress = Common.CommonFunction.getMacAddress();
+                    newMachineStatusLog.LocalMacAddress = Common.CommonFunction.getMacAddress();
 
                     //插入
-                    machineStatusLogCollection.InsertOne(newMachineStatus);
+                    machineStatusLogCollection.InsertOne(newMachineStatusLog);
                     //暂存ID
-                    LastOperationMachineStatusID = newMachineStatus.Id.ToString();
+                    LastOperationMachineStatusLogID = newMachineStatusLog.Id.ToString();
                     //最后操作时间
                     LastOperationDateTime = StartDateTime;
 
@@ -466,7 +466,7 @@ namespace MES_MonitoringClient.Common
                     if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
                     {
                         //判断最后一个
-                        if (!string.IsNullOrEmpty(LastOperationMachineStatusID))
+                        if (!string.IsNullOrEmpty(LastOperationMachineStatusLogID))
                         {
                             int useTotalSecond = 0;
                             if (LastOperationDateTime != null)
@@ -476,12 +476,12 @@ namespace MES_MonitoringClient.Common
                             }
 
                             //找到单个记录
-                            //var dataID = new ObjectId(LastOperationMachineStatusID);
+                            //var dataID = new ObjectId(LastOperationMachineStatusLogID);
                             //var getMachineStatusEntity = machineStatusLogCollection.AsQueryable<DataModel.MachineStatus>().SingleOrDefault(m => m.Id == dataID);
 
-                            var filterID = Builders<DataModel.MachineStatus>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusID));
+                            var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
 
-                            var update = Builders<DataModel.MachineStatus>.Update
+                            var update = Builders<DataModel.MachineStatusLog>.Update
                                 .Set("EndDateTime", EndDateTime)
                                 .Set("UseTotalSeconds", useTotalSecond)
                                 .Set("IsStopFlag", true);
