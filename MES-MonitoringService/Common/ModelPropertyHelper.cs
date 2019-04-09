@@ -33,8 +33,12 @@ namespace MES_MonitoringService.Common
             {
                 string name = item.Name;
                 object value = item.GetValue(t, null);
+                //如果字段是ID，则不需要处理
+                if (name.ToUpper() != "_ID")
+                {
+                    updates.Add(Builders<BsonDocument>.Update.Set(name, value));
+                }
 
-                updates.Add(Builders<BsonDocument>.Update.Set(name, value));
             }
 
             return updates.ToArray();

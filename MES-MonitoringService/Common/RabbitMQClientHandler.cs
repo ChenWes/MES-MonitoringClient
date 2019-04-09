@@ -306,10 +306,10 @@ namespace MES_MonitoringService.Common
 
 
         /// <summary>
-        /// Topic路由消息接收端
+        /// Topic路由，接收同步消息
         /// </summary>
         /// <param name="queueName">监听的队列</param>
-        public void TopicExchangeConsumeMessageFromServer(string queueName)
+        public void SyncDataFromServer(string queueName)
         {
             try
             {
@@ -346,7 +346,7 @@ namespace MES_MonitoringService.Common
                         Console.WriteLine("[x] Receive Message：" + message.ToString());
 
                         //处理数据
-                        bool processSuccessFlag = syncDataHandlerClass.ProcessData(message);
+                        bool processSuccessFlag = syncDataHandlerClass.ProcessSyncData(message);
                         if (processSuccessFlag)
                         {
                             //回复确认
@@ -369,37 +369,6 @@ namespace MES_MonitoringService.Common
                         ListenChannel.BasicNack(ea.DeliveryTag, false, true);
                     }
                 };
-
-
-
-                /*------------------------------------------------*/
-                //输入1，那如果接收一个消息，但是没有应答，则客户端不会收到下一个消息
-                //ListenChannel.BasicQos(0, 1, false);
-
-                //在队列上定义一个消费者
-                //QueueingBasicConsumer basicConsumer = new QueueingBasicConsumer(ListenChannel);
-
-                //消费队列，并设置应答模式为程序主动应答
-                //ListenChannel.BasicConsume(QueueName, false, basicConsumer);
-
-                //while (true)
-                //{
-                    //阻塞函数，获取队列中的消息
-                    //BasicDeliverEventArgs ea = (BasicDeliverEventArgs)basicConsumer.Queue.Dequeue();
-
-                    //byte[] bytes = ea.Body;
-                    //string str = Encoding.UTF8.GetString(bytes);
-
-                    //Console.WriteLine("接收到消息：" + str.ToString());
-
-                    //处理数据
-                    //bool processSuccessFlag = syncDataHandlerClass.ProcessData(str);
-                    //if (processSuccessFlag)
-                    //{
-                        //回复确认
-                //        ListenChannel.BasicAck(ea.DeliveryTag, false);
-                //    }
-                //}
             }
             catch (Exception ex)
             {

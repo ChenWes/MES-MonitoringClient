@@ -19,7 +19,7 @@ namespace MES_MonitoringService
         private static string defaultUploadDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadDataIntervalMilliseconds");
 
         //机器状态日志Mongodb数据集名称
-        private static string defaultMachineStatusMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+        private static string defaultMachineStatusLogMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLogCollectionName");
         //机器注册表
         private static string defaultMachineRegisterMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCollectionName");
 
@@ -102,7 +102,7 @@ namespace MES_MonitoringService
 
 
                 //找到机器状态集合
-                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusLogMongodbCollectionName);
 
                 //找到没有上传的或者没有更新但已经停止的状态记录
                 var newfilter = Builders<BsonDocument>.Filter.Or(
@@ -181,15 +181,6 @@ namespace MES_MonitoringService
             {
                 if (MC_IsSyncDataFlag == false)
                 {
-                    //新增
-                    //var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineRegisterMongodbCollectionName);
-                    //var document = new BsonDocument
-                    //{
-                    //  {"MachineCode", BsonValue.Create("D1")},
-                    //  {"MachineID", new BsonString("5c7f21627d2e4914c075bb2b")}
-                    //};
-                    //Common.MongodbHandler.GetInstance().InsertOne(collection, document);
-
                     var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineRegisterMongodbCollectionName);
 
                     //查找机器注册信息
@@ -221,7 +212,7 @@ namespace MES_MonitoringService
             {
                 /*手动处理时可用*/
                 ////处理
-                //Common.RabbitMQClientHandler.GetInstance().TopicExchangeConsumeMessageFromServer(defaultUpdateData_QueueName_Prefix);
+                //Common.RabbitMQClientHandler.GetInstance().SyncDataFromServer(defaultUpdateData_QueueName_Prefix);
                 ////数据同步标识
                 //MC_IsSyncDataFlag = true;
 
@@ -229,7 +220,7 @@ namespace MES_MonitoringService
                 if (!string.IsNullOrEmpty(MC_MachineRegisterID))
                 {
                     //处理
-                    Common.RabbitMQClientHandler.GetInstance().TopicExchangeConsumeMessageFromServer(defaultUpdateData_QueueName_Prefix + MC_MachineRegisterID);
+                    Common.RabbitMQClientHandler.GetInstance().SyncDataFromServer(defaultUpdateData_QueueName_Prefix + MC_MachineRegisterID);
 
                     //数据同步标识
                     MC_IsSyncDataFlag = true;

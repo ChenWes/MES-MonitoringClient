@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace MES_MonitoringService.Model
 {
     [BsonIgnoreExtraElements]
-    public class MachineStatus : SyncData
+    public class JobPositon : SyncData
     {
 
         [BsonId]
@@ -22,27 +22,23 @@ namespace MES_MonitoringService.Model
         public string _id { get; set; }
 
 
-        [BsonElement("MachineStatusCode")]
-        public string MachineStatusCode { get; set; }
 
-        [BsonElement("MachineStatusName")]
-        public string MachineStatusName { get; set; }
 
-        [BsonElement("MachineStatusDesc")]
-        public string MachineStatusDesc { get; set; }
+        [BsonElement("JobPositionCode")]
+        public string JobPositionCode { get; set; }
 
+        [BsonElement("JobPositionName")]
+        public string JobPositionName { get; set; }
+
+        [BsonElement("JobPositionDesc")]
+        public string JobPositionDesc { get; set; }
 
         [BsonElement("Remark")]
         public string Remark { get; set; }
 
-        [BsonElement("IsActive")]
-        public bool IsActive { get; set; }
+        [BsonElement("MachineStatuss")]        
+        public IEnumerable<string> MachineStatuss { get; set; }
 
-        /// <summary>
-        /// 状态的颜色
-        /// </summary>
-        [BsonElement("StatusColor")]
-        public string StatusColor { get; set; }
 
 
         [BsonElement("CreateAt")]
@@ -53,9 +49,11 @@ namespace MES_MonitoringService.Model
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime LastUpdateAt { get; set; }
 
+
+
         public override string getCollectionName()
         {
-            return Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+            return Common.ConfigFileHandler.GetAppConfig("JobPositionCollectionName");
         }
     }
 }

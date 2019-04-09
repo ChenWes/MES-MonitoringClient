@@ -8,8 +8,11 @@ namespace MES_MonitoringService.Model
 {
     public abstract class SyncData
     {
-        //public abstract bool Add();
-        //public abstract bool Edit();
-        //public abstract bool Delete();
+
+        /// <summary>
+        /// 获取当前实体对应的Collection数据集名称
+        /// </summary>
+        /// <returns></returns>
+        public abstract string getCollectionName();
     }
 }

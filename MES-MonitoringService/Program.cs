@@ -20,9 +20,9 @@ namespace MES_MonitoringService
             string defaultServiceDescription = Common.ConfigFileHandler.GetAppConfig("DefaultServiceDescription");
 
             //后台测试方法
-            BackendServiceHandler BackendServiceHandlerClass = new BackendServiceHandler();
+            //BackendServiceHandler BackendServiceHandlerClass = new BackendServiceHandler();
             //BackendServiceHandlerClass.ProcessMachineStatusLog();
-            //BackendServiceHandlerClass.ProcessUpdateDateAction();
+            //BackendServiceHandlerClass.ProcessSyncDataAction();
             //BackendServiceHandlerClass.CheckMachineRegister();
 
             var exitCode = HostFactory.Run(x =>

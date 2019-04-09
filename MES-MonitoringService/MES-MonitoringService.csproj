@@ -82,6 +82,12 @@
     <Compile Include="Common\ModelPropertyHelper.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\RabbitMQClientHandler.cs" />
+    <Compile Include="SyncDataDBHandler.cs" />
+    <Compile Include="Model\JobPosition.cs" />
+    <Compile Include="Model\Group.cs" />
+    <Compile Include="Model\Department.cs" />
+    <Compile Include="Model\WorkShift.cs" />
+    <Compile Include="Model\Employee.cs" />
     <Compile Include="Model\MachineStatus.cs" />
     <Compile Include="Model\MachineStatusLog.cs" />
     <Compile Include="Model\MachineStatusLog_JSON.cs" />
@@ -92,7 +98,9 @@
     <Compile Include="BackendServiceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

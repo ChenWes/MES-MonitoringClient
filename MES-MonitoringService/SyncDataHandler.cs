@@ -14,28 +14,13 @@ namespace MES_MonitoringService
 {
     public class SyncDataHandler
     {
-        public enum ActionType
-        {
-            ADD,
-            EDIT,
-            DELETE
-        }
-
-        private IMongoCollection<Model.MachineStatus> machineStatusCollection;
-        private static string defaultMachineStatusMongodbCollectionName = "MachineStatus";
-
-
-        public SyncDataHandler()
-        {
-            machineStatusCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<Model.MachineStatus>(defaultMachineStatusMongodbCollectionName);
-        }
 
         /// <summary>
         /// 处理同步的数据
         /// </summary>
         /// <param name="jsonString">通过同步获取的JSON数据</param>
         /// <returns></returns>
-        public bool ProcessData(string jsonString)
+        public bool ProcessSyncData(string jsonString)
         {
             try
             {
@@ -48,42 +33,68 @@ namespace MES_MonitoringService
 
                 if (type == "MachineStatus")
                 {
-                    //解析成类，并且默认增加一个参数
-                    Model.MachineStatus syncDataClass = JsonConvert.DeserializeObject<Model.MachineStatus>(dataJson);
-                    syncDataClass.OriginalID = id;
+                    #region 正常反序列化为实体类并处理
+                    Model.MachineStatus dataEntityClass = JsonConvert.DeserializeObject<Model.MachineStatus>(dataJson);
 
-                    if (action.ToUpper() == ActionType.ADD.ToString())
-                    {
-                        #region 新增
+                    SyncDataDBHandler<Model.MachineStatus> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.MachineStatus>();
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
 
-                        machineStatusCollection.InsertOne(syncDataClass);
+                    #endregion
+                }
+                else if (type == "WorkShift")
+                {
+                    #region 正常反序列化为实体类并处理
 
-                        #endregion
-                    }
-                    else if (action.ToUpper() == ActionType.EDIT.ToString() || action.ToUpper() == ActionType.DELETE.ToString())
-                    {
-                        var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
-                        var filterID = Builders<BsonDocument>.Filter.Eq("OriginalID", id);
+                    Model.WorkShift dataEntityClass = JsonConvert.DeserializeObject<Model.WorkShift>(dataJson);
 
-                        if (action.ToUpper() == ActionType.EDIT.ToString())
-                        {
-                            #region 修改
+                    SyncDataDBHandler<Model.WorkShift> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.WorkShift>();
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
 
-                            Common.ModelPropertyHelper<Model.MachineStatus> convertClass = new Common.ModelPropertyHelper<Model.MachineStatus>();
-                            var update = convertClass.GetModelClassProperty(syncDataClass);
-                            Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, Builders<BsonDocument>.Update.Combine(update));
+                    #endregion
+                }
+                else if (type == "JobPosition")
+                {
+                    #region 自定义反序列化
 
-                            #endregion
-                        }
-                        else if (action.ToUpper() == ActionType.DELETE.ToString())
-                        {
-                            #region 删除
+                    Model.JobPositon dataEntityClass = JsonConvert.DeserializeObject<Model.JobPositon>(dataJson);
 
-                            Common.MongodbHandler.GetInstance().FindOneAndDelete(collection, filterID);
+                    SyncDataDBHandler<Model.JobPositon> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.JobPositon>();
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
 
-                            #endregion
-                        }
-                    }
+                    #endregion
+                }
+                else if (type == "Department")
+                {
+                    #region 正常反序列化为实体类并处理
+
+                    Model.Department dataEntityClass = JsonConvert.DeserializeObject<Model.Department>(dataJson);
+
+                    SyncDataDBHandler<Model.Department> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Department>();
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+
+                    #endregion
+                }
+                else if (type == "Group")
+                {
+                    #region 自定义反序列化
+
+                    Model.Group dataEntityClass = JsonConvert.DeserializeObject<Model.Group>(dataJson);
+
+                    SyncDataDBHandler<Model.Group> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Group>();
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+
+                    #endregion
+                }
+                else if (type == "Employee")
+                {
+                    #region 自定义反序列化
+
+                    Model.Employee dataEntityClass = JsonConvert.DeserializeObject<Model.Employee>(dataJson);
+
+                    SyncDataDBHandler<Model.Employee> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Employee>();
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+
+                    #endregion
                 }
 
                 return true;
