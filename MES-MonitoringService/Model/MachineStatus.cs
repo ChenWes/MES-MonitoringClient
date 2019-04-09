@@ -16,12 +16,6 @@ namespace MES_MonitoringService.Model
     [BsonIgnoreExtraElements]
     public class MachineStatus : SyncData
     {
-
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string _id { get; set; }
-
-
         [BsonElement("MachineStatusCode")]
         public string MachineStatusCode { get; set; }
 
@@ -38,20 +32,10 @@ namespace MES_MonitoringService.Model
         [BsonElement("IsActive")]
         public bool IsActive { get; set; }
 
-        /// <summary>
-        /// 状态的颜色
-        /// </summary>
         [BsonElement("StatusColor")]
         public string StatusColor { get; set; }
 
 
-        [BsonElement("CreateAt")]
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime CreateAt { get; set; }
-
-        [BsonElement("LastUpdateAt")]
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime LastUpdateAt { get; set; }
 
         public override string getCollectionName()
         {

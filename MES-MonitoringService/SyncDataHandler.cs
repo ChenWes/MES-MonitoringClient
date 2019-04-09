@@ -33,66 +33,55 @@ namespace MES_MonitoringService
 
                 if (type == "MachineStatus")
                 {
-                    #region 正常反序列化为实体类并处理
-                    Model.MachineStatus dataEntityClass = JsonConvert.DeserializeObject<Model.MachineStatus>(dataJson);
+                    #region 处理数据
 
                     SyncDataDBHandler<Model.MachineStatus> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.MachineStatus>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
 
                     #endregion
                 }
                 else if (type == "WorkShift")
                 {
-                    #region 正常反序列化为实体类并处理
-
-                    Model.WorkShift dataEntityClass = JsonConvert.DeserializeObject<Model.WorkShift>(dataJson);
+                    #region 处理数据
 
                     SyncDataDBHandler<Model.WorkShift> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.WorkShift>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
 
                     #endregion
                 }
                 else if (type == "JobPosition")
                 {
-                    #region 自定义反序列化
-
-                    Model.JobPositon dataEntityClass = JsonConvert.DeserializeObject<Model.JobPositon>(dataJson);
+                    #region 处理数据
 
                     SyncDataDBHandler<Model.JobPositon> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.JobPositon>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
 
                     #endregion
                 }
                 else if (type == "Department")
                 {
-                    #region 正常反序列化为实体类并处理
-
-                    Model.Department dataEntityClass = JsonConvert.DeserializeObject<Model.Department>(dataJson);
+                    #region 处理数据
 
                     SyncDataDBHandler<Model.Department> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Department>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
 
                     #endregion
                 }
                 else if (type == "Group")
                 {
-                    #region 自定义反序列化
-
-                    Model.Group dataEntityClass = JsonConvert.DeserializeObject<Model.Group>(dataJson);
+                    #region 处理数据
 
                     SyncDataDBHandler<Model.Group> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Group>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
 
                     #endregion
                 }
                 else if (type == "Employee")
                 {
-                    #region 自定义反序列化
-
-                    Model.Employee dataEntityClass = JsonConvert.DeserializeObject<Model.Employee>(dataJson);
+                    #region 处理数据
 
                     SyncDataDBHandler<Model.Employee> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Employee>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataEntityClass, id, action);
+                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
 
                     #endregion
                 }

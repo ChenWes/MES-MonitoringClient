@@ -16,13 +16,6 @@ namespace MES_MonitoringService.Model
     [BsonIgnoreExtraElements]
     public class Employee : SyncData
     {
-
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string _id { get; set; }
-
-
-
         [BsonElement("EmployeeCode")]
         public string EmployeeCode { get; set; }
 
@@ -70,16 +63,6 @@ namespace MES_MonitoringService.Model
         [BsonElement("IsActive")]
         public bool IsActive { get; set; }
 
-
-
-
-        [BsonElement("CreateAt")]
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime CreateAt { get; set; }
-
-        [BsonElement("LastUpdateAt")]
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime LastUpdateAt { get; set; }
 
 
 

@@ -34,10 +34,13 @@ namespace MES_MonitoringService
         /// <param name="id">HTTP得到的的ID</param>
         /// <param name="action">HTTP得到的action</param>
         /// <returns></returns>
-        public bool SyncData_DBHandler(T dataEntityClass, string id, string action)
+        public bool SyncData_DBHandler(string dataJson, string id, string action)
         {
             try
-            {                
+            {
+                //反序列化为类实体
+                T dataEntityClass= JsonConvert.DeserializeObject<T>(dataJson);
+
                 if (action.ToUpper() == ActionType.ADD.ToString())
                 {
                     return SyncData_Add(dataEntityClass);

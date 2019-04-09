@@ -14,8 +14,9 @@ namespace MES_MonitoringClient.DataModel
     public class MachineInfo
     {
 
-        [BsonElement("_id")]
-        public ObjectId ID { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string _id { get; set; }
 
         [BsonElement("MachineID")]
         public string MachineID { get; set; }

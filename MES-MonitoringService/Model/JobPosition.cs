@@ -16,14 +16,6 @@ namespace MES_MonitoringService.Model
     [BsonIgnoreExtraElements]
     public class JobPositon : SyncData
     {
-
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string _id { get; set; }
-
-
-
-
         [BsonElement("JobPositionCode")]
         public string JobPositionCode { get; set; }
 
@@ -38,16 +30,6 @@ namespace MES_MonitoringService.Model
 
         [BsonElement("MachineStatuss")]        
         public IEnumerable<string> MachineStatuss { get; set; }
-
-
-
-        [BsonElement("CreateAt")]
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime CreateAt { get; set; }
-
-        [BsonElement("LastUpdateAt")]
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime LastUpdateAt { get; set; }
 
 
 
