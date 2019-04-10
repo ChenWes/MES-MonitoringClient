@@ -34,6 +34,9 @@ namespace MES_MonitoringService.Model
         [BsonElement("WorkShiftEndTime")]
         public string WorkShiftEndTime { get; set; }
 
+        [BsonElement("WorkShiftType")]
+        public string WorkShiftType { get; set; }
+
 
 
         public override string getCollectionName()
