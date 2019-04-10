@@ -193,7 +193,7 @@ namespace MES_MonitoringService.Common
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                SendChannel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+                SendChannel.BasicPublish(ExchangeName, RoutingKey, props, messageBody);
 
                 //等待确认
                 return SendChannel.WaitForConfirms();
@@ -242,7 +242,7 @@ namespace MES_MonitoringService.Common
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                SendChannel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+                SendChannel.BasicPublish(ExchangeName, RoutingKey, props, messageBody);
 
                 //等待确认
                 return SendChannel.WaitForConfirms();
@@ -291,7 +291,7 @@ namespace MES_MonitoringService.Common
 
                 //消息内容转码，并发送至服务器
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
-                SendChannel.BasicPublish(ExchangeName, RoutingKey, null, messageBody);
+                SendChannel.BasicPublish(ExchangeName, RoutingKey, props, messageBody);
 
                 //等待确认
                 return SendChannel.WaitForConfirms();
