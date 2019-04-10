@@ -33,6 +33,8 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("MACAddress")]
         public string MACAddress { get; set; }
 
+        [BsonElement("Tonnage")]
+        public string Tonnage { get; set; }
 
 
         [BsonElement("WorkshopCode")]

@@ -48,6 +48,8 @@
             this.txt_MACAddress = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txt_MachineID = new System.Windows.Forms.MaskedTextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txt_Tonnage = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -133,22 +135,25 @@
             this.tableLayoutPanel2.Controls.Add(this.txt_MachineDesc, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 4);
-            this.tableLayoutPanel2.Controls.Add(this.txt_Workshop, 1, 4);
-            this.tableLayoutPanel2.Controls.Add(this.txt_Factory, 1, 5);
-            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 5);
-            this.tableLayoutPanel2.Controls.Add(this.txt_MACAddress, 1, 3);
-            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.txt_Workshop, 1, 5);
+            this.tableLayoutPanel2.Controls.Add(this.txt_Factory, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 6);
+            this.tableLayoutPanel2.Controls.Add(this.txt_MACAddress, 1, 4);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.label7, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.txt_Tonnage, 1, 3);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(300, 103);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 6;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.tableLayoutPanel2.RowCount = 7;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28816F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(390, 475);
             this.tableLayoutPanel2.TabIndex = 16;
             // 
@@ -158,7 +163,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(33, 29);
+            this.label1.Location = new System.Drawing.Point(33, 23);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 20);
             this.label1.TabIndex = 4;
@@ -168,7 +173,7 @@
             // 
             this.txt_MachineCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_MachineCode.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_MachineCode.Location = new System.Drawing.Point(159, 20);
+            this.txt_MachineCode.Location = new System.Drawing.Point(159, 14);
             this.txt_MachineCode.Name = "txt_MachineCode";
             this.txt_MachineCode.Size = new System.Drawing.Size(228, 38);
             this.txt_MachineCode.TabIndex = 0;
@@ -177,7 +182,7 @@
             // 
             this.txt_MachineName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_MachineName.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_MachineName.Location = new System.Drawing.Point(159, 99);
+            this.txt_MachineName.Location = new System.Drawing.Point(159, 81);
             this.txt_MachineName.Name = "txt_MachineName";
             this.txt_MachineName.Size = new System.Drawing.Size(228, 38);
             this.txt_MachineName.TabIndex = 0;
@@ -186,7 +191,7 @@
             // 
             this.txt_MachineDesc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_MachineDesc.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_MachineDesc.Location = new System.Drawing.Point(159, 178);
+            this.txt_MachineDesc.Location = new System.Drawing.Point(159, 148);
             this.txt_MachineDesc.Name = "txt_MachineDesc";
             this.txt_MachineDesc.Size = new System.Drawing.Size(228, 38);
             this.txt_MachineDesc.TabIndex = 0;
@@ -197,7 +202,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(33, 108);
+            this.label2.Location = new System.Drawing.Point(33, 90);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 20);
             this.label2.TabIndex = 4;
@@ -209,7 +214,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(33, 187);
+            this.label3.Location = new System.Drawing.Point(33, 157);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(89, 20);
             this.label3.TabIndex = 4;
@@ -221,7 +226,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(53, 345);
+            this.label4.Location = new System.Drawing.Point(53, 358);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 20);
             this.label4.TabIndex = 4;
@@ -231,7 +236,7 @@
             // 
             this.txt_Workshop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_Workshop.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_Workshop.Location = new System.Drawing.Point(159, 336);
+            this.txt_Workshop.Location = new System.Drawing.Point(159, 349);
             this.txt_Workshop.Name = "txt_Workshop";
             this.txt_Workshop.Size = new System.Drawing.Size(228, 38);
             this.txt_Workshop.TabIndex = 0;
@@ -240,7 +245,7 @@
             // 
             this.txt_Factory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_Factory.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_Factory.Location = new System.Drawing.Point(159, 416);
+            this.txt_Factory.Location = new System.Drawing.Point(159, 419);
             this.txt_Factory.Name = "txt_Factory";
             this.txt_Factory.Size = new System.Drawing.Size(228, 38);
             this.txt_Factory.TabIndex = 0;
@@ -251,7 +256,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(53, 425);
+            this.label5.Location = new System.Drawing.Point(53, 428);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(49, 20);
             this.label5.TabIndex = 4;
@@ -261,7 +266,7 @@
             // 
             this.txt_MACAddress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_MACAddress.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_MACAddress.Location = new System.Drawing.Point(159, 257);
+            this.txt_MACAddress.Location = new System.Drawing.Point(159, 282);
             this.txt_MACAddress.Name = "txt_MACAddress";
             this.txt_MACAddress.Size = new System.Drawing.Size(228, 38);
             this.txt_MACAddress.TabIndex = 0;
@@ -272,7 +277,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(38, 266);
+            this.label6.Location = new System.Drawing.Point(38, 291);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(79, 20);
             this.label6.TabIndex = 4;
@@ -288,6 +293,27 @@
             this.txt_MachineID.Size = new System.Drawing.Size(390, 38);
             this.txt_MachineID.TabIndex = 17;
             this.txt_MachineID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_MachineID_KeyPress_1);
+            // 
+            // label7
+            // 
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.ForeColor = System.Drawing.Color.White;
+            this.label7.Location = new System.Drawing.Point(53, 224);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(49, 20);
+            this.label7.TabIndex = 4;
+            this.label7.Text = "吨位";
+            // 
+            // txt_Tonnage
+            // 
+            this.txt_Tonnage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Tonnage.Font = new System.Drawing.Font("宋体", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_Tonnage.Location = new System.Drawing.Point(159, 215);
+            this.txt_Tonnage.Name = "txt_Tonnage";
+            this.txt_Tonnage.Size = new System.Drawing.Size(228, 38);
+            this.txt_Tonnage.TabIndex = 0;
             // 
             // frmMachineRegister
             // 
@@ -329,5 +355,7 @@
         private System.Windows.Forms.TextBox txt_MACAddress;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.MaskedTextBox txt_MachineID;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txt_Tonnage;
     }
 }

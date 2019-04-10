@@ -64,6 +64,7 @@ namespace MES_MonitoringClient
                     mc_MachineInfo.MachineCode = Common.JsonHelper.GetJsonValue(getJsonString, "MachineCode");
                     mc_MachineInfo.MachineName = Common.JsonHelper.GetJsonValue(getJsonString, "MachineName");
                     mc_MachineInfo.MachineDesc = Common.JsonHelper.GetJsonValue(getJsonString, "MachineDesc");
+                    mc_MachineInfo.Tonnage = Common.JsonHelper.GetJsonValue(getJsonString, "Tonnage");
                     mc_MachineInfo.MACAddress = Common.CommonFunction.getMacAddress();
 
                     //车间信息
@@ -81,6 +82,7 @@ namespace MES_MonitoringClient
                     txt_MachineCode.Text = mc_MachineInfo.MachineCode;
                     txt_MachineName.Text = mc_MachineInfo.MachineName;
                     txt_MachineDesc.Text = mc_MachineInfo.MachineDesc;
+                    txt_Tonnage.Text = mc_MachineInfo.Tonnage;
                     txt_MACAddress.Text = mc_MachineInfo.MACAddress;
 
                     txt_Workshop.Text = mc_MachineInfo.WorkshopName + "(" + mc_MachineInfo.WorkshopCode + ")";
@@ -127,6 +129,7 @@ namespace MES_MonitoringClient
                     mc_MachineInfo.MachineCode = Common.JsonHelper.GetJsonValue(getJsonString, "MachineCode");
                     mc_MachineInfo.MachineName = Common.JsonHelper.GetJsonValue(getJsonString, "MachineName");
                     mc_MachineInfo.MachineDesc = Common.JsonHelper.GetJsonValue(getJsonString, "MachineDesc");
+                    mc_MachineInfo.Tonnage = Common.JsonHelper.GetJsonValue(getJsonString, "Tonnage");
                     mc_MachineInfo.MACAddress = Common.JsonHelper.GetJsonValue(getJsonString, "MACAddress");
 
                     //车间信息
