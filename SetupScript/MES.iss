@@ -204,8 +204,8 @@ begin
         // Replace the values in the .config file and save it
         LoadStringFromFile(strFilename, str);
         //通过替换完整的key，找到所有<add key="RabbitMQServerHostName" value="localhost"/>内容并替换成以下值
-        StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost" />','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'"/>', True); 
-        StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'"/>', True);               
+        StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost" />','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'" />', True); 
+        StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'" />', True);               
         SaveStringToFile(strFilename, str, False);             
       end;
   
@@ -218,7 +218,7 @@ begin
         // Replace the values in the .config file and save it
         LoadStringFromFile(strFilename, str);
         //通过替换完整的key，找到所有<add key="RabbitMQServerHostName" value="localhost"/>内容并替换成以下值
-        StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'"/>', True);        
+        StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'" />', True);        
         SaveStringToFile(strFilename, str, False);             
       end;
    end;
