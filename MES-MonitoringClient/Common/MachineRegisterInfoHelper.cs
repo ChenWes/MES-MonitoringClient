@@ -62,14 +62,13 @@ namespace MES_MonitoringClient.Common
             {
                 string l_machineRegisterUrlPath = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCheckUrlPath");
 
-                //准备发送Http Post请求,顺带参数
-                Common.HttpHelper httpHelperClass = new HttpHelper();
+                //准备发送Http Post请求,顺带参数               
                 FormUrlEncodedContent bodyData = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     { "id", machineID.Trim()},                    
                 });
 
-                return httpHelperClass.HttpPost(l_machineRegisterUrlPath, bodyData);
+                return Common.HttpHelper.HttpPost(l_machineRegisterUrlPath, bodyData);
             }
             catch (Exception ex)
             {
@@ -89,8 +88,7 @@ namespace MES_MonitoringClient.Common
             {
                 string l_machineRegisterUrlPath = Common.ConfigFileHandler.GetAppConfig("MachineRegisterUrlPath");
 
-                //准备发送Http Post请求,顺带参数
-                Common.HttpHelper httpHelperClass = new HttpHelper();
+                //准备发送Http Post请求,顺带参数                
                 FormUrlEncodedContent bodyData = new FormUrlEncodedContent(new Dictionary<string, string>
                 {
                     { "id", machineID.Trim()},
@@ -98,7 +96,7 @@ namespace MES_MonitoringClient.Common
                     { "IPAddress",Common.CommonFunction.getIPAddress()}
                 });
 
-                return httpHelperClass.HttpPost(l_machineRegisterUrlPath, bodyData);
+                return Common.HttpHelper.HttpPost(l_machineRegisterUrlPath, bodyData);
             }
             catch (Exception ex)
             {

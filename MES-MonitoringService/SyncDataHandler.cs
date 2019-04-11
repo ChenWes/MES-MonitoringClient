@@ -91,7 +91,7 @@ namespace MES_MonitoringService
             }
             catch (Exception ex)
             {
-                Common.LogHandler.Log("处理同步数据出错，原因：" + ex.Message);
+                Common.LogHandler.WriteLog("处理同步数据出错，原因：" + ex.Message);
                 return false;
             }
         }

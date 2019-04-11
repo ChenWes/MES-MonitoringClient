@@ -14,7 +14,7 @@ AppName=MES Monitoring Client
 AppVersion=1.0
 ;AppVerName=MES Monitoring Client 1.0
 ;应用发布方
-AppPublisher=广东翠峰机器人股份有限公司
+AppPublisher=广东翠峰机器人科技股份有限公司
 ;安装目录名称
 DefaultDirName={pf64}\MES-Monitoring-Client
 ;安装目录不可选择
@@ -68,8 +68,13 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Mongo
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Buffers.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-;如果有日志，则复制日志，如果没有，则不复制
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log.log"; DestDir: "{app}\Client"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newtonsoft.Json.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newtonsoft.Json.pdb"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+
+;如果有日志，则复制日志，如果没有，则不复制;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log.log"; DestDir: "{app}\Client"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
 ;Service的文件夹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
@@ -92,8 +97,14 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Syst
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Topshelf.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Topshelf.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.pdb"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log4net.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log4net.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+
 ;如果有日志，则复制日志，如果没有，则不复制
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
 
 ;NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -146,6 +157,7 @@ Name: "Service";    Description: "后台服务";  Types: normaltype custom
 
 [Code]
 var CustomPage: TInputQueryWizardPage;
+var CustomAPIPage: TInputQueryWizardPage;
 
 //设置Rabbit Server Host
 function NextButtonClick(CurPage: Integer): Boolean;
@@ -158,17 +170,27 @@ begin
   Result := true;  
 
   if CurPage = wpSelectComponents then
-   begin
-      // if IsComponentSelected('full') then
+   begin      
       if (CustomPage = nil) then
       begin
         // Set Custom Page initial values
         CustomPage := CreateInputQueryPage(wpSelectComponents, 
         'RabbitMQ 配置', 'MES服务信息配置', 
-        '请输入Rabbit Server Host地址，然后点击 下一步 按钮');
-        CustomPage.Add('Server Host:', False);        
-        CustomPage.Values[0] := '172.19.0.153';        
-        //CustomPage.Values[0] := '';        
+        '请输入RabbitMQ Server Host地址，然后点击 下一步 按钮');
+        CustomPage.Add('RabbitMQ Server Host:', False);        
+        CustomPage.Values[0] := '172.19.0.153';                
+      end;
+   end;
+
+   begin      
+      if (CustomAPIPage = nil) then
+      begin
+        // Set Custom Page initial values
+        CustomAPIPage := CreateInputQueryPage(wpSelectComponents, 
+        'API 配置', 'MES服务信息配置', 
+        '请输入API Server Host地址，然后点击 下一步 按钮');
+        CustomAPIPage.Add('API Server Host:', False);        
+        CustomAPIPage.Values[0] := '172.19.0.153';                
       end;
    end;
 
@@ -182,7 +204,21 @@ begin
         // Replace the values in the .config file and save it
         LoadStringFromFile(strFilename, str);
         //通过替换完整的key，找到所有<add key="RabbitMQServerHostName" value="localhost"/>内容并替换成以下值
-        StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost"/>','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'"/>', True);        
+        StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost" />','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'"/>', True); 
+        StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'"/>', True);               
+        SaveStringToFile(strFilename, str, False);             
+      end;
+  
+
+      //找到文件地下
+      strFilename := ExpandConstant('{app}\Client\MES-MonitoringClient.exe.config');
+
+      if FileExists(strFilename) then
+      begin
+        // Replace the values in the .config file and save it
+        LoadStringFromFile(strFilename, str);
+        //通过替换完整的key，找到所有<add key="RabbitMQServerHostName" value="localhost"/>内容并替换成以下值
+        StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'"/>', True);        
         SaveStringToFile(strFilename, str, False);             
       end;
    end;

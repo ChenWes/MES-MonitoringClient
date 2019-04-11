@@ -63,6 +63,11 @@ namespace MES_MonitoringService.Model
         [BsonElement("IsActive")]
         public bool IsActive { get; set; }
 
+        [BsonElement("IsSyncImage")]
+        public bool IsSyncImage { get; set; }
+
+        [BsonElement("LocalFileName")]
+        public string LocalFileName { get; set; }
 
 
 

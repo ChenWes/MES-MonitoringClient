@@ -24,6 +24,7 @@ namespace MES_MonitoringService
             //BackendServiceHandlerClass.ProcessMachineStatusLog();
             //BackendServiceHandlerClass.ProcessSyncDataAction();
             //BackendServiceHandlerClass.CheckMachineRegister();
+            //BackendServiceHandlerClass.ProcessEmployeeImage();
 
             var exitCode = HostFactory.Run(x =>
             {

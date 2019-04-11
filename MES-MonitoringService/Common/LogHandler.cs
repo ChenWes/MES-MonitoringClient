@@ -8,25 +8,36 @@ using System.IO;
 
 namespace MES_MonitoringService.Common
 {
+    /// <summary>
+    /// 日志帮助类
+    /// </summary>
     public static class LogHandler
     {
+        public static readonly log4net.ILog loginfo = log4net.LogManager.GetLogger("loginfo");
+        public static readonly log4net.ILog logerror = log4net.LogManager.GetLogger("logerror");
 
-        public static void Log(string logMessage)
+        /// <summary>
+        /// 写入日志（无异常）
+        /// </summary>
+        /// <param name="info">日志信息</param>
+        public static void WriteLog(string info)
         {
-            //是否写入参数日志
-            string UploadDataLogFile = ConfigFileHandler.GetAppConfig("UploadDataLogFile");
-
-            if (UploadDataLogFile.ToLower() == "true")
+            if (loginfo.IsInfoEnabled)
             {
-                //日志内容
-                string[] logString = new string[] { System.DateTime.Now.ToString() + " " + logMessage };
+                loginfo.Info(info);
+            }
+        }
 
-                //日志文件夹
-                string FolderPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName);
-                //日志文件
-                string FilePath = FolderPath + @"\log.log";
-                //写入日志
-                File.AppendAllLines(FilePath, logString, Encoding.UTF8);
+        /// <summary>
+        /// 写入日志（有异常）
+        /// </summary>
+        /// <param name="info">日志信息</param>
+        /// <param name="ex">异常实体</param>
+        public static void WriteLog(string info, Exception ex)
+        {
+            if (logerror.IsErrorEnabled)
+            {
+                logerror.Error(info, ex);
             }
         }
     }

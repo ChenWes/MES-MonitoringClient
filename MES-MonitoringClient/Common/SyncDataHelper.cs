@@ -22,35 +22,36 @@ namespace MES_MonitoringClient.Common
 
                 //获取url并发起Http get请求
                 string urlPath = Common.ConfigFileHandler.GetAppConfig("SyncDataUrlPath");
-                string jsonString = new Common.HttpHelper().HttpGetWithToken(urlPath);
+                string jsonString = Common.HttpHelper.HttpGetWithToken(urlPath);
 
                 //机器状态
                 SyncDataDBHelper<DataModel.MachineStatus> machineStatus_SyncHandlerClass = new SyncDataDBHelper<DataModel.MachineStatus>();
                 machineStatus_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "machinestatus"));
 
                 //部门
-                SyncDataDBHelper<DataModel.Department> department_SyncHandlerClass = new SyncDataDBHelper<DataModel.Department>();                
+                SyncDataDBHelper<DataModel.Department> department_SyncHandlerClass = new SyncDataDBHelper<DataModel.Department>();
                 department_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "department"));
 
                 //组别
-                SyncDataDBHelper<DataModel.Group> group_SyncHandlerClass = new SyncDataDBHelper<DataModel.Group>();                
+                SyncDataDBHelper<DataModel.Group> group_SyncHandlerClass = new SyncDataDBHelper<DataModel.Group>();
                 group_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "group"));
 
                 //岗位
-                SyncDataDBHelper<DataModel.JobPositon> jobPosition_SyncHandlerClass = new SyncDataDBHelper<DataModel.JobPositon>();                
+                SyncDataDBHelper<DataModel.JobPositon> jobPosition_SyncHandlerClass = new SyncDataDBHelper<DataModel.JobPositon>();
                 jobPosition_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "jobposition"));
 
                 //班次
-                SyncDataDBHelper<DataModel.WorkShift> workShift_SyncHandlerClass = new SyncDataDBHelper<DataModel.WorkShift>();                
+                SyncDataDBHelper<DataModel.WorkShift> workShift_SyncHandlerClass = new SyncDataDBHelper<DataModel.WorkShift>();
                 workShift_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "workshift"));
 
                 //员工
-                SyncDataDBHelper<DataModel.Employee> employee_SyncHandlerClass = new SyncDataDBHelper<DataModel.Employee>();                
+                SyncDataDBHelper<DataModel.Employee> employee_SyncHandlerClass = new SyncDataDBHelper<DataModel.Employee>();
                 employee_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "employee"));
+                
 
 
                 TimeSpan timeSpan = System.DateTime.Now - startTime;
-                Common.LogHandler.Log("首次同步总运行时间：" + timeSpan.TotalSeconds.ToString());
+                Common.LogHandler.WriteLog("首次同步总运行时间：" + timeSpan.TotalSeconds.ToString());
 
                 return true;
             }

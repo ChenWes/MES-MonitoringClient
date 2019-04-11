@@ -17,11 +17,15 @@ namespace MES_MonitoringService
     {
         //服务运行间隔时间
         private static string defaultUploadDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadDataIntervalMilliseconds");
+        //同步用户头像间隔时间
+        private static string defaultSyneEmployeeImageIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("SyncEmployeeImageIntervalMilliseconds");
 
         //机器状态日志Mongodb数据集名称
         private static string defaultMachineStatusLogMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLogCollectionName");
         //机器注册表
         private static string defaultMachineRegisterMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCollectionName");
+        //员工
+        private static string defaultEmployeeMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeCollectionName");
 
         //机器状态对应的交换机、路由、队列名称
         private static string defaultMachineStatus_ExchangeName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_ExchangeName");
@@ -39,6 +43,7 @@ namespace MES_MonitoringService
 
         //定时器
         private readonly Timer _timer;
+        private readonly Timer _SyncEmployeeImageTimer;
 
         /// <summary>
         /// 上传数据至服务器
@@ -48,12 +53,13 @@ namespace MES_MonitoringService
             if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
             {
                 //不存在MongoDB服务
-                Common.LogHandler.Log("MES数据上传服务程序检测到该电脑暂时不存在Mongodb服务，服务未能正常运行，请管理员及时处理。");
+                Common.LogHandler.WriteLog("MES数据上传服务程序检测到该电脑暂时不存在Mongodb服务，服务未能正常运行，请管理员及时处理。");
             }
             else
             {
                 //MongoDB服务正常
 
+                #region 同步机器状态信息            
 
                 //定时任务间隔时间
                 long timeInterval = 0;
@@ -62,6 +68,20 @@ namespace MES_MonitoringService
                 //定时任务
                 _timer = new Timer(timeInterval) { AutoReset = true };
                 _timer.Elapsed += TimerElapsed;
+
+                #endregion
+
+                #region 同步用户头像
+
+                //定时任务间隔时间
+                timeInterval = 0;
+                long.TryParse(defaultSyneEmployeeImageIntervalMilliseconds, out timeInterval);
+
+                //定时任务
+                _SyncEmployeeImageTimer = new Timer(timeInterval) { AutoReset = true };
+                _SyncEmployeeImageTimer.Elapsed += SyncEmployeeImageTimerElapsed;
+
+                #endregion
             }
         }
 
@@ -74,12 +94,24 @@ namespace MES_MonitoringService
         {
             //处理机器状态
             ProcessMachineStatusLog();
+            
 
             if (MC_IsSyncDataFlag == false)
             {
                 //检测注册
                 CheckMachineRegister();
             }
+        }
+
+        /// <summary>
+        /// 同步用户头像
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SyncEmployeeImageTimerElapsed(object sender, ElapsedEventArgs e)
+        {           
+            //同步头像
+            ProcessEmployeeImage();
         }
 
         /// <summary>
@@ -98,7 +130,7 @@ namespace MES_MonitoringService
         {
             try
             {
-                //Common.LogHandler.Log("开始运行定时方法[ProcessMachineStatusLog]");
+                //Common.LogHandler.WriteLog("开始运行定时方法[ProcessMachineStatusLog]");
 
 
                 //找到机器状态集合
@@ -135,7 +167,7 @@ namespace MES_MonitoringService
                     newMachineStatus_JSON.IsStopFlag = machineStatusLogEntity.IsStopFlag;
                     newMachineStatus_JSON.LocalMacAddress = machineStatusLogEntity.LocalMacAddress;
 
-                    //Common.LogHandler.Log("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
+                    //Common.LogHandler.WriteLog("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 
                     //读取Mongodb机器状态日志并上传至队列中
                     bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
@@ -151,7 +183,7 @@ namespace MES_MonitoringService
                             var update = Builders<BsonDocument>.Update.Set("IsUploadToServer", true);
                             //查找并修改文档
                             Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
-                            Common.LogHandler.Log("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已上传至服务器中，请查看");
+                            Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已上传至服务器中，请查看");
                         }
                         else if (!machineStatusLogEntity.IsUpdateToServer && machineStatusLogEntity.IsStopFlag)
                         {
@@ -161,14 +193,66 @@ namespace MES_MonitoringService
                             var update = Builders<BsonDocument>.Update.Set("IsUpdateToServer", true);
                             //查找并修改文档
                             Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
-                            Common.LogHandler.Log("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已更新至服务器中，请查看");
+                            Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已更新至服务器中，请查看");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Common.LogHandler.Log("MES数据上传服务程序发现错误，请管理员及时处理。" + ex.Message);
+                Common.LogHandler.WriteLog("MES数据上传服务程序发现错误，请管理员及时处理。" + ex.Message);
+            }
+        }
+
+        public void ProcessEmployeeImage()
+        {
+            try
+            {
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultEmployeeMongodbCollectionName);
+
+                //找到没有记录
+                var newfilter = Builders<BsonDocument>.Filter.And(
+                    new FilterDefinition<BsonDocument>[] {
+                    Builders<BsonDocument>.Filter.Eq("IsSyncImage", false),
+                    Builders<BsonDocument>.Filter.Ne("Icon",BsonNull.Value),
+                    Builders<BsonDocument>.Filter.Exists("Icon"),
+                });
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+
+                //循环处理
+                foreach (var data in getdocument)
+                {
+                    //转换成类
+                    var employeeEntity = BsonSerializer.Deserialize<Model.Employee>(data);
+
+                    //获取文件名
+                    string jsonString = Common.HttpHelper.HttpPostWithToken(employeeEntity.Icon, null);
+                    string filename = Common.JsonHelper.GetJsonValue(jsonString, "name");                    
+
+                    //当前路径父文件夹
+                    System.IO.DirectoryInfo topDir = System.IO.Directory.GetParent(System.Threading.Thread.GetDomain().BaseDirectory);
+
+                    //当前路径父文件夹,并放入至Client文件夹
+                    string newPath = topDir.Parent.FullName + "\\" + Common.ConfigFileHandler.GetAppConfig("ClientFolder");
+
+                    //下载头像文件
+                    bool SavetoLocal = Common.HttpHelper.HttpGetFileWithToken(employeeEntity.Icon, filename, newPath);
+                    if (SavetoLocal)
+                    {
+                        //使用ID作为条件
+                        var filterID = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(employeeEntity._id));
+                        //更改值为已上传
+                        var update = Builders<BsonDocument>.Update.Set("IsSyncImage", true).Set("LocalFileName", filename);
+                        //查找并修改文档
+                        Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
+                        Common.LogHandler.WriteLog("ID[" + employeeEntity._id + "]员工照片已经同步照片至本地，文件名称为" + filename);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.WriteLog("MES同步照片程序发现错误，请管理员及时处理。" + ex.Message);
             }
         }
 
@@ -180,7 +264,7 @@ namespace MES_MonitoringService
             try
             {
                 if (MC_IsSyncDataFlag == false)
-                {
+                {                    
                     var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineRegisterMongodbCollectionName);
 
                     //查找机器注册信息
@@ -192,6 +276,8 @@ namespace MES_MonitoringService
                         //注册的ID
                         MC_MachineRegisterID = getdocument.First().GetValue("MachineID").ToString();
 
+                        Common.LogHandler.WriteLog("该机器已经注册过，机器注册码为[" + MC_MachineRegisterID + "]");
+
                         //调用处理
                         CheckDBCallOneTimeFunction();
                     }
@@ -199,7 +285,7 @@ namespace MES_MonitoringService
             }
             catch(Exception ex)
             {
-                Common.LogHandler.Log("MES检测程序程序发现错误，请管理员及时处理。" + ex.Message);
+                Common.LogHandler.WriteLog("MES检测程序程序发现错误，请管理员及时处理。" + ex.Message);
             }
         }
 
@@ -234,7 +320,7 @@ namespace MES_MonitoringService
                 //出错重新调用自身
                 ProcessSyncDataAction();
 
-                Common.LogHandler.Log("MES数据同步服务程序发现错误，请管理员及时处理。" + ex.Message);
+                Common.LogHandler.WriteLog("MES数据同步服务程序发现错误，请管理员及时处理。" + ex.Message);
             }
         }
 

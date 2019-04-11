@@ -64,6 +64,13 @@ namespace MES_MonitoringClient.DataModel
         public bool IsActive { get; set; }
 
 
+        [BsonElement("IsSyncImage")]
+        public bool IsSyncImage { get; set; }
+
+        [BsonElement("LocalFileName")]
+        public string LocalFileName { get; set; }
+
+
 
         public override string getCollectionDataUrl()
         {

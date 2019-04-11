@@ -48,7 +48,7 @@ namespace MES_MonitoringService.Common
         {
             try
             {
-                Common.LogHandler.Log("获取RabbitMQ服务器参数：" + defaultRabbitMQHostName + ":" + defaultRabbitMQPort + " (" + defaultRabbitMQUserName + "/" + defaultRabbitMQPassword + ")");
+                Common.LogHandler.WriteLog("获取RabbitMQ服务器参数：" + defaultRabbitMQHostName + ":" + defaultRabbitMQPort + " (" + defaultRabbitMQUserName + "/" + defaultRabbitMQPassword + ")");
                 //连接工厂
                 mc_ConnectionFactory = new ConnectionFactory();
 
@@ -70,11 +70,12 @@ namespace MES_MonitoringService.Common
 
                 //创建连接
                 Connection = mc_ConnectionFactory.CreateConnection();
+                
 
                 //断开连接时，写入记录
                 Connection.ConnectionShutdown += (o, e) =>
                 {
-                    Common.LogHandler.Log("RabbitMQ连接已经断开，请联系管理员。" + e.ReplyText + "(" + e.ReplyCode + ")");
+                    Common.LogHandler.WriteLog("RabbitMQ连接已经断开，请联系管理员。" + e.ReplyText + "(" + e.ReplyCode + ")");
                 };
 
                 //创建发送频道
@@ -85,7 +86,7 @@ namespace MES_MonitoringService.Common
                 //确认模式，发送了消息后，可以收到回应
                 SendChannel.ConfirmSelect();
 
-                Common.LogHandler.Log("尝试连接至RabbitMQ服务器：" + defaultRabbitMQHostName);
+                Common.LogHandler.WriteLog("尝试连接至RabbitMQ服务器：" + defaultRabbitMQHostName);
             }
             catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
             {                
@@ -200,7 +201,7 @@ namespace MES_MonitoringService.Common
             }
             catch (Exception ex)
             {
-                LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
+                LogHandler.WriteLog("RabbitMQ出现通用问题" + ex.Message, ex);
 
                 return false;
             }
@@ -249,7 +250,7 @@ namespace MES_MonitoringService.Common
             }
             catch (Exception ex)
             {
-                LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
+                LogHandler.WriteLog("RabbitMQ出现通用问题" + ex.Message, ex);
 
                 return false;
             }
@@ -298,7 +299,7 @@ namespace MES_MonitoringService.Common
             }
             catch (Exception ex)
             {
-                LogHandler.Log("RabbitMQ出现通用问题" + ex.Message);
+                LogHandler.WriteLog("RabbitMQ出现通用问题" + ex.Message, ex);
 
                 return false;
             }
@@ -335,6 +336,9 @@ namespace MES_MonitoringService.Common
                                       false,    //false：手动应答；true：自动应答
                                       consumer);
 
+                Common.LogHandler.WriteLog("开始监控RabbitMQ服务器，队列" + QueueName);
+
+
                 consumer.Received += (model, ea) =>
                 {
                     try
@@ -343,7 +347,7 @@ namespace MES_MonitoringService.Common
                         var body = ea.Body; //消息主体
                         var message = Encoding.UTF8.GetString(body);
 
-                        Console.WriteLine("[x] Receive Message：" + message.ToString());
+                        LogHandler.WriteLog("[x] 队列接收到消息：" + message.ToString());
 
                         //处理数据
                         bool processSuccessFlag = syncDataHandlerClass.ProcessSyncData(message);
@@ -372,7 +376,7 @@ namespace MES_MonitoringService.Common
             }
             catch (Exception ex)
             {
-                Console.WriteLine("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message);
+                LogHandler.WriteLog("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message, ex);
                 throw ex;
             }
         }

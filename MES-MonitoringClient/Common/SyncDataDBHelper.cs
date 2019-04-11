@@ -23,7 +23,7 @@ namespace MES_MonitoringClient.Common
             {
                 string getUrl = newclass.getCollectionDataUrl();
 
-                return new Common.HttpHelper().HttpGetWithToken(getUrl);
+                return Common.HttpHelper.HttpGetWithToken(getUrl);
             }
             catch (Exception ex)
             {

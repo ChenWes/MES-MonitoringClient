@@ -8,10 +8,10 @@ using System.IO;
 
 using Newtonsoft.Json;
 
-namespace MES_MonitoringClient.Common
+namespace MES_MonitoringService.Common
 {
     public static class HttpHelper
-    {         
+    {
         private enum HttpResultType
         {
             SUCCESS,
