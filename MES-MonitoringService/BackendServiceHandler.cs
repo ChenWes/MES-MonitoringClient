@@ -208,6 +208,8 @@ namespace MES_MonitoringService
         {
             try
             {
+                Common.LogHandler.WriteLog("开始同步下载员工照片信息");
+
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultEmployeeMongodbCollectionName);
 
                 //找到没有记录
@@ -333,6 +335,11 @@ namespace MES_MonitoringService
             {
                 _timer.Start();
             }
+
+            if (_SyncEmployeeImageTimer != null)
+            {
+                _SyncEmployeeImageTimer.Start();
+            }
         }
 
         /// <summary>
@@ -343,6 +350,11 @@ namespace MES_MonitoringService
             if (_timer != null)
             {
                 _timer.Stop();
+            }
+
+            if (_SyncEmployeeImageTimer != null)
+            {
+                _SyncEmployeeImageTimer.Stop();
             }
         }
     }
