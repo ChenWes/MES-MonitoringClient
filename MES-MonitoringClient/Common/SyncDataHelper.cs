@@ -10,6 +10,16 @@ namespace MES_MonitoringClient.Common
 {
     public static class SyncDataHelper
     {
+        public static string MC_MachineStatusCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+        public static string MC_DepartmentCollectionName= Common.ConfigFileHandler.GetAppConfig("DepartmentCollectionName");
+        public static string MC_GroupCollectionName = Common.ConfigFileHandler.GetAppConfig("GroupCollectionName");
+        public static string MC_JobPositionCollectionName = Common.ConfigFileHandler.GetAppConfig("JobPositionCollectionName");
+        public static string MC_WorkShiftCollectionName = Common.ConfigFileHandler.GetAppConfig("WorkShiftCollectionName");
+        public static string MC_EmployeeCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeCollectionName");
+        public static string MC_CustomerCollectionName = Common.ConfigFileHandler.GetAppConfig("CustomerCollectionName");
+        public static string MC_MaterialCollectionName = Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
+        public static string MC_MouldCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
+
         /// <summary>
         /// 基础表同步
         /// </summary>
@@ -24,30 +34,33 @@ namespace MES_MonitoringClient.Common
                 string urlPath = Common.ConfigFileHandler.GetAppConfig("SyncDataUrlPath");
                 string jsonString = Common.HttpHelper.HttpGetWithToken(urlPath);
 
-                //机器状态
-                SyncDataDBHelper<DataModel.MachineStatus> machineStatus_SyncHandlerClass = new SyncDataDBHelper<DataModel.MachineStatus>();
-                machineStatus_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "machinestatus"));
+                //机器状态                
+                SyncDataDBHelper.SyncData_Process(MC_MachineStatusCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "machinestatus"));
 
-                //部门
-                SyncDataDBHelper<DataModel.Department> department_SyncHandlerClass = new SyncDataDBHelper<DataModel.Department>();
-                department_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "department"));
+                //部门                
+                SyncDataDBHelper.SyncData_Process(MC_DepartmentCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "department"));
 
                 //组别
-                SyncDataDBHelper<DataModel.Group> group_SyncHandlerClass = new SyncDataDBHelper<DataModel.Group>();
-                group_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "group"));
+                SyncDataDBHelper.SyncData_Process(MC_GroupCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "group"));
 
                 //岗位
-                SyncDataDBHelper<DataModel.JobPositon> jobPosition_SyncHandlerClass = new SyncDataDBHelper<DataModel.JobPositon>();
-                jobPosition_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "jobposition"));
+                SyncDataDBHelper.SyncData_Process(MC_JobPositionCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "jobposition"));
 
                 //班次
-                SyncDataDBHelper<DataModel.WorkShift> workShift_SyncHandlerClass = new SyncDataDBHelper<DataModel.WorkShift>();
-                workShift_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "workshift"));
+                SyncDataDBHelper.SyncData_Process(MC_WorkShiftCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "workshift"));
 
-                //员工
-                SyncDataDBHelper<DataModel.Employee> employee_SyncHandlerClass = new SyncDataDBHelper<DataModel.Employee>();
-                employee_SyncHandlerClass.SyncData_Process(Common.JsonHelper.GetJsonValue(jsonString, "employee"));
-                
+                //员工--单独处理（增加自定义字段）
+                SyncDataDBHelper.SyncEmployee_Process(MC_EmployeeCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "employee"));
+
+                //客户
+                SyncDataDBHelper.SyncData_Process(MC_CustomerCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "customer"));
+
+                //产品
+                SyncDataDBHelper.SyncData_Process(MC_MaterialCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "material"));
+
+                //模具
+                SyncDataDBHelper.SyncData_Process(MC_MouldCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "mould"));
+
 
 
                 TimeSpan timeSpan = System.DateTime.Now - startTime;

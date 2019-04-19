@@ -34,7 +34,7 @@ namespace MES_MonitoringService
 
 
         //同步数据对应的队列名称
-        private static string defaultUpdateData_QueueName_Prefix = Common.ConfigFileHandler.GetAppConfig("UpdateData_QueueName_Prefix");
+        private static string defaultSyncData_QueueName_Prefix = Common.ConfigFileHandler.GetAppConfig("SyncData_QueueName_Prefix");
 
         ////数据同步标识（作用开关，标识出系统是否正在数据同步）
         private bool MC_IsSyncDataFlag = false;
@@ -157,7 +157,10 @@ namespace MES_MonitoringService
                     //JSON类，如果不将JSON字符串中的ObjectID和ISODate去除，则Nodejs解析JSON时会出现问题
                     Model.MachineStatusLog_JSON newMachineStatus_JSON = new Model.MachineStatusLog_JSON();
                     newMachineStatus_JSON.Id = machineStatusLogEntity.Id.ToString();//ObjectID转换成string
-                    newMachineStatus_JSON.Status = machineStatusLogEntity.Status;
+
+                    newMachineStatus_JSON.StatusID = machineStatusLogEntity.StatusID;
+                    newMachineStatus_JSON.StatusCode = machineStatusLogEntity.StatusCode;
+                    newMachineStatus_JSON.StatusName = machineStatusLogEntity.StatusName;
 
                     newMachineStatus_JSON.UseTotalSeconds = machineStatusLogEntity.UseTotalSeconds;//使用秒数
 
@@ -183,7 +186,7 @@ namespace MES_MonitoringService
                             var update = Builders<BsonDocument>.Update.Set("IsUploadToServer", true);
                             //查找并修改文档
                             Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
-                            Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已上传至服务器中，请查看");
+                            Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.StatusName + "]已上传至服务器中，请查看");
                         }
                         else if (!machineStatusLogEntity.IsUpdateToServer && machineStatusLogEntity.IsStopFlag)
                         {
@@ -193,7 +196,7 @@ namespace MES_MonitoringService
                             var update = Builders<BsonDocument>.Update.Set("IsUpdateToServer", true);
                             //查找并修改文档
                             Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
-                            Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.Status + "]已更新至服务器中，请查看");
+                            Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.StatusName + "]已更新至服务器中，请查看");
                         }
                     }
                 }
@@ -216,6 +219,7 @@ namespace MES_MonitoringService
                 var newfilter = Builders<BsonDocument>.Filter.And(
                     new FilterDefinition<BsonDocument>[] {
                     Builders<BsonDocument>.Filter.Eq("IsSyncImage", false),
+                    Builders<BsonDocument>.Filter.Eq("LocalFileName", ""),
                     Builders<BsonDocument>.Filter.Ne("Icon",BsonNull.Value),
                     Builders<BsonDocument>.Filter.Exists("Icon"),
                 });
@@ -241,8 +245,9 @@ namespace MES_MonitoringService
                     bool SavetoLocal = Common.HttpHelper.HttpGetFileWithToken(employeeEntity.Icon, filename, newPath);
                     if (SavetoLocal)
                     {
-                        //使用ID作为条件
-                        var filterID = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(employeeEntity._id));
+                        //使用ID作为条件(就使用文本作为条件即可)
+                        var filterID = Builders<BsonDocument>.Filter.Eq("_id", employeeEntity._id);                        
+
                         //更改值为已上传
                         var update = Builders<BsonDocument>.Update.Set("IsSyncImage", true).Set("LocalFileName", filename);
                         //查找并修改文档
@@ -300,7 +305,7 @@ namespace MES_MonitoringService
             {
                 /*手动处理时可用*/
                 ////处理
-                //Common.RabbitMQClientHandler.GetInstance().SyncDataFromServer(defaultUpdateData_QueueName_Prefix);
+                //Common.RabbitMQClientHandler.GetInstance().SyncDataFromServer(defaultSyncData_QueueName_Prefix);
                 ////数据同步标识
                 //MC_IsSyncDataFlag = true;
 
@@ -308,7 +313,7 @@ namespace MES_MonitoringService
                 if (!string.IsNullOrEmpty(MC_MachineRegisterID))
                 {
                     //处理
-                    Common.RabbitMQClientHandler.GetInstance().SyncDataFromServer(defaultUpdateData_QueueName_Prefix + MC_MachineRegisterID);
+                    Common.RabbitMQClientHandler.GetInstance().SyncDataFromServer(defaultSyncData_QueueName_Prefix + MC_MachineRegisterID);
 
                     //数据同步标识
                     MC_IsSyncDataFlag = true;

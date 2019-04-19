@@ -20,8 +20,18 @@ namespace MES_MonitoringService.Model
     {
         public ObjectId Id { get; set; }
 
-        [BsonElement("Status")]
-        public string Status { get; set; }
+        [BsonElement("StatusID")]
+        public string StatusID { get; set; }
+
+        [BsonElement("StatusCode")]
+        public string StatusCode { get; set; }
+
+        [BsonElement("StatusName")]
+        public string StatusName { get; set; }
+
+        [BsonElement("StatusDesc")]
+        public string StatusDesc { get; set; }
+
 
         [BsonElement("StartDateTime")]
         public DateTime StartDateTime { get; set; }

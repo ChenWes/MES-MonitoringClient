@@ -72,11 +72,6 @@ namespace MES_MonitoringClient.DataModel
 
 
 
-        public override string getCollectionDataUrl()
-        {
-            return Common.ConfigFileHandler.GetAppConfig("EmployeeUrlPath");
-        }
-
         public override string getCollectionName()
         {
             return Common.ConfigFileHandler.GetAppConfig("EmployeeCollectionName");

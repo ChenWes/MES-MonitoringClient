@@ -35,8 +35,6 @@ namespace MES_MonitoringClient.DataModel
         /// </summary>
         /// <returns></returns>
         public abstract string getCollectionName();
-
-        public abstract string getCollectionDataUrl();
     }
 
 }

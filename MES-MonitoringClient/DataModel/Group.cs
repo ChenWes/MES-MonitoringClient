@@ -33,10 +33,6 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("Remark")]
         public string Remark { get; set; }
 
-        public override string getCollectionDataUrl()
-        {
-            return Common.ConfigFileHandler.GetAppConfig("GroupUrlPath");
-        }
 
         public override string getCollectionName()
         {

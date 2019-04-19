@@ -93,25 +93,41 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\BsonHelper.cs" />
     <Compile Include="Common\ColorDesign.cs" />
     <Compile Include="Common\CommonFunction.cs" />
     <Compile Include="Common\Component\CircularButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
+    <Compile Include="DataModel\Customer.cs" />
+    <Compile Include="DataModel\formParameter\frmChangeJobOrderPara.cs" />
+    <Compile Include="DataModel\JobOrderDisplay.cs" />
+    <Compile Include="DataModel\JobOrder.cs" />
+    <Compile Include="DataModel\MachineRegisterInfo.cs" />
+    <Compile Include="DataModel\Material.cs" />
+    <Compile Include="DataModel\Mould.cs" />
+    <Compile Include="EntityHelper\EmployeeHelper.cs" />
     <Compile Include="Common\HttpHelper.cs" />
+    <Compile Include="EntityHelper\JobOrderHelper.cs" />
+    <Compile Include="EntityHelper\MaterialHelper.cs" />
+    <Compile Include="EntityHelper\MouldHelper.cs" />
+    <Compile Include="EntityHelper\CustomerHelper.cs" />
+    <Compile Include="EntityHelper\JobPositionHelper.cs" />
     <Compile Include="Common\JsonHelper.cs" />
     <Compile Include="Common\LogHandler.cs" />
     <Compile Include="Common\MachineProcedure.cs" />
     <Compile Include="Common\MachineProduceStatusHandler.cs" />
-    <Compile Include="Common\MachineRegisterInfoHelper.cs" />
+    <Compile Include="EntityHelper\MachineRegisterInfoHelper.cs" />
     <Compile Include="Common\MachineReportHandler.cs" />
     <Compile Include="Common\MachineStatusHandler.cs" />
+    <Compile Include="EntityHelper\MachineStatusHelper.cs" />
     <Compile Include="Common\ModelPropertyHelper.cs" />
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\SyncDataDBHelper.cs" />
     <Compile Include="Common\SyncDataHelper.cs" />
     <Compile Include="Common\TimmerHandler.cs" />
+    <Compile Include="DataModel\formParameter\frmChangeMachineStatusPara.cs" />
     <Compile Include="DataModel\WorkShift.cs" />
     <Compile Include="DataModel\JobPosition.cs" />
     <Compile Include="DataModel\Employee.cs" />
@@ -125,7 +141,6 @@
     <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
     <Compile Include="DataModel\SyncData.cs" />
-    <Compile Include="DataModel\SyncData_LoopHelper.cs" />
     <Compile Include="frmChangeStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,6 +165,12 @@
     <Compile Include="frmScanRFID.Designer.cs">
       <DependentUpon>frmScanRFID.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSelectJobOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectJobOrder.Designer.cs">
+      <DependentUpon>frmSelectJobOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmChangeStatus.resx">
@@ -163,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmScanRFID.resx">
       <DependentUpon>frmScanRFID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectJobOrder.resx">
+      <DependentUpon>frmSelectJobOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -11,9 +11,15 @@ namespace MES_MonitoringService.Model
     /// </summary>
     public class MachineStatusLog_JSON
     {
-        public string Id { get; set; }        
+        public string Id { get; set; }
 
-        public string Status { get; set; }    
+        public string StatusID { get; set; }
+
+        public string StatusCode { get; set; }
+
+        public string StatusName { get; set; }
+
+        public string StatusDesc { get; set; }
 
         public string StartDateTime { get; set; }        
 

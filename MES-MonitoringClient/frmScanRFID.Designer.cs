@@ -45,24 +45,25 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 1, 0);
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.00079F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
+            this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.circularButton1, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.circularButton2, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.circularButton2, 4, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 49.99999F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.00001F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1048, 685);
             this.tableLayoutPanel1.TabIndex = 0;
-            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // lab_CardID
             // 
@@ -70,10 +71,11 @@
             this.lab_CardID.AutoSize = true;
             this.lab_CardID.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_CardID.ForeColor = System.Drawing.Color.White;
-            this.lab_CardID.Location = new System.Drawing.Point(523, 353);
+            this.lab_CardID.Location = new System.Drawing.Point(503, 353);
             this.lab_CardID.Name = "lab_CardID";
-            this.lab_CardID.Size = new System.Drawing.Size(0, 20);
+            this.lab_CardID.Size = new System.Drawing.Size(39, 20);
             this.lab_CardID.TabIndex = 5;
+            this.lab_CardID.Text = "...";
             // 
             // lab_ScanStatus
             // 
@@ -81,7 +83,7 @@
             this.lab_ScanStatus.AutoSize = true;
             this.lab_ScanStatus.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_ScanStatus.ForeColor = System.Drawing.Color.White;
-            this.lab_ScanStatus.Location = new System.Drawing.Point(479, 111);
+            this.lab_ScanStatus.Location = new System.Drawing.Point(478, 111);
             this.lab_ScanStatus.Name = "lab_ScanStatus";
             this.lab_ScanStatus.Size = new System.Drawing.Size(89, 20);
             this.lab_ScanStatus.TabIndex = 0;
@@ -92,7 +94,7 @@
             this.circularButton1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.circularButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton1.BackgroundImage")));
             this.circularButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.circularButton1.Location = new System.Drawing.Point(137, 547);
+            this.circularButton1.Location = new System.Drawing.Point(67, 547);
             this.circularButton1.Name = "circularButton1";
             this.circularButton1.Size = new System.Drawing.Size(75, 75);
             this.circularButton1.TabIndex = 7;
@@ -104,7 +106,7 @@
             this.circularButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.circularButton2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton2.BackgroundImage")));
             this.circularButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.circularButton2.Location = new System.Drawing.Point(835, 547);
+            this.circularButton2.Location = new System.Drawing.Point(904, 547);
             this.circularButton2.Name = "circularButton2";
             this.circularButton2.Size = new System.Drawing.Size(75, 75);
             this.circularButton2.TabIndex = 7;

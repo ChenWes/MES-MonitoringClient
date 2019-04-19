@@ -14,26 +14,28 @@ using Newtonsoft.Json;
 namespace MES_MonitoringClient.DataModel
 {
     [BsonIgnoreExtraElements]
-    public class Department : SyncData
+    public class Material : SyncData
     {
-        [BsonElement("DepartmentCode")]
-        public string DepartmentCode { get; set; }
+       
+        [BsonElement("MaterialCode")]
+        public string MaterialCode { get; set; }
 
-        [BsonElement("DepartmentName")]
-        public string DepartmentName { get; set; }
+        [BsonElement("MaterialName")]
+        public string MaterialName { get; set; }
 
-        [BsonElement("DepartmentDesc")]
-        public string DepartmentDesc { get; set; }
+        [BsonElement("MaterialDesc")]
+        public string MaterialDesc { get; set; }
 
+        [BsonElement("MaterialSpecification")]
+        public string MaterialSpecification { get; set; }
 
         [BsonElement("Remark")]
         public string Remark { get; set; }
 
 
-
         public override string getCollectionName()
         {
-            return Common.ConfigFileHandler.GetAppConfig("DepartmentCollectionName");
+            return Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
         }
     }
 }

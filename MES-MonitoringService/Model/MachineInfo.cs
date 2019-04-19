@@ -9,7 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 
-namespace MES_MonitoringClient.DataModel
+namespace MES_MonitoringService.Model
 {
     public class MachineInfo
     {
@@ -18,8 +18,6 @@ namespace MES_MonitoringClient.DataModel
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
-        //机器
-        //-------------------------------
         [BsonElement("MachineID")]
         public string MachineID { get; set; }
 
@@ -38,20 +36,13 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("Tonnage")]
         public string Tonnage { get; set; }
 
-        //车间
-        //-------------------------------
 
-        [BsonElement("WorkshopID")]
-        public string WorkshopID { get; set; }
         [BsonElement("WorkshopCode")]
         public string WorkshopCode { get; set; }
         [BsonElement("WorkshopName")]
         public string WorkshopName { get; set; }
 
-        //工厂
-        //-------------------------------
-        [BsonElement("FactoryID")]
-        public string FactoryID { get; set; }
+
         [BsonElement("FactoryCode")]
         public string FactoryCode { get; set; }
         [BsonElement("FactoryName")]

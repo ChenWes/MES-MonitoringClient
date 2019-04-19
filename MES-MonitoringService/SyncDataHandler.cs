@@ -14,9 +14,48 @@ namespace MES_MonitoringService
 {
     public class SyncDataHandler
     {
+        public static string MC_MachineStatusCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+        public static string MC_DepartmentCollectionName = Common.ConfigFileHandler.GetAppConfig("DepartmentCollectionName");
+        public static string MC_GroupCollectionName = Common.ConfigFileHandler.GetAppConfig("GroupCollectionName");
+        public static string MC_JobPositionCollectionName = Common.ConfigFileHandler.GetAppConfig("JobPositionCollectionName");
+        public static string MC_WorkShiftCollectionName = Common.ConfigFileHandler.GetAppConfig("WorkShiftCollectionName");
+        public static string MC_EmployeeCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeCollectionName");
+        public static string MC_CustomerCollectionName = Common.ConfigFileHandler.GetAppConfig("CustomerCollectionName");
+        public static string MC_MaterialCollectionName = Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
+        public static string MC_MouldCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
+        public static string MC_JobOrderCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderCollectionName");
+
+        public enum SyncDataType
+        {
+            Factory,
+            Workshop,
+            Machine,
+
+            MachineStatus,
+            WorkShift,
+            JobPosition,
+            Department,
+            Group,
+
+            Customer,
+            Material,
+            Mould,
+
+            Employee,
+            JobOrder,
+        }
 
         /// <summary>
         /// 处理同步的数据
+        /// {
+        /// 	"type": "XXX",
+        /// 	"id": "5cb80cbc6375a2558cd10b99",
+        /// 	"action": "EDIT",
+        /// 	"data": {
+        /// 		"_id": "5cb80cbc6375a2558cd10b99",
+        /// 		"Code": "003",
+        /// 	}
+        /// }
         /// </summary>
         /// <param name="jsonString">通过同步获取的JSON数据</param>
         /// <returns></returns>
@@ -24,64 +63,42 @@ namespace MES_MonitoringService
         {
             try
             {
-                //处理一级参数
+                //处理RabbitMQ传入的JSON数据
+                //同步的数据实体类型（操作的是什么）
                 string type = Common.JsonHelper.GetJsonValue(jsonString, "type");
+                //同步的操作类型（ADD\EDIT\DELETE）（怎么操作）
                 string action = Common.JsonHelper.GetJsonValue(jsonString, "action");
+                //同步的数据ID（操作的ID，用于修改和删除操作）
                 string id = Common.JsonHelper.GetJsonValue(jsonString, "id");
-
+                //同步的数据实体（用于新增和修改操作）
                 string dataJson = Common.JsonHelper.GetJsonValue(jsonString, "data");
 
-                if (type == "MachineStatus")
-                {
-                    #region 处理数据
 
-                    SyncDataDBHandler<Model.MachineStatus> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.MachineStatus>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
+                if (type == SyncDataType.Factory.ToString() || type == SyncDataType.Workshop.ToString() || type == SyncDataType.Machine.ToString()
+                   || type == SyncDataType.MachineStatus.ToString() || type == SyncDataType.WorkShift.ToString() || type == SyncDataType.JobPosition.ToString()
+                   || type == SyncDataType.Department.ToString() || type == SyncDataType.Group.ToString()
+                   || type == SyncDataType.Customer.ToString() || type == SyncDataType.Material.ToString() || type == SyncDataType.Mould.ToString()
+               )
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_GroupCollectionName, dataJson, id, action);
 
                     #endregion
                 }
-                else if (type == "WorkShift")
+                else if (type == SyncDataType.Employee.ToString())
                 {
-                    #region 处理数据
+                    #region 员工（特殊处理）
 
-                    SyncDataDBHandler<Model.WorkShift> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.WorkShift>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
+                    return SyncDataDBHandler.SyncEmployee_DBHandler(MC_EmployeeCollectionName, dataJson, id, action);
 
                     #endregion
                 }
-                else if (type == "JobPosition")
+                else if (type == SyncDataType.JobOrder.ToString())
                 {
-                    #region 处理数据
+                    #region 工单（特殊处理）
 
-                    SyncDataDBHandler<Model.JobPositon> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.JobPositon>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
-
-                    #endregion
-                }
-                else if (type == "Department")
-                {
-                    #region 处理数据
-
-                    SyncDataDBHandler<Model.Department> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Department>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
-
-                    #endregion
-                }
-                else if (type == "Group")
-                {
-                    #region 处理数据
-
-                    SyncDataDBHandler<Model.Group> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Group>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
-
-                    #endregion
-                }
-                else if (type == "Employee")
-                {
-                    #region 处理数据
-
-                    SyncDataDBHandler<Model.Employee> machineStatus_SyncHandlerClass = new SyncDataDBHandler<Model.Employee>();
-                    return machineStatus_SyncHandlerClass.SyncData_DBHandler(dataJson, id, action);
+                    SyncDataDBHandler.SyncOrder_DBHandler(MC_JobOrderCollectionName, dataJson, id, action);
 
                     #endregion
                 }

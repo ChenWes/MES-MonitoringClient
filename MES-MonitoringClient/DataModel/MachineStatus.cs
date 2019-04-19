@@ -36,10 +36,6 @@ namespace MES_MonitoringClient.DataModel
         public string StatusColor { get; set; }
 
 
-        public override string getCollectionDataUrl()
-        {
-            return Common.ConfigFileHandler.GetAppConfig("MachineStatusUrlPath");
-        }
 
         public override string getCollectionName()
         {

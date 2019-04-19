@@ -33,10 +33,6 @@ namespace MES_MonitoringClient.DataModel
 
 
 
-        public override string getCollectionDataUrl()
-        {
-            return Common.ConfigFileHandler.GetAppConfig("JobPositionUrlPath");
-        }
 
         public override string getCollectionName()
         {

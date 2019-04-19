@@ -11,20 +11,20 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 using Newtonsoft.Json;
 
-namespace MES_MonitoringService.Model
+namespace MES_MonitoringClient.DataModel
 {
     [BsonIgnoreExtraElements]
-    public class Department : SyncData
+    public class Customer : SyncData
     {
        
-        [BsonElement("DepartmentCode")]
-        public string DepartmentCode { get; set; }
+        [BsonElement("CustomerCode")]
+        public string CustomerCode { get; set; }
 
-        [BsonElement("DepartmentName")]
-        public string DepartmentName { get; set; }
+        [BsonElement("CustomerName")]
+        public string CustomerName { get; set; }
 
-        [BsonElement("DepartmentDesc")]
-        public string DepartmentDesc { get; set; }
+        [BsonElement("CustomerDesc")]
+        public string CustomerDesc { get; set; }
 
 
         [BsonElement("Remark")]
@@ -32,10 +32,9 @@ namespace MES_MonitoringService.Model
 
 
 
-
         public override string getCollectionName()
         {
-            return Common.ConfigFileHandler.GetAppConfig("DepartmentCollectionName");
+            return Common.ConfigFileHandler.GetAppConfig("CustomerCollectionName");
         }
     }
 }

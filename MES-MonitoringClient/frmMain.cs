@@ -20,22 +20,23 @@ namespace MES_MonitoringClient
     public partial class frmMain : Form
     {
         //数字为发送及接收数据状态的灯
+        //默认是0，发送数据后变成255，而后10毫秒减10，直至0
+        //从而形成闪烁的效果
         private int SendDataSuccessColor = 0;
         private int ReceiveDataSuccessColor = 0;
 
         //发送串口数据信号时间间隔
-        private long sendDataTimeInterval = 0;
+        private long sendDataTimeInterval = 0;        
 
-        //机器名称
-        private string defaultMachineName = Common.ConfigFileHandler.GetAppConfig("MachineName");
         //发送数据时间间隔，以毫秒计
         private string defaultSendDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("SendDataIntervalMilliseconds");
-        //数据上传服务名称
+
+        //数据上传服务名称，作为界面中显示使用
         private string defaultUploadDataServiceName = Common.ConfigFileHandler.GetAppConfig("UploadDataServiceName");        
 
         /*---------------------------------------------------------------------------------------*/
 
-        //向串口6发送的默认信号
+        //向串口6发送的默认信号（默认是AA10086）
         static string mc_DefaultSignal = Common.ConfigFileHandler.GetAppConfig("SendDataDefaultSignal");
         //必须的串口端口
         static string[] mc_DefaultRequiredSerialPortName = Common.ConfigFileHandler.GetAppConfig("CheckSerialPort").Split(',');
@@ -94,8 +95,7 @@ namespace MES_MonitoringClient
         {
             try
             {
-                //显示机器名称
-                //btn_MachineName.Text = defaultMachineName;
+                //显示机器名称                
                 CheckMachineRegister();
 
                 //最大化窗口
@@ -109,7 +109,8 @@ namespace MES_MonitoringClient
 
                 //设置机器默认状态
                 mc_MachineStatusHander = new Common.MachineStatusHandler();
-                mc_MachineStatusHander.UpdateMachineUseTimeDelegate += UpdateMachineUseTime;//状态更新方法（更新饼图）
+                mc_MachineStatusHander.UpdateMachineStatusPieChartDelegate += UpdateMachineStatusPieChart;//状态更新方法（更新饼图）
+                mc_MachineStatusHander.UpdateMachineStatusLightDelegate += UpdateMachineStatusLight;//状态灯更新方法（状态灯）
                 mc_MachineStatusHander.UpdateMachineCompleteDateTimeDelegate += UpdateMachineCompleteDateTime;//预计完成时间更新方法（预计完成时间）
                 mc_MachineStatusHander.UpdateMachineStatusTotalDateTimeDelegate += UpdateMachineStatusTotalDateTime;//状态总时间更新方法（状态总时间）
 
@@ -163,7 +164,7 @@ namespace MES_MonitoringClient
                 txt_WorkOrderCount.Text = "999999";
                 txt_PlanWorkTime.Text = "50";
                 
-                btn_Start_Click(null, null);
+                //btn_Start_Click(null, null);
 
                 #endregion
 
@@ -217,6 +218,7 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "系统初始化");
+                Common.LogHandler.WriteLog("系统初始化失败", ex);
                 this.Close();
             }
         }
@@ -275,6 +277,7 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "退出系统错误");
+                Common.LogHandler.WriteLog("退出系统错误", ex);
             }
         }
 
@@ -413,6 +416,7 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "设置当前时间错误");
+                Common.LogHandler.WriteLog("设置当前时间错误", ex);
                 TTimerClass = null;
             }
         }
@@ -472,7 +476,8 @@ namespace MES_MonitoringClient
             }
             catch (Exception ex)
             {
-                ShowErrorMessage(ex.Message, "设置当前时间错误");
+                ShowErrorMessage(ex.Message, "设置信号灯错误");
+                Common.LogHandler.WriteLog("设置信号灯错误", ex);
                 StatusLightTimerClass = null;
             }
         }
@@ -525,7 +530,7 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "发送数据至串口错误");
-                
+                Common.LogHandler.WriteLog("发送数据至串口错误", ex);
                 SDTimerClass = null;
             }
         }
@@ -577,6 +582,7 @@ namespace MES_MonitoringClient
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "获取当前机器温度");
+                Common.LogHandler.WriteLog("获取当前机器温度", ex);
                 MachineTemperatureTimerClass = null;
             }
         }
@@ -682,50 +688,37 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
-        /// 获取机器状态信息，更新状态饼图
+        /// 获取机器状态信息，更新状态饼图        
         /// </summary>
         /// <param name="singnal"></param>
-        delegate void UpdateMachineUserTimeDelegate(List<DataModel.MachineStatusUseTime> useTimeList);
-        private void UpdateMachineUseTime(List<DataModel.MachineStatusUseTime> useTimeList)
+        delegate void UpdateMachineStatusPieChartDelegate(List<DataModel.MachineStatusUseTime> useTimeList);
+        private void UpdateMachineStatusPieChart(List<DataModel.MachineStatusUseTime> useTimeList)
         {
             if (InvokeRequired)
             {
-                this.Invoke(new UpdateMachineUserTimeDelegate(delegate (List<DataModel.MachineStatusUseTime> s)
+                this.Invoke(new UpdateMachineStatusPieChartDelegate(delegate (List<DataModel.MachineStatusUseTime> s)
                 {
                     
-
                 }), useTimeList);
             }
             else
             {
+                
+                #region 机器状态对比饼图
+
                 //显示标签
                 Func<ChartPoint, string> labelPoint = chartPoint => string.Format("{0}", string.Format("{0:D2}时:{1:D2}分:{2:D2}秒", TimeSpan.FromSeconds(chartPoint.Y).Hours, TimeSpan.FromSeconds(chartPoint.Y).Minutes, TimeSpan.FromSeconds(chartPoint.Y).Seconds, TimeSpan.FromSeconds(chartPoint.Y).Milliseconds));
                 SeriesCollection seriesViews = new SeriesCollection();
 
                 var converter = new System.Windows.Media.BrushConverter();
                 foreach (var item in useTimeList)
-                {
-                    System.Windows.Media.Brush brush = (System.Windows.Media.Brush)converter.ConvertFromString("#FFFFFF");
-
-                    if (item.Status == "运行")
-                    {
-                        brush = (System.Windows.Media.Brush)converter.ConvertFromString("#00E676");
-                    }
-                    else if (item.Status == "故障")
-                    {
-                        brush = (System.Windows.Media.Brush)converter.ConvertFromString("#FF3D00");
-                    }
-                    else if (item.Status == "停机")
-                    {
-                        brush = (System.Windows.Media.Brush)converter.ConvertFromString("#DDDD00");
-                    }
-
+                {                   
                     seriesViews.Add(new PieSeries
                     {
-                        Title = item.Status,
+                        Title = item.StatusText,
                         Values = new ChartValues<double> { item.UseTotalSeconds },                        
                         PushOut = 5,
-                        Fill = brush,
+                        Fill = (System.Windows.Media.Brush)converter.ConvertFromString(item.StatusColor),
                         DataLabels = true,
                         LabelPoint = labelPoint
                     });
@@ -741,8 +734,34 @@ namespace MES_MonitoringClient
                 //数据提示栏
                 pieChart_MachineStatus.DataTooltip.Background = System.Windows.Media.Brushes.White;
                 //pieChart_MachineStatus.DataClick += pieChart_MachineStatusOnDataClick;
+
+                #endregion
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        delegate void UpdateMachineStatusLightDelegate();
+        private void UpdateMachineStatusLight()
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new UpdateMachineStatusLightDelegate(UpdateMachineStatusLight));
+            }
+            else
+            {
+                #region 机器状态灯
+
+                //设置状态灯
+                btn_StatusLight.Text = mc_MachineStatusHander.MachineStatusName;
+                btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                btn_StatusLight.BackColor = Common.CommonFunction.colorHx16toRGB(mc_MachineStatusHander.MachineStatusColor);
+
+                #endregion
+            }
+        }
+
 
         /// <summary>
         /// 更新状态持续总时间
@@ -837,11 +856,6 @@ namespace MES_MonitoringClient
             }
         }
 
-        //private void pieChart_MachineStatusOnDataClick(object sender, ChartPoint chartPoint)
-        //{
-        //    MessageBox.Show("You clicked (" + chartPoint.X + "," + chartPoint.Y + ")");
-        //}
-
 
         /*窗口公共方法*/
         /*---------------------------------------------------------------------------------------*/
@@ -881,21 +895,9 @@ namespace MES_MonitoringClient
         /// </summary>
         private void SettingMachineStatusLight()
         {
-            btn_StatusLight.Text = mc_MachineStatusHander.StatusDescription;
-            btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);            
-
-            if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Red)
-            {
-                btn_StatusLight.BackColor = System.Drawing.Color.FromArgb(255, 61, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(255, 61, 0));
-            }
-            else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Green)
-            {
-                btn_StatusLight.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(0, 230, 118));
-            }
-            else if (mc_MachineStatusHander.mc_StatusLight == Common.MachineStatusHandler.enumStatusLight.Yellow)
-            {
-                btn_StatusLight.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(221, 221, 0));
-            }
+            btn_StatusLight.Text = mc_MachineStatusHander.MachineStatusName;
+            btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            btn_StatusLight.BackColor = Common.CommonFunction.colorHx16toRGB(mc_MachineStatusHander.MachineStatusColor);
         }
 
         /// <summary>
@@ -944,7 +946,7 @@ namespace MES_MonitoringClient
                 } while (COM.BytesToRead > 0);
 
                 //如果系统还未开始处理，则不会更改信号
-                if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
+                if (!string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID))
                 {
                     //更改状态
                     mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal(stringBuilder.ToString());
@@ -1003,7 +1005,7 @@ namespace MES_MonitoringClient
             {
                 //响铃并显示异常给用户
                 //System.Media.SystemSounds.Beep.Play();                
-                //Common.LogHandler.Log(ex.ToString());
+                Common.LogHandler.WriteLog("串口6获取数据错误", ex);
             }
         }
 
@@ -1014,6 +1016,7 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void serialPort6_ErrorReceived(object sender, System.IO.Ports.SerialErrorReceivedEventArgs e)
         {
+            Common.LogHandler.WriteLog("串口6获取到错误数据");
         }
 
         /// <summary>
@@ -1021,59 +1024,68 @@ namespace MES_MonitoringClient
         /// </summary>
         private void sendDataSerialPortGetDefaultSetting()
         {
-            //端口名称
-            serialPort6.PortName = Common.ConfigFileHandler.GetAppConfig("SendDataSerialPortName");
+            try
+            {
 
-            //波特率
-            int defaultBaudRate = 0;
-            int.TryParse(Common.ConfigFileHandler.GetAppConfig("SendDataSerialBaudRate"), out defaultBaudRate);
-            serialPort6.BaudRate = defaultBaudRate;
+                //端口名称
+                serialPort6.PortName = Common.ConfigFileHandler.GetAppConfig("SendDataSerialPortName");
 
-            //奇偶性验证
-            string defaultParity = Common.ConfigFileHandler.GetAppConfig("SendDataSerialParity");
-            if (defaultParity.ToUpper() == System.IO.Ports.Parity.None.ToString().ToUpper())
-            {
-                serialPort6.Parity = System.IO.Ports.Parity.None;
-            }
-            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Odd.ToString().ToUpper())
-            {
-                serialPort6.Parity = System.IO.Ports.Parity.Odd;
-            }
-            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Even.ToString().ToUpper())
-            {
-                serialPort6.Parity = System.IO.Ports.Parity.Even;
-            }
-            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Mark.ToString().ToUpper())
-            {
-                serialPort6.Parity = System.IO.Ports.Parity.Mark;
-            }
-            else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Space.ToString().ToUpper())
-            {
-                serialPort6.Parity = System.IO.Ports.Parity.Space;
-            }
+                //波特率
+                int defaultBaudRate = 0;
+                int.TryParse(Common.ConfigFileHandler.GetAppConfig("SendDataSerialBaudRate"), out defaultBaudRate);
+                serialPort6.BaudRate = defaultBaudRate;
 
-            //数据位
-            int defaultDataBits = 0;
-            int.TryParse(Common.ConfigFileHandler.GetAppConfig("SendDataSerialDataBits"), out defaultDataBits);            
-            serialPort6.DataBits = defaultDataBits;
+                //奇偶性验证
+                string defaultParity = Common.ConfigFileHandler.GetAppConfig("SendDataSerialParity");
+                if (defaultParity.ToUpper() == System.IO.Ports.Parity.None.ToString().ToUpper())
+                {
+                    serialPort6.Parity = System.IO.Ports.Parity.None;
+                }
+                else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Odd.ToString().ToUpper())
+                {
+                    serialPort6.Parity = System.IO.Ports.Parity.Odd;
+                }
+                else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Even.ToString().ToUpper())
+                {
+                    serialPort6.Parity = System.IO.Ports.Parity.Even;
+                }
+                else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Mark.ToString().ToUpper())
+                {
+                    serialPort6.Parity = System.IO.Ports.Parity.Mark;
+                }
+                else if (defaultParity.ToUpper() == System.IO.Ports.Parity.Space.ToString().ToUpper())
+                {
+                    serialPort6.Parity = System.IO.Ports.Parity.Space;
+                }
 
-            //停止位
-            string defaultStopBits = Common.ConfigFileHandler.GetAppConfig("SendDataSerialStopBits");
-            if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.None.ToString().ToUpper())
-            {
-                serialPort6.StopBits = System.IO.Ports.StopBits.None;
+                //数据位
+                int defaultDataBits = 0;
+                int.TryParse(Common.ConfigFileHandler.GetAppConfig("SendDataSerialDataBits"), out defaultDataBits);
+                serialPort6.DataBits = defaultDataBits;
+
+                //停止位
+                string defaultStopBits = Common.ConfigFileHandler.GetAppConfig("SendDataSerialStopBits");
+                if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.None.ToString().ToUpper())
+                {
+                    serialPort6.StopBits = System.IO.Ports.StopBits.None;
+                }
+                else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.One.ToString().ToUpper())
+                {
+                    serialPort6.StopBits = System.IO.Ports.StopBits.One;
+                }
+                else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.OnePointFive.ToString().ToUpper())
+                {
+                    serialPort6.StopBits = System.IO.Ports.StopBits.OnePointFive;
+                }
+                else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.Two.ToString().ToUpper())
+                {
+                    serialPort6.StopBits = System.IO.Ports.StopBits.Two;
+                }
             }
-            else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.One.ToString().ToUpper())
+            catch (Exception ex)
             {
-                serialPort6.StopBits = System.IO.Ports.StopBits.One;
-            }
-            else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.OnePointFive.ToString().ToUpper())
-            {
-                serialPort6.StopBits = System.IO.Ports.StopBits.OnePointFive;
-            }
-            else if (defaultStopBits.ToUpper() == System.IO.Ports.StopBits.Two.ToString().ToUpper())
-            {
-                serialPort6.StopBits = System.IO.Ports.StopBits.Two;
+                Common.LogHandler.WriteLog("串口获取默认设置",ex);
+                throw;
             }
 
         }
@@ -1205,26 +1217,45 @@ namespace MES_MonitoringClient
         {
             try
             {
-                frmChangeStatus newfrmChangeStatus = new frmChangeStatus();
-                newfrmChangeStatus.ShowDialog();
+                //刷卡窗口指定类型
+                frmScanRFID newfrmScanRFID = new frmScanRFID();
+                //指定为选择机器状态
+                newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ChangeMachineType;
+                newfrmScanRFID.ShowDialog();
 
-                //返回的参数
-                string newOperatePersonCardID = newfrmChangeStatus.OperatePersonCardID;
-                string newOperatePersonName = newfrmChangeStatus.OperatePersonName;
-
-                string strNewStatusCode = newfrmChangeStatus.NewStatusCode;
-                string strNewStatusString = newfrmChangeStatus.NewStatusString;
-
-                //更新状态
-                if (!string.IsNullOrEmpty(strNewStatusString) && strNewStatusString != mc_MachineStatusHander.StatusDescription)
+                //如果主动返回则不处理
+                if (!newfrmScanRFID.MC_IsManualCancel)
                 {
-                    mc_MachineStatusHander.ChangeStatus(strNewStatusCode, strNewStatusString, newOperatePersonName, newOperatePersonCardID);
+                    if (newfrmScanRFID.MC_EmployeeInfo == null)
+                    {
+                        throw new Exception("用户未刷卡");
+                    }
+
+                    if (newfrmScanRFID.MC_frmChangeMachineStatusPara == null)
+                    {
+                        throw new Exception("用户未选择机器状态");
+                    }
+
+                    //更新状态                
+                    mc_MachineStatusHander.ChangeStatus(
+                        newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusID,
+                        newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode,
+                        newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusName,
+                        newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusDesc,
+                        newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusColor,
+
+                        newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
+                        newfrmScanRFID.MC_EmployeeInfo._id
+                        );
+
                     SettingMachineStatusLight();
                 }
+
             }
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "更新机器状态错误");
+                Common.LogHandler.WriteLog("更新机器状态错误", ex);
             }
         }
 
@@ -1377,35 +1408,56 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void btn_Start_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txt_WorkOrderCount.Text.Trim()))
+            try
             {
-                ShowErrorMessage("请输入[工单数]", "运行参数检测");
-                txt_WorkOrderCount.Focus();
-                return;
+                if (string.IsNullOrEmpty(txt_WorkOrderCount.Text.Trim()))
+                {
+                    ShowErrorMessage("请输入[工单数]", "运行参数检测");
+                    txt_WorkOrderCount.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(txt_PlanWorkTime.Text.Trim()))
+                {
+                    ShowErrorMessage("请输入[预计周期]", "运行参数检测");
+                    txt_PlanWorkTime.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID) && mc_MachineStatusHander.MachineStatusCode != "Produce")
+                {
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StartJobOrder;
+                    newfrmScanRFID.ShowDialog();
+
+                    if (!newfrmScanRFID.MC_IsManualCancel)
+                    {
+
+                        mc_MachineStatusHander.StartWorkTime = System.DateTime.Now;
+                        mc_MachineStatusHander.SettingMachineCompleteDateTime();
+
+                        //找到生产中状态
+                        DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode("Produce");
+
+
+                        //更改状态
+                        mc_MachineStatusHander.ChangeStatus(
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusID,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusName,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusDesc,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusColor,
+
+                            newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
+                            newfrmScanRFID.MC_EmployeeInfo._id
+                        );
+                    }
+                }
             }
-
-            if (string.IsNullOrEmpty(txt_PlanWorkTime.Text.Trim()))
+            catch (Exception ex)
             {
-                ShowErrorMessage("请输入[预计周期]", "运行参数检测");
-                txt_PlanWorkTime.Focus();
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
-            {
-                btn_StatusLight_Click(sender, null);
-            }
-            else
-            {
-                //开工时间
-                mc_MachineStatusHander.StartWorkTime = System.DateTime.Now;
-
-                //设置机器完成时间
-                mc_MachineStatusHander.SettingMachineCompleteDateTime();
-
-                //状态
-                mc_MachineStatusHander.ChangeStatus("StartProduce", "运行", "WesChen", "001A");
-                SettingMachineStatusLight();
+                Common.LogHandler.WriteLog("开始工单错误", ex);
+                ShowErrorMessage("开始工单错误，原因：" + ex.Message, "开始工单错误");
             }
         }
 
@@ -1416,13 +1468,20 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void btn_Stop_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
+            try
             {
-                btn_StatusLight_Click(sender, null);
+                if (!string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID))
+                {
+                    btn_StatusLight_Click(sender, null);
+                }
+                else
+                {
+                    ShowErrorMessage("请先开始工单", "工单停止失败");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ShowErrorMessage("请先开始工单", "工单停止失败");
+                Common.LogHandler.WriteLog("结束工单错误", ex);                
             }
         }
 
@@ -1433,13 +1492,41 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void btn_Recovery_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(mc_MachineStatusHander.StatusCode) && !string.IsNullOrEmpty(mc_MachineStatusHander.StatusDescription))
+            try
             {
-                btn_StatusLight_Click(sender, null);
+                if (string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID) && mc_MachineStatusHander.MachineStatusCode != "Produce")
+                {
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ResumeJobOrder;
+                    newfrmScanRFID.ShowDialog();
+
+                    if (!newfrmScanRFID.MC_IsManualCancel)
+                    {
+
+                        mc_MachineStatusHander.StartWorkTime = System.DateTime.Now;
+                        mc_MachineStatusHander.SettingMachineCompleteDateTime();
+
+                        //找到生产中状态
+                        DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode("Produce");
+
+
+                        //更改状态
+                        mc_MachineStatusHander.ChangeStatus(
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusID,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusName,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusDesc,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusColor,
+
+                            newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
+                            newfrmScanRFID.MC_EmployeeInfo._id
+                        );
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ShowErrorMessage("没有暂停的工单", "工单恢复失败");
+                Common.LogHandler.WriteLog("恢复工单错误", ex);
             }
         }
 
@@ -1470,10 +1557,17 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void btn_MachineRegister_Click(object sender, EventArgs e)
         {
-            frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
-            newfrmMachineRegister.ShowDialog();
+            try
+            {
+                frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
+                newfrmMachineRegister.ShowDialog();
 
-            CheckMachineRegister();
+                CheckMachineRegister();
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.WriteLog("机器注册错误", ex);
+            }
         }
 
         /*检测机器注册*/
@@ -1484,18 +1578,23 @@ namespace MES_MonitoringClient
         /// </summary>
         private void CheckMachineRegister()
         {
-            //获取数据库机器注册信息
-            Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
-            DataModel.MachineInfo machineInfoEntity = machineRegisterInfoHelperClass.GetMachineRegisterInfo();
-
-            if (machineInfoEntity != null)
+            try
             {
-                //如果存在机器注册信息，则显示机器名，也不可再注册
-                btn_MachineName.Text = machineInfoEntity.MachineCode;
-                btn_MachineName.Enabled = false;
+                //获取数据库机器注册信息
+                Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
+                DataModel.MachineInfo machineInfoEntity = machineRegisterInfoHelperClass.GetMachineRegisterInfo();
+
+                if (machineInfoEntity != null)
+                {
+                    //如果存在机器注册信息，则显示机器名，也不可再注册
+                    btn_MachineName.Text = machineInfoEntity.MachineCode;
+                    btn_MachineName.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
-
-
     }
 }

@@ -13,12 +13,10 @@ namespace MES_MonitoringClient
     public partial class frmChangeStatus : Form
     {
         //修改的状态
-        public string NewStatusCode = string.Empty;
-        public string NewStatusString = string.Empty;
-        //修改者信息
-        public string OperatePersonCardID = string.Empty;
-        public string OperatePersonName = string.Empty;
+        public DataModel.formParameter.frmChangeMachineStatusPara MC_frmChangeMachineStatusPara = null;
 
+        public List<DataModel.MachineStatus> mc_machineStatuses;
+        private char splitMachineStatusPara = '&';
 
         /*窗口公共方法*/
         /*---------------------------------------------------------------------------------------*/
@@ -32,14 +30,44 @@ namespace MES_MonitoringClient
         {
             try
             {
+                //窗口最大化
                 this.WindowState = FormWindowState.Maximized;
 
-                //设置按钮
-                SettingButton();
+                //获取所有可用的机器状态               
+                foreach (var item in mc_machineStatuses)
+                {
+                    //声明一个按钮
+                    Button circularButton = new Button
+                    {
+                        Text = item.MachineStatusName,
+                        Anchor = AnchorStyles.None,
+                        Size = new Size() { Height = 80, Width = 150 },
+                        BackColor = Common.CommonFunction.colorHx16toRGB(item.StatusColor),
+                        FlatStyle = FlatStyle.Flat,
+                        ForeColor = Color.White,
+                        Tag = item._id + splitMachineStatusPara + item.MachineStatusCode + splitMachineStatusPara + item.MachineStatusName + splitMachineStatusPara + item.MachineStatusDesc + splitMachineStatusPara + item.StatusColor
+
+                    };
+                    circularButton.Click += new System.EventHandler(btn_click);
+
+                    //将可用的机器状态动态用按钮的形式加载到界面中
+                    this.tableLayoutPanel1.Controls.Add(circularButton, 0, 1);
+                }
             }
             catch (Exception ex)
             {
                 throw;
+            }
+        }
+
+        //解决界面闪烁的问题
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;
+                return cp;
             }
         }
 
@@ -58,101 +86,60 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
-        /// 设置按钮的颜色
+        /// 机器状态动太按钮事件
         /// </summary>
-        private void SettingButton()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_click(object sender, System.EventArgs e)
         {
-            //字体
-            btn_Stop.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
-            btn_Run.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
-            btn_Error.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            try
+            {
+                //将触发此事件的对象转换为该Button对象
+                Button b1 = (Button)sender;
 
-            //背景
-            btn_Stop.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(221, 221, 0));
-            btn_Run.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(0, 230, 118));
-            btn_Error.BackColor = System.Drawing.Color.FromArgb(255, 61, 0);// Common.CommonFunction.colorHx16toRGB(Common.CommonFunction.colorRGBtoHx16(255, 61, 0));
+                //分隔
+                string propsString = b1.Tag.ToString();
+                string[] props = propsString.Split(splitMachineStatusPara);
+
+                //将机器状态变成一个公共访问的参数
+                MC_frmChangeMachineStatusPara = new DataModel.formParameter.frmChangeMachineStatusPara()
+                {
+                    machineStatusID = props[0],
+                    machineStatusCode=props[1],
+                    machineStatusName = props[2],
+                    machineStatusDesc = props[3],
+
+                    machineStatusColor = props[4],
+                };        
+
+                lab_SelectStatus.Text= "已选机器状态："+ b1.Text;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        /// <summary>
-        /// 更改状态
-        /// </summary>
-        /// <param name="pi_newStatusCode"></param>
-        /// <param name="pi_newStatusString"></param>
-        private void changeStatus(string pi_newStatusCode, string pi_newStatusString)
-        {
-            //getRFIDData();
-            OperatePersonCardID = string.Empty;
-            OperatePersonName = string.Empty;
-            lab_OperatePersonCardID.Text = "未刷卡";
-            lab_SelectStatus.Text = "已选择：" + pi_newStatusString;
-
-
-            frmScanRFID newfrmScanRFID = new frmScanRFID();
-            newfrmScanRFID.ShowDialog();
-
-            //获取弹出窗口的参数
-            OperatePersonCardID = newfrmScanRFID.OperatePersonCardID;
-            OperatePersonName = newfrmScanRFID.OperatePersonName;
-
-            //状态
-            NewStatusCode = pi_newStatusCode;
-            NewStatusString = pi_newStatusString;
-
-            //显示参数
-            lab_OperatePersonCardID.Text = "已刷卡：" + OperatePersonCardID;
-        }
-
-
-        /*窗口公共方法*/
+        /*按钮方法*/
         /*---------------------------------------------------------------------------------------*/
-
-        private void btn_Stop_Click(object sender, EventArgs e)
+        private void btn_Cancel_Click(object sender, EventArgs e)
         {
-            changeStatus("StopProduce", "停机");
+            MC_frmChangeMachineStatusPara = null;
+
+            this.Close();
         }
-
-        private void btn_Error_Click(object sender, EventArgs e)
-        {
-            changeStatus("MachineError", "故障");
-        }
-
-        private void btn_Run_Click(object sender, EventArgs e)
-        {
-            changeStatus("StartProduce", "运行");
-        }
-
-
-        /*窗口公共方法*/
-        /*---------------------------------------------------------------------------------------*/
 
         private void btn_Confirm_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(NewStatusCode) && !string.IsNullOrEmpty(NewStatusString))
+            if (MC_frmChangeMachineStatusPara == null)
             {
-                if (string.IsNullOrEmpty(OperatePersonCardID))
-                {
-                    ShowErrorMessage("请刷卡", "更改机器状态");
-                    return;
-                }
+                ShowErrorMessage("请选择要操作的状态", "改变机器状态");
             }
             else
             {
-                ShowErrorMessage("请选择机器状态", "更改机器状态");
-                return;
+                this.Close();
             }
-
-            this.Close();
         }
 
-        private void btn_Cancel_Click(object sender, EventArgs e)
-        {
-            NewStatusCode = string.Empty;
-            NewStatusString = string.Empty;
-
-            OperatePersonCardID = string.Empty;
-            OperatePersonName = string.Empty;
-
-            this.Close();
-        }
     }
 }

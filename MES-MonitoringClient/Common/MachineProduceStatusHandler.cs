@@ -38,6 +38,7 @@ namespace MES_MonitoringClient.Common
             X01_X02_X03
         }
 
+
         /// <summary>
         /// 回复信号前缀
         /// </summary>
@@ -47,18 +48,18 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private static string singnalDefaultEnd = Common.ConfigFileHandler.GetAppConfig("GetSerialPortDataDefaultSignal_EndPrefix");
 
-        /*-------------------------------------------------------------------------------------*/
+        
+
         /// <summary>
         /// 机器生命周期时间
         /// </summary>
         private IMongoCollection<DataModel.MachineProduceLifeCycle> machineProcuceLifeCycleCollection;
 
-        private static string defaultMachineProduceLifeCycleMongodbCollectionName = "MachineLifeCycle";
-
         /// <summary>
-        /// 产品生命周期（计算时间）
+        /// 机器生产状态记录默认Mongodb集合名
         /// </summary>
-        //private List<MachineProcedure> _MachineProcedureListForTime=null;
+        private static string defaultMachineProduceLifeCycleMongodbCollectionName = "MachineLifeCycle";
+        
 
         /// <summary>
         /// 产品生命周期（计算次数）
@@ -74,7 +75,6 @@ namespace MES_MonitoringClient.Common
         /// 订单未完成数量
         /// </summary>
         public int OrderNoCompleteCount = 0;
-
 
         /// <summary>
         /// 产品周期计数（生产数量）
@@ -102,6 +102,7 @@ namespace MES_MonitoringClient.Common
         public SignalType LastSignal;
 
 
+
         /// <summary>
         /// 更新机器信号后更新界面
         /// </summary>
@@ -127,7 +128,8 @@ namespace MES_MonitoringClient.Common
         public delegate void UpdateMachineNoCompleteCount();
         public UpdateMachineNoCompleteCount UpdateMachineNoCompleteCountDelegate;
 
-        /*-------------------------------------------------------------------------------------*/
+
+        
 
         /// <summary>
         /// 构造函数，处理初始化的参数
@@ -144,7 +146,8 @@ namespace MES_MonitoringClient.Common
         }
 
 
-        /*-------------------------------------------------------------------------------------*/
+        
+
         /// <summary>
         /// 机器良品数量设置
         /// </summary>
@@ -186,12 +189,14 @@ namespace MES_MonitoringClient.Common
 
 
 
+
         /// <summary>
         /// 更新信号方法
         /// </summary>
         /// <param name="newSingnal">新信号</param>
         public void ChangeSignal(string newSingnal)
         {
+            //转换信号
             string convertSingnalString = ConvertSingnalString(newSingnal);
 
             //判断是正常的信号
@@ -226,12 +231,11 @@ namespace MES_MonitoringClient.Common
                                 //使用timespan计算时间
                                 TimeSpan ts = new TimeSpan();
                                 ts = System.DateTime.Now.Subtract(LastX03SignalGetTime.Value);
-
+                                //上一个产品的用时
                                 LastProductUseMilliseconds= (long)ts.TotalMilliseconds;
-                                //更新界面
-                                SettingMachineLifeCycleTime();
 
-                                //LastProductUseMilliseconds = (System.DateTime.Now - LastX03SignalGetTime.Value).Milliseconds;
+                                //更新界面
+                                SettingMachineLifeCycleTime();                                
                             }
                             LastX03SignalGetTime = System.DateTime.Now;
                         }
@@ -313,7 +317,7 @@ namespace MES_MonitoringClient.Common
                     //上一个信号
                     LastSignal = convertSingnalStatusType;
 
-                    //根据信号更新界面
+                    //根据信号更新界面（三个信号灯的闪烁）
                     UpdateMachineSignalDelegate(LastSignal);
                 }
             }
@@ -372,6 +376,7 @@ namespace MES_MonitoringClient.Common
         {
             bool resultFlag = false;
 
+            //各种信号标识
             bool isX01_X03 = false;
             bool isX02_X03 = false;
             bool isX03 = false;
@@ -385,7 +390,7 @@ namespace MES_MonitoringClient.Common
             }
 
             //完整的信号则算正常生产流程
-            if (isX01_X03 && isX02_X03 && isX03) resultFlag = true;
+            if (isX01_X03 && isX02_X03 && isX03) return true;
 
             return resultFlag;
         }

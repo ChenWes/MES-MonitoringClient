@@ -12,15 +12,35 @@ namespace MES_MonitoringClient
 {
     public partial class frmScanRFID : Form
     {
-        //修改者信息
-        public string OperatePersonCardID = string.Empty;
-        public string OperatePersonName = string.Empty;
+        public enum OperationType
+        {
+            ChangeMachineType,
+
+            OnDuty,
+            OffDuty,
+
+            StartJobOrder,
+            StopJobOrder,
+            ResumeJobOrder
+        }
+        //操作类型（修改状态、上班、下班等）
+        public OperationType MC_OperationType;
+
+        //是否主动取消刷卡
+        public bool MC_IsManualCancel = false;
+
+        //刷卡员工信息
+        public DataModel.Employee MC_EmployeeInfo = null;
+
+        //修改机器状态参数
+        public DataModel.formParameter.frmChangeMachineStatusPara MC_frmChangeMachineStatusPara = null;        
+
         /*---------------------------------------------------------------------------------------*/
-        private long COM1_ReceiveDataCount = 0;
-        private StringBuilder COM1_DataStringBuilder = new StringBuilder();
+        //private long COM1_ReceiveDataCount = 0;
+        //private StringBuilder COM1_DataStringBuilder = new StringBuilder();
         /*---------------------------------------------------------------------------------------*/
-        public delegate void AddDataDelegate(String myString);
-        public AddDataDelegate myDelegate;
+        //public delegate void AddDataDelegate(String myString);
+        //public AddDataDelegate myDelegate;
 
 
         /*主窗口方法*/
@@ -34,20 +54,23 @@ namespace MES_MonitoringClient
         private void frmScanRFID_Load(object sender, EventArgs e)
         {
             try
-            {
+            {                
+                //窗口最大化
                 this.WindowState = FormWindowState.Maximized;
 
                 //RFID配置端口默认配置
                 RFIDSerialPortGetDefaultSetting();
 
+                //如果串口1未开启，则开启串口1
                 if (!serialPort1.IsOpen)
                 {
                     serialPort1.Open();
-                }                
+                }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage(ex.Message, "RFID界面初始化");                
+                Common.LogHandler.WriteLog("RFID界面初始化失败", ex);
+                ShowErrorMessage(ex.Message, "RFID界面初始化");
             }
         }
 
@@ -146,65 +169,197 @@ namespace MES_MonitoringClient
         {
             try
             {
+                //接收的时候，将用户处理掉
+                MC_EmployeeInfo = null;
+
+                //获取串口
                 System.IO.Ports.SerialPort COM = (System.IO.Ports.SerialPort)sender;
 
-                int num = COM.BytesToRead;      //获取接收缓冲区中的字节数
-                byte[] received_buf = new byte[num];    //声明一个大小为num的字节数据用于存放读出的byte型数据
-
-                COM1_ReceiveDataCount += num;                   //接收字节计数变量增加nun
-                COM.Read(received_buf, 0, num);   //读取接收缓冲区中num个字节到byte数组中
-
-                COM1_DataStringBuilder.Clear();
-
-
-                foreach (byte b in received_buf)
+                //获取到串口1刷卡的信息
+                StringBuilder stringBuilder = new StringBuilder();
+                do
                 {
-                    COM1_DataStringBuilder.Append(b.ToString("X2") + " ");
-                }                                
+                    int count = COM.BytesToRead;
+                    if (count <= 0)
+                        break;
+                    byte[] readBuffer = new byte[count];
+
+                    Application.DoEvents();
+                    COM.Read(readBuffer, 0, count);
+
+                    stringBuilder.Append(System.Text.Encoding.Default.GetString(readBuffer));
+
+                } while (COM.BytesToRead > 0);                               
+
 
                 //更新界面
                 this.Invoke((EventHandler)(delegate
                 {
                     lab_ScanStatus.Text = "刷卡成功";
-                    lab_CardID.Text = "卡号:" + COM1_DataStringBuilder.ToString();
-                    OperatePersonCardID = COM1_DataStringBuilder.ToString();                    
+                    lab_CardID.Text = "卡号:" + stringBuilder.ToString();                    
+                    
+                    //IC卡检测（能否匹配员工信息及有效性）
+                    CheckCardID(stringBuilder.ToString());
                 }
                     )
-                );
-
-                #region 老代码
-                //string getData = "";
-                //do
-                //{
-                //    int count = COM.BytesToRead;
-                //    if (count <= 0)
-                //        break;
-                //    byte[] readBuffer = new byte[count];
-
-                //    Application.DoEvents();
-                //    COM.Read(readBuffer, 0, count);
-                //    getData += System.Text.Encoding.Default.GetString(readBuffer);
-
-                //    );
-
-                //} while (COM.BytesToRead > 0);
-
-                //    //因为要访问UI资源，所以需要使用invoke方式同步ui
-                //    this.Invoke((EventHandler)(delegate
-                //    {
-                //        receviedDataCount += 1;
-                //        //lab_ReceviedDataCount.Text = "接收成功：" + receviedDataCount;
-
-                //        //richTextBox2.AppendText(getData + "\r");
-                //    }
-                //       )
-                #endregion
+                );                
             }
             catch (Exception ex)
             {
                 ShowErrorMessage( "RFID串口获取数据时出错","serialPort1_DataReceived");
                 //响铃并显示异常给用户
                 System.Media.SystemSounds.Beep.Play();
+            }
+        }
+
+        /// <summary>
+        /// IC卡检测（能否匹配员工信息及有效性）
+        /// 以及根据不同的类型打开窗口
+        /// </summary>
+        /// <param name="cardID"></param>
+        private void CheckCardID(string cardID)
+        {
+            try
+            {
+                DataModel.Employee employee;
+                try
+                {
+                    //通过卡号找到员工
+                    employee = Common.EmployeeHelper.QueryEmployeeByCardID(cardID.Trim());
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("搜索员工出错，原因是：" + ex.Message);
+                }
+
+                //员工检测
+                if (employee == null) throw new Exception("未知员工");
+                if (!employee.IsActive) throw new Exception("员工已被禁止访问系统");
+
+                //员工信息赋值到公共变量
+                MC_EmployeeInfo = employee;
+
+                //选定操作
+                switch (MC_OperationType)
+                {
+                    case OperationType.ChangeMachineType:
+
+                        //修改机器状态
+                        OnChangeMachineType(employee.JobPostionID);
+                        break;
+                    case OperationType.OnDuty:
+                        break;
+                    case OperationType.OffDuty:                    
+                        break;
+                    case OperationType.StartJobOrder:
+                        OnStartJobOrder();
+                        break;
+                    case OperationType.StopJobOrder:
+                        OnStopJobOrder(employee.JobPostionID);
+                        break;
+                    case OperationType.ResumeJobOrder:
+                        OnResumeJobOrder();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "权限认证");
+            }
+        }
+        
+        /// <summary>
+        /// 选择机器状态
+        /// </summary>
+        /// <param name="jobpositionID"></param>
+        private void OnChangeMachineType(string jobpositionID)
+        {
+            try
+            {
+                //通过员工职位ID找到
+                DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(jobpositionID);
+                if (jobPositon == null) throw new Exception("未知员工职位");
+
+
+                //找到可操作的机器状态
+                List<DataModel.MachineStatus> machineStatuses = Common.MachineStatusHelper.GetMachineStatusByIDArray(jobPositon.MachineStatuss.ToArray());
+                if (machineStatuses == null || machineStatuses.Count == 0) throw new Exception("暂时没有机器状态可选");
+
+
+                System.Threading.Thread.Sleep(1000);
+
+                //弹出可操作的界面
+                frmChangeStatus frmChangeStatus = new frmChangeStatus();
+                frmChangeStatus.mc_machineStatuses = machineStatuses;
+                frmChangeStatus.ShowDialog();
+
+                //完成参数传递（机器状态窗口至刷卡窗口）
+                MC_frmChangeMachineStatusPara = frmChangeStatus.MC_frmChangeMachineStatusPara;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "选择机器状态错误");
+            }
+        }
+
+
+        private void OnStartJobOrder()
+        {
+            try
+            {
+                frmSelectJobOrder newfrmSelectJobOrder = new frmSelectJobOrder();
+                newfrmSelectJobOrder.MC_JobOrderFilter = frmSelectJobOrder.FilterOrderType.NoStart;
+                newfrmSelectJobOrder.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "工单开始错误");
+            }
+        }
+
+        private void OnStopJobOrder(string jobpositionID)
+        {
+            try
+            {
+                //通过员工职位ID找到
+                DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(jobpositionID);
+                if (jobPositon == null) throw new Exception("未知员工职位");
+
+
+                //找到可操作的机器状态
+                List<DataModel.MachineStatus> machineStatuses = Common.MachineStatusHelper.GetMachineStatusByIDArray(jobPositon.MachineStatuss.ToArray());
+                if (machineStatuses == null || machineStatuses.Count == 0) throw new Exception("暂时没有机器状态可选");
+
+
+                System.Threading.Thread.Sleep(1000);
+
+                //弹出可操作的界面
+                frmChangeStatus frmChangeStatus = new frmChangeStatus();
+                frmChangeStatus.mc_machineStatuses = machineStatuses;
+                frmChangeStatus.ShowDialog();
+
+                //完成参数传递（机器状态窗口至刷卡窗口）
+                MC_frmChangeMachineStatusPara = frmChangeStatus.MC_frmChangeMachineStatusPara;
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "工单暂停错误");
+            }
+        }
+
+        private void OnResumeJobOrder()
+        {
+            try
+            {
+                frmSelectJobOrder newfrmSelectJobOrder = new frmSelectJobOrder();
+                newfrmSelectJobOrder.MC_JobOrderFilter = frmSelectJobOrder.FilterOrderType.NoCompleted;
+                newfrmSelectJobOrder.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "工单恢复错误");
             }
         }
 
@@ -215,8 +370,11 @@ namespace MES_MonitoringClient
 
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
-            OperatePersonName = string.Empty;
-            OperatePersonCardID = string.Empty;
+            //用户主动取消操作
+            MC_IsManualCancel = true;
+
+            MC_EmployeeInfo = null;
+            MC_frmChangeMachineStatusPara = null;
 
             this.DialogResult = DialogResult.Cancel;
             this.Close();
@@ -224,13 +382,25 @@ namespace MES_MonitoringClient
 
         private void btn_Confirm_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
+            try
+            {
+                if (MC_EmployeeInfo == null)
+                {
+                    throw new Exception("未刷卡");
+                }
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
+                if (MC_OperationType == OperationType.ChangeMachineType && MC_frmChangeMachineStatusPara == null)
+                {                    
+                    throw new Exception("未选择任何机器状态");                    
+                }
 
-        }
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("确认失败，原因是：" + ex.Message, "无法确认");
+            }
+        }        
     }
 }

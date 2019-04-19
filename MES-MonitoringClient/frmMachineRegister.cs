@@ -18,12 +18,14 @@ namespace MES_MonitoringClient
 {
     public partial class frmMachineRegister : Form
     {
-        private IMongoCollection<DataModel.MachineInfo> machineRegisterCollection;
+        private IMongoCollection<DataModel.MachineRegisterInfo> machineRegisterCollection;
         private static string defaultMachineRegisterMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCollectionName");
 
 
         //修改的状态
         public DataModel.MachineInfo mc_MachineInfo;
+        //机器注册信息（保存至DB）
+        public DataModel.MachineRegisterInfo MC_MachineRegisterInfo;
 
         public frmMachineRegister()
         {
@@ -69,11 +71,13 @@ namespace MES_MonitoringClient
 
                     //车间信息
                     string workshopJsonString = Common.JsonHelper.GetJsonValue(getJsonString, "WorkshopID");
+                    mc_MachineInfo.WorkshopID = Common.JsonHelper.GetJsonValue(workshopJsonString, "_id");
                     mc_MachineInfo.WorkshopCode = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopCode");
                     mc_MachineInfo.WorkshopName = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopName");
 
                     //工厂信息
                     string factoryJsonString = Common.JsonHelper.GetJsonValue(workshopJsonString, "FactoryID");
+                    mc_MachineInfo.FactoryID = Common.JsonHelper.GetJsonValue(factoryJsonString, "_id");
                     mc_MachineInfo.FactoryCode = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryCode");
                     mc_MachineInfo.FactoryName = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryName");
 
@@ -113,7 +117,7 @@ namespace MES_MonitoringClient
             try
             {
                 //清空数据实体
-                mc_MachineInfo = null;
+                MC_MachineRegisterInfo = null;
 
                 //机器ID注册，拿回Json数据（无论是正常的还是不正常的）
                 Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
@@ -122,28 +126,13 @@ namespace MES_MonitoringClient
                 if (!string.IsNullOrEmpty(getJsonString))
                 {
                     //转换成Class，显示至界面上
-                    mc_MachineInfo = new DataModel.MachineInfo();
+                    MC_MachineRegisterInfo = new DataModel.MachineRegisterInfo();
 
-                    //机器本身信息
-                    mc_MachineInfo.MachineID = Common.JsonHelper.GetJsonValue(getJsonString, "_id");
-                    mc_MachineInfo.MachineCode = Common.JsonHelper.GetJsonValue(getJsonString, "MachineCode");
-                    mc_MachineInfo.MachineName = Common.JsonHelper.GetJsonValue(getJsonString, "MachineName");
-                    mc_MachineInfo.MachineDesc = Common.JsonHelper.GetJsonValue(getJsonString, "MachineDesc");
-                    mc_MachineInfo.Tonnage = Common.JsonHelper.GetJsonValue(getJsonString, "Tonnage");
-                    mc_MachineInfo.MACAddress = Common.JsonHelper.GetJsonValue(getJsonString, "MACAddress");
-
-                    //车间信息
-                    string workshopJsonString = Common.JsonHelper.GetJsonValue(getJsonString, "WorkshopID");
-                    mc_MachineInfo.WorkshopCode = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopCode");
-                    mc_MachineInfo.WorkshopName = Common.JsonHelper.GetJsonValue(workshopJsonString, "WorkshopName");
-
-                    //工厂信息
-                    string factoryJsonString = Common.JsonHelper.GetJsonValue(workshopJsonString, "FactoryID");
-                    mc_MachineInfo.FactoryCode = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryCode");
-                    mc_MachineInfo.FactoryName = Common.JsonHelper.GetJsonValue(factoryJsonString, "FactoryName");
+                    //机器码信息
+                    MC_MachineRegisterInfo.MachineID = Common.JsonHelper.GetJsonValue(getJsonString, "_id");                    
                 }
 
-                if (mc_MachineInfo == null)
+                if (MC_MachineRegisterInfo == null)
                 {
                     ShowErrorMessage("请输入正确的机器注册码", "机器注册错误");
                 }
@@ -154,8 +143,8 @@ namespace MES_MonitoringClient
                     if (syncdata_Flag)
                     {
                         //后写入注册数据
-                        machineRegisterCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineInfo>(defaultMachineRegisterMongodbCollectionName);
-                        machineRegisterCollection.InsertOne(mc_MachineInfo);
+                        machineRegisterCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineRegisterInfo>(defaultMachineRegisterMongodbCollectionName);
+                        machineRegisterCollection.InsertOne(MC_MachineRegisterInfo);
 
                         this.Close();
                     }

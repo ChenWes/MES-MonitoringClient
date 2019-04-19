@@ -12,18 +12,31 @@ using MongoDB.Bson.Serialization;
 
 namespace MES_MonitoringClient.Common
 {
-    public class SyncDataDBHelper<T> where T : DataModel.SyncData
+    public static class SyncDataDBHelper
     {
-
-        private IMongoCollection<T> operationCollection;
-
-        public string getJsonStringFromUrl(T newclass)
+        /// <summary>
+        /// 同步处理数据方法
+        /// </summary>
+        /// <param name="jsonString">传入JSON</param>
+        /// <returns></returns>
+        public static bool SyncData_Process(string collectionName, string jsonString)
         {
             try
             {
-                string getUrl = newclass.getCollectionDataUrl();
+                //原本的JSON转成BSON
+                IEnumerable<BsonDocument> bsonElements = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<IEnumerable<BsonDocument>>(jsonString);
 
-                return Common.HttpHelper.HttpGetWithToken(getUrl);
+                //删除数据集合
+                Common.MongodbHandler.GetInstance().mc_MongoDatabase.DropCollection(collectionName);
+
+                if (bsonElements != null && bsonElements.Count() > 0)
+                {
+                    //声明数据集合，插入数据
+                    var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
+                    collection.InsertMany(bsonElements);
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -31,26 +44,28 @@ namespace MES_MonitoringClient.Common
             }
         }
 
-        /// <summary>
-        /// 同步处理数据方法
-        /// </summary>
-        /// <param name="jsonString">传入JSON</param>
-        /// <returns></returns>
-        public bool SyncData_Process(string jsonString)
+        public static bool SyncEmployee_Process(string collectionName, string jsonString)
         {
             try
             {
-                //反序列化
-                List<T> dataEntityList = JsonConvert.DeserializeObject<List<T>>(jsonString);
+                //原本的JSON转成BSON
+                IEnumerable<BsonDocument> bsonElements = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<IEnumerable<BsonDocument>>(jsonString);
 
-                if (dataEntityList != null && dataEntityList.Count > 0)
+                //删除数据集合
+                Common.MongodbHandler.GetInstance().mc_MongoDatabase.DropCollection(collectionName);
+
+                if (bsonElements != null && bsonElements.Count() > 0)
                 {
-                    //删除数据集合
-                    Common.MongodbHandler.GetInstance().mc_MongoDatabase.DropCollection(dataEntityList.FirstOrDefault().getCollectionName());
-                    //获取数据集合
-                    operationCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<T>(dataEntityList.FirstOrDefault().getCollectionName());
-                    //批量插入数据
-                    operationCollection.InsertMany(dataEntityList);
+                    //声明数据集合，插入数据
+                    var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
+
+                    foreach (BsonDocument item in bsonElements)
+                    {
+                        item.Add(new BsonElement("IsSyncImage", false));
+                        item.Add(new BsonElement("LocalFileName", ""));
+                    }
+
+                    collection.InsertMany(bsonElements);
                 }
 
                 return true;
