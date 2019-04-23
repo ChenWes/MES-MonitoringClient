@@ -101,14 +101,17 @@
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
     <Compile Include="DataModel\Customer.cs" />
-    <Compile Include="DataModel\formParameter\frmChangeJobOrderPara.cs" />
+    <Compile Include="DataModel\JobOrderProcess.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
     <Compile Include="DataModel\JobOrder.cs" />
+    <Compile Include="DataModel\Machine.cs" />
     <Compile Include="DataModel\MachineRegisterInfo.cs" />
     <Compile Include="DataModel\Material.cs" />
     <Compile Include="DataModel\Mould.cs" />
+    <Compile Include="EntityHelper\MachineHelper.cs" />
     <Compile Include="EntityHelper\EmployeeHelper.cs" />
     <Compile Include="Common\HttpHelper.cs" />
+    <Compile Include="EntityHelper\JobOrderProcessHelper.cs" />
     <Compile Include="EntityHelper\JobOrderHelper.cs" />
     <Compile Include="EntityHelper\MaterialHelper.cs" />
     <Compile Include="EntityHelper\MouldHelper.cs" />

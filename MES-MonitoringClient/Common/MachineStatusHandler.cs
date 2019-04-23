@@ -98,6 +98,7 @@ namespace MES_MonitoringClient.Common
 
 
 
+
         /// <summary>
         /// 当前状态等待时间（毫秒级）
         /// </summary>
@@ -118,15 +119,7 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public DateTime LastOperationDateTime { get; set; }
 
-        /// <summary>
-        /// 起工时间（开始工作的时间）
-        /// </summary>
-        public DateTime? StartWorkTime { get; set; }
 
-        /// <summary>
-        /// 预计完成时间（回写到界面中）
-        /// </summary>
-        public DateTime? PlanCompleteDateTime { get; set; }
 
         /*更新界面委托方法*/
         /*-------------------------------------------------------------------------------------*/
@@ -145,11 +138,7 @@ namespace MES_MonitoringClient.Common
         public UpdateMachineStatusLight UpdateMachineStatusLightDelegate;
 
 
-        /// <summary>
-        /// 更新机器使用时间返回至界面
-        /// </summary>
-        public delegate void UpdateMachineCompleteDateTime();
-        public UpdateMachineCompleteDateTime UpdateMachineCompleteDateTimeDelegate;
+
 
         /// <summary>
         /// 更新机器状态持续总时间
@@ -278,7 +267,7 @@ namespace MES_MonitoringClient.Common
                     TTimerClass = null;
 
                     //更新最后时间
-                    EndDateTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                    EndDateTime = DateTime.Now.ToLocalTime();
 
                     //保存至DB中/*******************/嫁动率的主要数据来源
 
@@ -316,7 +305,7 @@ namespace MES_MonitoringClient.Common
                 #region 当前记录操作
 
                 //当前时间
-                StartDateTime = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                StartDateTime = DateTime.Now.ToLocalTime();
 
                 //更新状态
                 MachineStatusID = newMachineStatusID;
@@ -352,7 +341,7 @@ namespace MES_MonitoringClient.Common
                         var filter = Builders<BsonDocument>.Filter.And(new FilterDefinition<BsonDocument>[] {
                             Builders<BsonDocument>.Filter.Eq("IsStopFlag", false),
                             Builders<BsonDocument>.Filter.Eq("UseTotalSeconds", 0),
-                            Builders<BsonDocument>.Filter.Exists("EndDateTime", false),
+                            Builders<BsonDocument>.Filter.Eq("EndDateTime", BsonNull.Value),
                         });
 
                         var result = Common.MongodbHandler.GetInstance().Find(collection, filter).FirstOrDefault();
@@ -361,11 +350,15 @@ namespace MES_MonitoringClient.Common
                         {
                             var dataEntity = BsonSerializer.Deserialize<DataModel.MachineStatusLog>(result);
 
+                            LastOperationMachineStatusLogID = dataEntity.Id.ToString();
+
+                            //最后时间
+                            EndDateTime = System.DateTime.Now.ToLocalTime();
                             //计算相隔时间（秒数）
                             int useTotalSecond = 0;
-                            if (LastOperationDateTime != null)
+                            if (dataEntity.StartDateTime != null)
                             {
-                                TimeSpan timeSpan = EndDateTime - LastOperationDateTime;
+                                TimeSpan timeSpan = EndDateTime - dataEntity.StartDateTime.Value;
                                 useTotalSecond = (int)timeSpan.TotalSeconds;
                             }
 
@@ -399,7 +392,7 @@ namespace MES_MonitoringClient.Common
                     //开始与结束时间一致
                     newMachineStatusLog.StartDateTime = StartDateTime;
                     //此时EndDateTime为Null，方便下次查询未完成的机器状态日志记录
-                    //newMachineStatus.EndDateTime = StartDateTime;
+                    //newMachineStatus.EndDateTime = null;
                     //使用的秒数
                     newMachineStatusLog.UseTotalSeconds = 0;
 
@@ -423,6 +416,9 @@ namespace MES_MonitoringClient.Common
                     #endregion
                 }
 
+                #endregion
+
+                #region 更新界面状态灯&更新时间占比图
 
                 //回调更新界面，状态灯
                 UpdateMachineStatusLightDelegate();
@@ -437,7 +433,6 @@ namespace MES_MonitoringClient.Common
                 throw ex;
             }
         }
-
 
         /*修改机器状态*/
         /*-------------------------------------------------------------------------------------*/
@@ -493,15 +488,6 @@ namespace MES_MonitoringClient.Common
                 //回调更新界面，各状态占比时间
                 UpdateMachineStatusPieChartDelegate(GetMachineUseTimeList());                
             }
-        }
-
-
-        /// <summary>
-        /// 机器预计完成时间设置
-        /// </summary>
-        public void SettingMachineCompleteDateTime()
-        {
-            UpdateMachineCompleteDateTimeDelegate();
         }
     }
 }

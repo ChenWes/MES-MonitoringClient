@@ -19,7 +19,7 @@ namespace MES_MonitoringClient.Common
                 string mouldCollection = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
 
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(mouldCollection);
-                var newfilter = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(id));
+                var newfilter = Builders<BsonDocument>.Filter.Eq("_id", id);
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
 
                 if (getdocument != null) return BsonSerializer.Deserialize<DataModel.Mould>(getdocument);

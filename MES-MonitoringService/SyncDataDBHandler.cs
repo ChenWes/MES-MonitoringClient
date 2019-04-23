@@ -133,36 +133,24 @@ namespace MES_MonitoringService
             {
                 BsonDocument bsonDocument = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument>(dataJson);
 
-                //查看工单是否匹配到当前机器，
-                //匹配则继续按原有流程处理
-                //不匹配则直接删除工单
-                if (SyncJobOrderCompareMachine.MatchLocalMachine(dataJson))
+
+                #region 原有流程
+
+                if (action.ToUpper() == ActionType.ADD.ToString())
                 {
-                    #region 原有流程
-
-                    if (action.ToUpper() == ActionType.ADD.ToString())
-                    {
-                        return SyncJobOrder_Add(collectionName, bsonDocument);
-                    }
-                    else if (action.ToUpper() == ActionType.EDIT.ToString())
-                    {
-                        return SyncJobOrder_Edit(collectionName, id, bsonDocument);
-                    }
-                    else if (action.ToUpper() == ActionType.DELETE.ToString())
-                    {
-                        return SyncData_Delete(collectionName, id);
-                    }
-
-                    #endregion
+                    return SyncEmployee_Add(collectionName, bsonDocument);
                 }
-                else
+                else if (action.ToUpper() == ActionType.EDIT.ToString())
                 {
-                    #region 直接删除工单
-
+                    return SyncEmployee_Edit(collectionName, id, bsonDocument);
+                }
+                else if (action.ToUpper() == ActionType.DELETE.ToString())
+                {
                     return SyncData_Delete(collectionName, id);
-
-                    #endregion
                 }
+
+                #endregion
+
 
                 return false;
             }
@@ -315,8 +303,7 @@ namespace MES_MonitoringService
 
                 var getCollection = collection.Find(filterID).FirstOrDefault();
                 if (getCollection == null)
-                {                    
-                    //collection.InsertOne(bsonDocument);
+                {                                        
                     //调用新增方法
                     return SyncJobOrder_Add(collectionName, bsonDocument);
                 }
@@ -346,7 +333,7 @@ namespace MES_MonitoringService
         //--------------------------------------------------------------------------------------
 
         /// <summary>
-        /// 工单新增方法
+        /// 员工新增方法
         /// </summary>
         /// <param name="collectionName"></param>
         /// <param name="bsonDocument"></param>
@@ -360,8 +347,7 @@ namespace MES_MonitoringService
 
                 #region 新增
 
-                var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
-                bsonDocument.Add(new BsonElement("Status", BsonNull.Value));
+                var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);                
                 collection.InsertOne(bsonDocument);
 
                 #endregion
@@ -375,7 +361,7 @@ namespace MES_MonitoringService
         }
 
         /// <summary>
-        /// 工单修改方法
+        /// 员工修改方法
         /// </summary>
         /// <param name="collectionName"></param>
         /// <param name="id"></param>
@@ -385,24 +371,15 @@ namespace MES_MonitoringService
         {
             try
             {
-                bsonDocument.Add(new BsonElement("IsSyncImage", false));
-                bsonDocument.Add(new BsonElement("LocalFileName", ""));
-
                 #region 修改
 
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
                 var filterID = new BsonDocument("_id", id);
 
-                var getCollection = collection.Find(filterID).FirstOrDefault();
-                if (getCollection == null)
-                {
-                    collection.InsertOne(bsonDocument);
-                }
-                else
-                {
-                    bsonDocument.Remove("_id");
-                    collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));
-                }
+                bsonDocument.Add(new BsonElement("IsSyncImage", false));
+                bsonDocument.Add(new BsonElement("LocalFileName", ""));
+                bsonDocument.Remove("_id");
+                collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));                
 
 
                 #endregion

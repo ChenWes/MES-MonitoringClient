@@ -19,7 +19,7 @@ namespace MES_MonitoringClient.Common
                 string jobpositionCollection = Common.ConfigFileHandler.GetAppConfig("JobPositionCollectionName");
 
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(jobpositionCollection);
-                var newfilter = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(id));
+                var newfilter = Builders<BsonDocument>.Filter.Eq("_id", id);
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
 
                 if (getdocument != null) return BsonSerializer.Deserialize<DataModel.JobPositon>(getdocument);
@@ -30,7 +30,6 @@ namespace MES_MonitoringClient.Common
             {
                 throw ex;
             }
-
         }
     }
 }

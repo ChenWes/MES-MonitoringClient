@@ -14,6 +14,9 @@ namespace MES_MonitoringService
 {
     public class SyncDataHandler
     {
+        public static string MC_FactoryCollectionName = Common.ConfigFileHandler.GetAppConfig("FactoryCollectionName");
+        public static string MC_WorkshopCollectionName = Common.ConfigFileHandler.GetAppConfig("WorkshopCollectionName");
+        public static string MC_MachineCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineCollectionName");
         public static string MC_MachineStatusCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
         public static string MC_DepartmentCollectionName = Common.ConfigFileHandler.GetAppConfig("DepartmentCollectionName");
         public static string MC_GroupCollectionName = Common.ConfigFileHandler.GetAppConfig("GroupCollectionName");
@@ -74,15 +77,92 @@ namespace MES_MonitoringService
                 string dataJson = Common.JsonHelper.GetJsonValue(jsonString, "data");
 
 
-                if (type == SyncDataType.Factory.ToString() || type == SyncDataType.Workshop.ToString() || type == SyncDataType.Machine.ToString()
-                   || type == SyncDataType.MachineStatus.ToString() || type == SyncDataType.WorkShift.ToString() || type == SyncDataType.JobPosition.ToString()
-                   || type == SyncDataType.Department.ToString() || type == SyncDataType.Group.ToString()
-                   || type == SyncDataType.Customer.ToString() || type == SyncDataType.Material.ToString() || type == SyncDataType.Mould.ToString()
-               )
+                if (type == SyncDataType.Factory.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_FactoryCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.Workshop.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_WorkshopCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+
+                else if (type == SyncDataType.Machine.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_MachineCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.MachineStatus.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_MachineStatusCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.WorkShift.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_WorkShiftCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.JobPosition.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_JobPositionCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.Department.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_DepartmentCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.Group.ToString())
                 {
                     #region 正常处理数据
 
                     return SyncDataDBHandler.SyncData_DBHandler(MC_GroupCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.Customer.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_CustomerCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.Material.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_MaterialCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.Mould.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_MouldCollectionName, dataJson, id, action);
 
                     #endregion
                 }
@@ -98,7 +178,7 @@ namespace MES_MonitoringService
                 {
                     #region 工单（特殊处理）
 
-                    SyncDataDBHandler.SyncOrder_DBHandler(MC_JobOrderCollectionName, dataJson, id, action);
+                    return SyncDataDBHandler.SyncOrder_DBHandler(MC_JobOrderCollectionName, dataJson, id, action);
 
                     #endregion
                 }

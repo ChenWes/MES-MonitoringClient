@@ -32,10 +32,10 @@ namespace MES_MonitoringClient.DataModel
         public string StatusDesc { get; set; }
 
         [BsonElement("StartDateTime")]
-        public DateTime StartDateTime { get; set; }
+        public DateTime? StartDateTime { get; set; }
 
         [BsonElement("EndDateTime")]
-        public DateTime EndDateTime { get; set; }
+        public DateTime? EndDateTime { get; set; }
 
         [BsonElement("IsStopFlag")]
         public bool IsStopFlag { get; set; }

@@ -33,7 +33,10 @@ namespace MES_MonitoringClient
         public DataModel.Employee MC_EmployeeInfo = null;
 
         //修改机器状态参数
-        public DataModel.formParameter.frmChangeMachineStatusPara MC_frmChangeMachineStatusPara = null;        
+        public DataModel.formParameter.frmChangeMachineStatusPara MC_frmChangeMachineStatusPara = null;
+
+        //开始订单参数
+        public DataModel.JobOrder MC_frmChangeJobOrderPara = null;
 
         /*---------------------------------------------------------------------------------------*/
         //private long COM1_ReceiveDataCount = 0;
@@ -252,12 +255,15 @@ namespace MES_MonitoringClient
                     case OperationType.OffDuty:                    
                         break;
                     case OperationType.StartJobOrder:
+                        //开始工单
                         OnStartJobOrder();
                         break;
                     case OperationType.StopJobOrder:
+                        //停止工单
                         OnStopJobOrder(employee.JobPostionID);
                         break;
                     case OperationType.ResumeJobOrder:
+                        //恢复工单
                         OnResumeJobOrder();
                         break;
                     default:
@@ -309,9 +315,13 @@ namespace MES_MonitoringClient
         {
             try
             {
+                //弹出可操作的界面
                 frmSelectJobOrder newfrmSelectJobOrder = new frmSelectJobOrder();
                 newfrmSelectJobOrder.MC_JobOrderFilter = frmSelectJobOrder.FilterOrderType.NoStart;
                 newfrmSelectJobOrder.ShowDialog();
+
+                //完成参数传递（开始的工单至刷卡窗口）
+                MC_frmChangeJobOrderPara = newfrmSelectJobOrder.MC_frmChangeJobOrderPara;
             }
             catch (Exception ex)
             {
@@ -356,6 +366,9 @@ namespace MES_MonitoringClient
                 frmSelectJobOrder newfrmSelectJobOrder = new frmSelectJobOrder();
                 newfrmSelectJobOrder.MC_JobOrderFilter = frmSelectJobOrder.FilterOrderType.NoCompleted;
                 newfrmSelectJobOrder.ShowDialog();
+
+                //完成参数传递（开始的工单至刷卡窗口）
+                MC_frmChangeJobOrderPara = newfrmSelectJobOrder.MC_frmChangeJobOrderPara;
             }
             catch (Exception ex)
             {
@@ -389,9 +402,28 @@ namespace MES_MonitoringClient
                     throw new Exception("未刷卡");
                 }
 
+                //修改状态
                 if (MC_OperationType == OperationType.ChangeMachineType && MC_frmChangeMachineStatusPara == null)
-                {                    
-                    throw new Exception("未选择任何机器状态");                    
+                {
+                    throw new Exception("未选择任何机器状态");
+                }
+
+                //开始工单
+                if (MC_OperationType == OperationType.StartJobOrder && MC_frmChangeJobOrderPara == null)
+                {
+                    throw new Exception("未选择任何工单");
+                }
+
+                //恢复工单
+                if (MC_OperationType == OperationType.ResumeJobOrder && MC_frmChangeJobOrderPara == null)
+                {
+                    throw new Exception("未选择任何工单");
+                }
+
+                //暂停工单
+                if (MC_OperationType == OperationType.StopJobOrder && MC_frmChangeMachineStatusPara == null)
+                {
+                    throw new Exception("未选择任何机器状态");
                 }
 
                 this.DialogResult = DialogResult.OK;

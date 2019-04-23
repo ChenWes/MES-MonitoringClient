@@ -28,19 +28,18 @@ namespace MES_MonitoringClient.Common
         /// 查询本机的机器注册信息
         /// </summary>
         /// <returns></returns>
-        public DataModel.MachineInfo GetMachineRegisterInfo()
+        public DataModel.Machine GetMachineRegisterInfo()
         {
             try
             {
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineRegisterMongodbCollectionName);
 
                 var newfilter = Builders<BsonDocument>.Filter.Exists("MachineID", true);
-                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
 
-                if (getdocument != null && getdocument.Count > 0)
+                if (getdocument != null)
                 {
-                    var machineRegisterEntity = BsonSerializer.Deserialize<DataModel.MachineInfo>(getdocument.First());
-                    return machineRegisterEntity;
+                    return MachineHelper.GetMachineByID(getdocument.GetValue("MachineID").ToString());
                 }
 
                 return null;

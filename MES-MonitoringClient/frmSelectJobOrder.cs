@@ -27,7 +27,7 @@ namespace MES_MonitoringClient
         /// <summary>
         /// 选择的工单参数，作为传出参数
         /// </summary>
-        public DataModel.formParameter.frmChangeJobOrderPara MC_frmChangeJobOrderPara;
+        public DataModel.JobOrder MC_frmChangeJobOrderPara;
 
         public frmSelectJobOrder()
         {
@@ -103,8 +103,7 @@ namespace MES_MonitoringClient
                 // 隔行背景色
                 dgv_JobOrder.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#C7C9CC");
                 // 行高自适应
-                //dgv_JobOrder.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedHeaders;
-                dgv_JobOrder.FirstDisplayedScrollingRowIndex = dgv_JobOrder.RowCount - 1;
+                //dgv_JobOrder.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedHeaders;                
 
 
                 //选择模式为整行选择
@@ -158,6 +157,9 @@ namespace MES_MonitoringClient
                 dgv_JobOrder.Columns[13].DataPropertyName = "StandardProduceSecond";
                 dgv_JobOrder.Columns[13].HeaderText = "标准生命周期";
 
+                dgv_JobOrder.Columns[14].DataPropertyName = "ID";
+                dgv_JobOrder.Columns[14].HeaderText = "工单ID标识";
+                dgv_JobOrder.Columns[14].Visible = false;
             }
             catch (Exception ex)
             {
@@ -194,12 +196,40 @@ namespace MES_MonitoringClient
         /*按钮方法*/
         /*---------------------------------------------------------------------------------------*/
 
+        /// <summary>
+        /// 工单确认事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgv_JobOrder_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                int rowID = 14;
+
+                if (e.RowIndex > -1)
+                {
+                    DataGridViewRow selectRow = dgv_JobOrder.Rows[e.RowIndex];
+
+
+                    MC_frmChangeJobOrderPara = Common.JobOrderHelper.GetJobOrderByID(selectRow.Cells[rowID].Value.ToString());
+                    lab_SelectJobOrder.Text = "选择的工单号：" + MC_frmChangeJobOrderPara.JobOrderCode;
+                }               
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message, "选择工单出错");
+            }
+        }
+
+        /*按钮方法*/
+        /*---------------------------------------------------------------------------------------*/
+
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
             MC_frmChangeJobOrderPara = null;
 
             this.Close();
-
         }
 
         private void btn_Confirm_Click(object sender, EventArgs e)
@@ -214,24 +244,5 @@ namespace MES_MonitoringClient
             }
         }
 
-        /// <summary>
-        /// 工单确认事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgv_JobOrder_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            try
-            {                
-                if (e.RowIndex > -1)
-                {
-                    DataGridViewRow selectRow = dgv_JobOrder.Rows[e.RowIndex];
-                }               
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage(ex.Message, "选择工单出错");
-            }
-        }
     }
 }

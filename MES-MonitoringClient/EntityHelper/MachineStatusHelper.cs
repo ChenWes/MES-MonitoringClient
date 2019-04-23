@@ -24,7 +24,7 @@ namespace MES_MonitoringClient.Common
                 string jobpositionCollection = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
 
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(jobpositionCollection);
-                var newfilter = Builders<BsonDocument>.Filter.In("_id", Common.BsonHelper.ConvertType(id));
+                var newfilter = Builders<BsonDocument>.Filter.In("_id", id);
 
 
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
@@ -120,10 +120,10 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
-                string jobpositionCollection = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
+                string machineStatusCollection = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
 
-                var collection = Common.MongodbHandler.GetInstance().GetCollection(jobpositionCollection);
-                var newfilter = Builders<BsonDocument>.Filter.Eq("StatusCode", machineStatusCode);
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(machineStatusCollection);
+                var newfilter = Builders<BsonDocument>.Filter.Eq("MachineStatusCode", machineStatusCode);
 
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
                 if (getdocument != null) return BsonSerializer.Deserialize<DataModel.MachineStatus>(getdocument);

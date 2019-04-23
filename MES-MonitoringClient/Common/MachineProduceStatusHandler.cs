@@ -102,6 +102,23 @@ namespace MES_MonitoringClient.Common
         public SignalType LastSignal;
 
 
+        /// <summary>
+        /// 起工时间（开始工作的时间）
+        /// </summary>
+        public DateTime? StartWorkTime { get; set; }
+
+        /// <summary>
+        /// 预计完成时间（回写到界面中）
+        /// </summary>
+        public DateTime? PlanCompleteDateTime { get; set; }
+
+
+        //当前操作的工单
+        public DataModel.JobOrder ProcessJobOrder = null;
+        //关联的产品及模具信息（显示到界面中）
+        public DataModel.Material ProcessMaterial = null;
+        public DataModel.Mould ProcessMould = null;
+
 
         /// <summary>
         /// 更新机器信号后更新界面
@@ -129,7 +146,18 @@ namespace MES_MonitoringClient.Common
         public UpdateMachineNoCompleteCount UpdateMachineNoCompleteCountDelegate;
 
 
-        
+        /// <summary>
+        /// 显示工单基本信息
+        /// </summary>
+        public delegate void ShowJobOrderBasicInfo();
+        public ShowJobOrderBasicInfo ShowJobOrderBasicInfoDelegate;
+
+        /// <summary>
+        /// 更新机器使用时间返回至界面
+        /// </summary>
+        public delegate void UpdateMachineCompleteDateTime();
+        public UpdateMachineCompleteDateTime UpdateMachineCompleteDateTimeDelegate;
+
 
         /// <summary>
         /// 构造函数，处理初始化的参数
@@ -147,6 +175,25 @@ namespace MES_MonitoringClient.Common
 
 
         
+        /// <summary>
+        /// 界面输入不良品数量
+        /// </summary>
+        /// <param name="rejectProductCount"></param>
+        public bool SettingProductErrorCount(int intProductErrorCount)
+        {
+            if (ProcessJobOrder != null)
+            {
+                ProductErrorCount = intProductErrorCount;
+                Common.JobOrderProcessHelper.SetJobOrderProcessErrorCount(ProductErrorCount, ProcessJobOrder._id);
+                SettingMachineNondefectiveCount();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// 机器良品数量设置
@@ -166,6 +213,7 @@ namespace MES_MonitoringClient.Common
             //更新界面
             UpdateMachineNondefectiveCountDelegate();
         }
+
 
         /// <summary>
         /// 机器未完成数量设置
@@ -189,6 +237,53 @@ namespace MES_MonitoringClient.Common
 
 
 
+        /// <summary>
+        /// 设置工单
+        /// 1.开始工单
+        /// 2.恢复工单
+        /// </summary>
+        /// <param name="jobOrder">选择的工单实体</param>
+        public void SetJobOrder(DataModel.JobOrder jobOrder)
+        {
+            try
+            {
+                //传入的工单
+                ProcessJobOrder = jobOrder;
+                ProcessMaterial = Common.MaterialHelper.GetMaterialByID(ProcessJobOrder.MaterialID);
+                ProcessMould = Common.MouldHelper.GetMouldByID(ProcessJobOrder.MouldID);
+
+
+                //设置工单处理记录(不存在就新增)
+                Common.JobOrderProcessHelper.SetJobOrderProcessStatus(JobOrderProcessHelper.JobOrderProcessStatus.Process, ProcessJobOrder._id);
+
+
+                //查询工单处理记录
+                DataModel.JobOrderProcess jobOrderProcess = Common.JobOrderProcessHelper.GetJobOrderProcessByJobOrderID(ProcessJobOrder._id);
+                //DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                StartWorkTime = jobOrderProcess.StartDateTime.ToLocalTime();
+
+                //已生产的和有问题的
+                ProductCount = jobOrderProcess.ProductCount;
+                ProductErrorCount = jobOrderProcess.ProductErrorCount;
+
+                //工单数量
+                OrderCount = ProcessJobOrder.OrderCount;
+
+                //界面显示基本消息
+                SettingJobOrderBasicInfo();
+
+                //计算预计完成时间
+                SettingMachineCompleteDateTime();
+
+                //计算未完成数量
+                SettingMachineNondefectiveCount();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         /// <summary>
         /// 更新信号方法
@@ -246,6 +341,7 @@ namespace MES_MonitoringClient.Common
                             {
                                 //计数
                                 ProductCount++;
+                                //这里应该处理应用数量，根据逻辑来处理1*1和1+1的区别
 
                                 if (LastX03SignalGetTime.HasValue)
                                 {
@@ -271,6 +367,8 @@ namespace MES_MonitoringClient.Common
 
                                     //保存每一个生命周期数据至数据库
                                     SaveMachineProduceLifeCycle(produceLifeCycle);
+                                    //每次处理
+                                    Common.JobOrderProcessHelper.SetJobOrderProcessCount(ProductCount, ProcessJobOrder._id);
                                 }
 
                                 //订单未完成数量，等于订单数量减去已完成数量
@@ -322,6 +420,26 @@ namespace MES_MonitoringClient.Common
                 }
             }
         }
+
+        //取数数字
+        private int[] ProcessProductCount(string strMouldSpecification)
+        {            
+            var matchMiddle = Regex.Matches(strMouldSpecification, "[0-9]+");
+            List<int> getNumber = new List<int>();
+            foreach (var march in matchMiddle)
+            {
+                int number = 0;
+                int.TryParse(march.ToString(), out number);
+
+                if (number > 0)
+                {
+                    getNumber.Add(number);
+                }
+            }
+
+            return getNumber.ToArray();
+        }
+
 
         /// <summary>
         /// 匹配信号是否正常
@@ -406,6 +524,20 @@ namespace MES_MonitoringClient.Common
             {
                 machineProcuceLifeCycleCollection.InsertOne(produceLifeCycle);
             }
+        }
+        
+
+        /// <summary>
+        /// 机器预计完成时间设置
+        /// </summary>
+        private void SettingMachineCompleteDateTime()
+        {
+            UpdateMachineCompleteDateTimeDelegate();
+        }
+
+        private void SettingJobOrderBasicInfo()
+        {
+            ShowJobOrderBasicInfoDelegate();
         }
     }
 }

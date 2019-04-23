@@ -10,6 +10,9 @@ namespace MES_MonitoringClient.Common
 {
     public static class SyncDataHelper
     {
+        public static string MC_FactoryCollectionName = Common.ConfigFileHandler.GetAppConfig("FactoryCollectionName");
+        public static string MC_WorkshopCollectionName = Common.ConfigFileHandler.GetAppConfig("WorkshopCollectionName");
+        public static string MC_MachineCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineCollectionName");
         public static string MC_MachineStatusCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusCollectionName");
         public static string MC_DepartmentCollectionName= Common.ConfigFileHandler.GetAppConfig("DepartmentCollectionName");
         public static string MC_GroupCollectionName = Common.ConfigFileHandler.GetAppConfig("GroupCollectionName");
@@ -33,6 +36,15 @@ namespace MES_MonitoringClient.Common
                 //获取url并发起Http get请求
                 string urlPath = Common.ConfigFileHandler.GetAppConfig("SyncDataUrlPath");
                 string jsonString = Common.HttpHelper.HttpGetWithToken(urlPath);
+
+                //工厂
+                SyncDataDBHelper.SyncData_Process(MC_FactoryCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "factory"));
+
+                //车间                
+                SyncDataDBHelper.SyncData_Process(MC_WorkshopCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "workshop"));
+
+                //机器                
+                SyncDataDBHelper.SyncData_Process(MC_MachineCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "machine"));
 
                 //机器状态                
                 SyncDataDBHelper.SyncData_Process(MC_MachineStatusCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "machinestatus"));
