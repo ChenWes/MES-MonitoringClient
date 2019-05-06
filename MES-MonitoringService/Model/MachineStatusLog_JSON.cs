@@ -29,6 +29,9 @@ namespace MES_MonitoringService.Model
 
         public bool IsStopFlag { get; set; }
 
-        public string LocalMacAddress { get; set; }                     
+        public string LocalMacAddress { get; set; }
+
+        //机器注册ID        
+        public string MachineID { get; set; }
     }
 }

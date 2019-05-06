@@ -405,6 +405,12 @@ namespace MES_MonitoringClient.Common
                     //MAC地址
                     newMachineStatusLog.LocalMacAddress = Common.CommonFunction.getMacAddress();
 
+                    //机器ID不为空，则保存到数据库中
+                    if (mc_MachineProduceStatusHandler.MC_machine != null)
+                    {
+                        newMachineStatusLog.MachineID = mc_MachineProduceStatusHandler.MC_machine._id;
+                    }
+
                     //插入DB
                     machineStatusLogCollection.InsertOne(newMachineStatusLog);
 

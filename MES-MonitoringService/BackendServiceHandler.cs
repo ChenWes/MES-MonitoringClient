@@ -164,11 +164,20 @@ namespace MES_MonitoringService
 
                     newMachineStatus_JSON.UseTotalSeconds = machineStatusLogEntity.UseTotalSeconds;//使用秒数
 
-                    newMachineStatus_JSON.StartDateTime = machineStatusLogEntity.StartDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
-                    newMachineStatus_JSON.EndDateTime = machineStatusLogEntity.EndDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
+                    newMachineStatus_JSON.StartDateTime = machineStatusLogEntity.StartDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
+
+                    if (machineStatusLogEntity.EndDateTime.HasValue)
+                    {
+                        newMachineStatus_JSON.EndDateTime = machineStatusLogEntity.EndDateTime.Value.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");//Date转换成string
+                    }
+                    else
+                    {
+                        newMachineStatus_JSON.EndDateTime = null;
+                    }
 
                     newMachineStatus_JSON.IsStopFlag = machineStatusLogEntity.IsStopFlag;
                     newMachineStatus_JSON.LocalMacAddress = machineStatusLogEntity.LocalMacAddress;
+                    newMachineStatus_JSON.MachineID = machineStatusLogEntity.MachineID;
 
                     //Common.LogHandler.WriteLog("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 

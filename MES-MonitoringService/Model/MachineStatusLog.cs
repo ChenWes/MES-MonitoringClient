@@ -34,10 +34,10 @@ namespace MES_MonitoringService.Model
 
 
         [BsonElement("StartDateTime")]
-        public DateTime StartDateTime { get; set; }
+        public DateTime? StartDateTime { get; set; }
 
         [BsonElement("EndDateTime")]
-        public DateTime EndDateTime { get; set; }
+        public DateTime? EndDateTime { get; set; }
 
         [BsonElement("IsStopFlag")]
         public bool IsStopFlag { get; set; }
@@ -56,5 +56,9 @@ namespace MES_MonitoringService.Model
 
         [BsonElement("LocalMacAddress")]
         public string LocalMacAddress { get; set; }
+
+        //机器注册ID
+        [BsonElement("MachineID")]
+        public string MachineID { get; set; }
     }
 }

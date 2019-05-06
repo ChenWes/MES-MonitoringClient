@@ -48,7 +48,10 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private static string singnalDefaultEnd = Common.ConfigFileHandler.GetAppConfig("GetSerialPortDataDefaultSignal_EndPrefix");
 
-        
+        /// <summary>
+        /// 本机的机器注册信息，方便写入DB时使用
+        /// </summary>
+        public DataModel.Machine MC_machine = null;
 
         /// <summary>
         /// 机器生命周期时间

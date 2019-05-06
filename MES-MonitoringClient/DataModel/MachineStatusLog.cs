@@ -31,9 +31,11 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("StatusDesc")]
         public string StatusDesc { get; set; }
 
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("StartDateTime")]
         public DateTime? StartDateTime { get; set; }
 
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [BsonElement("EndDateTime")]
         public DateTime? EndDateTime { get; set; }
 
@@ -55,5 +57,9 @@ namespace MES_MonitoringClient.DataModel
 
         [BsonElement("LocalMacAddress")]
         public string LocalMacAddress { get; set; }
+
+        //机器注册ID
+        [BsonElement("MachineID")]
+        public string MachineID { get; set; }
     }
 }

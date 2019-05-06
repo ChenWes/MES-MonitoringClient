@@ -98,9 +98,6 @@ namespace MES_MonitoringClient
         {
             try
             {
-                //显示机器名称                
-                CheckMachineRegister();
-
                 //最大化窗口
                 this.WindowState = FormWindowState.Maximized;
 
@@ -123,6 +120,10 @@ namespace MES_MonitoringClient
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNondefectiveCountDelegate += UpdateMachineNondefectiveCount;//良品更新方法（良品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNoCompleteCountDelegate += UpdateMachineNoCompletedCount;//未完成产品数量更新方法（未完成产品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.ShowJobOrderBasicInfoDelegate += ShowJobOrderBiaisInfo;//显示工单基本信息
+
+
+                //显示机器名称                
+                CheckMachineRegister();
 
                 //检测MongoDB服务
                 if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
@@ -1476,7 +1477,7 @@ namespace MES_MonitoringClient
         {
             try
             {
-                if (string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID) && mc_MachineStatusHander.MachineStatusCode != MC_ProduceStatusCode)
+                if (!string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID) && mc_MachineStatusHander.MachineStatusCode != MC_ProduceStatusCode)
                 {
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ResumeJobOrder;
@@ -1570,6 +1571,9 @@ namespace MES_MonitoringClient
 
                 if (machineInfoEntity != null)
                 {
+                    //将机器注册信息保存至变量中
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.MC_machine = machineInfoEntity;
+
                     //如果存在机器注册信息，则显示机器名，也不可再注册
                     btn_MachineName.Text = machineInfoEntity.MachineCode;
                     btn_MachineName.Enabled = false;
@@ -1577,7 +1581,7 @@ namespace MES_MonitoringClient
             }
             catch (Exception ex)
             {
-                throw;
+                Common.LogHandler.WriteLog("检查机器注册错误", ex);
             }
         }
     }
