@@ -523,10 +523,7 @@ namespace MES_MonitoringClient.Common
         /// <param name="produceLifeCycle">单个生命周期数据</param>
         private void SaveMachineProduceLifeCycle(DataModel.MachineProduceLifeCycle produceLifeCycle)
         {
-            if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
-            {
-                machineProcuceLifeCycleCollection.InsertOne(produceLifeCycle);
-            }
+            machineProcuceLifeCycleCollection.InsertOne(produceLifeCycle);
         }
         
 

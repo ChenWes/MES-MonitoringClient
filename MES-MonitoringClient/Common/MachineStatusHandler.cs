@@ -271,33 +271,30 @@ namespace MES_MonitoringClient.Common
 
                     //保存至DB中/*******************/嫁动率的主要数据来源
 
-                    //如果有Mongodb才保存至DB中
-                    if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                    //判断最后一个记录ID（来自于没有结束的机器状态日志记录ID）
+                    if (!string.IsNullOrEmpty(LastOperationMachineStatusLogID))
                     {
-                        //判断最后一个记录ID（来自于没有结束的机器状态日志记录ID）
-                        if (!string.IsNullOrEmpty(LastOperationMachineStatusLogID))
+                        //计算相隔时间（秒数）
+                        int useTotalSecond = 0;
+                        if (LastOperationDateTime != null)
                         {
-                            //计算相隔时间（秒数）
-                            int useTotalSecond = 0;
-                            if (LastOperationDateTime != null)
-                            {
-                                TimeSpan timeSpan = EndDateTime - LastOperationDateTime;
-                                useTotalSecond = (int)timeSpan.TotalSeconds;
-                            }
-
-                            //找到单个记录
-                            var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
-
-                            //修改（写入结束标识、结束时间、中间持续的时间秒数）
-                            var update = Builders<DataModel.MachineStatusLog>.Update
-                                .Set("EndDateTime", EndDateTime)
-                                .Set("UseTotalSeconds", useTotalSecond)
-                                .Set("IsStopFlag", true);
-
-                            //更新数据库
-                            machineStatusLogCollection.UpdateOne(filterID, update);
+                            TimeSpan timeSpan = EndDateTime - LastOperationDateTime;
+                            useTotalSecond = (int)timeSpan.TotalSeconds;
                         }
+
+                        //找到单个记录
+                        var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
+
+                        //修改（写入结束标识、结束时间、中间持续的时间秒数）
+                        var update = Builders<DataModel.MachineStatusLog>.Update
+                            .Set("EndDateTime", EndDateTime)
+                            .Set("UseTotalSeconds", useTotalSecond)
+                            .Set("IsStopFlag", true);
+
+                        //更新数据库
+                        machineStatusLogCollection.UpdateOne(filterID, update);
                     }
+
                 }
 
                 #endregion
@@ -328,99 +325,98 @@ namespace MES_MonitoringClient.Common
                 DateTimeThreadClass.Start();
 
                 //当前机器状态记录写入DB
-                if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
-                {
-                    #region 上次退出界面，但未完成机器状态的完成记录
 
-                    //查询数据库，是否有未完成的数据（上次退出界面，但未完成机器状态的完成记录）
-                    //如果有，先完成未完成的数据
-                    //如果没有，直接新增
-                    if (string.IsNullOrEmpty(LastOperationMachineStatusLogID))
-                    {
-                        var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
-                        var filter = Builders<BsonDocument>.Filter.And(new FilterDefinition<BsonDocument>[] {
+                #region 上次退出界面，但未完成机器状态的完成记录
+
+                //查询数据库，是否有未完成的数据（上次退出界面，但未完成机器状态的完成记录）
+                //如果有，先完成未完成的数据
+                //如果没有，直接新增
+                if (string.IsNullOrEmpty(LastOperationMachineStatusLogID))
+                {
+                    var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
+                    var filter = Builders<BsonDocument>.Filter.And(new FilterDefinition<BsonDocument>[] {
                             Builders<BsonDocument>.Filter.Eq("IsStopFlag", false),
                             Builders<BsonDocument>.Filter.Eq("UseTotalSeconds", 0),
                             Builders<BsonDocument>.Filter.Eq("EndDateTime", BsonNull.Value),
                         });
 
-                        var result = Common.MongodbHandler.GetInstance().Find(collection, filter).FirstOrDefault();
+                    var result = Common.MongodbHandler.GetInstance().Find(collection, filter).FirstOrDefault();
 
-                        if (result != null)
-                        {
-                            var dataEntity = BsonSerializer.Deserialize<DataModel.MachineStatusLog>(result);
-
-                            LastOperationMachineStatusLogID = dataEntity.Id.ToString();
-
-                            //最后时间
-                            EndDateTime = System.DateTime.Now.ToLocalTime();
-                            //计算相隔时间（秒数）
-                            int useTotalSecond = 0;
-                            if (dataEntity.StartDateTime != null)
-                            {
-                                TimeSpan timeSpan = EndDateTime - dataEntity.StartDateTime.Value;
-                                useTotalSecond = (int)timeSpan.TotalSeconds;
-                            }
-
-                            //找到单个记录
-                            var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
-
-                            //修改（写入结束标识、结束时间、中间持续的时间秒数）
-                            var update = Builders<DataModel.MachineStatusLog>.Update
-                                .Set("EndDateTime", EndDateTime)
-                                .Set("UseTotalSeconds", useTotalSecond)
-                                .Set("IsStopFlag", true);
-
-                            //更新数据库
-                            machineStatusLogCollection.UpdateOne(filterID, update);                            
-                        }
-                    }
-
-                    #endregion
-
-
-                    #region 当前机器状态日志记录保存至DB
-                    
-                    //新增的机器状态日志记录实体
-                    DataModel.MachineStatusLog newMachineStatusLog = new DataModel.MachineStatusLog();
-
-                    newMachineStatusLog.StatusID = MachineStatusID;
-                    newMachineStatusLog.StatusCode = MachineStatusCode;
-                    newMachineStatusLog.StatusName = MachineStatusName;
-                    newMachineStatusLog.StatusDesc = MachineStatusDesc;
-
-                    //开始与结束时间一致
-                    newMachineStatusLog.StartDateTime = StartDateTime;
-                    //此时EndDateTime为Null，方便下次查询未完成的机器状态日志记录
-                    //newMachineStatus.EndDateTime = null;
-                    //使用的秒数
-                    newMachineStatusLog.UseTotalSeconds = 0;
-
-                    //未结束标识
-                    //未上传标识与未更新至服务器标识
-                    newMachineStatusLog.IsStopFlag = false;
-                    newMachineStatusLog.IsUploadToServer = false;
-                    newMachineStatusLog.IsUpdateToServer = false;
-
-                    //MAC地址
-                    newMachineStatusLog.LocalMacAddress = Common.CommonFunction.getMacAddress();
-
-                    //机器ID不为空，则保存到数据库中
-                    if (mc_MachineProduceStatusHandler.MC_machine != null)
+                    if (result != null)
                     {
-                        newMachineStatusLog.MachineID = mc_MachineProduceStatusHandler.MC_machine._id;
+                        var dataEntity = BsonSerializer.Deserialize<DataModel.MachineStatusLog>(result);
+
+                        LastOperationMachineStatusLogID = dataEntity.Id.ToString();
+
+                        //最后时间
+                        EndDateTime = System.DateTime.Now.ToLocalTime();
+                        //计算相隔时间（秒数）
+                        int useTotalSecond = 0;
+                        if (dataEntity.StartDateTime != null)
+                        {
+                            TimeSpan timeSpan = EndDateTime - dataEntity.StartDateTime.Value;
+                            useTotalSecond = (int)timeSpan.TotalSeconds;
+                        }
+
+                        //找到单个记录
+                        var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
+
+                        //修改（写入结束标识、结束时间、中间持续的时间秒数）
+                        var update = Builders<DataModel.MachineStatusLog>.Update
+                            .Set("EndDateTime", EndDateTime)
+                            .Set("UseTotalSeconds", useTotalSecond)
+                            .Set("IsStopFlag", true);
+
+                        //更新数据库
+                        machineStatusLogCollection.UpdateOne(filterID, update);
                     }
-
-                    //插入DB
-                    machineStatusLogCollection.InsertOne(newMachineStatusLog);
-
-                    //暂存ID（方便下一次更改机器状态时，可以结束掉现在插入的机器状态日志记录）
-                    LastOperationMachineStatusLogID = newMachineStatusLog.Id.ToString();
-                    //最后操作时间
-                    LastOperationDateTime = StartDateTime;
-
-                    #endregion
                 }
+
+                #endregion
+
+
+                #region 当前机器状态日志记录保存至DB
+
+                //新增的机器状态日志记录实体
+                DataModel.MachineStatusLog newMachineStatusLog = new DataModel.MachineStatusLog();
+
+                newMachineStatusLog.StatusID = MachineStatusID;
+                newMachineStatusLog.StatusCode = MachineStatusCode;
+                newMachineStatusLog.StatusName = MachineStatusName;
+                newMachineStatusLog.StatusDesc = MachineStatusDesc;
+
+                //开始与结束时间一致
+                newMachineStatusLog.StartDateTime = StartDateTime;
+                //此时EndDateTime为Null，方便下次查询未完成的机器状态日志记录
+                //newMachineStatus.EndDateTime = null;
+                //使用的秒数
+                newMachineStatusLog.UseTotalSeconds = 0;
+
+                //未结束标识
+                //未上传标识与未更新至服务器标识
+                newMachineStatusLog.IsStopFlag = false;
+                newMachineStatusLog.IsUploadToServer = false;
+                newMachineStatusLog.IsUpdateToServer = false;
+
+                //MAC地址
+                newMachineStatusLog.LocalMacAddress = Common.CommonFunction.getMacAddress();
+
+                //机器ID不为空，则保存到数据库中
+                if (mc_MachineProduceStatusHandler.MC_machine != null)
+                {
+                    newMachineStatusLog.MachineID = mc_MachineProduceStatusHandler.MC_machine._id;
+                }
+
+                //插入DB
+                machineStatusLogCollection.InsertOne(newMachineStatusLog);
+
+                //暂存ID（方便下一次更改机器状态时，可以结束掉现在插入的机器状态日志记录）
+                LastOperationMachineStatusLogID = newMachineStatusLog.Id.ToString();
+                //最后操作时间
+                LastOperationDateTime = StartDateTime;
+
+                #endregion
+
 
                 #endregion
 
@@ -489,11 +485,11 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public void ShowStatusPieChart()
         {
-            if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
-            {
+            //if (Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+            //{
                 //回调更新界面，各状态占比时间
                 UpdateMachineStatusPieChartDelegate(GetMachineUseTimeList());                
-            }
+            //}
         }
     }
 }

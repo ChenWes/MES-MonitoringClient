@@ -49,7 +49,7 @@ namespace MES_MonitoringService.Common
         /// </summary>
         private MongodbHandler()
         {
-            if (!Common.CommonFunction.ServiceRunning(MongodbServiceName))
+            if (!Common.CommonFunction.ServiceRunning(MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
             {
                 throw new Exception("Mongodb 服务未安装或未运行，无法连接至Mongodb");
             }

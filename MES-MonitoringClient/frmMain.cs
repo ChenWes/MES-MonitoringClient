@@ -126,7 +126,7 @@ namespace MES_MonitoringClient
                 CheckMachineRegister();
 
                 //检测MongoDB服务
-                if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+                if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
                 {
                     if (MessageBox.Show("MongoDB服务未安装或未运行，是否继续运行应用？", "MongoDB服务", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {

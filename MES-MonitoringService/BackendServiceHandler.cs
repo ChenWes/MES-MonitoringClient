@@ -50,7 +50,7 @@ namespace MES_MonitoringService
         /// </summary>
         public BackendServiceHandler()
         {
-            if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName))
+            if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
             {
                 //不存在MongoDB服务
                 Common.LogHandler.WriteLog("MES数据上传服务程序检测到该电脑暂时不存在Mongodb服务，服务未能正常运行，请管理员及时处理。");
