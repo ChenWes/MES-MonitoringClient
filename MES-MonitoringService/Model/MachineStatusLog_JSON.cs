@@ -33,5 +33,8 @@ namespace MES_MonitoringService.Model
 
         //机器注册ID        
         public string MachineID { get; set; }
+
+        [BsonElement("CardID")]
+        public string CardID { get; set; }
     }
 }

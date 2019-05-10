@@ -178,6 +178,7 @@ namespace MES_MonitoringService
                     newMachineStatus_JSON.IsStopFlag = machineStatusLogEntity.IsStopFlag;
                     newMachineStatus_JSON.LocalMacAddress = machineStatusLogEntity.LocalMacAddress;
                     newMachineStatus_JSON.MachineID = machineStatusLogEntity.MachineID;
+                    newMachineStatus_JSON.CardID = machineStatusLogEntity.CardID;
 
                     //Common.LogHandler.WriteLog("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 

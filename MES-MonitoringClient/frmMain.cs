@@ -982,13 +982,13 @@ namespace MES_MonitoringClient
                 } while (COM.BytesToRead > 0);
 
                 //如果系统还未开始处理，则不会更改信号
-                if (!string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID))
-                {
+                //if (!string.IsNullOrEmpty(mc_MachineStatusHander.MachineStatusID))
+                //{
                     //更改状态
                     mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeSignal(stringBuilder.ToString());
                     //闪灯
                     ReceiveDataSuccessColor = 255;
-                }
+                //}
 
                 //this.Invoke((EventHandler)(delegate
                 //{

@@ -406,6 +406,11 @@ namespace MES_MonitoringClient.Common
                 {
                     newMachineStatusLog.MachineID = mc_MachineProduceStatusHandler.MC_machine._id;
                 }
+                //修改状态刷卡ID
+                if (!string.IsNullOrEmpty(OperatePersonCardID))
+                {
+                    newMachineStatusLog.CardID = OperatePersonCardID;
+                }
 
                 //插入DB
                 machineStatusLogCollection.InsertOne(newMachineStatusLog);

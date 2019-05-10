@@ -12,6 +12,12 @@ namespace MES_MonitoringClient
 {
     public partial class frmScanRFID : Form
     {
+
+        public byte GetDataMode;
+
+        public byte[] RevDataBuffer = new byte[30];
+        public UInt32 RevDataBufferCount;
+
         public enum OperationType
         {
             ChangeMachineType,
@@ -172,40 +178,126 @@ namespace MES_MonitoringClient
         {
             try
             {
+                int revbuflen;
+
+                byte pkttype;
+                byte pktlength = 0x0;
+                byte cmd;
+                byte err;
+
+                string carddata;
+
+                bool revflag;
+                bool status;
+
+
+                byte[] rdatacopy = new byte[30];
+
                 //接收的时候，将用户处理掉
                 MC_EmployeeInfo = null;
 
                 //获取串口
-                System.IO.Ports.SerialPort COM = (System.IO.Ports.SerialPort)sender;
+                System.IO.Ports.SerialPort SerialPort = (System.IO.Ports.SerialPort)sender;
 
                 //获取到串口1刷卡的信息
-                StringBuilder stringBuilder = new StringBuilder();
-                do
+                //StringBuilder stringBuilder = new StringBuilder();
+                //do
+                //{
+                //    int count = COM.BytesToRead;
+                //    if (count <= 0)
+                //        break;
+                //    byte[] readBuffer = new byte[count];
+
+                //    Application.DoEvents();
+                //    COM.Read(readBuffer, 0, count);
+
+                //    stringBuilder.Append(System.Text.Encoding.Default.GetString(readBuffer));
+
+                //} while (COM.BytesToRead > 0);    
+                
+
+                revbuflen = SerialPort.BytesToRead; //读取串口缓冲区中接收字节数
+                revflag = false;
+                if (revbuflen > 0) //判断串口缓冲区中是否有数据
                 {
-                    int count = COM.BytesToRead;
-                    if (count <= 0)
-                        break;
-                    byte[] readBuffer = new byte[count];
-
-                    Application.DoEvents();
-                    COM.Read(readBuffer, 0, count);
-
-                    stringBuilder.Append(System.Text.Encoding.Default.GetString(readBuffer));
-
-                } while (COM.BytesToRead > 0);                               
-
-
-                //更新界面
-                this.Invoke((EventHandler)(delegate
-                {
-                    lab_ScanStatus.Text = "刷卡成功";
-                    lab_CardID.Text = "卡号:" + stringBuilder.ToString();                    
-                    
-                    //IC卡检测（能否匹配员工信息及有效性）
-                    CheckCardID(stringBuilder.ToString());
+                    revflag = true;
+                    System.Threading.Thread.Sleep(50); //等待完成数据包接收完成
                 }
-                    )
-                );                
+
+                RevDataBufferCount = 0;
+                while (revflag) //判读缓冲区是否有数据
+                {
+                    RevDataBuffer[RevDataBufferCount] = (byte)SerialPort.ReadByte(); //读出串口缓冲区数据到数组中
+                    RevDataBufferCount = RevDataBufferCount + 1;
+                    if (RevDataBufferCount >= 30)//防止缓冲区溢出
+                    {
+                        RevDataBufferCount = 0;
+                    }
+                    System.Threading.Thread.Sleep(2);
+                    revbuflen = SerialPort.BytesToRead;
+
+                    if (revbuflen > 0)
+                    {
+                        revflag = true;
+                    }
+                    else
+                    {
+                        revflag = false;
+                    }
+                }
+                //if ((RevDataBuffer[1] <= RevDataBufferCount) && (RevDataBufferCount != 0x0))//判断是否接收到一帧完成数据
+                if (RevDataBuffer[1] == 0x0C)//判断是否接收到一帧完成数据
+                {
+                    RevDataBufferCount = 0x0;
+                    status = CheckSumOut(RevDataBuffer, RevDataBuffer[1]);//计算校验和
+                    if (status == false)
+                    {
+                        return;
+                    }
+
+                    pkttype = RevDataBuffer[0];  //获取包类型
+                    pktlength = RevDataBuffer[1]; //获取包长度
+                    cmd = RevDataBuffer[2]; //获取命令
+                    err = RevDataBuffer[4]; //获取包状态，0x00:读卡器成功，包有效
+
+                    if ((pkttype == 0x04) && (cmd == 0x02) && (pktlength == 0x0C) && (err == 0x00)) //开始解析数据包,判断是否为卡号数据包
+                    {
+                        lab_CardID.Text = "卡号:" + byteToHexStrH(RevDataBuffer, RevDataBuffer[1]);
+
+
+                        byte[] tempbuf_1 = new byte[4];
+                        byte[] tempbuf_2 = new byte[4];
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            tempbuf_1[i] = RevDataBuffer[i + 7]; //获取卡号，16进制，卡号保存在数组的7-10字节,正向在数组中排序
+                            tempbuf_2[3 - i] = RevDataBuffer[i + 7]; //获取卡号，16进制，卡号保存在数组的7-10字节，反向向在数组中排序
+                        }
+
+                        //UInt32 aa = BitConverter.ToUInt32(tempbuf_1, 0); //16进制转10进制卡号
+                        //txt_data1.Text = aa.ToString();
+
+                        //aa = BitConverter.ToUInt32(tempbuf_2, 0); //16进制转10进制卡号
+                        //txt_data2.Text = aa.ToString();
+
+
+                        //更新界面
+                        //卡号处理
+                        this.Invoke((EventHandler)(delegate
+                        {
+                            lab_ScanStatus.Text = "刷卡成功";
+                            lab_CardID.Text = "卡号:" + GetCardID(tempbuf_2);
+
+                            //IC卡检测（能否匹配员工信息及有效性）
+                            CheckCardID(GetCardID(tempbuf_2));
+                        }
+                            )
+                        );
+
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -433,6 +525,93 @@ namespace MES_MonitoringClient
             {
                 ShowErrorMessage("确认失败，原因是：" + ex.Message, "无法确认");
             }
-        }        
+        }
+
+        //---------------------------------------------------
+
+        public void CheckSum(byte[] buf, byte len)
+        {
+            byte i;
+            byte checksum;
+            checksum = 0;
+            for (i = 0; i < (len - 1); i++)
+            {
+                checksum ^= buf[i];
+            }
+            buf[len - 1] = (byte)~checksum;
+        }
+        public string byteToHexStr(byte[] bytes, int len)  //数组转十六进制字符显示
+        {
+            string returnStr = "";
+            if (bytes != null)
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    returnStr += bytes[i].ToString("X2");
+                }
+            }
+            return returnStr;
+        }
+        public string byteToHexStrH(byte[] bytes, int len)  //数组转十六进制字符显示
+        {
+            string returnStr = "";
+            if (bytes != null)
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    returnStr += bytes[i].ToString("X2");
+                    returnStr += ' ';
+                }
+            }
+            return returnStr;
+        }
+        private static byte[] strToToHexByte(string hexString) //字符串转16进制
+        {
+            //hexString = hexString.Replace(" ", " "); 
+            if ((hexString.Length % 2) != 0)
+                hexString = "0" + hexString;
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return returnBytes;
+        }
+        private static byte[] strToDecByte(string hexString)//字符串转10进制
+        {
+            //hexString = hexString.Replace(" ", " "); 
+            if ((hexString.Length % 2) != 0)
+                hexString = "0" + hexString;
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 10);
+            return returnBytes;
+        }
+        public static bool CheckSumOut(byte[] buf, byte len)
+        {
+            byte i;
+            byte checksum;
+            checksum = 0;
+            for (i = 0; i < (len - 1); i++)
+            {
+                checksum ^= buf[i];
+            }
+            if (buf[len - 1] == (byte)~checksum)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        //转换成文本
+        public static string GetCardID(byte[] buf)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < buf.Length; i++)
+            {
+                sb.Append(buf[i].ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
     }
 }
