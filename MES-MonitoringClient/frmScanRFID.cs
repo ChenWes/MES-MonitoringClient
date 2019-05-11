@@ -386,8 +386,6 @@ namespace MES_MonitoringClient
                 if (machineStatuses == null || machineStatuses.Count == 0) throw new Exception("暂时没有机器状态可选");
 
 
-                System.Threading.Thread.Sleep(1000);
-
                 //弹出可操作的界面
                 frmChangeStatus frmChangeStatus = new frmChangeStatus();
                 frmChangeStatus.mc_machineStatuses = machineStatuses;
@@ -433,9 +431,7 @@ namespace MES_MonitoringClient
                 //找到可操作的机器状态
                 List<DataModel.MachineStatus> machineStatuses = Common.MachineStatusHelper.GetMachineStatusByIDArray(jobPositon.MachineStatuss.ToArray());
                 if (machineStatuses == null || machineStatuses.Count == 0) throw new Exception("暂时没有机器状态可选");
-
-
-                System.Threading.Thread.Sleep(1000);
+                
 
                 //弹出可操作的界面
                 frmChangeStatus frmChangeStatus = new frmChangeStatus();
