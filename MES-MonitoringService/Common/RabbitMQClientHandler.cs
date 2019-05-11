@@ -79,40 +79,6 @@ namespace MES_MonitoringService.Common
             return uniqueInstance;
         }
 
-        /// <summary>
-        /// 遇到断开连接时，需要将原有的连接信息、频道等全部删除一次，便于下次重连
-        /// </summary>
-        private void DisposeAllConnectionObjects()
-        {
-            //连接工厂
-            if (mc_ConnectionFactory != null)
-            {
-                mc_ConnectionFactory = null;
-            }
-
-            //连接
-            if (Connection != null)
-            {
-                Connection.Dispose();
-                Connection = null;
-            }
-
-            //发送频道
-            if (SendChannel != null)
-            {
-                SendChannel.Dispose();
-                SendChannel = null;
-            }
-            //接收频道
-            if (ListenChannel != null)
-            {
-                ListenChannel.Dispose();
-                ListenChannel = null;
-            }
-        }
-
-
-
         static void Connect()
         {
             try
@@ -417,6 +383,7 @@ namespace MES_MonitoringService.Common
         {
             try
             {
+                //设定参数，方便重启RabbitMQ服务器时处理
                 MC_SyncDataConsume = queueName;
                 RabbitmqMessageConsume(MC_SyncDataConsume);
             }
@@ -424,43 +391,7 @@ namespace MES_MonitoringService.Common
             {
                 LogHandler.WriteLog("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message, ex);
                 throw ex;
-            }
-            //try
-            //{
-            //    if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
-            //    if (ListenChannel == null || !ListenChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
-
-            //    //设定参数，方便重启RabbitMQ服务器时处理
-            //    MC_SyncDataConsume = queueName;
-
-
-            //    bool queueDurable = true;
-            //    string QueueName = queueName;
-
-            //    //在MQ上定义一个持久化队列，如果名称相同不会重复创建
-            //    ListenChannel.QueueDeclare(QueueName, queueDurable, false, false, null);
-            //    //输入1，那如果接收一个消息，但是没有应答，则客户端不会收到下一个消息
-            //    ListenChannel.BasicQos(0, 1, false);
-
-            //    //创建基于该队列的消费者，绑定事件
-            //    var consumer = new EventingBasicConsumer(ListenChannel);
-
-            //    //回应消息监控
-            //    consumer.Received += SyncData_Received;
-
-            //    //绑定消费者
-            //    ListenChannel.BasicConsume(QueueName, //队列名
-            //                          false,    //false：手动应答；true：自动应答
-            //                          consumer);
-
-            //    Common.LogHandler.WriteLog("开始监控RabbitMQ服务器，队列" + QueueName);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogHandler.WriteLog("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message, ex);
-            //    throw ex;
-            //}
+            }           
         }
 
         private static void RabbitmqMessageConsume(string queueName)
@@ -468,10 +399,7 @@ namespace MES_MonitoringService.Common
             try
             {
                 if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
-                if (ListenChannel == null || !ListenChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
-
-                //设定参数，方便重启RabbitMQ服务器时处理
-                MC_SyncDataConsume = queueName;
+                if (ListenChannel == null || !ListenChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");                
 
 
                 bool queueDurable = true;
