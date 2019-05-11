@@ -9,6 +9,7 @@ using RabbitMQ.Client.Exceptions;
 
 using System.Threading;
 using RabbitMQ.Client.Events;
+using System.IO;
 
 namespace MES_MonitoringService.Common
 {
@@ -30,14 +31,19 @@ namespace MES_MonitoringService.Common
         //ConnectionFactory
         private static ConnectionFactory mc_ConnectionFactory = null;
         //Connection
-        public IConnection Connection;
+        private static IConnection Connection;
 
         //发送频道及接收频道分开，避免互相影响，导致整个服务不可用
         //Send Channel
-        public IModel SendChannel;
+        private static IModel SendChannel;
         //Listen Channel
-        public IModel ListenChannel;
+        private static IModel ListenChannel;
 
+        //数据监控队列
+        private static string MC_SyncDataConsume = string.Empty;
+
+        //
+        //private SyncDataHandler syncDataHandlerClass;
 
         /*-------------------------------------------------------------------------------------*/
 
@@ -46,56 +52,7 @@ namespace MES_MonitoringService.Common
         /// </summary>
         public RabbitMQClientHandler()
         {
-            try
-            {
-                Common.LogHandler.WriteLog("获取RabbitMQ服务器参数：" + defaultRabbitMQHostName + ":" + defaultRabbitMQPort + " (" + defaultRabbitMQUserName + "/" + defaultRabbitMQPassword + ")");
-                //连接工厂
-                mc_ConnectionFactory = new ConnectionFactory();
-
-                //连接工厂信息
-                mc_ConnectionFactory.HostName = defaultRabbitMQHostName;// "localhost";
-
-                int rabbitmq_port = 5672;// 默认是5672端口
-                int.TryParse(defaultRabbitMQPort, out rabbitmq_port);
-                mc_ConnectionFactory.Port = rabbitmq_port;// "5672"
-
-                mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
-                mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
-                mc_ConnectionFactory.VirtualHost = defaultRabbitVirtualHost;// "/"
-
-                mc_ConnectionFactory.RequestedHeartbeat = 60;//心跳包
-                mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
-                mc_ConnectionFactory.TopologyRecoveryEnabled = true;//技术重连
-                mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(1);
-
-                //创建连接
-                Connection = mc_ConnectionFactory.CreateConnection();
-                
-
-                //断开连接时，写入记录
-                Connection.ConnectionShutdown += (o, e) =>
-                {
-                    Common.LogHandler.WriteLog("RabbitMQ连接已经断开，请联系管理员。" + e.ReplyText + "(" + e.ReplyCode + ")");
-                };
-
-                //创建发送频道
-                SendChannel = Connection.CreateModel();
-                //创建接收频道
-                ListenChannel = Connection.CreateModel();
-
-                //确认模式，发送了消息后，可以收到回应
-                SendChannel.ConfirmSelect();
-
-                Common.LogHandler.WriteLog("尝试连接至RabbitMQ服务器：" + defaultRabbitMQHostName);
-            }
-            catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
-            {                
-                throw e;                
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Reconnect();            
         }
 
         /// <summary>
@@ -155,6 +112,149 @@ namespace MES_MonitoringService.Common
         }
 
 
+
+        static void Connect()
+        {
+            try
+            {
+                Common.LogHandler.WriteLog("获取RabbitMQ服务器参数：" + defaultRabbitMQHostName + ":" + defaultRabbitMQPort + " (" + defaultRabbitMQUserName + "/" + defaultRabbitMQPassword + ")");
+                //连接工厂
+                mc_ConnectionFactory = new ConnectionFactory();
+
+                //连接工厂信息
+                mc_ConnectionFactory.HostName = defaultRabbitMQHostName;// "localhost";
+
+                int rabbitmq_port = 5672;// 默认是5672端口
+                int.TryParse(defaultRabbitMQPort, out rabbitmq_port);
+                mc_ConnectionFactory.Port = rabbitmq_port;// "5672"
+
+                mc_ConnectionFactory.UserName = defaultRabbitMQUserName;// "guest";
+                mc_ConnectionFactory.Password = defaultRabbitMQPassword;// "guest";
+                mc_ConnectionFactory.VirtualHost = defaultRabbitVirtualHost;// "/"
+
+                mc_ConnectionFactory.RequestedHeartbeat = 30;//心跳包
+                mc_ConnectionFactory.AutomaticRecoveryEnabled = true;//自动重连
+                mc_ConnectionFactory.TopologyRecoveryEnabled = true;//拓扑重连
+                mc_ConnectionFactory.NetworkRecoveryInterval = TimeSpan.FromSeconds(10);
+
+                //创建连接
+                Connection = mc_ConnectionFactory.CreateConnection();
+
+                //断开连接时，调用方法自动重连
+                Connection.ConnectionShutdown += Connection_ConnectionShutdown;
+
+                //创建发送频道
+                SendChannel = Connection.CreateModel();
+                //创建接收频道
+                ListenChannel = Connection.CreateModel();
+
+                //发送频道确认模式，发送了消息后，可以收到回应
+                SendChannel.ConfirmSelect();
+
+                if(!string.IsNullOrEmpty(MC_SyncDataConsume))
+                {
+                    //重新监控消息
+                    RabbitmqMessageConsume(MC_SyncDataConsume);
+                }
+
+                Common.LogHandler.WriteLog("尝试连接至RabbitMQ服务器：" + defaultRabbitMQHostName);
+            }
+            catch (RabbitMQ.Client.Exceptions.BrokerUnreachableException e)
+            {
+                throw e;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        static void Cleanup()
+        {
+            try
+            {
+
+                if (SendChannel != null && SendChannel.IsOpen)
+                {
+                    try
+                    {
+                        SendChannel.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHandler.WriteLog("RabbitMQ重新连接，正在尝试关闭之前的Channel[发送]，但遇到错误", ex);
+                    }
+                    SendChannel = null;
+                }
+
+                if (ListenChannel != null && ListenChannel.IsOpen)
+                {
+                    try
+                    {
+                        ListenChannel.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHandler.WriteLog("RabbitMQ重新连接，正在尝试关闭之前的Channel[接收]，但遇到错误", ex);
+                    }
+                    ListenChannel = null;
+                }
+
+                if (Connection != null && Connection.IsOpen)
+                {
+                    try
+                    {
+                        Connection.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHandler.WriteLog("RabbitMQ重新连接，正在尝试关闭之前的连接，但遇到错误", ex);
+                    }
+                    Connection = null;
+                }
+            }
+            catch (IOException ex)
+            {
+                throw ex;
+            }
+        }
+
+        private static void Connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        {
+            LogHandler.WriteLog("):  RabbitMQ已经断开连接，正在尝试重新连接至RabbitMQ服务器");
+
+            Reconnect();
+        }
+
+        private static void Reconnect()
+        {
+            try
+            {
+                //清除连接及频道
+                Cleanup();
+
+                var mres = new ManualResetEventSlim(false); // state is initially false
+                while (!mres.Wait(3000)) // loop until state is true, checking every 3s
+                {
+                    try
+                    {
+                        //连接
+                        Connect();
+                        
+                        mres.Set(); // state set to true - breaks out of loop
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHandler.WriteLog("RabbitMQ尝试连接RabbitMQ服务器出现错误：" + ex.Message, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHandler.WriteLog("RabbitMQ尝试重新连接RabbitMQ服务器出现错误：" + ex.Message, ex);
+            }
+        }
+
         /*-------------------------------------------------------------------------------------*/
 
 
@@ -170,8 +270,8 @@ namespace MES_MonitoringService.Common
         {
             try
             {
-                if (Connection == null) throw new Exception("连接为空");
-                if (SendChannel == null) throw new Exception("通道为空");
+                if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
+                if (SendChannel == null || !SendChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
 
                 //创建一个持久化的队列
                 bool queueDurable = true;
@@ -198,6 +298,7 @@ namespace MES_MonitoringService.Common
 
                 //等待确认
                 return SendChannel.WaitForConfirms();
+
             }
             catch (Exception ex)
             {
@@ -219,8 +320,8 @@ namespace MES_MonitoringService.Common
         {
             try
             {
-                if (Connection == null) throw new Exception("连接为空");
-                if (SendChannel == null) throw new Exception("通道为空");
+                if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
+                if (SendChannel == null || !SendChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
 
                 //创建一个持久化的频道
                 bool queueDurable = true;
@@ -247,6 +348,7 @@ namespace MES_MonitoringService.Common
 
                 //等待确认
                 return SendChannel.WaitForConfirms();
+
             }
             catch (Exception ex)
             {
@@ -268,8 +370,8 @@ namespace MES_MonitoringService.Common
         {
             try
             {
-                if (Connection == null) throw new Exception("连接为空");
-                if (SendChannel == null) throw new Exception("通道为空");
+                if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
+                if (SendChannel == null || !SendChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
 
                 //创建一个持久化的频道
                 bool queueDurable = true;
@@ -296,6 +398,7 @@ namespace MES_MonitoringService.Common
 
                 //等待确认
                 return SendChannel.WaitForConfirms();
+
             }
             catch (Exception ex)
             {
@@ -314,10 +417,61 @@ namespace MES_MonitoringService.Common
         {
             try
             {
-                if (Connection == null) throw new Exception("连接为空");
-                if (ListenChannel == null) throw new Exception("通道为空");
+                MC_SyncDataConsume = queueName;
+                RabbitmqMessageConsume(MC_SyncDataConsume);
+            }
+            catch (Exception ex)
+            {
+                LogHandler.WriteLog("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message, ex);
+                throw ex;
+            }
+            //try
+            //{
+            //    if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
+            //    if (ListenChannel == null || !ListenChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
 
-                SyncDataHandler syncDataHandlerClass = new SyncDataHandler();
+            //    //设定参数，方便重启RabbitMQ服务器时处理
+            //    MC_SyncDataConsume = queueName;
+
+
+            //    bool queueDurable = true;
+            //    string QueueName = queueName;
+
+            //    //在MQ上定义一个持久化队列，如果名称相同不会重复创建
+            //    ListenChannel.QueueDeclare(QueueName, queueDurable, false, false, null);
+            //    //输入1，那如果接收一个消息，但是没有应答，则客户端不会收到下一个消息
+            //    ListenChannel.BasicQos(0, 1, false);
+
+            //    //创建基于该队列的消费者，绑定事件
+            //    var consumer = new EventingBasicConsumer(ListenChannel);
+
+            //    //回应消息监控
+            //    consumer.Received += SyncData_Received;
+
+            //    //绑定消费者
+            //    ListenChannel.BasicConsume(QueueName, //队列名
+            //                          false,    //false：手动应答；true：自动应答
+            //                          consumer);
+
+            //    Common.LogHandler.WriteLog("开始监控RabbitMQ服务器，队列" + QueueName);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogHandler.WriteLog("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message, ex);
+            //    throw ex;
+            //}
+        }
+
+        private static void RabbitmqMessageConsume(string queueName)
+        {
+            try
+            {
+                if (Connection == null || !Connection.IsOpen) throw new Exception("连接为空或连接已经关闭");
+                if (ListenChannel == null || !ListenChannel.IsOpen) throw new Exception("通道为空或通道已经关闭");
+
+                //设定参数，方便重启RabbitMQ服务器时处理
+                MC_SyncDataConsume = queueName;
 
 
                 bool queueDurable = true;
@@ -331,6 +485,9 @@ namespace MES_MonitoringService.Common
                 //创建基于该队列的消费者，绑定事件
                 var consumer = new EventingBasicConsumer(ListenChannel);
 
+                //回应消息监控
+                consumer.Received += SyncData_Received;
+
                 //绑定消费者
                 ListenChannel.BasicConsume(QueueName, //队列名
                                       false,    //false：手动应答；true：自动应答
@@ -338,46 +495,46 @@ namespace MES_MonitoringService.Common
 
                 Common.LogHandler.WriteLog("开始监控RabbitMQ服务器，队列" + QueueName);
 
+            }
+            catch (Exception ex)
+            {                
+                throw ex;
+            }
+        }
 
-                consumer.Received += (model, ea) =>
+
+        private static void SyncData_Received(object sender, BasicDeliverEventArgs e)
+        {
+            try
+            {
+                //TOOD 验证程序退出后消费者是否退出去了
+                var body = e.Body; //消息主体
+                var message = Encoding.UTF8.GetString(body);
+
+                LogHandler.WriteLog("[x] 队列接收到消息：" + message.ToString());
+
+                //处理数据
+                bool processSuccessFlag = new SyncDataHandler().ProcessSyncData(message);
+                if (processSuccessFlag)
                 {
-                    try
-                    {
-                        //TOOD 验证程序退出后消费者是否退出去了
-                        var body = ea.Body; //消息主体
-                        var message = Encoding.UTF8.GetString(body);
-
-                        LogHandler.WriteLog("[x] 队列接收到消息：" + message.ToString());
-
-                        //处理数据
-                        bool processSuccessFlag = syncDataHandlerClass.ProcessSyncData(message);
-                        if (processSuccessFlag)
-                        {
-                            //回复确认
-                            ListenChannel.BasicAck(ea.DeliveryTag, false);
-                        }
-                        else
-                        {
-                            //未正常处理的消息，重新放回队列
-                            ListenChannel.BasicReject(ea.DeliveryTag, true);
-                        }
-                    }
-                    catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex1)
-                    {
-                        Thread.Sleep(5000);
-                        ListenChannel.BasicNack(ea.DeliveryTag, false, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        Thread.Sleep(5000);
-                        ListenChannel.BasicNack(ea.DeliveryTag, false, true);
-                    }
-                };
+                    //回复确认
+                    ListenChannel.BasicAck(e.DeliveryTag, false);
+                }
+                else
+                {
+                    //未正常处理的消息，重新放回队列
+                    ListenChannel.BasicReject(e.DeliveryTag, true);
+                }
+            }
+            catch (RabbitMQ.Client.Exceptions.OperationInterruptedException ex1)
+            {
+                Thread.Sleep(5000);
+                ListenChannel.BasicNack(e.DeliveryTag, false, true);
             }
             catch (Exception ex)
             {
-                LogHandler.WriteLog("TopicExchangeConsumeMessageFromServer运行错误：" + ex.Message, ex);
-                throw ex;
+                Thread.Sleep(5000);
+                ListenChannel.BasicNack(e.DeliveryTag, false, true);
             }
         }
     }

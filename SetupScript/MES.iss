@@ -102,6 +102,8 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newt
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log4net.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log4net.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Microsoft.Diagnostics.Tracing.EventSource.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Microsoft.Diagnostics.Tracing.EventSource.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 
 ;如果有日志，则复制日志，如果没有，则不复制
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
