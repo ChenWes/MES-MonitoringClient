@@ -121,7 +121,7 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="circularButton1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btn_Cancel.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAtlJREFUWEft
         l01rU0EYhYsICn6CCgoKLtQKgrUqrqO7bMSigSZpQsk/UBD82ATB4qK0uBGsIrjQH6Aba3XT+gfswra6
@@ -139,7 +139,7 @@
         9QcbBhlqq/EwkgAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="circularButton2.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="btn_Confirm.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAtNJREFUWEft
         l7trU2EYxoMICl6qeEV0UysI1qo4R7csYtFA7oRMFTdB8LIEweJQWlwEqwgO+gfoYq0urZM6VYqog6A4

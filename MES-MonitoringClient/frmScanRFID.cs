@@ -105,6 +105,16 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
+        /// 设置窗口按钮是否可用
+        /// </summary>
+        /// <param name="EnableFlag"></param>
+        private void SettingButtonEnable(bool EnableFlag)
+        {
+            btn_Cancel.Enabled = EnableFlag;
+            btn_Confirm.Enabled = EnableFlag;
+        }
+
+        /// <summary>
         /// RFID串口默认配置
         /// </summary>
         private void RFIDSerialPortGetDefaultSetting()
@@ -185,36 +195,14 @@ namespace MES_MonitoringClient
                 byte cmd;
                 byte err;
 
-                string carddata;
-
                 bool revflag;
                 bool status;
-
-
-                byte[] rdatacopy = new byte[30];
 
                 //接收的时候，将用户处理掉
                 MC_EmployeeInfo = null;
 
                 //获取串口
-                System.IO.Ports.SerialPort SerialPort = (System.IO.Ports.SerialPort)sender;
-
-                //获取到串口1刷卡的信息
-                //StringBuilder stringBuilder = new StringBuilder();
-                //do
-                //{
-                //    int count = COM.BytesToRead;
-                //    if (count <= 0)
-                //        break;
-                //    byte[] readBuffer = new byte[count];
-
-                //    Application.DoEvents();
-                //    COM.Read(readBuffer, 0, count);
-
-                //    stringBuilder.Append(System.Text.Encoding.Default.GetString(readBuffer));
-
-                //} while (COM.BytesToRead > 0);    
-                
+                System.IO.Ports.SerialPort SerialPort = (System.IO.Ports.SerialPort)sender;                  
 
                 revbuflen = SerialPort.BytesToRead; //读取串口缓冲区中接收字节数
                 revflag = false;
@@ -233,6 +221,9 @@ namespace MES_MonitoringClient
                     {
                         RevDataBufferCount = 0;
                     }
+
+
+                    //是否继续有数据进来
                     System.Threading.Thread.Sleep(2);
                     revbuflen = SerialPort.BytesToRead;
 
@@ -245,63 +236,86 @@ namespace MES_MonitoringClient
                         revflag = false;
                     }
                 }
-                //if ((RevDataBuffer[1] <= RevDataBufferCount) && (RevDataBufferCount != 0x0))//判断是否接收到一帧完成数据
-                if (RevDataBuffer[1] == 0x0C)//判断是否接收到一帧完成数据
+
+                if (GetValidateValueLength(RevDataBuffer, 4))
                 {
-                    RevDataBufferCount = 0x0;
-                    status = CheckSumOut(RevDataBuffer, RevDataBuffer[1]);//计算校验和
-                    if (status == false)
+                    //淳元电脑，只有四位有效数据
+
+                    byte[] tempbuf_1 = new byte[4];
+                    byte[] tempbuf_2 = new byte[4];
+
+                    for (int i = 0; i < 4; i++)
                     {
-                        return;
+                        tempbuf_1[i] = RevDataBuffer[i]; //获取卡号，16进制，卡号保存在数组的7-10字节,正向在数组中排序
+                        tempbuf_2[3 - i] = RevDataBuffer[i]; //获取卡号，16进制，卡号保存在数组的7-10字节，反向向在数组中排序
                     }
 
-                    pkttype = RevDataBuffer[0];  //获取包类型
-                    pktlength = RevDataBuffer[1]; //获取包长度
-                    cmd = RevDataBuffer[2]; //获取命令
-                    err = RevDataBuffer[4]; //获取包状态，0x00:读卡器成功，包有效
-
-                    if ((pkttype == 0x04) && (cmd == 0x02) && (pktlength == 0x0C) && (err == 0x00)) //开始解析数据包,判断是否为卡号数据包
+                    //更新界面
+                    //卡号处理
+                    this.Invoke((EventHandler)(delegate
                     {
-                        lab_CardID.Text = "卡号:" + byteToHexStrH(RevDataBuffer, RevDataBuffer[1]);
+                        lab_ScanStatus.Text = "刷卡成功";
+                        lab_CardID.Text = "卡号:" + GetCardID(tempbuf_2);
 
+                        //IC卡检测（能否匹配员工信息及有效性）
+                        CheckCardID(GetCardID(tempbuf_2));
+                    }
+                        )
+                    );
+                }
+                else if (GetValidateValueLength(RevDataBuffer, 12))
+                {
+                    //华北工控电脑，有十二位数据
 
-                        byte[] tempbuf_1 = new byte[4];
-                        byte[] tempbuf_2 = new byte[4];
-
-                        for (int i = 0; i < 4; i++)
+                    //if ((RevDataBuffer[1] <= RevDataBufferCount) && (RevDataBufferCount != 0x0))//判断是否接收到一帧完成数据
+                    if (RevDataBuffer[1] == 0x0C)//判断是否接收到一帧完成数据
+                    {
+                        RevDataBufferCount = 0x0;
+                        status = CheckSumOut(RevDataBuffer, RevDataBuffer[1]);//计算校验和
+                        if (status == false)
                         {
-                            tempbuf_1[i] = RevDataBuffer[i + 7]; //获取卡号，16进制，卡号保存在数组的7-10字节,正向在数组中排序
-                            tempbuf_2[3 - i] = RevDataBuffer[i + 7]; //获取卡号，16进制，卡号保存在数组的7-10字节，反向向在数组中排序
+                            return;
                         }
 
-                        //UInt32 aa = BitConverter.ToUInt32(tempbuf_1, 0); //16进制转10进制卡号
-                        //txt_data1.Text = aa.ToString();
+                        pkttype = RevDataBuffer[0];  //获取包类型
+                        pktlength = RevDataBuffer[1]; //获取包长度
+                        cmd = RevDataBuffer[2]; //获取命令
+                        err = RevDataBuffer[4]; //获取包状态，0x00:读卡器成功，包有效
 
-                        //aa = BitConverter.ToUInt32(tempbuf_2, 0); //16进制转10进制卡号
-                        //txt_data2.Text = aa.ToString();
-
-
-                        //更新界面
-                        //卡号处理
-                        this.Invoke((EventHandler)(delegate
+                        if ((pkttype == 0x04) && (cmd == 0x02) && (pktlength == 0x0C) && (err == 0x00)) //开始解析数据包,判断是否为卡号数据包
                         {
-                            lab_ScanStatus.Text = "刷卡成功";
-                            lab_CardID.Text = "卡号:" + GetCardID(tempbuf_2);
+
+                            byte[] tempbuf_1 = new byte[4];
+                            byte[] tempbuf_2 = new byte[4];
+
+                            for (int i = 0; i < 4; i++)
+                            {
+                                tempbuf_1[i] = RevDataBuffer[i + 7]; //获取卡号，16进制，卡号保存在数组的7-10字节,正向在数组中排序
+                                tempbuf_2[3 - i] = RevDataBuffer[i + 7]; //获取卡号，16进制，卡号保存在数组的7-10字节，反向向在数组中排序
+                            }
+
+
+                            //更新界面
+                            //卡号处理
+                            this.Invoke((EventHandler)(delegate
+                            {
+                                lab_ScanStatus.Text = "刷卡成功";
+                                lab_CardID.Text = "卡号:" + GetCardID(tempbuf_2);
 
                             //IC卡检测（能否匹配员工信息及有效性）
                             CheckCardID(GetCardID(tempbuf_2));
+                            }
+                                )
+                            );
+
                         }
-                            )
-                        );
-
                     }
+
                 }
-
-
             }
             catch (Exception ex)
             {
-                ShowErrorMessage( "RFID串口获取数据时出错","serialPort1_DataReceived");
+                ShowErrorMessage("RFID串口获取数据时出错", "serialPort1_DataReceived");
                 //响铃并显示异常给用户
                 System.Media.SystemSounds.Beep.Play();
             }
@@ -338,7 +352,6 @@ namespace MES_MonitoringClient
                 switch (MC_OperationType)
                 {
                     case OperationType.ChangeMachineType:
-
                         //修改机器状态
                         OnChangeMachineType(employee.JobPostionID);
                         break;
@@ -390,9 +403,12 @@ namespace MES_MonitoringClient
                 frmChangeStatus frmChangeStatus = new frmChangeStatus();
                 frmChangeStatus.mc_machineStatuses = machineStatuses;
                 frmChangeStatus.ShowDialog();
+                SettingButtonEnable(false);//按钮不可用
+
 
                 //完成参数传递（机器状态窗口至刷卡窗口）
                 MC_frmChangeMachineStatusPara = frmChangeStatus.MC_frmChangeMachineStatusPara;
+                SettingButtonEnable(true);//按钮可用
             }
             catch (Exception ex)
             {
@@ -409,9 +425,12 @@ namespace MES_MonitoringClient
                 frmSelectJobOrder newfrmSelectJobOrder = new frmSelectJobOrder();
                 newfrmSelectJobOrder.MC_JobOrderFilter = frmSelectJobOrder.FilterOrderType.NoStart;
                 newfrmSelectJobOrder.ShowDialog();
+                SettingButtonEnable(false);//按钮不可用
+
 
                 //完成参数传递（开始的工单至刷卡窗口）
                 MC_frmChangeJobOrderPara = newfrmSelectJobOrder.MC_frmChangeJobOrderPara;
+                SettingButtonEnable(true);//按钮可用
             }
             catch (Exception ex)
             {
@@ -437,9 +456,11 @@ namespace MES_MonitoringClient
                 frmChangeStatus frmChangeStatus = new frmChangeStatus();
                 frmChangeStatus.mc_machineStatuses = machineStatuses;
                 frmChangeStatus.ShowDialog();
+                SettingButtonEnable(false);//按钮不可用
 
                 //完成参数传递（机器状态窗口至刷卡窗口）
                 MC_frmChangeMachineStatusPara = frmChangeStatus.MC_frmChangeMachineStatusPara;
+                SettingButtonEnable(true);//按钮可用
             }
             catch (Exception ex)
             {
@@ -454,9 +475,11 @@ namespace MES_MonitoringClient
                 frmSelectJobOrder newfrmSelectJobOrder = new frmSelectJobOrder();
                 newfrmSelectJobOrder.MC_JobOrderFilter = frmSelectJobOrder.FilterOrderType.NoCompleted;
                 newfrmSelectJobOrder.ShowDialog();
+                SettingButtonEnable(false);//按钮不可用
 
                 //完成参数传递（开始的工单至刷卡窗口）
                 MC_frmChangeJobOrderPara = newfrmSelectJobOrder.MC_frmChangeJobOrderPara;
+                SettingButtonEnable(true);//按钮可用
             }
             catch (Exception ex)
             {
@@ -608,6 +631,24 @@ namespace MES_MonitoringClient
             }
 
             return sb.ToString();
+        }
+
+        //获取有效数据
+        //是否只有某位的数据（淳元出来的只有四位有效数据，华北工控有十二位有效数据，但有头和检验等数据，需要截取）
+        public static bool GetValidateValueLength(byte[] buf, int len)
+        {
+            bool returnFlag = true;
+
+            for (int i = len; i < buf.Length; i++)
+            {
+                if (buf[i].ToString("X2") != "00")
+                {
+                    returnFlag = false;
+                    return returnFlag;
+                }
+            }
+
+            return returnFlag;
         }
     }
 }

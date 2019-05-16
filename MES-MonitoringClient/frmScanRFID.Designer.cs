@@ -34,8 +34,8 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_CardID = new System.Windows.Forms.Label();
             this.lab_ScanStatus = new System.Windows.Forms.Label();
-            this.circularButton1 = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.circularButton2 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,8 +53,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
             this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.circularButton1, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.circularButton2, 4, 2);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Confirm, 4, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -89,29 +89,29 @@
             this.lab_ScanStatus.TabIndex = 0;
             this.lab_ScanStatus.Text = "等待刷卡";
             // 
-            // circularButton1
+            // btn_Cancel
             // 
-            this.circularButton1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.circularButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton1.BackgroundImage")));
-            this.circularButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.circularButton1.Location = new System.Drawing.Point(67, 547);
-            this.circularButton1.Name = "circularButton1";
-            this.circularButton1.Size = new System.Drawing.Size(75, 75);
-            this.circularButton1.TabIndex = 7;
-            this.circularButton1.UseVisualStyleBackColor = true;
-            this.circularButton1.Click += new System.EventHandler(this.btn_Cancel_Click);
+            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
+            this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Cancel.Location = new System.Drawing.Point(67, 547);
+            this.btn_Cancel.Name = "btn_Cancel";
+            this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
+            this.btn_Cancel.TabIndex = 7;
+            this.btn_Cancel.UseVisualStyleBackColor = true;
+            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
             // 
-            // circularButton2
+            // btn_Confirm
             // 
-            this.circularButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.circularButton2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton2.BackgroundImage")));
-            this.circularButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.circularButton2.Location = new System.Drawing.Point(904, 547);
-            this.circularButton2.Name = "circularButton2";
-            this.circularButton2.Size = new System.Drawing.Size(75, 75);
-            this.circularButton2.TabIndex = 7;
-            this.circularButton2.UseVisualStyleBackColor = true;
-            this.circularButton2.Click += new System.EventHandler(this.btn_Confirm_Click);
+            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
+            this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Confirm.Location = new System.Drawing.Point(904, 547);
+            this.btn_Confirm.Name = "btn_Confirm";
+            this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
+            this.btn_Confirm.TabIndex = 7;
+            this.btn_Confirm.UseVisualStyleBackColor = true;
+            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
             // 
             // frmScanRFID
             // 
@@ -139,7 +139,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lab_ScanStatus;
         private System.Windows.Forms.Label lab_CardID;
-        private Common.Component.CircularButton circularButton1;
-        private Common.Component.CircularButton circularButton2;
+        private Common.Component.CircularButton btn_Cancel;
+        private Common.Component.CircularButton btn_Confirm;
     }
 }
