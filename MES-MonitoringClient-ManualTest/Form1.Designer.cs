@@ -72,7 +72,7 @@
             // 
             // btn_ScanCard
             // 
-            this.btn_ScanCard.Location = new System.Drawing.Point(163, 12);
+            this.btn_ScanCard.Location = new System.Drawing.Point(163, 10);
             this.btn_ScanCard.Name = "btn_ScanCard";
             this.btn_ScanCard.Size = new System.Drawing.Size(75, 23);
             this.btn_ScanCard.TabIndex = 0;
@@ -90,7 +90,7 @@
             this.txt_CardID.Name = "txt_CardID";
             this.txt_CardID.Size = new System.Drawing.Size(100, 21);
             this.txt_CardID.TabIndex = 1;
-            this.txt_CardID.Text = "15CF90D";
+            this.txt_CardID.Text = "E20F1AA2";
             // 
             // label1
             // 

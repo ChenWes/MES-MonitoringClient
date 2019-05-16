@@ -31,8 +31,11 @@ namespace MES_MonitoringClient_ManualTest
 
                 if (serialPort2.IsOpen)
                 {
-                    //不转码直接发送
-                    serialPort2.Write(txt_CardID.Text.Trim());
+                    //转换成16进制
+                    byte[] byteArray = strToToHexByte(txt_CardID.Text.Trim());
+
+                    //直接发送byte[]
+                    serialPort2.Write(byteArrayReverse(byteArray), 0, byteArray.Length);
                 }
 
                 serialPort2.Close();
@@ -66,13 +69,13 @@ namespace MES_MonitoringClient_ManualTest
                 txt_log.Multiline = true;
                 txt_log.ScrollBars = RichTextBoxScrollBars.Vertical;
                 txt_log.SelectionColor = System.Drawing.Color.Green;
-                
+
 
                 switch (OperSignal)
                 {
                     case "A":
                         SendTestSignal(txt_ASignal.Text.Trim(), int.Parse(txt_ASecond.Text.Trim()));
-                        txt_log.AppendText(txt_ASignal.Text.Trim()+"\r");
+                        txt_log.AppendText(txt_ASignal.Text.Trim() + "\r");
                         break;
                     case "B":
                         SendTestSignal(txt_BSignal.Text.Trim(), int.Parse(txt_BSecond.Text.Trim()));
@@ -123,7 +126,7 @@ namespace MES_MonitoringClient_ManualTest
         //    }
         //}
 
-        private void SendTestSignal(string SendSignal,int SleepSecond)
+        private void SendTestSignal(string SendSignal, int SleepSecond)
         {
             try
             {
@@ -140,6 +143,55 @@ namespace MES_MonitoringClient_ManualTest
             if (serialPort2.IsOpen) serialPort2.Close();
 
             if (serialPort4.IsOpen) serialPort4.Close();
+        }
+
+
+        //--------------------------
+
+        public string byteToHexStrH(byte[] bytes, int len)  //数组转十六进制字符显示
+        {
+            string returnStr = "";
+            if (bytes != null)
+            {
+                for (int i = 0; i < len; i++)
+                {
+                    returnStr += bytes[i].ToString("X2");
+                    returnStr += ' ';
+                }
+            }
+            return returnStr;
+        }
+        private static byte[] strToToHexByte(string hexString) //字符串转16进制
+        {
+            //hexString = hexString.Replace(" ", " "); 
+            if ((hexString.Length % 2) != 0)
+                hexString = "0" + hexString;
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+            return returnBytes;
+        }
+        private static byte[] strToDecByte(string hexString)//字符串转10进制
+        {
+            //hexString = hexString.Replace(" ", " "); 
+            if ((hexString.Length % 2) != 0)
+                hexString = "0" + hexString;
+            byte[] returnBytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < returnBytes.Length; i++)
+                returnBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 10);
+            return returnBytes;
+        }
+
+        private static byte[] byteArrayReverse(byte[] bytea)
+        {
+            byte[] newArray = new byte[bytea.Length];
+
+            for (int i = 0; i < bytea.Length; i++)
+            {
+                newArray[bytea.Length - i - 1] = bytea[i];
+            }
+
+            return newArray;
         }
     }
 
