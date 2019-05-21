@@ -376,7 +376,8 @@ namespace MES_MonitoringClient.Common
                                     //保存每一个生命周期数据至数据库
                                     SaveMachineProduceLifeCycle(produceLifeCycle);
                                     //每次处理
-                                    Common.JobOrderProcessHelper.SetJobOrderProcessCount(ProductCount, ProcessJobOrder._id);
+                                    //2019-05-21 该代码导致数量变多的bug
+                                    //Common.JobOrderProcessHelper.SetJobOrderProcessCount(ProductCount, ProcessJobOrder._id);
                                 }
 
                                 //订单未完成数量，等于订单数量减去已完成数量
