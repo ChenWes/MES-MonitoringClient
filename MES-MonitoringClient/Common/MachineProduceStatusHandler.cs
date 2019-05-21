@@ -305,7 +305,12 @@ namespace MES_MonitoringClient.Common
 
                 if (convertSingnalStatusType != LastSignal)
                 {
-                   
+
+                    if (Common.ConfigFileHandler.GetAppConfig("SaveSignalToLog") == "1")
+                    {
+                        Common.LogHandler.WriteLog("机器收集到信号=>" + convertSingnalString + " =>" + convertSingnalStatusType.ToString());
+                    }
+
                     #region 与上一次信号不同
 
                     if (convertSingnalStatusType == SignalType.X03)
