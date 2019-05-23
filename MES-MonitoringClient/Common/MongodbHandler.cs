@@ -14,6 +14,9 @@ namespace MES_MonitoringClient.Common
     /// </summary>
     public class MongodbHandler
     {
+        /*默认MongoDB参数*/
+        /*-------------------------------------------------------------------------------------*/
+
         public static string MongodbServiceName = Common.ConfigFileHandler.GetAppConfig("MongodbServiceName");
         private static string MongodbDefaultUrl = Common.ConfigFileHandler.GetAppConfig("MongodbURL");
         private static string MongodbDefaultDBName = Common.ConfigFileHandler.GetAppConfig("MongodbName");
@@ -41,6 +44,7 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public IMongoDatabase mc_MongoDatabase = null;
 
+
         /*构造函数*/
         /*-------------------------------------------------------------------------------------*/
 
@@ -57,7 +61,7 @@ namespace MES_MonitoringClient.Common
             //client
             mc_MongoClient = new MongoClient(MongodbDefaultUrl);
             //database
-            mc_MongoDatabase = mc_MongoClient.GetDatabase(MongodbDefaultDBName);            
+            mc_MongoDatabase = mc_MongoClient.GetDatabase(MongodbDefaultDBName);
         }
 
         /// <summary>
@@ -84,7 +88,8 @@ namespace MES_MonitoringClient.Common
             return uniqueInstance;
         }
 
-        /*-------------------------------------------------------------------------------------*/
+
+
 
         /// <summary>
         /// 获取数据集
@@ -126,8 +131,8 @@ namespace MES_MonitoringClient.Common
         /// <param name="collection"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        public IFindFluent<BsonDocument, BsonDocument> Find(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
-        {
+        public IFindFluent<BsonDocument,BsonDocument> Find(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
+        {            
             return collection.Find(filter);
         }
 
@@ -138,7 +143,7 @@ namespace MES_MonitoringClient.Common
         /// <param name="filter"></param>
         /// <param name="update"></param>
         /// <returns></returns>
-        public BsonDocument FindOneAndUpdate(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter, UpdateDefinition<BsonDocument> update)
+        public BsonDocument FindOneAndUpdate(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter,UpdateDefinition<BsonDocument> update)
         {
             return collection.FindOneAndUpdate(filter, update);
         }

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace MES_MonitoringService.Common
 {
@@ -21,13 +21,17 @@ namespace MES_MonitoringService.Common
         private static string MongodbDefaultUrl = Common.ConfigFileHandler.GetAppConfig("MongodbURL");
         private static string MongodbDefaultDBName = Common.ConfigFileHandler.GetAppConfig("MongodbName");
 
-        // 定义一个静态变量来保存类的实例
+        /// <summary>
+        /// 定义一个静态变量来保存类的实例
+        /// </summary>
         private static MongodbHandler uniqueInstance;
-        //定义一个标识确保线程同步 
+
+        /// <summary>
+        /// 定义一个标识确保线程同步
+        /// </summary>
         private static readonly object locker = new object();
 
-
-        /*构造函数*/
+        /*声明变量*/
         /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
