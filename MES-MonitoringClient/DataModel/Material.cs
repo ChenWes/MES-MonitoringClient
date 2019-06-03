@@ -32,6 +32,11 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("Remark")]
         public string Remark { get; set; }
 
+        [BsonElement("MouldID")]
+        public string MouldID { get; set; }
+
+        [BsonIgnore]
+        public DataModel.Mould Mould { get; set; }
 
         public override string getCollectionName()
         {

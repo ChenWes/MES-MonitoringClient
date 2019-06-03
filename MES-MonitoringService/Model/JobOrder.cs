@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 using MongoDB;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
 
-namespace MES_MonitoringClient.DataModel
+namespace MES_MonitoringService.Model
 {
     [BsonIgnoreExtraElements]
     public class JobOrder : SyncData
@@ -35,14 +34,10 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("CustomerID")]
         public string CustomerID { get; set; }
 
-        [BsonIgnore]
-        public DataModel.Customer Customer { get; set; }
 
         [BsonElement("MaterialID")]
         public string MaterialID { get; set; }
 
-        [BsonIgnore]
-        public DataModel.Material Material { get; set; }
 
         [BsonElement("MachineID")]
         public string MachineID { get; set; }

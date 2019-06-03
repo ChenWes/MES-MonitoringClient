@@ -17,7 +17,7 @@ namespace MES_MonitoringClient.Common
             try
             {               
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(Common.ConfigFileHandler.GetAppConfig("CustomerCollectionName"));
-                var newfilter = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(id));
+                var newfilter = Builders<BsonDocument>.Filter.Eq("_id", id);
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
 
                 if (getdocument != null) return BsonSerializer.Deserialize<DataModel.Customer>(getdocument);

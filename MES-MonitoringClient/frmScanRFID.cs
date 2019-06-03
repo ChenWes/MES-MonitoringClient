@@ -42,7 +42,7 @@ namespace MES_MonitoringClient
         public DataModel.formParameter.frmChangeMachineStatusPara MC_frmChangeMachineStatusPara = null;
 
         //开始订单参数
-        public DataModel.JobOrder MC_frmChangeJobOrderPara = null;
+        public List<DataModel.JobOrder> MC_frmChangeJobOrderPara = null;
 
         /*---------------------------------------------------------------------------------------*/
         //private long COM1_ReceiveDataCount = 0;

@@ -90,6 +90,8 @@ namespace MES_MonitoringService.Common
 
 
 
+        /*获取数据集合*/
+        /*-------------------------------------------------------------------------------------*/
 
         /// <summary>
         /// 获取数据集
@@ -104,6 +106,17 @@ namespace MES_MonitoringService.Common
 
         /*操作数据*/
         /*-------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 获取数据条数
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public long GetCount(IMongoCollection<BsonDocument> collection, FilterDefinition<BsonDocument> filter)
+        {
+            return collection.CountDocuments(filter);
+        }
 
         /// <summary>
         /// 数据集插入一条数据
@@ -123,6 +136,16 @@ namespace MES_MonitoringService.Common
         public MongoDB.Driver.Linq.IMongoQueryable FindAll(IMongoCollection<BsonDocument> collection)
         {
             return collection.AsQueryable<BsonDocument>();
+        }
+
+        /// <summary>
+        /// 找到所有文档，并返回成BsonDocument列表
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public List<BsonDocument> FindAllAsList(IMongoCollection<BsonDocument> collection)
+        {
+            return collection.AsQueryable<BsonDocument>().ToList();
         }
 
         /// <summary>

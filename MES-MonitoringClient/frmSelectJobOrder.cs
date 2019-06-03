@@ -25,9 +25,9 @@ namespace MES_MonitoringClient
         public FilterOrderType MC_JobOrderFilter;
 
         /// <summary>
-        /// 选择的工单参数，作为传出参数
+        /// 选择的工单列表参数，作为传出参数
         /// </summary>
-        public DataModel.JobOrder MC_frmChangeJobOrderPara;
+        public List<DataModel.JobOrder> MC_frmChangeJobOrderPara;
 
         public frmSelectJobOrder()
         {
@@ -47,17 +47,20 @@ namespace MES_MonitoringClient
                 //窗口最大化
                 this.WindowState = FormWindowState.Maximized;
 
+                //声明变量
+                MC_frmChangeJobOrderPara = new List<DataModel.JobOrder>();
+
 
                 //显示出订单列表，供用户选择
                 if (MC_JobOrderFilter == FilterOrderType.NoStart)
                 {
                     //未开始的工单
-                    dgv_JobOrder.DataSource = Common.JobOrderHelper.GetJobOrderByNoStart();
+                    dgv_JobOrder.DataSource = Common.JobOrderHelper.GetJobOrderByAssigned();
                 }
                 else if (MC_JobOrderFilter == FilterOrderType.NoCompleted)
                 {
                     //已开始，但未结束的工单
-                    dgv_JobOrder.DataSource = Common.JobOrderHelper.GetJobOrderByNoCompleted();
+                    dgv_JobOrder.DataSource = Common.JobOrderHelper.GetJobOrderBySuspend();
                 }
 
                 // 表格上下左右自适应
@@ -99,7 +102,7 @@ namespace MES_MonitoringClient
                 // 单元格背景色
                 dgv_JobOrder.DefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FFFFFF");
                 // 选中行背景色
-                dgv_JobOrder.DefaultCellStyle.SelectionBackColor= ColorTranslator.FromHtml("#AAD1F6");
+                //dgv_JobOrder.DefaultCellStyle.SelectionBackColor= ColorTranslator.FromHtml("#AAD1F6");
                 // 隔行背景色
                 dgv_JobOrder.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#C7C9CC");
                 // 行高自适应
@@ -109,14 +112,21 @@ namespace MES_MonitoringClient
                 //选择模式为整行选择
                 dgv_JobOrder.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 //不允许选择多行
-                dgv_JobOrder.MultiSelect = false;
+                dgv_JobOrder.MultiSelect = true;
+
+
+                DataGridViewCheckBoxColumn checkBoxColumn = new DataGridViewCheckBoxColumn();
+                checkBoxColumn.HeaderText = "选择";
+                checkBoxColumn.Name = "CheckFlag";
+                dgv_JobOrder.Columns.Add(checkBoxColumn);
+
 
                 //工单
                 dgv_JobOrder.Columns[0].DataPropertyName = "JobOrderCode";
-                dgv_JobOrder.Columns[0].HeaderText = "工单编号";
+                dgv_JobOrder.Columns[0].HeaderText = "工单ID";
 
                 dgv_JobOrder.Columns[1].DataPropertyName = "JobOrderName";
-                dgv_JobOrder.Columns[1].HeaderText = "工单名称";
+                dgv_JobOrder.Columns[1].HeaderText = "工单Number";
 
                 dgv_JobOrder.Columns[2].DataPropertyName = "OrderCount";
                 dgv_JobOrder.Columns[2].HeaderText = "工单数量";
@@ -160,6 +170,7 @@ namespace MES_MonitoringClient
                 dgv_JobOrder.Columns[14].DataPropertyName = "ID";
                 dgv_JobOrder.Columns[14].HeaderText = "工单ID标识";
                 dgv_JobOrder.Columns[14].Visible = false;
+
             }
             catch (Exception ex)
             {
@@ -203,6 +214,11 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void dgv_JobOrder_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+
+        }
+
+        private void dgv_JobOrder_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
             try
             {
                 int rowID = 14;
@@ -211,10 +227,37 @@ namespace MES_MonitoringClient
                 {
                     DataGridViewRow selectRow = dgv_JobOrder.Rows[e.RowIndex];
 
+                    if (selectRow.Cells["CheckFlag"].Value == "true")
+                    {
+                        selectRow.Cells["CheckFlag"].Value = "false";
 
-                    MC_frmChangeJobOrderPara = Common.JobOrderHelper.GetJobOrderByID(selectRow.Cells[rowID].Value.ToString());
-                    lab_SelectJobOrder.Text = "选择的工单号：" + MC_frmChangeJobOrderPara.JobOrderCode;
-                }               
+                        int findIndex = MC_frmChangeJobOrderPara.FindIndex(select => select._id == selectRow.Cells[rowID].Value.ToString());
+                        MC_frmChangeJobOrderPara.RemoveAt(findIndex);
+                    }
+                    else
+                    {
+                        selectRow.Cells["CheckFlag"].Value = "true";
+
+                        DataModel.JobOrder jobOrder = Common.JobOrderHelper.GetJobOrderByID(selectRow.Cells[rowID].Value.ToString());
+                        MC_frmChangeJobOrderPara.Add(jobOrder);
+                    }
+
+
+                    if (MC_frmChangeJobOrderPara.Count > 0)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        MC_frmChangeJobOrderPara.ForEach(delegate (DataModel.JobOrder JobOrderItem)
+                        {
+                            sb.Append(JobOrderItem.JobOrderCode + " ");
+                        });
+                        lab_SelectJobOrder.Text = "选择的工单号：" + sb.ToString();
+                    }
+                    else
+                    {
+                        lab_SelectJobOrder.Text = "选择的工单号：";
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -243,6 +286,7 @@ namespace MES_MonitoringClient
                 this.Close();
             }
         }
+
 
     }
 }
