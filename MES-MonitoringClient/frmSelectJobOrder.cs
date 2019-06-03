@@ -277,16 +277,34 @@ namespace MES_MonitoringClient
 
         private void btn_Confirm_Click(object sender, EventArgs e)
         {
-            if (MC_frmChangeJobOrderPara == null)
+            try
             {
-                ShowErrorMessage("请选择要操作的工单", "选择工单");
+
+                if (MC_frmChangeJobOrderPara == null)
+                {
+                    throw new Exception("请选择要操作的工单");
+                }
+                else
+                {
+                    for (int i = 0; i < MC_frmChangeJobOrderPara.Count; i++)
+                    {
+                        for (int j = i + 1; j < MC_frmChangeJobOrderPara.Count; j++)
+                        {
+                            if (MC_frmChangeJobOrderPara[i].Material.Mould != MC_frmChangeJobOrderPara[j].Material.Mould)
+                            {
+                                throw new Exception("不同模具的工单不能一起合并生产！");
+                            }
+                        }
+                    }
+
+                    this.Close();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                this.Close();
+                ShowErrorMessage("选择工单错误，原因是：" + ex.Message, "选择工单");
             }
         }
-
 
     }
 }

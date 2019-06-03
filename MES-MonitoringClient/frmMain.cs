@@ -1424,6 +1424,11 @@ namespace MES_MonitoringClient
                             throw new Exception("修改机器状态变为[生产中]，你需要先选择工单");
                         }
                     }
+                    else
+                    {
+                        //暂停工单
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.StopJobOrder();
+                    }
 
                     //更新状态                
                     mc_MachineStatusHander.ChangeStatus(
@@ -1590,7 +1595,7 @@ namespace MES_MonitoringClient
                     {
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("暂停工单时，机器状态不可选择为[生产中]"); 
 
-                        //清空工单
+                        //暂停工单
                         mc_MachineStatusHander.mc_MachineProduceStatusHandler.StopJobOrder();
 
                         //更新状态，状态来自于机器状态选择窗体
