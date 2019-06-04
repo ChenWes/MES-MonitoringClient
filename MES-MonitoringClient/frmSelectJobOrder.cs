@@ -290,7 +290,7 @@ namespace MES_MonitoringClient
                     {
                         for (int j = i + 1; j < MC_frmChangeJobOrderPara.Count; j++)
                         {
-                            if (MC_frmChangeJobOrderPara[i].Material.Mould != MC_frmChangeJobOrderPara[j].Material.Mould)
+                            if (MC_frmChangeJobOrderPara[i].Material.MouldID != MC_frmChangeJobOrderPara[j].Material.MouldID)
                             {
                                 throw new Exception("不同模具的工单不能一起合并生产！");
                             }
