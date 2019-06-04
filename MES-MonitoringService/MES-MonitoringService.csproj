@@ -88,7 +88,13 @@
     <Compile Include="Common\MongodbHandler.cs" />
     <Compile Include="Common\RabbitMQClientHandler.cs" />
     <Compile Include="Model\Employee.cs" />
+    <Compile Include="Model\JobOrder_JSON.cs" />
+    <Compile Include="Model\JobOrder.cs" />
+    <Compile Include="Model\MachineChangeLog_JSON.cs" />
+    <Compile Include="Model\MachineChangeLog.cs" />
     <Compile Include="Model\MachineInfo.cs" />
+    <Compile Include="Model\MachineProcessLog_JSON.cs" />
+    <Compile Include="Model\MachineProcessLog.cs" />
     <Compile Include="SyncDataDBHandler.cs" />
     <Compile Include="Model\MachineStatusLog.cs" />
     <Compile Include="Model\MachineStatusLog_JSON.cs" />

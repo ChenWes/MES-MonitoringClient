@@ -219,7 +219,7 @@ namespace MES_MonitoringClient.Common
 
                 /*这里需要更改，什么状态才算是停机时间*/
                 //停机时间累加
-                if (this.MachineStatusCode == "Stop" || this.MachineStatusCode == "Error")
+                if (this.MachineStatusCode != "Produce")
                 {
                     StopStatusTotalMilliseconds += 1000;
                 }

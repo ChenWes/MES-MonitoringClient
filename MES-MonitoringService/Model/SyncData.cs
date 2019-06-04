@@ -25,11 +25,15 @@ namespace MES_MonitoringService.Model
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CreateAt { get; set; }
 
+        [BsonElement("CreateBy")]        
+        public string CreateBy { get; set; }
+
         [BsonElement("LastUpdateAt")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime LastUpdateAt { get; set; }
 
-
+        [BsonElement("LastUpdateBy")]        
+        public string LastUpdateBy { get; set; }
 
         /// <summary>
         /// 获取当前实体对应的Collection数据集名称

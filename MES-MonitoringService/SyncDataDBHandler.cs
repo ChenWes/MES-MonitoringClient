@@ -45,7 +45,7 @@ namespace MES_MonitoringService
 
                 if (action.ToUpper() == ActionType.ADD.ToString())
                 {
-                    return SyncData_Add(collectionName, bsonDocument);
+                    return SyncData_Add(collectionName, id, bsonDocument);
                 }
                 else if (action.ToUpper() == ActionType.EDIT.ToString())
                 {
@@ -173,14 +173,26 @@ namespace MES_MonitoringService
         /// <param name="collectionName"></param>
         /// <param name="bsonDocument"></param>
         /// <returns></returns>
-        public static bool SyncData_Add(string collectionName, BsonDocument bsonDocument)
+        public static bool SyncData_Add(string collectionName, string id, BsonDocument bsonDocument )
         {
             try
             {
                 #region 新增
 
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
-                collection.InsertOne(bsonDocument);
+                
+                var filterID = new BsonDocument("_id", id);
+                var getCollection = collection.Find(filterID).FirstOrDefault();
+
+                if (getCollection == null)
+                {
+                    collection.InsertOne(bsonDocument);
+                }
+                else
+                {
+                    SyncData_Edit(collectionName, id, bsonDocument);
+                }
+
 
                 #endregion
 
@@ -271,6 +283,10 @@ namespace MES_MonitoringService
             {
                 #region 新增
 
+                //增加同步标识，方便更新工单数据至服务器
+                BsonElement syncFlag_BsonElement;
+                if (bsonDocument.TryGetElement("IsSyncToServer", out syncFlag_BsonElement) == false) bsonDocument.Add(new BsonElement("IsSyncToServer", false));
+
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);                
                 collection.InsertOne(bsonDocument);
 
@@ -301,9 +317,13 @@ namespace MES_MonitoringService
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
                 var filterID = new BsonDocument("_id", id);
 
+                //增加同步标识，方便更新工单数据至服务器
+                BsonElement syncFlag_BsonElement;
+                if (bsonDocument.TryGetElement("IsSyncToServer", out syncFlag_BsonElement) == false) bsonDocument.Add(new BsonElement("IsSyncToServer", false));
+
                 var getCollection = collection.Find(filterID).FirstOrDefault();
                 if (getCollection == null)
-                {                                        
+                {
                     //调用新增方法
                     return SyncJobOrder_Add(collectionName, bsonDocument);
                 }

@@ -11,17 +11,23 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 
+using MongoDB.Bson.IO;
+
 namespace MES_MonitoringService
 {
     public class BackendServiceHandler
     {
         //服务运行间隔时间
         private static string defaultUploadDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadDataIntervalMilliseconds");
+        //同步工单数据间隔时间
+        private static string defaultUploaJobOrderdDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadJobOrderDataIntervalMilliseconds");
         //同步用户头像间隔时间
         private static string defaultSyneEmployeeImageIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("SyncEmployeeImageIntervalMilliseconds");
 
         //机器状态日志Mongodb数据集名称
         private static string defaultMachineStatusLogMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLogCollectionName");
+        //工单Mongodb数据集名称
+        private static string defaultJobOrderMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderCollectionName");
         //机器注册表
         private static string defaultMachineRegisterMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCollectionName");
         //员工
@@ -32,6 +38,11 @@ namespace MES_MonitoringService
         private static string defaultMachineStatus_RoutingKey = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_RoutingKey");
         private static string defaultMachineStatus_QueueName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_QueueName");
 
+
+        //工单对应的交换机、路由、队列名称
+        private static string defaultJobOrder_ExchangeName = Common.ConfigFileHandler.GetAppConfig("JobOrder_ExchangeName");
+        private static string defaultJobOrder_RoutingKey = Common.ConfigFileHandler.GetAppConfig("JobOrder_RoutingKey");
+        private static string defaultJobOrder_QueueName = Common.ConfigFileHandler.GetAppConfig("JobOrder_QueueName");
 
         //同步数据对应的队列名称
         private static string defaultSyncData_QueueName_Prefix = Common.ConfigFileHandler.GetAppConfig("SyncData_QueueName_Prefix");
@@ -44,6 +55,7 @@ namespace MES_MonitoringService
         //定时器
         private readonly Timer _timer;
         private readonly Timer _SyncEmployeeImageTimer;
+        private readonly Timer _SyncJobOrderTimer;
 
         /// <summary>
         /// 上传数据至服务器
@@ -71,6 +83,19 @@ namespace MES_MonitoringService
 
                 #endregion
 
+                #region 同步工单信息            
+
+                //定时任务间隔时间
+                timeInterval = 0;
+                long.TryParse(defaultUploaJobOrderdDataIntervalMilliseconds, out timeInterval);
+
+                //定时任务
+                _SyncJobOrderTimer = new Timer(timeInterval) { AutoReset = true };
+                _SyncJobOrderTimer.Elapsed += SyncJobOrderElapsed;
+
+                #endregion
+
+
                 #region 同步用户头像
 
                 //定时任务间隔时间
@@ -93,14 +118,19 @@ namespace MES_MonitoringService
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             //处理机器状态
-            ProcessMachineStatusLog();
-            
+            ProcessMachineStatusLog();            
 
             if (MC_IsSyncDataFlag == false)
             {
                 //检测注册
                 CheckMachineRegister();
             }
+        }
+
+        private void SyncJobOrderElapsed(object sender, ElapsedEventArgs e)
+        {
+            //处理工单
+            ProcessJobOrder();
         }
 
         /// <summary>
@@ -183,7 +213,7 @@ namespace MES_MonitoringService
                     //Common.LogHandler.WriteLog("准备发送至队列=>" + JsonConvert.SerializeObject(newMachineStatus_JSON));
 
                     //读取Mongodb机器状态日志并上传至队列中
-                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, JsonConvert.SerializeObject(newMachineStatus_JSON));
+                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(defaultMachineStatus_ExchangeName, defaultMachineStatus_RoutingKey, defaultMachineStatus_QueueName, Newtonsoft.Json.JsonConvert.SerializeObject(newMachineStatus_JSON));
                     if (sendToServerFlag)
                     {
                         /*当上传至服务器以后，更改数据*/
@@ -208,6 +238,56 @@ namespace MES_MonitoringService
                             Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
                             Common.LogHandler.WriteLog("[" + machineStatusLogEntity.Id.ToString() + "][" + machineStatusLogEntity.StatusName + "]已更新至服务器中，请查看");
                         }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.WriteLog("MES数据上传服务程序发现错误，请管理员及时处理。" + ex.Message);
+            }
+        }
+
+        public void ProcessJobOrder()
+        {
+            try
+            {
+                //找到工单集合
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultJobOrderMongodbCollectionName);
+
+                //找到更新标识工单记录
+                var newfilter = Builders<BsonDocument>.Filter.Eq("IsSyncToServer", false);
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+
+                //循环处理
+                foreach (var data in getdocument)
+                {
+                    //转换成类
+                    var jobOrderEntity = BsonSerializer.Deserialize<Model.JobOrder>(data);
+                    string id = jobOrderEntity._id;
+
+                    Model.JobOrder_JSON jobOrder_JSON = new Model.JobOrder_JSON(jobOrderEntity);
+                    
+                    //jobOrderEntity.ToJson(jsonWriterSettings)
+                    //读取Mongodb机器状态日志并上传至队列中
+                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(
+                            defaultJobOrder_ExchangeName,
+                            defaultJobOrder_RoutingKey,
+                            defaultJobOrder_QueueName,
+
+                            Newtonsoft.Json.JsonConvert.SerializeObject(jobOrder_JSON)
+                        );
+
+                    if (sendToServerFlag)
+                    {
+                        /*当上传至服务器以后，更改数据*/
+                        /*---------------------------------------------------------*/
+                        //使用ID作为条件
+                        var filterID = Builders<BsonDocument>.Filter.Eq("_id", id);
+                        //更改值为已上传
+                        var update = Builders<BsonDocument>.Update.Set("IsSyncToServer", true);
+                        //查找并修改文档
+                        Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
+
                     }
                 }
             }
@@ -351,6 +431,11 @@ namespace MES_MonitoringService
                 _timer.Start();
             }
 
+            if (_SyncJobOrderTimer != null)
+            {
+                _SyncJobOrderTimer.Start();
+            }
+
             if (_SyncEmployeeImageTimer != null)
             {
                 _SyncEmployeeImageTimer.Start();
@@ -365,6 +450,11 @@ namespace MES_MonitoringService
             if (_timer != null)
             {
                 _timer.Stop();
+            }
+
+            if (_SyncJobOrderTimer != null)
+            {
+                _SyncJobOrderTimer.Stop();
             }
 
             if (_SyncEmployeeImageTimer != null)

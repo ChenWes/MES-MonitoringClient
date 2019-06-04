@@ -72,7 +72,7 @@
             this.dgv_JobOrder.RowTemplate.Height = 23;
             this.dgv_JobOrder.Size = new System.Drawing.Size(928, 386);
             this.dgv_JobOrder.TabIndex = 0;
-            this.dgv_JobOrder.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_JobOrder_CellDoubleClick);
+            this.dgv_JobOrder.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_JobOrder_CellClick);
             // 
             // tableLayoutPanel2
             // 

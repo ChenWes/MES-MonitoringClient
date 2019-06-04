@@ -180,6 +180,15 @@
         zOzwfn3XsTc8C+VeKzALAp8FsuPzMb1yRnweYCdEbhk6htLSYUlLAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="btn_CompleteJobOrder.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAANhJREFUWEft
+        lFsKwjAQRbsEBV+4r0Kf0M/qUqs/Fiu4Gr0XbqAIlQhNRJkDQ0mnmTOkQxLDMGKSpum6LMtWy7hI3iMe
+        RVEc9DoOWZbtIb1TjuiaplkoFR6Tm/xrcjxPvyfH5pYXhpbejC8ZxLWu641S/mDjUQX6T5qYRU54ZCjQ
+        sRCPkkeq1CSz/3MWYCGfJoINnE8Tr3LEUql5eNdEcLmDhSkYNzGWI87B5I48z7cQDRJy0t20D8zps7Co
+        iZvEjFs0uQPCVVVVF8jDH/sUGMwdQ0vD+BeS5AkNDtUX+BkzQwAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         /9j/4AAQSkZJRgABAgEBLAEsAAD/7gAOQWRvYmUAZAAAAAAB/+EVqEV4aWYAAE1NACoAAAAIAAwBDgAC

@@ -22,7 +22,18 @@ namespace MES_MonitoringClient.Common
                 var newfilter = Builders<BsonDocument>.Filter.Eq("_id", id);
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
 
-                if (getdocument != null) return BsonSerializer.Deserialize<DataModel.Material>(getdocument);
+                if (getdocument != null)
+                {
+                    DataModel.Material material = BsonSerializer.Deserialize<DataModel.Material>(getdocument);
+
+                    //模具
+                    if (!string.IsNullOrEmpty(material.MouldID))
+                    {
+                        material.Mould = MouldHelper.GetMouldByID(material.MouldID);
+                    }
+
+                    return material;
+                }
 
                 return null;
             }
