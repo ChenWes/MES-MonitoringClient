@@ -29,6 +29,9 @@ namespace MES_MonitoringService.Model
         [BsonElement("OrderDate")]
         public string OrderDate { get; set; }
 
+        [BsonElement("DeliveryDate")]
+        public string DeliveryDate { get; set; }
+
 
 
         [BsonElement("CustomerID")]
@@ -73,6 +76,7 @@ namespace MES_MonitoringService.Model
             JobOrderDesc = jobOrder.JobOrderDesc;
             OrderCount = jobOrder.OrderCount;
             OrderDate = jobOrder.OrderDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+            DeliveryDate = jobOrder.DeliveryDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
 
             CustomerID = jobOrder.CustomerID;
             MaterialID = jobOrder.MaterialID;

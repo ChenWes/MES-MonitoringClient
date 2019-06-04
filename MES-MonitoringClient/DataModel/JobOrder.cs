@@ -30,6 +30,8 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("OrderDate")]
         public DateTime OrderDate { get; set; }
 
+        [BsonElement("DeliveryDate")]
+        public DateTime DeliveryDate { get; set; }
 
 
         [BsonElement("CustomerID")]
