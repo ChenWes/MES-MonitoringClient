@@ -198,8 +198,6 @@ namespace MES_MonitoringClient
                 bool revflag;
                 bool status;
 
-                //接收的时候，将用户处理掉
-                MC_EmployeeInfo = null;
 
                 //获取串口
                 System.IO.Ports.SerialPort SerialPort = (System.IO.Ports.SerialPort)sender;                  
@@ -208,6 +206,8 @@ namespace MES_MonitoringClient
                 revflag = false;
                 if (revbuflen > 0) //判断串口缓冲区中是否有数据
                 {
+                    //接收的时候，将用户处理掉
+                    MC_EmployeeInfo = null;
                     revflag = true;
                     System.Threading.Thread.Sleep(50); //等待完成数据包接收完成
                 }
