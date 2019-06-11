@@ -33,6 +33,9 @@ namespace MES_MonitoringClient
                 //窗口最大化
                 this.WindowState = FormWindowState.Maximized;
 
+                //未选择机器状态时，确认按钮不可用
+                btn_Confirm.Enabled = false;
+
                 //获取所有可用的机器状态               
                 foreach (var item in mc_machineStatuses)
                 {
@@ -113,6 +116,9 @@ namespace MES_MonitoringClient
                 };        
 
                 lab_SelectStatus.Text= "已选机器状态："+ b1.Text;
+
+                //选择机器状态后，确认按钮可用
+                btn_Confirm.Enabled = true;
             }
             catch (Exception ex)
             {

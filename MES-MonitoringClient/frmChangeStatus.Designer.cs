@@ -31,8 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmChangeStatus));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_SelectStatus = new System.Windows.Forms.Label();
-            this.circularButton2 = new MES_MonitoringClient.Common.Component.CircularButton();
-            this.circularButton1 = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,8 +45,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel1.Controls.Add(this.lab_SelectStatus, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.circularButton2, 4, 4);
-            this.tableLayoutPanel1.Controls.Add(this.circularButton1, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Confirm, 4, 4);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -73,29 +73,29 @@
             this.lab_SelectStatus.TabIndex = 15;
             this.lab_SelectStatus.Text = "已选机器状态";
             // 
-            // circularButton2
+            // btn_Confirm
             // 
-            this.circularButton2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.circularButton2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton2.BackgroundImage")));
-            this.circularButton2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.circularButton2.Location = new System.Drawing.Point(804, 565);
-            this.circularButton2.Name = "circularButton2";
-            this.circularButton2.Size = new System.Drawing.Size(75, 75);
-            this.circularButton2.TabIndex = 14;
-            this.circularButton2.UseVisualStyleBackColor = true;
-            this.circularButton2.Click += new System.EventHandler(this.btn_Confirm_Click);
+            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
+            this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Confirm.Location = new System.Drawing.Point(804, 565);
+            this.btn_Confirm.Name = "btn_Confirm";
+            this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
+            this.btn_Confirm.TabIndex = 14;
+            this.btn_Confirm.UseVisualStyleBackColor = true;
+            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
             // 
-            // circularButton1
+            // btn_Cancel
             // 
-            this.circularButton1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.circularButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("circularButton1.BackgroundImage")));
-            this.circularButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.circularButton1.Location = new System.Drawing.Point(56, 565);
-            this.circularButton1.Name = "circularButton1";
-            this.circularButton1.Size = new System.Drawing.Size(75, 75);
-            this.circularButton1.TabIndex = 14;
-            this.circularButton1.UseVisualStyleBackColor = true;
-            this.circularButton1.Click += new System.EventHandler(this.btn_Cancel_Click);
+            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
+            this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Cancel.Location = new System.Drawing.Point(56, 565);
+            this.btn_Cancel.Name = "btn_Cancel";
+            this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
+            this.btn_Cancel.TabIndex = 14;
+            this.btn_Cancel.UseVisualStyleBackColor = true;
+            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
             // 
             // frmChangeStatus
             // 
@@ -118,8 +118,8 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private Common.Component.CircularButton circularButton1;
-        private Common.Component.CircularButton circularButton2;
+        private Common.Component.CircularButton btn_Cancel;
+        private Common.Component.CircularButton btn_Confirm;
         private System.Windows.Forms.Label lab_SelectStatus;
     }
 }
