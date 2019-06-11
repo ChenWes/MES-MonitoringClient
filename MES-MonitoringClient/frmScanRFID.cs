@@ -211,6 +211,11 @@ namespace MES_MonitoringClient
                     revflag = true;
                     System.Threading.Thread.Sleep(50); //等待完成数据包接收完成
                 }
+                else
+                {
+                    RevDataBuffer = new byte[] { };
+                    //如果串口出来的数据为空，则不处理
+                }
 
                 RevDataBufferCount = 0;
                 while (revflag) //判读缓冲区是否有数据
@@ -638,6 +643,7 @@ namespace MES_MonitoringClient
         public static bool GetValidateValueLength(byte[] buf, int len)
         {
             bool returnFlag = true;
+            if (buf.Length == 0) return false;//如果数组为空，那直接为不匹配
 
             for (int i = len; i < buf.Length; i++)
             {
