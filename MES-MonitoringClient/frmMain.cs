@@ -1737,7 +1737,10 @@ namespace MES_MonitoringClient
         private void btn_CloseWindow_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
+
+			//暂停工单
+			mc_MachineStatusHander.mc_MachineProduceStatusHandler.StopJobOrder();
+		}
 
         /// <summary>
         /// 机器注册
