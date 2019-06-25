@@ -813,7 +813,7 @@ namespace MES_MonitoringClient
                         //声明一个按钮
                         Button jobOrderButton = new Button
                         {
-                            Text = "工单 " + item.JobOrderName,
+                            Text = "工单 " + item.JobOrderID,
                             Anchor = AnchorStyles.None,
                             FlatStyle = FlatStyle.Flat,
                             ForeColor = Color.Black,
@@ -839,16 +839,17 @@ namespace MES_MonitoringClient
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
                 {
                     //工单号
-                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderCode + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderName;
+                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
 
-                    //产品
-                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialCode;
-                    txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialName;
-                    txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
+					//产品
+					txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
+					//txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialName;
+					//txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
 
 
-                    //模具标准周期
-                    txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.Mould.StandardProduceSecond.ToString();
+					//模具标准周期
+					txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond.ToString();
+					txt_MouldCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldCode.ToString();
 
 
                     //工单数
@@ -873,7 +874,7 @@ namespace MES_MonitoringClient
                     //产品
                     txt_MaterialCode.Text = "";
                     txt_MaterialName.Text = "";
-                    txt_MaterialSpecification.Text = "";
+                    txt_MouldCode.Text = "";
 
                     //模具标准周期
                     txt_StandardProduceSecond.Text = "";

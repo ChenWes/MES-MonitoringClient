@@ -121,57 +121,44 @@ namespace MES_MonitoringClient
                 dgv_JobOrder.Columns.Add(checkBoxColumn);
 
 
-                //工单
-                dgv_JobOrder.Columns[0].DataPropertyName = "JobOrderCode";
-                dgv_JobOrder.Columns[0].HeaderText = "工单ID";
+				dgv_JobOrder.Columns[0].DataPropertyName = "JobOrderID";
+				dgv_JobOrder.Columns[0].HeaderText = "工单ID";
 
-                dgv_JobOrder.Columns[1].DataPropertyName = "JobOrderName";
-                dgv_JobOrder.Columns[1].HeaderText = "工单Number";
+				dgv_JobOrder.Columns[1].DataPropertyName = "JobOrderNumber";
+				dgv_JobOrder.Columns[1].HeaderText = "工单Number";
 
-                dgv_JobOrder.Columns[2].DataPropertyName = "OrderCount";
-                dgv_JobOrder.Columns[2].HeaderText = "工单数量";
+				dgv_JobOrder.Columns[2].DataPropertyName = "ProductCode";
+				dgv_JobOrder.Columns[2].HeaderText = "产品编号";
 
-                dgv_JobOrder.Columns[3].DataPropertyName = "JobOrderDesc";
-                dgv_JobOrder.Columns[3].HeaderText = "工单描述";
+				dgv_JobOrder.Columns[3].DataPropertyName = "ProductCategory";
+				dgv_JobOrder.Columns[3].HeaderText = "产品组";
 
-                dgv_JobOrder.Columns[4].DataPropertyName = "Status";
-                dgv_JobOrder.Columns[4].HeaderText = "工单状态";
+				dgv_JobOrder.Columns[4].DataPropertyName = "OrderCount";
+				dgv_JobOrder.Columns[4].HeaderText = "订单数量";
 
-                //客户
-                dgv_JobOrder.Columns[5].DataPropertyName = "CustomerCode";
-                dgv_JobOrder.Columns[5].HeaderText = "客户编号";
+				dgv_JobOrder.Columns[5].DataPropertyName = "MaterialCode";
+				dgv_JobOrder.Columns[5].HeaderText = "原料编号";
 
-                dgv_JobOrder.Columns[6].DataPropertyName = "CustomerName";
-                dgv_JobOrder.Columns[6].HeaderText = "客户名称";
+				dgv_JobOrder.Columns[6].DataPropertyName = "DeliveryDate";
+				dgv_JobOrder.Columns[6].HeaderText = "到期日期";
 
-                //产品
-                dgv_JobOrder.Columns[7].DataPropertyName = "MaterialCode";
-                dgv_JobOrder.Columns[7].HeaderText = "产品编号";
+				dgv_JobOrder.Columns[7].DataPropertyName = "MachineTonnage";
+				dgv_JobOrder.Columns[7].HeaderText = "机器吨位";
 
-                dgv_JobOrder.Columns[8].DataPropertyName = "MaterialName";
-                dgv_JobOrder.Columns[8].HeaderText = "产品名称";
+				dgv_JobOrder.Columns[8].DataPropertyName = "MouldID";
+				dgv_JobOrder.Columns[8].HeaderText = "模具";
 
-                dgv_JobOrder.Columns[9].DataPropertyName = "MaterialSpecification";
-                dgv_JobOrder.Columns[9].HeaderText = "产品规格";
+				dgv_JobOrder.Columns[9].DataPropertyName = "MouldStandardProduceSecond";
+				dgv_JobOrder.Columns[9].HeaderText = "模具标准生命周期";
 
-                //模具
-                dgv_JobOrder.Columns[10].DataPropertyName = "MouldCode";
-                dgv_JobOrder.Columns[10].HeaderText = "模具编号";
+				dgv_JobOrder.Columns[10].DataPropertyName = "status";
+				dgv_JobOrder.Columns[10].HeaderText = "工单状态";
 
-                dgv_JobOrder.Columns[11].DataPropertyName = "MouldName";
-                dgv_JobOrder.Columns[11].HeaderText = "模具名称";
+				dgv_JobOrder.Columns[11].DataPropertyName = "id";
+				dgv_JobOrder.Columns[11].HeaderText = "工单id标识";
+				dgv_JobOrder.Columns[11].Visible = false;
 
-                dgv_JobOrder.Columns[12].DataPropertyName = "MouldSpecification";
-                dgv_JobOrder.Columns[12].HeaderText = "模具规格";
-
-                dgv_JobOrder.Columns[13].DataPropertyName = "StandardProduceSecond";
-                dgv_JobOrder.Columns[13].HeaderText = "标准生命周期";
-
-                dgv_JobOrder.Columns[14].DataPropertyName = "ID";
-                dgv_JobOrder.Columns[14].HeaderText = "工单ID标识";
-                dgv_JobOrder.Columns[14].Visible = false;
-
-            }
+			}
             catch (Exception ex)
             {
                 ShowErrorMessage(ex.Message, "订单选择窗口初始化失败");                
@@ -221,7 +208,7 @@ namespace MES_MonitoringClient
         {
             try
             {
-                int rowID = 14;
+                int rowID = 11;
 
                 if (e.RowIndex > -1)
                 {
@@ -248,7 +235,7 @@ namespace MES_MonitoringClient
                         StringBuilder sb = new StringBuilder();
                         MC_frmChangeJobOrderPara.ForEach(delegate (DataModel.JobOrder JobOrderItem)
                         {
-                            sb.Append(JobOrderItem.JobOrderCode + " ");
+                            sb.Append(JobOrderItem.JobOrderID + " ");
                         });
                         lab_SelectJobOrder.Text = "选择的工单号：" + sb.ToString();
                     }
@@ -290,7 +277,7 @@ namespace MES_MonitoringClient
                     {
                         for (int j = i + 1; j < MC_frmChangeJobOrderPara.Count; j++)
                         {
-                            if (MC_frmChangeJobOrderPara[i].Material.MouldID != MC_frmChangeJobOrderPara[j].Material.MouldID)
+                            if (MC_frmChangeJobOrderPara[i].MouldCode!= MC_frmChangeJobOrderPara[j].MouldCode)
                             {
                                 throw new Exception("不同模具的工单不能一起合并生产！");
                             }

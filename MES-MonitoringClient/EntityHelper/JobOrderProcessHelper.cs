@@ -35,16 +35,16 @@ namespace MES_MonitoringClient.Common
                     DataModel.JobOrder jobOrder= BsonSerializer.Deserialize<DataModel.JobOrder>(getdocument);
 
                     //获取客户
-                    if (!string.IsNullOrEmpty(jobOrder.CustomerID))
-                    {
-                        jobOrder.Customer = CustomerHelper.GetCustomerByID(jobOrder.CustomerID);
-                    }
+                    //if (!string.IsNullOrEmpty(jobOrder.CustomerID))
+                    //{
+                    //    jobOrder.Customer = CustomerHelper.GetCustomerByID(jobOrder.CustomerID);
+                    //}
 
-                    //获取产品
-                    if (!string.IsNullOrEmpty(jobOrder.MaterialID))
-                    {
-                        jobOrder.Material = MaterialHelper.GetMaterialByID(jobOrder.MaterialID);
-                    }
+                    ////获取产品
+                    //if (!string.IsNullOrEmpty(jobOrder.MaterialID))
+                    //{
+                    //    jobOrder.Material = MaterialHelper.GetMaterialByID(jobOrder.MaterialID);
+                    //}
 
                     return jobOrder;
                 }
