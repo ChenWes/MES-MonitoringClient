@@ -22,6 +22,7 @@ namespace MES_MonitoringClient.Common
         public static string MC_CustomerCollectionName = Common.ConfigFileHandler.GetAppConfig("CustomerCollectionName");
         public static string MC_MaterialCollectionName = Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
         public static string MC_MouldCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
+        public static string MC_MouldProductCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldProductCollectionName");
 
         /// <summary>
         /// 基础表同步
@@ -72,6 +73,9 @@ namespace MES_MonitoringClient.Common
 
                 //模具
                 SyncDataDBHelper.SyncData_Process(MC_MouldCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "mould"));
+
+                //模具对应产品出数
+                SyncDataDBHelper.SyncData_Process(MC_MouldProductCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "mouldProduct"));
 
 
 

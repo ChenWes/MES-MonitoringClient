@@ -46,7 +46,7 @@ namespace MES_MonitoringClient.DataModel
 
 
 		[BsonElement("MouldStandardProduceSecond")]
-		public int MouldStandardProduceSecond { get; set; }
+		public decimal MouldStandardProduceSecond { get; set; }
 
 
 
@@ -60,8 +60,11 @@ namespace MES_MonitoringClient.DataModel
 		public string MachineID { get; set; }
 
 
+        [BsonElement("Sort")]
+        public int Sort { get; set; }
 
-		[BsonElement("MachineProcessLog")]
+
+        [BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog> MachineProcessLog { get; set; }
 
 

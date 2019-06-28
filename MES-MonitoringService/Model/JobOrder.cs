@@ -43,7 +43,7 @@ namespace MES_MonitoringService.Model
 
 
         [BsonElement("MouldStandardProduceSecond")]
-        public int MouldStandardProduceSecond { get; set; }
+        public decimal MouldStandardProduceSecond { get; set; }
 
 
 

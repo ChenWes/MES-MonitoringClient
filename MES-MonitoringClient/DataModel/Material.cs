@@ -1,46 +1,46 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//using MongoDB;
-//using MongoDB.Bson;
-//using MongoDB.Bson.Serialization.Attributes;
-//using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 
-//namespace MES_MonitoringClient.DataModel
-//{
-//    [BsonIgnoreExtraElements]
-//    public class Material : SyncData
-//    {
-       
-//        [BsonElement("MaterialCode")]
-//        public string MaterialCode { get; set; }
+namespace MES_MonitoringClient.DataModel
+{
+    [BsonIgnoreExtraElements]
+    public class Material : SyncData
+    {
 
-//        [BsonElement("MaterialName")]
-//        public string MaterialName { get; set; }
+        [BsonElement("MaterialCode")]
+        public string MaterialCode { get; set; }
 
-//        [BsonElement("MaterialDesc")]
-//        public string MaterialDesc { get; set; }
+        [BsonElement("MaterialName")]
+        public string MaterialName { get; set; }
 
-//        [BsonElement("MaterialSpecification")]
-//        public string MaterialSpecification { get; set; }
+        [BsonElement("MaterialDesc")]
+        public string MaterialDesc { get; set; }
 
-//        [BsonElement("Remark")]
-//        public string Remark { get; set; }
+        [BsonElement("MaterialSpecification")]
+        public string MaterialSpecification { get; set; }
 
-//        [BsonElement("MouldID")]
-//        public string MouldID { get; set; }
+        [BsonElement("Remark")]
+        public string Remark { get; set; }
 
-//        [BsonIgnore]
-//        public DataModel.Mould Mould { get; set; }
+        [BsonElement("MouldID")]
+        public string MouldID { get; set; }
 
-//        public override string getCollectionName()
-//        {
-//            return Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
-//        }
-//    }
-//}
+        [BsonIgnore]
+        public DataModel.Mould Mould { get; set; }
+
+        public override string getCollectionName()
+        {
+            return Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
+        }
+    }
+}

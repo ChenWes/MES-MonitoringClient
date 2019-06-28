@@ -27,6 +27,7 @@ namespace MES_MonitoringService
         public static string MC_MaterialCollectionName = Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
         public static string MC_MouldCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
         public static string MC_JobOrderCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderCollectionName");
+        public static string MC_MouldProductCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldProductCollectionName");
 
         public enum SyncDataType
         {
@@ -43,6 +44,7 @@ namespace MES_MonitoringService
             Customer,
             Material,
             Mould,
+            MouldProduct,
 
             Employee,
             JobOrder,
@@ -163,6 +165,14 @@ namespace MES_MonitoringService
                     #region 正常处理数据
 
                     return SyncDataDBHandler.SyncData_DBHandler(MC_MouldCollectionName, dataJson, id, action);
+
+                    #endregion
+                }
+                else if (type == SyncDataType.MouldProduct.ToString())
+                {
+                    #region 正常处理数据
+
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_MouldProductCollectionName, dataJson, id, action);
 
                     #endregion
                 }

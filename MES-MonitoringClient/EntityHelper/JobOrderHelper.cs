@@ -119,7 +119,8 @@ namespace MES_MonitoringClient.Common
         }
 
         /// <summary>
-        /// 获取所有分配（未开始）的工单
+        /// 获取所有分配（未开始）或正在生产的工单
+        /// [Assigned][Producing]
         /// </summary>
         /// <returns></returns>
         public static object GetJobOrderByAssigned()
@@ -134,44 +135,28 @@ namespace MES_MonitoringClient.Common
 
                 //一种写法，暂时未关联到客户外部信息
                 var getdocument = (from jo in jobOrderCollection.AsQueryable()
-                                   //join cu in customerCollection.AsQueryable() on jo.CustomerID equals cu._id
-                                   //join ma in materialCollection.AsQueryable() on jo.MaterialID equals ma._id
-                                   //join mo in mouldCollection.AsQueryable() on ma.MouldID equals mo._id
-                                   where jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() || jo.Status==Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString()
+                                       //join cu in customerCollection.AsQueryable() on jo.CustomerID equals cu._id
+                                       //join ma in materialCollection.AsQueryable() on jo.MaterialID equals ma._id
+                                       //join mo in mouldCollection.AsQueryable() on ma.MouldID equals mo._id
+                                   where jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() || jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString()
+                                   orderby jo.Sort, jo.DeliveryDate
                                    select new
                                    {
                                        ID = jo._id,
 
-									   JobOrderID = jo.JobOrderID,
-									   JobOrderNumber = jo.JobOrderNumber,
-									   ProductCode = jo.ProductCode,
-									   ProductCategory = jo.ProductCategory,
-									   OrderCount = jo.OrderCount,
-									   MaterialCode = jo.MaterialCode,
-									   DeliveryDate = jo.DeliveryDate,
-									   MachineTonnage = jo.MachineTonnage,
-									   MouldID = jo.MouldCode,
-									   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
+                                       JobOrderID = jo.JobOrderID,
+                                       JobOrderNumber = jo.JobOrderNumber,
+                                       ProductCode = jo.ProductCode,
+                                       ProductCategory = jo.ProductCategory,
+                                       OrderCount = jo.OrderCount,
+                                       MaterialCode = jo.MaterialCode,
+                                       DeliveryDate = jo.DeliveryDate,
+                                       MachineTonnage = jo.MachineTonnage,
+                                       MouldID = jo.MouldCode,
+                                       MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
-
-									   Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知"))
-
-									   //客户
-									   //CustomerCode = cu.CustomerCode,
-									   //CustomerName = cu.CustomerName,
-
-									   ////产品
-									   //MaterialCode = ma.MaterialCode,
-									   //MaterialName = ma.MaterialName,
-									   //MaterialSpecification = ma.MaterialSpecification,
-
-									   ////模具
-									   //MouldCode = mo.MouldCode,
-									   //MouldName = mo.MouldName,
-									   //MouldSpecification = mo.MouldSpecification,
-									   //StandardProduceSecond = mo.StandardProduceSecond,
-
-								   }
+                                       Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),                                       
+                                   }
                                 ).ToList();
 
 
@@ -192,51 +177,29 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
-                //var customerCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.Customer>(MC_CustomerCollectionName);
-                //var materialCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.Material>(MC_MaterialCollectionName);
-                //var mouldCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.Mould>(MC_MouldCollectionName);
                 var jobOrderCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.JobOrder>(MC_JobOrderCollectionName);
 
 
                 //一种写法，暂时未关联到客户外部信息
                 var getdocument = (from jo in jobOrderCollection.AsQueryable()
-                                   //join cu in customerCollection.AsQueryable() on jo.CustomerID equals cu._id
-                                   //join ma in materialCollection.AsQueryable() on jo.MaterialID equals ma._id
-                                   //join mo in mouldCollection.AsQueryable() on ma.MouldID equals mo._id
                                    where jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString()
+                                   orderby jo.Sort, jo.DeliveryDate
                                    select new
                                    {
                                        ID = jo._id,
 
                                        JobOrderID = jo.JobOrderID,
-									   JobOrderNumber = jo.JobOrderNumber,
-									   ProductCode = jo.ProductCode,
-									   ProductCategory = jo.ProductCategory,
-									   OrderCount = jo.OrderCount,
-									   MaterialCode = jo.MaterialCode,
-									   DeliveryDate = jo.DeliveryDate,
-									   MachineTonnage = jo.MachineTonnage,
-									   MouldID = jo.MouldCode,
-									   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
-									 
-									  
-									   Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知"))
+                                       JobOrderNumber = jo.JobOrderNumber,
+                                       ProductCode = jo.ProductCode,
+                                       ProductCategory = jo.ProductCategory,
+                                       OrderCount = jo.OrderCount,
+                                       MaterialCode = jo.MaterialCode,
+                                       DeliveryDate = jo.DeliveryDate,
+                                       MachineTonnage = jo.MachineTonnage,
+                                       MouldID = jo.MouldCode,
+                                       MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
-                                       //客户
-                                       //CustomerCode = cu.CustomerCode,
-                                       //CustomerName = cu.CustomerName,
-
-                                       ////产品
-                                       //MaterialCode = ma.MaterialCode,
-                                       //MaterialName = ma.MaterialName,
-                                       //MaterialSpecification = ma.MaterialSpecification,
-
-                                       ////模具
-                                       //MouldCode = mo.MouldCode,
-                                       //MouldName = mo.MouldName,
-                                       //MouldSpecification = mo.MouldSpecification,
-                                       //StandardProduceSecond = mo.StandardProduceSecond,
-
+                                       Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),                                       
                                    }
                                 ).ToList();
 
