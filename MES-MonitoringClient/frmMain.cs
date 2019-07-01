@@ -124,7 +124,6 @@ namespace MES_MonitoringClient
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNoCompleteCountDelegate += UpdateMachineNoCompletedCount;//未完成产品数量更新方法（未完成产品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.ShowJobOrderBasicInfoDelegate += ShowJobOrderBiaisInfo;//显示工单基本信息
 
-
                 //显示机器名称                
                 CheckMachineRegister();
 
@@ -140,6 +139,10 @@ namespace MES_MonitoringClient
                 {
                     mc_MachineStatusHander.ShowStatusPieChart();//获取饼图
                 }
+
+
+                //初始化最后一次机器状态
+                mc_MachineStatusHander.GetLatestMachineStatusLog();
 
                 //打开端口
                 if (!serialPort6.IsOpen)

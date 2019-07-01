@@ -117,6 +117,7 @@
     <Compile Include="EntityHelper\EmployeeHelper.cs" />
     <Compile Include="Common\HttpHelper.cs" />
     <Compile Include="EntityHelper\JobOrderHelper.cs" />
+    <Compile Include="EntityHelper\MachineStatusLogHelper.cs" />
     <Compile Include="EntityHelper\MouldProductHelper.cs" />
     <Compile Include="EntityHelper\MaterialHelper.cs" />
     <Compile Include="EntityHelper\MouldHelper.cs" />
