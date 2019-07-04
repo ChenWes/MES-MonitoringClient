@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace MES_MonitoringClient
 {
     public partial class frmSelectJobOrder : Form
@@ -293,5 +294,34 @@ namespace MES_MonitoringClient
             }
         }
 
-    }
+		private void textBox1_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void btn_SearchByMouldCode_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(txt_MouldCode.Text.Trim())) throw new Exception("模具编号为空");
+
+				string type = "";
+				if (MC_JobOrderFilter == FilterOrderType.NoStart)
+				{
+					type = "1";
+				}
+				else if (MC_JobOrderFilter == FilterOrderType.NoCompleted)
+				{
+					type = "2";
+				}
+
+				dgv_JobOrder.DataSource = Common.JobOrderHelper.GetJobOrderByMouldCode(txt_MouldCode.Text.Trim(), type);
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("查询工单错误，原因是：" + ex.Message,"查询工单错误");
+
+			}
+		}
+	}
 }

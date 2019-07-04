@@ -197,6 +197,7 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+				
                 List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
                 //更新至数据库
                 foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)

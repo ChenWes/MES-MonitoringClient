@@ -518,7 +518,7 @@ namespace MES_MonitoringClient.Common
                     //加入到记录列表中
                     returnList.Add(new DataModel.MachineStatusUseTime()
                     {
-                        StatusText = findMachineStatus.MachineStatusName + "(" + findMachineStatus.MachineStatusCode + ")",
+                        StatusText = findMachineStatus.MachineStatusName,
                         UseTotalSeconds = item.UseTotalSeconds,
                         StatusColor = findMachineStatus.StatusColor
                     });
