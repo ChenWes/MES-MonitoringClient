@@ -199,28 +199,32 @@ namespace MES_MonitoringClient.Common
             {
 				
                 List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
-                //更新至数据库
-                foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
-                {
-                    jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
-                    //需要返回值，并更新回class
-                    DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
-                    newJobOrderList.Add(jobOrder);
-                }
+				if (ProcessJobOrderList != null && ProcessJobOrderList.Count > 0)
+				{
+					//更新至数据库
+					foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
+					{
+						jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
-                //更新完的class                
-                ProcessJobOrderList = null;
-                CurrentProcessJobOrder = null;
+						//需要返回值，并更新回class
+						DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
+						newJobOrderList.Add(jobOrder);
+					}
 
-                //界面显示基本消息
-                SettingJobOrderBasicInfo();
+					//更新完的class                
+					ProcessJobOrderList = null;
+					CurrentProcessJobOrder = null;
 
-                //计算预计完成时间
-                SettingMachineCompleteDateTime();
+					//界面显示基本消息
+					SettingJobOrderBasicInfo();
 
-                //计算未完成数量
-                SettingMachineNondefectiveCount();
+					//计算预计完成时间
+					SettingMachineCompleteDateTime();
+
+					//计算未完成数量
+					SettingMachineNondefectiveCount();
+				}
             }
             catch (Exception ex)
             {
