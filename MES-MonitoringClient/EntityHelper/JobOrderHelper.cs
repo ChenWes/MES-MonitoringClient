@@ -186,7 +186,7 @@ namespace MES_MonitoringClient.Common
                                    orderby jo.Sort, jo.DeliveryDate
                                    select new
                                    {
-                                       ID = jo._id,
+                                       id = jo._id,
 
                                        JobOrderID = jo.JobOrderID,
                                        JobOrderNumber = jo.JobOrderNumber,
@@ -241,7 +241,7 @@ namespace MES_MonitoringClient.Common
 									   orderby jo.Sort, jo.DeliveryDate
 									   select new
 									   {
-										   ID = jo._id,
+										   id = jo._id,
 
 										   JobOrderID = jo.JobOrderID,
 										   JobOrderNumber = jo.JobOrderNumber,
@@ -270,7 +270,7 @@ namespace MES_MonitoringClient.Common
 									   orderby jo.Sort, jo.DeliveryDate
 									   select new
 									   {
-										   ID = jo._id,
+										   id = jo._id,
 
 										   JobOrderID = jo.JobOrderID,
 										   JobOrderNumber = jo.JobOrderNumber,

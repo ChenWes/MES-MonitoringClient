@@ -32,12 +32,12 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.dgv_JobOrder = new System.Windows.Forms.DataGridView();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
-			this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.lab_SelectJobOrder = new System.Windows.Forms.Label();
 			this.txt_MouldCode = new System.Windows.Forms.TextBox();
 			this.btn_SearchByMouldCode = new System.Windows.Forms.Button();
+			this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
+			this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgv_JobOrder)).BeginInit();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -75,6 +75,7 @@
 			this.dgv_JobOrder.Size = new System.Drawing.Size(928, 386);
 			this.dgv_JobOrder.TabIndex = 0;
 			this.dgv_JobOrder.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_JobOrder_CellClick);
+			this.dgv_JobOrder.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgv_JobOrder_DataError);
 			// 
 			// tableLayoutPanel2
 			// 
@@ -93,30 +94,6 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(928, 194);
 			this.tableLayoutPanel2.TabIndex = 1;
-			// 
-			// btn_Cancel
-			// 
-			this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
-			this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.btn_Cancel.Location = new System.Drawing.Point(55, 59);
-			this.btn_Cancel.Name = "btn_Cancel";
-			this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
-			this.btn_Cancel.TabIndex = 15;
-			this.btn_Cancel.UseVisualStyleBackColor = true;
-			this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
-			// 
-			// btn_Confirm
-			// 
-			this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
-			this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.btn_Confirm.Location = new System.Drawing.Point(796, 59);
-			this.btn_Confirm.Name = "btn_Confirm";
-			this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
-			this.btn_Confirm.TabIndex = 16;
-			this.btn_Confirm.UseVisualStyleBackColor = true;
-			this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
 			// 
 			// tableLayoutPanel3
 			// 
@@ -168,7 +145,31 @@
 			this.btn_SearchByMouldCode.TabIndex = 3;
 			this.btn_SearchByMouldCode.Text = "模具筛选";
 			this.btn_SearchByMouldCode.UseVisualStyleBackColor = true;
-			this.btn_SearchByMouldCode.Click += new System.EventHandler(this.btn_SearchByMouldCode_Click);
+			this.btn_SearchByMouldCode.Click += new System.EventHandler(this.btn_SearchByMouldCode_Click1);
+			// 
+			// btn_Cancel
+			// 
+			this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
+			this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.btn_Cancel.Location = new System.Drawing.Point(55, 59);
+			this.btn_Cancel.Name = "btn_Cancel";
+			this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
+			this.btn_Cancel.TabIndex = 15;
+			this.btn_Cancel.UseVisualStyleBackColor = true;
+			this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
+			// 
+			// btn_Confirm
+			// 
+			this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
+			this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.btn_Confirm.Location = new System.Drawing.Point(796, 59);
+			this.btn_Confirm.Name = "btn_Confirm";
+			this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
+			this.btn_Confirm.TabIndex = 16;
+			this.btn_Confirm.UseVisualStyleBackColor = true;
+			this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
 			// 
 			// frmSelectJobOrder
 			// 
