@@ -111,7 +111,7 @@ namespace MES_MonitoringClient
 			try
 			{
 				
-				int rowID = MC_FilterJobOrder ? 1 : 11;
+				int rowID = MC_FilterJobOrder ? 12 : 11;
 
 				
 				if (e.RowIndex > -1)
@@ -216,7 +216,7 @@ namespace MES_MonitoringClient
 		/// </summary>
 		/// <param name="sender">1：未开始工单 2：未完成工单</param>
 		/// <param name="e"></param>
-		private void btn_SearchByMouldCode_Click1(object sender, EventArgs e)
+		private void btn_SearchByMouldCode_Click(object sender, EventArgs e)
 		{
 			try
 			{
@@ -234,7 +234,7 @@ namespace MES_MonitoringClient
 					type = "2";
 				}
 
-				DataModel.JobOrder jobOrder1 = Common.JobOrderHelper.GetJobOrderByID("");
+				
 				dgv_JobOrder.DataSource = Common.JobOrderHelper.GetJobOrderByMouldCode(txt_MouldCode.Text.Trim(), type);
 
 				

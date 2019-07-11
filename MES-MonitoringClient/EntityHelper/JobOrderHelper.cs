@@ -142,7 +142,7 @@ namespace MES_MonitoringClient.Common
                                    orderby jo.Sort, jo.DeliveryDate
                                    select new
                                    {
-                                       ID = jo._id,
+                                       
 
                                        JobOrderID = jo.JobOrderID,
                                        JobOrderNumber = jo.JobOrderNumber,
@@ -155,8 +155,9 @@ namespace MES_MonitoringClient.Common
                                        MouldID = jo.MouldCode,
                                        MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
-                                       Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),                                       
-                                   }
+                                       Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
+									   ID = jo._id,
+								   }
                                 ).ToList();
 
 
@@ -186,7 +187,6 @@ namespace MES_MonitoringClient.Common
                                    orderby jo.Sort, jo.DeliveryDate
                                    select new
                                    {
-                                       id = jo._id,
 
                                        JobOrderID = jo.JobOrderID,
                                        JobOrderNumber = jo.JobOrderNumber,
@@ -199,8 +199,9 @@ namespace MES_MonitoringClient.Common
                                        MouldID = jo.MouldCode,
                                        MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
-                                       Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),                                       
-                                   }
+                                       Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
+									   ID = jo._id,
+								   }
                                 ).ToList();
 
 
@@ -241,7 +242,7 @@ namespace MES_MonitoringClient.Common
 									   orderby jo.Sort, jo.DeliveryDate
 									   select new
 									   {
-										   id = jo._id,
+										   
 
 										   JobOrderID = jo.JobOrderID,
 										   JobOrderNumber = jo.JobOrderNumber,
@@ -255,6 +256,7 @@ namespace MES_MonitoringClient.Common
 										   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
 										   Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
+										   ID = jo._id,
 									   }
 									).ToList();
 
@@ -270,7 +272,6 @@ namespace MES_MonitoringClient.Common
 									   orderby jo.Sort, jo.DeliveryDate
 									   select new
 									   {
-										   id = jo._id,
 
 										   JobOrderID = jo.JobOrderID,
 										   JobOrderNumber = jo.JobOrderNumber,
@@ -284,6 +285,8 @@ namespace MES_MonitoringClient.Common
 										   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
 										   Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
+										   id = jo._id,
+
 									   }
 									).ToList();
 

@@ -145,7 +145,7 @@
 			this.btn_SearchByMouldCode.TabIndex = 3;
 			this.btn_SearchByMouldCode.Text = "模具筛选";
 			this.btn_SearchByMouldCode.UseVisualStyleBackColor = true;
-			this.btn_SearchByMouldCode.Click += new System.EventHandler(this.btn_SearchByMouldCode_Click1);
+			this.btn_SearchByMouldCode.Click += new System.EventHandler(this.btn_SearchByMouldCode_Click);
 			// 
 			// btn_Cancel
 			// 
