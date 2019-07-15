@@ -12,6 +12,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 
 using MongoDB.Bson.IO;
+using System.Threading;
 
 namespace MES_MonitoringService
 {
@@ -53,60 +54,90 @@ namespace MES_MonitoringService
         private string MC_MachineRegisterID = string.Empty;
 
         //定时器
-        private readonly Timer _timer;
-        private readonly Timer _SyncEmployeeImageTimer;
-        private readonly Timer _SyncJobOrderTimer;
+
+        //private readonly Timer _timer;
+        //private readonly Timer _SyncEmployeeImageTimer;
+        private System.Timers.Timer _timer;
+        private System.Timers.Timer _SyncJobOrderTimer;
+        private System.Timers.Timer _SyncEmployeeImageTimer;
 
         /// <summary>
         /// 上传数据至服务器
         /// </summary>
         public BackendServiceHandler()
         {
-            if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
+        }
+
+        public void StartTimerFunction()
+        {
+            try
             {
-                //不存在MongoDB服务
-                Common.LogHandler.WriteLog("MES数据上传服务程序检测到该电脑暂时不存在Mongodb服务，服务未能正常运行，请管理员及时处理。");
+                if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
+                {
+                    //不存在MongoDB服务
+                    throw new Exception("MES数据上传服务程序检测到该电脑暂时不存在Mongodb服务，服务未能正常运行，请管理员及时处理。");
+                }
+                else
+                {
+                    //MongoDB服务正常
+
+                    #region 同步机器状态信息            
+
+                    //定时任务间隔时间
+                    long timeInterval = 0;
+                    long.TryParse(defaultUploadDataIntervalMilliseconds, out timeInterval);
+
+                    //定时任务
+                    _timer = new System.Timers.Timer(timeInterval) { AutoReset = true };
+                    _timer.Elapsed += TimerElapsed;
+
+                    #endregion
+
+
+                    #region 同步工单信息            
+
+                    //定时任务间隔时间
+                    timeInterval = 0;
+                    long.TryParse(defaultUploaJobOrderdDataIntervalMilliseconds, out timeInterval);
+
+                    //定时任务
+                    _SyncJobOrderTimer = new System.Timers.Timer(timeInterval) { AutoReset = true };
+                    _SyncJobOrderTimer.Elapsed += SyncJobOrderElapsed;
+
+                    #endregion
+
+
+                    #region 同步用户头像
+                    //定时任务间隔时间
+                    timeInterval = 0;
+                    long.TryParse(defaultSyneEmployeeImageIntervalMilliseconds, out timeInterval);
+
+                    //定时任务
+                    _SyncEmployeeImageTimer = new System.Timers.Timer(timeInterval) { AutoReset = true };
+                    _SyncEmployeeImageTimer.Elapsed += SyncEmployeeImageTimerElapsed;
+
+                    #endregion
+                }
+
+
+                if (_timer != null)
+                {
+                    _timer.Start();
+                }
+
+                if (_SyncEmployeeImageTimer != null)
+                {
+                    _SyncEmployeeImageTimer.Start();
+                }
+
+                if (_SyncJobOrderTimer != null)
+                {
+                    _SyncJobOrderTimer.Start();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                //MongoDB服务正常
-
-                #region 同步机器状态信息            
-
-                //定时任务间隔时间
-                long timeInterval = 0;
-                long.TryParse(defaultUploadDataIntervalMilliseconds, out timeInterval);
-
-                //定时任务
-                _timer = new Timer(timeInterval) { AutoReset = true };
-                _timer.Elapsed += TimerElapsed;
-
-                #endregion
-
-                #region 同步工单信息            
-
-                //定时任务间隔时间
-                timeInterval = 0;
-                long.TryParse(defaultUploaJobOrderdDataIntervalMilliseconds, out timeInterval);
-
-                //定时任务
-                _SyncJobOrderTimer = new Timer(timeInterval) { AutoReset = true };
-                _SyncJobOrderTimer.Elapsed += SyncJobOrderElapsed;
-
-                #endregion
-
-
-                #region 同步用户头像
-
-                //定时任务间隔时间
-                timeInterval = 0;
-                long.TryParse(defaultSyneEmployeeImageIntervalMilliseconds, out timeInterval);
-
-                //定时任务
-                _SyncEmployeeImageTimer = new Timer(timeInterval) { AutoReset = true };
-                _SyncEmployeeImageTimer.Elapsed += SyncEmployeeImageTimerElapsed;
-
-                #endregion
+                throw ex;
             }
         }
 
@@ -421,25 +452,60 @@ namespace MES_MonitoringService
             }
         }
 
+        private void Cleanup()
+        {
+            try
+            {
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                }
+
+                if (_SyncEmployeeImageTimer != null)
+                {
+                    _SyncEmployeeImageTimer.Stop();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void TryRestartService()
+        {
+            try
+            {
+                Cleanup();
+
+                var mres = new ManualResetEventSlim(false); // state is initially false
+                while (!mres.Wait(5000)) // loop until state is true, checking every 3s
+                {
+                    try
+                    {
+                        //尝试启动服务
+                        StartTimerFunction();
+
+                        mres.Set(); // state set to true - breaks out of loop
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogHandler.WriteLog("尝试启动MES服务出现错误：" + ex.Message, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.WriteLog("尝试启动MES服务出现错误：" + ex.Message, ex);
+            }
+        }
+
         /// <summary>
         /// 开始方法
         /// </summary>
         public void Start()
         {
-            if (_timer != null)
-            {
-                _timer.Start();
-            }
-
-            if (_SyncJobOrderTimer != null)
-            {
-                _SyncJobOrderTimer.Start();
-            }
-
-            if (_SyncEmployeeImageTimer != null)
-            {
-                _SyncEmployeeImageTimer.Start();
-            }
+            TryRestartService();
         }
 
         /// <summary>
@@ -447,20 +513,18 @@ namespace MES_MonitoringService
         /// </summary>
         public void Stop()
         {
-            if (_timer != null)
-            {
-                _timer.Stop();
-            }
 
-            if (_SyncJobOrderTimer != null)
-            {
-                _SyncJobOrderTimer.Stop();
-            }
+            Cleanup();
 
-            if (_SyncEmployeeImageTimer != null)
-            {
-                _SyncEmployeeImageTimer.Stop();
-            }
+            //if (_timer != null)
+            //{
+            //    _timer.Stop();
+            //}
+
+            //if (_SyncEmployeeImageTimer != null)
+            //{
+            //    _SyncEmployeeImageTimer.Stop();
+            //}
         }
     }
 }

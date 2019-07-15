@@ -199,8 +199,6 @@ namespace MES_MonitoringClient
                 bool revflag;
                 bool status;
 
-                //接收的时候，将用户处理掉
-                MC_EmployeeInfo = null;
 
                 //获取串口
                 System.IO.Ports.SerialPort SerialPort = (System.IO.Ports.SerialPort)sender;                  
@@ -209,8 +207,15 @@ namespace MES_MonitoringClient
                 revflag = false;
                 if (revbuflen > 0) //判断串口缓冲区中是否有数据
                 {
+                    //接收的时候，将用户处理掉
+                    MC_EmployeeInfo = null;
                     revflag = true;
                     System.Threading.Thread.Sleep(50); //等待完成数据包接收完成
+                }
+                else
+                {
+                    RevDataBuffer = new byte[] { };
+                    //如果串口出来的数据为空，则不处理
                 }
 
                 RevDataBufferCount = 0;
@@ -640,6 +645,7 @@ namespace MES_MonitoringClient
         public static bool GetValidateValueLength(byte[] buf, int len)
         {
             bool returnFlag = true;
+            if (buf.Length == 0) return false;//如果数组为空，那直接为不匹配
 
             for (int i = len; i < buf.Length; i++)
             {
