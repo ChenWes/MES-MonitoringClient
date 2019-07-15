@@ -62,12 +62,12 @@ namespace MES_MonitoringClient.Common
         /// 机器生产状态记录默认Mongodb集合名
         /// </summary>
         private static string defaultMachineProduceLifeCycleMongodbCollectionName = "MachineLifeCycle";
-        
+
 
         /// <summary>
         /// 产品生命周期（计算次数）
         /// </summary>
-        private List<MachineProcedure> _MachineProcedureListForCount=null;
+        private List<MachineProcedure> _MachineProcedureListForCount = null;
 
         /// <summary>
         /// 订单数量
@@ -129,6 +129,9 @@ namespace MES_MonitoringClient.Common
         //选定的工单列表及当前操作的工单
         public List<DataModel.JobOrder> ProcessJobOrderList = null;
         public DataModel.JobOrder CurrentProcessJobOrder = null;
+
+        //当前模具对应产品出数
+        public DataModel.MouldProduct CurrentMouldProduct = null;
 
 
 
@@ -194,29 +197,34 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+				
                 List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
-                //更新至数据库
-                foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
-                {
-                    jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
-                    //需要返回值，并更新回class
-                    DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
-                    newJobOrderList.Add(jobOrder);
-                }
+				if (ProcessJobOrderList != null && ProcessJobOrderList.Count > 0)
+				{
+					//更新至数据库
+					foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
+					{
+						jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
-                //更新完的class                
-                ProcessJobOrderList = null;
-                CurrentProcessJobOrder = null;
+						//需要返回值，并更新回class
+						DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
+						newJobOrderList.Add(jobOrder);
+					}
 
-                //界面显示基本消息
-                SettingJobOrderBasicInfo();
+					//更新完的class                
+					ProcessJobOrderList = null;
+					CurrentProcessJobOrder = null;
 
-                //计算预计完成时间
-                SettingMachineCompleteDateTime();
+					//界面显示基本消息
+					SettingJobOrderBasicInfo();
 
-                //计算未完成数量
-                SettingMachineNondefectiveCount();
+					//计算预计完成时间
+					SettingMachineCompleteDateTime();
+
+					//计算未完成数量
+					SettingMachineNondefectiveCount();
+				}
             }
             catch (Exception ex)
             {
@@ -343,6 +351,9 @@ namespace MES_MonitoringClient.Common
                 //当前工单
                 CurrentProcessJobOrder = ProcessJobOrderList[jobOrderIndex];
 
+                //通过当前单据找到模具对应产品出数数据
+                CurrentMouldProduct = Common.MouldProductHelper.GetMmouldProductByMouldCode(CurrentProcessJobOrder.MouldCode);
+
                 //显示当前工单
                 ShowCurrentJobOrder();
             }
@@ -428,10 +439,10 @@ namespace MES_MonitoringClient.Common
                                 TimeSpan ts = new TimeSpan();
                                 ts = System.DateTime.Now.Subtract(LastX03SignalGetTime.Value);
                                 //上一个产品的用时
-                                LastProductUseMilliseconds= (long)ts.TotalMilliseconds;
+                                LastProductUseMilliseconds = (long)ts.TotalMilliseconds;
 
                                 //更新界面
-                                SettingMachineLifeCycleTime();                                
+                                SettingMachineLifeCycleTime();
                             }
                             LastX03SignalGetTime = System.DateTime.Now;
                         }
@@ -446,6 +457,8 @@ namespace MES_MonitoringClient.Common
 
                                 if (LastX03SignalGetTime.HasValue)
                                 {
+
+                                    #region 保存生命周期 
                                     //处理生命周期
                                     DataModel.MachineProduceLifeCycle produceLifeCycle = new DataModel.MachineProduceLifeCycle();
                                     produceLifeCycle.LocalMacAddress = Common.CommonFunction.getMacAddress();
@@ -469,18 +482,13 @@ namespace MES_MonitoringClient.Common
                                     //保存每一个生命周期数据至数据库
                                     SaveMachineProduceLifeCycle(produceLifeCycle);
 
-                                    //每次处理数量                                    
-                                    foreach (var jobOrderItem in ProcessJobOrderList)
-                                    {
-                                        var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
+                                    #endregion
 
-                                        if (findMachineProcessLog != null)
-                                        {
-                                            findMachineProcessLog.ProduceCount++;
-                                        }
-                                        //不需要返回最新的数据
-                                        JobOrderHelper.UpdateJobOrder(jobOrderItem, false);
-                                    }
+                                    #region 处理产品出数
+
+                                    ProcessMouldLifeCycle();
+
+                                    #endregion
                                 }
 
                                 //订单未完成数量，等于订单数量减去已完成数量
@@ -535,7 +543,7 @@ namespace MES_MonitoringClient.Common
 
         //取数数字
         private int[] ProcessProductCount(string strMouldSpecification)
-        {            
+        {
             var matchMiddle = Regex.Matches(strMouldSpecification, "[0-9]+");
             List<int> getNumber = new List<int>();
             foreach (var march in matchMiddle)
@@ -637,7 +645,7 @@ namespace MES_MonitoringClient.Common
         public bool SettingProductErrorCount(int intProductErrorCount)
         {
             if (CurrentProcessJobOrder != null)
-            {                
+            {
                 //找出机器处理记录
                 var findMachineProcessLog = CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
 
@@ -646,7 +654,7 @@ namespace MES_MonitoringClient.Common
                     findMachineProcessLog.ErrorCount = intProductErrorCount;
 
                     //更新到工单列表中
-                    int currentIndex= ProcessJobOrderList.FindIndex(i => i._id == CurrentProcessJobOrder._id);
+                    int currentIndex = ProcessJobOrderList.FindIndex(i => i._id == CurrentProcessJobOrder._id);
                     ProcessJobOrderList[currentIndex] = CurrentProcessJobOrder;
 
                     //保存至数据库中
@@ -654,7 +662,7 @@ namespace MES_MonitoringClient.Common
 
                     //更新界面
                     SettingMachineNondefectiveCount();
-                }                
+                }
 
 
                 return true;
@@ -716,7 +724,7 @@ namespace MES_MonitoringClient.Common
         private void SaveMachineProduceLifeCycle(DataModel.MachineProduceLifeCycle produceLifeCycle)
         {
             machineProcuceLifeCycleCollection.InsertOne(produceLifeCycle);
-        }        
+        }
 
         /// <summary>
         /// 机器预计完成时间设置
@@ -732,6 +740,99 @@ namespace MES_MonitoringClient.Common
         private void SettingJobOrderBasicInfo()
         {
             ShowJobOrderBasicInfoDelegate();
+        }
+
+
+        private void ProcessJobOrderMachineProduceCount(DataModel.JobOrder jobOrder, int addCount)
+        {
+            try
+            {
+                var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
+
+                if (findMachineProcessLog != null)
+                {
+                    if (addCount > 0)
+                    {
+                        findMachineProcessLog.ProduceCount = findMachineProcessLog.ProduceCount + addCount;
+                    }
+                }
+                //不需要返回最新的数据
+                JobOrderHelper.UpdateJobOrder(jobOrder, false);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        private void ProcessMouldLifeCycle()
+        {
+            try
+            {
+                if (CurrentMouldProduct == null)
+                {
+                    //每次处理数量                                    
+                    foreach (var jobOrderItem in ProcessJobOrderList)
+                    {
+                        //处理加1
+                        ProcessJobOrderMachineProduceCount(jobOrderItem, 1);
+                    }
+                }
+                else
+                {
+
+                    foreach (var MouldProductItem in CurrentMouldProduct.ProductList)
+                    {
+                        //查询出对应的工单先，查看工单有多少个
+                        List<DataModel.JobOrder> findJobOrderListByProductCode = ProcessJobOrderList.FindAll(t => t.ProductCode.ToUpper() == MouldProductItem.ProductCode.ToUpper());
+
+
+                        if (findJobOrderListByProductCode.Count > 0)
+                        {
+                            //是不是找到没有生产完的工单？？
+                            bool isFindNoOverJobOrder = false;
+
+                            //循环工单，看看是不是已经满数
+                            for (int i = 0; i < findJobOrderListByProductCode.Count; i++)
+                            {
+                                //找到工单
+                                var getFilterJobOrder = findJobOrderListByProductCode[i];
+
+                                //找到它本身的生产数量、不良品数量（所有机器都算进来）
+                                var sumProductCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
+                                var sumErrorCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+
+                                if (getFilterJobOrder.OrderCount >= (sumProductCount - sumErrorCount))
+                                {
+                                    //还没有生产完
+                                    isFindNoOverJobOrder = true;
+
+                                    //处理加1
+                                    ProcessJobOrderMachineProduceCount(getFilterJobOrder, MouldProductItem.ProductCount);
+
+                                    break;
+                                }
+                            }
+
+
+                            //全部都够数了？？（即从未加数）
+                            if (isFindNoOverJobOrder == false)
+                            {
+                                //找到最后一个工单，强行加数
+                                var getFilterJobOrder = findJobOrderListByProductCode[findJobOrderListByProductCode.Count - 1];
+                                //处理加1
+                                ProcessJobOrderMachineProduceCount(getFilterJobOrder, MouldProductItem.ProductCount);
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

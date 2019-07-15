@@ -14,48 +14,51 @@ namespace MES_MonitoringService.Model
     public class JobOrder_JSON : SyncData
     {
 
-        [BsonElement("JobOrderCode")]
-        public string JobOrderCode { get; set; }
+		[BsonElement("JobOrderID")]
+		public string JobOrderID { get; set; }
 
-        [BsonElement("JobOrderName")]
-        public string JobOrderName { get; set; }
+		[BsonElement("JobOrderNumber")]
+		public string JobOrderNumber { get; set; }
 
-        [BsonElement("JobOrderDesc")]
-        public string JobOrderDesc { get; set; }
+		[BsonElement("ProductCode")]
+		public string ProductCode { get; set; }
 
-        [BsonElement("OrderCount")]
-        public int OrderCount { get; set; }
+		[BsonElement("ProductCategory")]
+		public string ProductCategory { get; set; }
 
-        [BsonElement("OrderDate")]
-        public string OrderDate { get; set; }
+		[BsonElement("OrderCount")]
+		public int OrderCount { get; set; }
 
-        [BsonElement("DeliveryDate")]
-        public string DeliveryDate { get; set; }
-
-
-
-        [BsonElement("CustomerID")]
-        public string CustomerID { get; set; }
-
-
-        [BsonElement("MaterialID")]
-        public string MaterialID { get; set; }
-
-
-        [BsonElement("MachineID")]
-        public string MachineID { get; set; }
+		[BsonElement("MaterialCode")]
+		public string MaterialCode { get; set; }
 
 
 
-        [BsonElement("Remark")]
-        public string Remark { get; set; }
-
-        [BsonElement("Status")]
-        public string Status { get; set; }
+		[BsonElement("DeliveryDate")]
+		public string DeliveryDate { get; set; }
 
 
+		[BsonElement("MachineTonnage")]
+		public int MachineTonnage { get; set; }
 
-        [BsonElement("MachineProcessLog")]
+
+		[BsonElement("MouldStandardProduceSecond")]
+		public decimal MouldStandardProduceSecond { get; set; }
+
+
+
+		[BsonElement("Remark")]
+		public string Remark { get; set; }
+
+		[BsonElement("Status")]
+		public string Status { get; set; }
+
+		[BsonElement("MachineID")]
+		public string MachineID { get; set; }
+
+
+
+		[BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog_JSON> MachineProcessLog { get; set; }
 
 
@@ -71,21 +74,26 @@ namespace MES_MonitoringService.Model
         {
             _id = jobOrder._id;
 
-            JobOrderCode = jobOrder.JobOrderCode;
-            JobOrderName = jobOrder.JobOrderName;
-            JobOrderDesc = jobOrder.JobOrderDesc;
-            OrderCount = jobOrder.OrderCount;
-            OrderDate = jobOrder.OrderDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
-            DeliveryDate = jobOrder.DeliveryDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+			JobOrderID = jobOrder.JobOrderID;
+			JobOrderNumber = jobOrder.JobOrderNumber;
+			ProductCode = jobOrder.ProductCode;
+			ProductCategory = jobOrder.ProductCategory;
+			OrderCount = jobOrder.OrderCount;
+			MaterialCode = jobOrder.MaterialCode;
 
-            CustomerID = jobOrder.CustomerID;
-            MaterialID = jobOrder.MaterialID;
-            MachineID = jobOrder.MachineID;
+			DeliveryDate = jobOrder.DeliveryDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+			MachineTonnage = jobOrder.MachineTonnage;
+			
 
-            Remark = jobOrder.Remark;
-            Status = jobOrder.Status;
+			MouldStandardProduceSecond = jobOrder.MouldStandardProduceSecond;
+			Remark = jobOrder.Remark;
+			Status = jobOrder.Status;
+			MachineID = jobOrder.MachineID;
 
-            CreateAt = jobOrder.CreateAt;
+
+
+
+			CreateAt = jobOrder.CreateAt;
             CreateBy = jobOrder.CreateBy;
             LastUpdateAt = jobOrder.LastUpdateAt;
             LastUpdateBy = jobOrder.LastUpdateBy;

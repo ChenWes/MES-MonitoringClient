@@ -15,6 +15,10 @@ using LiveCharts;
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 
+using MongoDB;
+using MongoDB.Bson;
+using MongoDB.Driver;
+
 namespace MES_MonitoringClient
 {
     public partial class frmMain : Form
@@ -24,6 +28,10 @@ namespace MES_MonitoringClient
         //从而形成闪烁的效果
         private int SendDataSuccessColor = 0;
         private int ReceiveDataSuccessColor = 0;
+
+        //关机日志
+        private IMongoCollection<DataModel.OffPowerLog> MC_OffPowerLogCollection;
+        static string defaultOffPowerLogMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("OffPowerLogCollectionName");
 
         //默认的生产的编号
         //private string MC_ProduceStatusCode = "Produce";
@@ -124,7 +132,6 @@ namespace MES_MonitoringClient
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNoCompleteCountDelegate += UpdateMachineNoCompletedCount;//未完成产品数量更新方法（未完成产品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.ShowJobOrderBasicInfoDelegate += ShowJobOrderBiaisInfo;//显示工单基本信息
 
-
                 //显示机器名称                
                 CheckMachineRegister();
 
@@ -140,6 +147,10 @@ namespace MES_MonitoringClient
                 {
                     mc_MachineStatusHander.ShowStatusPieChart();//获取饼图
                 }
+
+
+                //初始化最后一次机器状态
+                mc_MachineStatusHander.GetLatestMachineStatusLog();
 
                 //打开端口
                 if (!serialPort6.IsOpen)
@@ -241,6 +252,32 @@ namespace MES_MonitoringClient
             {
                 if (MessageBox.Show("退出系统后，暂时不会收集到机器的数据，请知悉", "系统退出提醒", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
                 {
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.OffPower;
+                    newfrmScanRFID.ShowDialog();
+
+                    if (!newfrmScanRFID.MC_IsManualCancel)
+                    {
+                        MC_OffPowerLogCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.OffPowerLog>(defaultOffPowerLogMongodbCollectionName);
+
+                        //保存一条关机记录至数据库
+                        DataModel.OffPowerLog offPowerLog = new DataModel.OffPowerLog();
+
+                        offPowerLog.EmployeeID = newfrmScanRFID.MC_EmployeeInfo._id;
+                        offPowerLog.EmployeeName = newfrmScanRFID.MC_EmployeeInfo.EmployeeName;
+                        offPowerLog.DateTime = System.DateTime.Now;
+                        offPowerLog.Remark = "操作员主动关闭应用";
+
+                        //保存数据
+                        MC_OffPowerLogCollection.InsertOne(offPowerLog);
+                    }
+                    else
+                    {
+                        //员工不想刷卡，退出
+                        e.Cancel = true;
+                        return;                        
+                    }
+
                     //定时器
                     if (DateTimeThreadClass != null && TTimerClass != null)
                     {
@@ -256,7 +293,7 @@ namespace MES_MonitoringClient
                     }
 
                     //状态灯
-                    if(StatusLightThreadClass !=null && StatusLightTimerClass != null)
+                    if (StatusLightThreadClass != null && StatusLightTimerClass != null)
                     {
                         StatusLightTimerClass.StopTimmer();
                         StatusLightThreadClass.Abort();
@@ -813,7 +850,7 @@ namespace MES_MonitoringClient
                         //声明一个按钮
                         Button jobOrderButton = new Button
                         {
-                            Text = "工单 " + item.JobOrderName,
+                            Text = "工单 " + item.JobOrderID,
                             Anchor = AnchorStyles.None,
                             FlatStyle = FlatStyle.Flat,
                             ForeColor = Color.Black,
@@ -839,16 +876,17 @@ namespace MES_MonitoringClient
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
                 {
                     //工单号
-                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderCode + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderName;
+                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
 
-                    //产品
-                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialCode;
-                    txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialName;
-                    txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
+					//产品
+					txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
+					//txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialName;
+					//txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
 
 
-                    //模具标准周期
-                    txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.Mould.StandardProduceSecond.ToString();
+					//模具标准周期
+					txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond.ToString();
+					txt_MouldCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldCode.ToString();
 
 
                     //工单数
@@ -873,7 +911,7 @@ namespace MES_MonitoringClient
                     //产品
                     txt_MaterialCode.Text = "";
                     txt_MaterialName.Text = "";
-                    txt_MaterialSpecification.Text = "";
+                    txt_MouldCode.Text = "";
 
                     //模具标准周期
                     txt_StandardProduceSecond.Text = "";
@@ -1535,8 +1573,8 @@ namespace MES_MonitoringClient
         {
             try
             {
-                if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
-                {
+                //if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
+                //{
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StartJobOrder;
                     newfrmScanRFID.ShowDialog();
@@ -1567,7 +1605,7 @@ namespace MES_MonitoringClient
 
 
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -1679,8 +1717,8 @@ namespace MES_MonitoringClient
         {
             try
             {
-                if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
-                {
+                //if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
+                //{
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ResumeJobOrder;
                     newfrmScanRFID.ShowDialog();
@@ -1710,7 +1748,7 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo._id
                         );
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -1739,7 +1777,7 @@ namespace MES_MonitoringClient
             this.Close();
 
 			//暂停工单
-			mc_MachineStatusHander.mc_MachineProduceStatusHandler.StopJobOrder();
+			//mc_MachineStatusHander.mc_MachineProduceStatusHandler.StopJobOrder();
 		}
 
         /// <summary>

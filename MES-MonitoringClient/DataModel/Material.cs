@@ -16,7 +16,7 @@ namespace MES_MonitoringClient.DataModel
     [BsonIgnoreExtraElements]
     public class Material : SyncData
     {
-       
+
         [BsonElement("MaterialCode")]
         public string MaterialCode { get; set; }
 

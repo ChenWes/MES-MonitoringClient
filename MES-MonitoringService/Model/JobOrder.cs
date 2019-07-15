@@ -14,36 +14,36 @@ namespace MES_MonitoringService.Model
     public class JobOrder : SyncData
     {
 
-        [BsonElement("JobOrderCode")]
-        public string JobOrderCode { get; set; }
+        [BsonElement("JobOrderID")]
+        public string JobOrderID { get; set; }
 
-        [BsonElement("JobOrderName")]
-        public string JobOrderName { get; set; }
+        [BsonElement("JobOrderNumber")]
+        public string JobOrderNumber { get; set; }
 
-        [BsonElement("JobOrderDesc")]
-        public string JobOrderDesc { get; set; }
+        [BsonElement("ProductCode")]
+        public string ProductCode { get; set; }
+
+        [BsonElement("ProductCategory")]
+        public string ProductCategory { get; set; }
 
         [BsonElement("OrderCount")]
         public int OrderCount { get; set; }
 
-        [BsonElement("OrderDate")]
-        public DateTime OrderDate { get; set; }
+        [BsonElement("MaterialCode")]
+        public string MaterialCode { get; set; }
+
+
 
         [BsonElement("DeliveryDate")]
         public DateTime DeliveryDate { get; set; }
 
 
-
-        [BsonElement("CustomerID")]
-        public string CustomerID { get; set; }
-
-
-        [BsonElement("MaterialID")]
-        public string MaterialID { get; set; }
+        [BsonElement("MachineTonnage")]
+        public int MachineTonnage { get; set; }
 
 
-        [BsonElement("MachineID")]
-        public string MachineID { get; set; }
+        [BsonElement("MouldStandardProduceSecond")]
+        public decimal MouldStandardProduceSecond { get; set; }
 
 
 
@@ -53,9 +53,12 @@ namespace MES_MonitoringService.Model
         [BsonElement("Status")]
         public string Status { get; set; }
 
+		[BsonElement("MachineID")]
+		public string MachineID { get; set; }
 
 
-        [BsonElement("MachineProcessLog")]
+
+		[BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog> MachineProcessLog { get; set; }
 
 

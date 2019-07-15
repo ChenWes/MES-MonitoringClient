@@ -27,7 +27,8 @@ namespace MES_MonitoringClient
 
             StartJobOrder,
             StopJobOrder,
-            ResumeJobOrder
+            ResumeJobOrder,
+            OffPower
         }
         //操作类型（修改状态、上班、下班等）
         public OperationType MC_OperationType;
@@ -371,6 +372,7 @@ namespace MES_MonitoringClient
                         //恢复工单
                         OnResumeJobOrder();
                         break;
+                    case OperationType.OffPower:                                                
                     default:
                         break;
                 }

@@ -15,48 +15,53 @@ namespace MES_MonitoringClient.DataModel
     public class JobOrder : SyncData
     {
 
-        [BsonElement("JobOrderCode")]
-        public string JobOrderCode { get; set; }
+		public string JobOrderID { get; set; }
 
-        [BsonElement("JobOrderName")]
-        public string JobOrderName { get; set; }
+		[BsonElement("JobOrderNumber")]
+		public string JobOrderNumber { get; set; }
 
-        [BsonElement("JobOrderDesc")]
-        public string JobOrderDesc { get; set; }
+		[BsonElement("ProductCode")]
+		public string ProductCode { get; set; }
 
-        [BsonElement("OrderCount")]
-        public int OrderCount { get; set; }
+		[BsonElement("ProductCategory")]
+		public string ProductCategory { get; set; }
 
-        [BsonElement("OrderDate")]
-        public DateTime OrderDate { get; set; }
+		[BsonElement("OrderCount")]
+		public int OrderCount { get; set; }
 
-        [BsonElement("DeliveryDate")]
-        public DateTime DeliveryDate { get; set; }
-
-
-        [BsonElement("CustomerID")]
-        public string CustomerID { get; set; }
-
-        [BsonIgnore]
-        public DataModel.Customer Customer { get; set; }
-
-        [BsonElement("MaterialID")]
-        public string MaterialID { get; set; }
-
-        [BsonIgnore]
-        public DataModel.Material Material { get; set; }
-
-        [BsonElement("MachineID")]
-        public string MachineID { get; set; }
+		[BsonElement("MaterialCode")]
+		public string MaterialCode { get; set; }
 
 
 
-        [BsonElement("Remark")]
-        public string Remark { get; set; }
+		[BsonElement("DeliveryDate")]
+		public string DeliveryDate { get; set; }
 
-        [BsonElement("Status")]
-        public string Status { get; set; }
 
+		[BsonElement("MachineTonnage")]
+		public int MachineTonnage { get; set; }
+
+		[BsonElement("MouldCode")]
+		public string MouldCode { get; set; }
+
+
+		[BsonElement("MouldStandardProduceSecond")]
+		public decimal MouldStandardProduceSecond { get; set; }
+
+
+
+		[BsonElement("Remark")]
+		public string Remark { get; set; }
+
+		[BsonElement("Status")]
+		public string Status { get; set; }
+
+		[BsonElement("MachineID")]
+		public string MachineID { get; set; }
+
+
+        [BsonElement("Sort")]
+        public int Sort { get; set; }
 
 
         [BsonElement("MachineProcessLog")]

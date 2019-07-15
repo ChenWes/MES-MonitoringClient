@@ -16,7 +16,7 @@ namespace MES_MonitoringClient.DataModel
     [BsonIgnoreExtraElements]
     public class Mould : SyncData
     {
-       
+
         [BsonElement("MouldCode")]
         public string MouldCode { get; set; }
 

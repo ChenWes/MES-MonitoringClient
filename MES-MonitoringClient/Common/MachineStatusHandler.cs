@@ -30,7 +30,7 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 机器状态日志默认Mongodb集合名
         /// </summary>
-        private static string defaultMachineStatusMongodbCollectionName = "MachineStatusLog";
+        private static string defaultMachineStatusMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLogCollectionName");// "MachineStatusLog";
 
 
         /*机器生命周期参数处理（三个信号）*/
@@ -236,6 +236,50 @@ namespace MES_MonitoringClient.Common
 
         /*修改机器状态*/
         /*-------------------------------------------------------------------------------------*/
+
+        public void GetLatestMachineStatusLog()
+        {
+            try
+            {
+                DataModel.MachineStatusLog latestMachineStatusLog = Common.MachineStatusLogHelper.GetLatestMachineStatusLog();
+                if (latestMachineStatusLog != null)
+                {
+                    DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(latestMachineStatusLog.CardID);
+                    DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByID(latestMachineStatusLog.StatusID);
+
+
+                    //更新状态
+                    MachineStatusID = latestMachineStatusLog.StatusID;
+                    MachineStatusCode = latestMachineStatusLog.StatusCode;
+                    MachineStatusName = latestMachineStatusLog.StatusName;
+                    MachineStatusDesc = latestMachineStatusLog.StatusDesc;
+                    MachineStatusColor = machineStatus.StatusColor;
+
+                    //更新人员
+                    OperatePersonName = employee.EmployeeName;
+                    OperatePersonCardID = latestMachineStatusLog.CardID;
+                    
+
+                    //取回原来的开始时间
+                    StartDateTime = latestMachineStatusLog.StartDateTime.Value;
+                    TimeSpan ts = new TimeSpan();
+                    ts = System.DateTime.Now.Subtract(StartDateTime);
+                    HoldStatusTotalMilliseconds = (long)ts.TotalMilliseconds;
+
+                    //开始一个新线程，处理状态的时间
+                    DateTimeThreadFunction = new ThreadStart(DateTimeTimer);
+                    DateTimeThreadClass = new Thread(DateTimeThreadFunction);
+                    DateTimeThreadClass.Start();
+
+                    //更新界面
+                    UpdateMachineStatusLightDelegate();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
         /// <summary>
@@ -474,7 +518,7 @@ namespace MES_MonitoringClient.Common
                     //加入到记录列表中
                     returnList.Add(new DataModel.MachineStatusUseTime()
                     {
-                        StatusText = findMachineStatus.MachineStatusName + "(" + findMachineStatus.MachineStatusCode + ")",
+                        StatusText = findMachineStatus.MachineStatusName,
                         UseTotalSeconds = item.UseTotalSeconds,
                         StatusColor = findMachineStatus.StatusColor
                     });

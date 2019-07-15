@@ -103,11 +103,14 @@
     <Compile Include="Common\MachineStatus.cs" />
     <Compile Include="Common\JobOrderStatus.cs" />
     <Compile Include="DataModel\Customer.cs" />
+    <Compile Include="DataModel\OffPowerLog.cs" />
     <Compile Include="DataModel\MachineChangeLog.cs" />
     <Compile Include="DataModel\MachineProcessLog.cs" />
     <Compile Include="DataModel\JobOrder.cs" />
     <Compile Include="DataModel\Machine.cs" />
     <Compile Include="DataModel\MachineRegisterInfo.cs" />
+    <Compile Include="DataModel\MouldProductList.cs" />
+    <Compile Include="DataModel\MouldProduct.cs" />
     <Compile Include="DataModel\Material.cs" />
     <Compile Include="DataModel\Mould.cs" />
     <Compile Include="EntityHelper\JobOrderProcessHelper.cs" />
@@ -115,6 +118,8 @@
     <Compile Include="EntityHelper\EmployeeHelper.cs" />
     <Compile Include="Common\HttpHelper.cs" />
     <Compile Include="EntityHelper\JobOrderHelper.cs" />
+    <Compile Include="EntityHelper\MachineStatusLogHelper.cs" />
+    <Compile Include="EntityHelper\MouldProductHelper.cs" />
     <Compile Include="EntityHelper\MaterialHelper.cs" />
     <Compile Include="EntityHelper\MouldHelper.cs" />
     <Compile Include="EntityHelper\CustomerHelper.cs" />
