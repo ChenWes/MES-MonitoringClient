@@ -880,12 +880,12 @@ namespace MES_MonitoringClient
 
 					//产品
 					txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
-					//txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialName;
-					//txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
+                    txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductDescription;
+                    //txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
 
 
-					//模具标准周期
-					txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond.ToString();
+                    //模具标准周期
+                    txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond.ToString();
 					txt_MouldCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldCode.ToString();
 
 
