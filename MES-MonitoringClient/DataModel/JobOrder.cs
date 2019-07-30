@@ -23,7 +23,10 @@ namespace MES_MonitoringClient.DataModel
 		[BsonElement("ProductCode")]
 		public string ProductCode { get; set; }
 
-		[BsonElement("ProductCategory")]
+        [BsonElement("ProductDescription")]
+        public string ProductDescription { get; set; }
+
+        [BsonElement("ProductCategory")]
 		public string ProductCategory { get; set; }
 
 		[BsonElement("OrderCount")]
