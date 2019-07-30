@@ -150,14 +150,14 @@ namespace MES_MonitoringClient.Common
                                        ProductCategory = jo.ProductCategory,
                                        OrderCount = jo.OrderCount,
                                        MaterialCode = jo.MaterialCode,
-                                       DeliveryDate = jo.DeliveryDate,
+                                       DeliveryDate = string.Format("{0:yyyy-MM-dd}", jo.DeliveryDate),
                                        MachineTonnage = jo.MachineTonnage,
                                        MouldID = jo.MouldCode,
                                        MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
 
                                        Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
-									   ID = jo._id,
-								   }
+                                       ID = jo._id,
+                                   }
                                 ).ToList();
 
 
@@ -194,7 +194,7 @@ namespace MES_MonitoringClient.Common
                                        ProductCategory = jo.ProductCategory,
                                        OrderCount = jo.OrderCount,
                                        MaterialCode = jo.MaterialCode,
-                                       DeliveryDate = jo.DeliveryDate,
+                                       DeliveryDate = string.Format("{0:yyyy-MM-dd}", jo.DeliveryDate),
                                        MachineTonnage = jo.MachineTonnage,
                                        MouldID = jo.MouldCode,
                                        MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
@@ -250,7 +250,7 @@ namespace MES_MonitoringClient.Common
 										   ProductCategory = jo.ProductCategory,
 										   OrderCount = jo.OrderCount,
 										   MaterialCode = jo.MaterialCode,
-										   DeliveryDate = jo.DeliveryDate,
+										   DeliveryDate = string.Format("{0:yyyy-MM-dd}", jo.DeliveryDate),
 										   MachineTonnage = jo.MachineTonnage,
 										   MouldID = jo.MouldCode,
 										   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,

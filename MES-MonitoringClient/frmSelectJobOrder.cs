@@ -270,7 +270,7 @@ namespace MES_MonitoringClient
 			dgv_JobOrder.ColumnHeadersHeight = 80;
 			// 列头居中
 			dgv_JobOrder.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-			dgv_JobOrder.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 20, FontStyle.Bold);
+			dgv_JobOrder.ColumnHeadersDefaultCellStyle.Font = new Font("宋体", 10, FontStyle.Bold);
 			// 列头边框样式
 			dgv_JobOrder.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
 			// 列头背景色
