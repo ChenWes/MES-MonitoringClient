@@ -75,10 +75,21 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
+        public static String FormatSeconds_D(double s)
+        {
+            long l = Convert.ToInt64(s);
+            return FormatSeconds(l);
+        }
+
+        /// <summary>
+        /// 格式化时间显示（秒）
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static String FormatSeconds(long s)
         {
             //基数
-            int ss = 1000;
+            int ss = 1;
             int mi = ss * 60;
             int hh = mi * 60;
             int dd = hh * 24;

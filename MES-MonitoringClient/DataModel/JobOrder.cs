@@ -48,8 +48,12 @@ namespace MES_MonitoringClient.DataModel
 		public string MouldCode { get; set; }
 
 
+        /// <summary>
+        /// 2019-08-08 特别留意，Mongodb不支持decimal类型，如果是decimal保存到数据库会变成文本，需要转换成double才可以
+        /// https://stackoverflow.com/questions/20036529/need-to-store-high-precision-decimal-values-in-mongodb
+        /// </summary>
 		[BsonElement("MouldStandardProduceSecond")]
-		public decimal MouldStandardProduceSecond { get; set; }
+		public double MouldStandardProduceSecond { get; set; }
 
 
 
