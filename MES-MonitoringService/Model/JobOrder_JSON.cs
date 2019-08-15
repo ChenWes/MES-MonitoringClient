@@ -57,8 +57,14 @@ namespace MES_MonitoringService.Model
 		public string MachineID { get; set; }
 
 
+        [BsonElement("CompletedDate")]
+        public string CompletedDate { get; set; }
 
-		[BsonElement("MachineProcessLog")]
+        [BsonElement("CompletedOperaterID")]
+        public string CompletedOperaterID { get; set; }
+
+
+        [BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog_JSON> MachineProcessLog { get; set; }
 
 
@@ -74,26 +80,27 @@ namespace MES_MonitoringService.Model
         {
             _id = jobOrder._id;
 
-			JobOrderID = jobOrder.JobOrderID;
-			JobOrderNumber = jobOrder.JobOrderNumber;
-			ProductCode = jobOrder.ProductCode;
-			ProductCategory = jobOrder.ProductCategory;
-			OrderCount = jobOrder.OrderCount;
-			MaterialCode = jobOrder.MaterialCode;
+            JobOrderID = jobOrder.JobOrderID;
+            JobOrderNumber = jobOrder.JobOrderNumber;
+            ProductCode = jobOrder.ProductCode;
+            ProductCategory = jobOrder.ProductCategory;
+            OrderCount = jobOrder.OrderCount;
+            MaterialCode = jobOrder.MaterialCode;
 
-			DeliveryDate = jobOrder.DeliveryDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
-			MachineTonnage = jobOrder.MachineTonnage;
-			
-
-			MouldStandardProduceSecond = jobOrder.MouldStandardProduceSecond;
-			Remark = jobOrder.Remark;
-			Status = jobOrder.Status;
-			MachineID = jobOrder.MachineID;
+            DeliveryDate = jobOrder.DeliveryDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+            MachineTonnage = jobOrder.MachineTonnage;
 
 
+            MouldStandardProduceSecond = jobOrder.MouldStandardProduceSecond;
+            Remark = jobOrder.Remark;
+            Status = jobOrder.Status;
+            MachineID = jobOrder.MachineID;
+
+            CompletedDate = jobOrder.CompletedDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+            CompletedOperaterID = jobOrder.CompletedOperaterID;
 
 
-			CreateAt = jobOrder.CreateAt;
+            CreateAt = jobOrder.CreateAt;
             CreateBy = jobOrder.CreateBy;
             LastUpdateAt = jobOrder.LastUpdateAt;
             LastUpdateBy = jobOrder.LastUpdateBy;

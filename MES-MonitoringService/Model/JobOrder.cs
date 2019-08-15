@@ -56,9 +56,15 @@ namespace MES_MonitoringService.Model
 		[BsonElement("MachineID")]
 		public string MachineID { get; set; }
 
+        [BsonElement("CompletedDate")]
+        public DateTime CompletedDate { get; set; }
+
+        [BsonElement("CompletedOperaterID")]
+        public string CompletedOperaterID { get; set; }
 
 
-		[BsonElement("MachineProcessLog")]
+
+        [BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog> MachineProcessLog { get; set; }
 
 
