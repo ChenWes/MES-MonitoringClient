@@ -834,14 +834,14 @@ namespace MES_MonitoringClient
                     tlp.Dock = DockStyle.Fill;
                     tlp.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
                     tlp.AutoScroll = true;
-                    
+
                     //增加列，计算每列的宽度
                     tlp.ColumnCount = int_jobOrderCount;
                     for (int i = 0; i < int_jobOrderCount; i++)
                     {
                         tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100 / int_jobOrderCount));
                     }
-                    
+
                     tlp.SuspendLayout();
 
                     //获取所有可用的机器状态               
@@ -878,15 +878,15 @@ namespace MES_MonitoringClient
                     //工单号
                     txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
 
-					//产品
-					txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
+                    //产品
+                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
                     txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductDescription;
                     //txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
 
 
                     //模具标准周期
                     txt_StandardProduceSecond.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond.ToString();
-					txt_MouldCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldCode.ToString();
+                    txt_MouldCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldCode.ToString();
 
 
                     //工单数
@@ -895,9 +895,10 @@ namespace MES_MonitoringClient
 
                     var sumProductCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
                     var sumErrorCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
-                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id);
+                    //找到当前处理的一次操作记录
+                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id && t.ProduceStartDate == t.ProduceEndDate);
                     //产量
-                    txt_ProductTotalCount.Text = sumProductCount.ToString()+ " / "+ machineProcessLog.ProduceCount.ToString();
+                    txt_ProductTotalCount.Text = sumProductCount.ToString() + " / " + machineProcessLog.ProduceCount.ToString();
                     //总不良品数量
                     txt_TotalRejectsCount.Text = sumErrorCount.ToString();
                     //不良品数
@@ -1010,7 +1011,7 @@ namespace MES_MonitoringClient
 
                     var sumProductCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
                     var sumErrorCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
-                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id);
+                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id && t.ProduceStartDate == t.ProduceEndDate);
 
                     if (sumProductCount > sumErrorCount)
                     {
@@ -1055,7 +1056,7 @@ namespace MES_MonitoringClient
 
                 var sumProductCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
                 var sumErrorCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
-                var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id);
+                var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id && t.ProduceStartDate == t.ProduceEndDate);
 
                 //产量
                 txt_ProductTotalCount.Text = sumProductCount.ToString() + " / " + machineProcessLog.ProduceCount.ToString();
@@ -1452,10 +1453,10 @@ namespace MES_MonitoringClient
                     if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
                     {
                         //生产中
-                        if(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList!=null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList.Count > 0)
+                        if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList.Count > 0)
                         {
                             //工单还在界面上
-                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList);
+                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
                         }
                         else
                         {
@@ -1478,7 +1479,7 @@ namespace MES_MonitoringClient
 
                         newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                         newfrmScanRFID.MC_EmployeeInfo._id
-                        );                    
+                        );
                 }
 
             }
@@ -1525,25 +1526,36 @@ namespace MES_MonitoringClient
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void txt_RejectsCount_TextChanged(object sender, EventArgs e)
-        {            
+        {
             int int_RejectsCount = 0;
             int.TryParse(txt_RejectsCount.Text.Trim(), out int_RejectsCount);
 
-            if (int_RejectsCount >= 0)
+            //一定要有工单
+            if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
             {
-                //不良品数量
-                if (!mc_MachineStatusHander.mc_MachineProduceStatusHandler.SettingProductErrorCount(int_RejectsCount))
+                //找到当前记录
+                var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id && t.ProduceStartDate == t.ProduceEndDate);
+
+                if (int_RejectsCount >= 0 && int_RejectsCount <= machineProcessLog.ProduceCount)
                 {
-                    txt_RejectsCount.Text = "";
-                }                                
+                    //不良品数量
+                    if (!mc_MachineStatusHander.mc_MachineProduceStatusHandler.SettingProductErrorCount(int_RejectsCount))
+                    {
+                        txt_RejectsCount.Text = "";
+                    }
+                }
+                else
+                {
+                    //不良品数量
+                    if (!mc_MachineStatusHander.mc_MachineProduceStatusHandler.SettingProductErrorCount(0))
+                    {
+                        txt_RejectsCount.Text = "";
+                    }
+                }
             }
             else
             {
-                //不良品数量
-                if (!mc_MachineStatusHander.mc_MachineProduceStatusHandler.SettingProductErrorCount(0))
-                {
-                    txt_RejectsCount.Text = "";
-                }                
+                txt_RejectsCount.Text = "";
             }
         }
 
@@ -1586,7 +1598,7 @@ namespace MES_MonitoringClient
                         if (jobOrderList == null || jobOrderList.Count == 0) throw new Exception("未选择工单！");
 
                         //设置订单，无论是开始还是恢复
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList);
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
 
                         //找到生产中状态
                         DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());
@@ -1681,7 +1693,7 @@ namespace MES_MonitoringClient
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
 
                         //清空工单
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder();
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.MC_EmployeeInfo._id);
 
                         //更新状态，状态来自于机器状态选择窗体
                         mc_MachineStatusHander.ChangeStatus(
@@ -1731,7 +1743,7 @@ namespace MES_MonitoringClient
                         if (jobOrderList == null || jobOrderList.Count == 0) throw new Exception("未选择工单！");
 
                         //设置订单，无论是开始还是恢复
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList);
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
 
                         //找到生产中状态
                         DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());

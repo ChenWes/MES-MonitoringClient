@@ -205,7 +205,12 @@ namespace MES_MonitoringClient.Common
 					//更新至数据库
 					foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
 					{
-						jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
+                        //找到没结束的处理记录
+                        var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate==t.ProduceEndDate);
+                        //结束时间为当前时间
+                        findMachineProcessLog.ProduceEndDate = System.DateTime.Now;
+
+                        jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
 						//需要返回值，并更新回class
 						DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
@@ -232,7 +237,7 @@ namespace MES_MonitoringClient.Common
             }
         }
 
-        public void CompleteJobOrder()
+        public void CompleteJobOrder(string operaterID)
         {
             try
             {
@@ -240,7 +245,16 @@ namespace MES_MonitoringClient.Common
                 //更新至数据库
                 foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
                 {
+
+                    //找到没结束的处理记录
+                    var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
+                    //结束时间为当前时间
+                    findMachineProcessLog.ProduceEndDate = System.DateTime.Now;
+
                     jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Completed.ToString();
+                    //完成时间及操作人
+                    jobOrderItem.CompletedDate = System.DateTime.Now;
+                    jobOrderItem.CompletedOperaterID = operaterID;
 
                     //需要返回值，并更新回class
                     DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
@@ -280,7 +294,7 @@ namespace MES_MonitoringClient.Common
         /// 2.恢复工单
         /// </summary>
         /// <param name="jobOrder">选择的工单实体</param>
-        public void SetJobOrder(List<DataModel.JobOrder> jobOrderList)
+        public void SetJobOrder(List<DataModel.JobOrder> jobOrderList, string operaterID)
         {
             try
             {
@@ -292,28 +306,32 @@ namespace MES_MonitoringClient.Common
                 foreach (DataModel.JobOrder jobOrderItem in jobOrderList)
                 {
                     //找到本机生产记录
-                    var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
+                    //var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
 
                     //如果没有，则新增本机生产记录
-                    if (jobOrderItem.MachineProcessLog == null || jobOrderItem.MachineProcessLog.Count == 0 || findMachineProcessLog == null)
-                    {
+                    //if (jobOrderItem.MachineProcessLog == null || jobOrderItem.MachineProcessLog.Count == 0 || findMachineProcessLog == null)
+                    //{
 
-                        DataModel.JobOrder_MachineProcessLog newJobOrder_MachineProcessLog = new DataModel.JobOrder_MachineProcessLog();
-                        newJobOrder_MachineProcessLog._id = ObjectId.GenerateNewId().ToString();
+                    //解决思路，一次生产，按一次计算
 
-                        newJobOrder_MachineProcessLog.MachineID = MC_machine._id;
+                    DataModel.JobOrder_MachineProcessLog newJobOrder_MachineProcessLog = new DataModel.JobOrder_MachineProcessLog();
+                    newJobOrder_MachineProcessLog._id = ObjectId.GenerateNewId().ToString();
 
-                        newJobOrder_MachineProcessLog.ProduceStartDate = System.DateTime.Now;
-                        newJobOrder_MachineProcessLog.ProduceEndDate = System.DateTime.Now;
+                    newJobOrder_MachineProcessLog.MachineID = MC_machine._id;
 
-                        newJobOrder_MachineProcessLog.ProduceCount = 0;
-                        newJobOrder_MachineProcessLog.ErrorCount = 0;
+                    //开始及结束取同一个值
+                    DateTime orderStartDate = System.DateTime.Now;
+                    newJobOrder_MachineProcessLog.ProduceStartDate = orderStartDate;
+                    newJobOrder_MachineProcessLog.ProduceEndDate = orderStartDate;
 
-                        newJobOrder_MachineProcessLog.EmployeeID = null;
+                    newJobOrder_MachineProcessLog.ProduceCount = 0;
+                    newJobOrder_MachineProcessLog.ErrorCount = 0;
 
-                        //机器处理记录
-                        jobOrderItem.MachineProcessLog.Add(newJobOrder_MachineProcessLog);
-                    }
+                    newJobOrder_MachineProcessLog.EmployeeID = operaterID;
+
+                    //机器处理记录
+                    jobOrderItem.MachineProcessLog.Add(newJobOrder_MachineProcessLog);
+                    //}
                 }
 
                 //更新至数据库
@@ -647,7 +665,7 @@ namespace MES_MonitoringClient.Common
             if (CurrentProcessJobOrder != null)
             {
                 //找出机器处理记录
-                var findMachineProcessLog = CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
+                var findMachineProcessLog = CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
 
                 if (findMachineProcessLog != null)
                 {
@@ -658,10 +676,10 @@ namespace MES_MonitoringClient.Common
                     ProcessJobOrderList[currentIndex] = CurrentProcessJobOrder;
 
                     //保存至数据库中
-                    JobOrderHelper.UpdateJobOrder(CurrentProcessJobOrder, false);
+                    JobOrderHelper.UpdateJobOrder(CurrentProcessJobOrder, false);                    
 
-                    //更新界面
-                    SettingMachineNondefectiveCount();
+                    //更新未完成数量（一起更新良品数量）
+                    SettingMachineNoCompleteCount();
                 }
 
 
@@ -747,7 +765,8 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
-                var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
+                //加数时，处理的是同一机器且未结束的记录==》同一机器生产多次，加数在最后一次（即未完成的那一次）
+                var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
 
                 if (findMachineProcessLog != null)
                 {
