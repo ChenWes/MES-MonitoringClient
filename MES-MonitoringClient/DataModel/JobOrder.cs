@@ -66,6 +66,12 @@ namespace MES_MonitoringClient.DataModel
 		[BsonElement("MachineID")]
 		public string MachineID { get; set; }
 
+        [BsonElement("CompletedDate")]
+        public DateTime CompletedDate { get; set; }
+
+        [BsonElement("CompletedOperaterID")]
+        public string CompletedOperaterID { get; set; }
+
 
         [BsonElement("Sort")]
         public int Sort { get; set; }
