@@ -18,6 +18,9 @@ namespace MES_MonitoringClient
         public byte[] RevDataBuffer = new byte[30];
         public UInt32 RevDataBufferCount;
 
+        //是否接收数据
+        private bool MC_CanLoadData = true;
+
         public enum OperationType
         {
             ChangeMachineType,
@@ -199,6 +202,8 @@ namespace MES_MonitoringClient
                 bool revflag;
                 bool status;
 
+                //是否接收数据开关
+                if (!MC_CanLoadData) return;
 
                 //获取串口
                 System.IO.Ports.SerialPort SerialPort = (System.IO.Ports.SerialPort)sender;                  
@@ -353,6 +358,9 @@ namespace MES_MonitoringClient
 
                 //员工信息赋值到公共变量
                 MC_EmployeeInfo = employee;
+
+
+                MC_CanLoadData = false;
 
                 //选定操作
                 switch (MC_OperationType)
