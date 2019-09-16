@@ -118,6 +118,16 @@ namespace MES_MonitoringClient
                 //发送数据串口默认配置
                 sendDataSerialPortGetDefaultSetting();
 
+                //检测MongoDB服务
+                if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
+                {
+                    //if (MessageBox.Show("MongoDB服务未安装或未运行，请关闭后重新启动", "MongoDB服务", MessageBoxButtons.OK, MessageBoxIcon.Question) == DialogResult.OK)
+                    //{
+                    //    this.Close();
+                    //}
+                    throw new Exception("MongoDB服务未安装或未运行，请关闭应用后并确认MongoDB服务状态再重新启动");
+                }
+
                 //设置机器默认状态
                 mc_MachineStatusHander = new Common.MachineStatusHandler();
                 mc_MachineStatusHander.UpdateMachineStatusPieChartDelegate += UpdateMachineStatusPieChart;//状态更新方法（更新饼图）
@@ -134,19 +144,9 @@ namespace MES_MonitoringClient
 
                 //显示机器名称                
                 CheckMachineRegister();
+                //获取饼图
+                mc_MachineStatusHander.ShowStatusPieChart();
 
-                //检测MongoDB服务
-                if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
-                {
-                    if (MessageBox.Show("MongoDB服务未安装或未运行，是否继续运行应用？", "MongoDB服务", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    {
-                        this.Close();
-                    }
-                }
-                else
-                {
-                    mc_MachineStatusHander.ShowStatusPieChart();//获取饼图
-                }
 
 
                 //初始化最后一次机器状态
@@ -250,72 +250,79 @@ namespace MES_MonitoringClient
         {
             try
             {
-                if (MessageBox.Show("退出系统后，暂时不会收集到机器的数据，请知悉", "系统退出提醒", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                if (!Common.CommonFunction.ServiceRunning(Common.MongodbHandler.MongodbServiceName) && Common.ConfigFileHandler.GetAppConfig("CheckMongoDBService") == "1")
                 {
-                    frmScanRFID newfrmScanRFID = new frmScanRFID();
-                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.OffPower;
-                    newfrmScanRFID.ShowDialog();
-
-                    if (!newfrmScanRFID.MC_IsManualCancel)
-                    {
-                        MC_OffPowerLogCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.OffPowerLog>(defaultOffPowerLogMongodbCollectionName);
-
-                        //保存一条关机记录至数据库
-                        DataModel.OffPowerLog offPowerLog = new DataModel.OffPowerLog();
-
-                        offPowerLog.EmployeeID = newfrmScanRFID.MC_EmployeeInfo._id;
-                        offPowerLog.EmployeeName = newfrmScanRFID.MC_EmployeeInfo.EmployeeName;
-                        offPowerLog.DateTime = System.DateTime.Now;
-                        offPowerLog.Remark = "操作员主动关闭应用";
-
-                        //保存数据
-                        MC_OffPowerLogCollection.InsertOne(offPowerLog);
-                    }
-                    else
-                    {
-                        //员工不想刷卡，退出
-                        e.Cancel = true;
-                        return;                        
-                    }
-
-                    //定时器
-                    if (DateTimeThreadClass != null && TTimerClass != null)
-                    {
-                        TTimerClass.StopTimmer();
-                        DateTimeThreadClass.Abort();
-                    }
-
-                    //发送数据
-                    if (SendDataThreadClass != null && SDTimerClass != null)
-                    {
-                        SDTimerClass.StopTimmer();
-                        SendDataThreadClass.Abort();
-                    }
-
-                    //状态灯
-                    if (StatusLightThreadClass != null && StatusLightTimerClass != null)
-                    {
-                        StatusLightTimerClass.StopTimmer();
-                        StatusLightThreadClass.Abort();
-                    }
-
-                    //串口关闭
-                    if (serialPort6.IsOpen)
-                    {
-                        serialPort6.Close();
-                    }
-
-                    //关闭程序前先保存数据
-                    if (mc_MachineStatusHander != null)
-                    {
-                        //mc_MachineStatusHander.AppWillClose_SaveData();
-                    }
-
                     e.Cancel = false;
                 }
                 else
                 {
-                    e.Cancel = true;
+                    if (MessageBox.Show("退出系统后，暂时不会收集到机器的数据，请知悉", "系统退出提醒", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                    {
+                        frmScanRFID newfrmScanRFID = new frmScanRFID();
+                        newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.OffPower;
+                        newfrmScanRFID.ShowDialog();
+
+                        if (!newfrmScanRFID.MC_IsManualCancel)
+                        {
+                            MC_OffPowerLogCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.OffPowerLog>(defaultOffPowerLogMongodbCollectionName);
+
+                            //保存一条关机记录至数据库
+                            DataModel.OffPowerLog offPowerLog = new DataModel.OffPowerLog();
+
+                            offPowerLog.EmployeeID = newfrmScanRFID.MC_EmployeeInfo._id;
+                            offPowerLog.EmployeeName = newfrmScanRFID.MC_EmployeeInfo.EmployeeName;
+                            offPowerLog.DateTime = System.DateTime.Now;
+                            offPowerLog.Remark = "操作员主动关闭应用";
+
+                            //保存数据
+                            MC_OffPowerLogCollection.InsertOne(offPowerLog);
+                        }
+                        else
+                        {
+                            //员工不想刷卡，退出
+                            e.Cancel = true;
+                            return;
+                        }
+
+                        //定时器
+                        if (DateTimeThreadClass != null && TTimerClass != null)
+                        {
+                            TTimerClass.StopTimmer();
+                            DateTimeThreadClass.Abort();
+                        }
+
+                        //发送数据
+                        if (SendDataThreadClass != null && SDTimerClass != null)
+                        {
+                            SDTimerClass.StopTimmer();
+                            SendDataThreadClass.Abort();
+                        }
+
+                        //状态灯
+                        if (StatusLightThreadClass != null && StatusLightTimerClass != null)
+                        {
+                            StatusLightTimerClass.StopTimmer();
+                            StatusLightThreadClass.Abort();
+                        }
+
+                        //串口关闭
+                        if (serialPort6.IsOpen)
+                        {
+                            serialPort6.Close();
+                        }
+
+                        //关闭程序前先保存数据
+                        if (mc_MachineStatusHander != null)
+                        {
+                            //mc_MachineStatusHander.AppWillClose_SaveData();
+                        }
+
+                        e.Cancel = false;
+                    }
+                    else
+                    {
+                        e.Cancel = true;
+                    }
                 }
             }
             catch (Exception ex)
