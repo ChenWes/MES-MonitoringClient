@@ -1275,7 +1275,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 14);
             this.label1.TabIndex = 0;
-            this.label1.Text = "产品描述";
+            this.label1.Text = "中文描述";
             // 
             // txt_MaterialName
             // 
@@ -1413,7 +1413,7 @@
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 143F));
             this.tableLayoutPanel34.Controls.Add(this.label18, 0, 1);
             this.tableLayoutPanel34.Controls.Add(this.label19, 1, 1);
             this.tableLayoutPanel34.Controls.Add(this.label20, 2, 1);
@@ -1436,7 +1436,7 @@
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(14, 273);
+            this.label18.Location = new System.Drawing.Point(13, 273);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(88, 32);
             this.label18.TabIndex = 2;
@@ -1448,7 +1448,7 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(129, 273);
+            this.label19.Location = new System.Drawing.Point(127, 273);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(88, 32);
             this.label19.TabIndex = 2;
@@ -1460,7 +1460,7 @@
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(244, 273);
+            this.label20.Location = new System.Drawing.Point(241, 273);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(88, 32);
             this.label20.TabIndex = 2;
@@ -1472,7 +1472,7 @@
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(108, 261);
+            this.pictureBox1.Size = new System.Drawing.Size(107, 261);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
@@ -1481,9 +1481,9 @@
             // 
             this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(119, 4);
+            this.pictureBox2.Location = new System.Drawing.Point(118, 4);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(108, 261);
+            this.pictureBox2.Size = new System.Drawing.Size(107, 261);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 3;
             this.pictureBox2.TabStop = false;
@@ -1492,9 +1492,9 @@
             // 
             this.pictureBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(234, 4);
+            this.pictureBox3.Location = new System.Drawing.Point(232, 4);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(108, 261);
+            this.pictureBox3.Size = new System.Drawing.Size(107, 261);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
@@ -1505,7 +1505,7 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(405, 102);
+            this.label21.Location = new System.Drawing.Point(403, 102);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(24, 64);
             this.label21.TabIndex = 2;
