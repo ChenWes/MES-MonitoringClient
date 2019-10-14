@@ -1017,11 +1017,11 @@ namespace MES_MonitoringClient
                     if (machineProcessLog.ProduceStartDate != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount > 0)
                     {
                         txt_StartDateTime.BackColor = System.Drawing.Color.FromArgb(208, 208, 208);
-                        txt_StartDateTime.Text = machineProcessLog.ProduceStartDate.ToString("yyyy-MM-dd HH:mm:ss");
+                        txt_StartDateTime.Text = machineProcessLog.ProduceStartDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
 
                         //预计完成工时间
                         System.DateTime PlanDateTime = machineProcessLog.ProduceStartDate.AddSeconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount * dbl_PlanWorkTime);
-                        txt_PlanCompleteDateTime.Text = PlanDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+                        txt_PlanCompleteDateTime.Text = PlanDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
                     }
 
                 }
