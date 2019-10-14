@@ -100,10 +100,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
+    <Compile Include="Common\LastJobOrderHandler.cs" />
     <Compile Include="Common\MachineStatus.cs" />
     <Compile Include="Common\JobOrderStatus.cs" />
     <Compile Include="DataModel\Customer.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
+    <Compile Include="DataModel\LastJobOrder.cs" />
     <Compile Include="DataModel\OffPowerLog.cs" />
     <Compile Include="DataModel\MachineChangeLog.cs" />
     <Compile Include="DataModel\MachineProcessLog.cs" />

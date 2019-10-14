@@ -152,6 +152,8 @@ namespace MES_MonitoringClient
                 //初始化最后一次机器状态
                 mc_MachineStatusHander.GetLatestMachineStatusLog();
 
+                //显示最后一次工单信息
+                ShowLastJobOrderBiaisInfo(0);
                 //打开端口
                 if (!serialPort6.IsOpen)
                 {
@@ -812,6 +814,30 @@ namespace MES_MonitoringClient
                 #endregion
             }
         }
+        /// <summary>
+        /// 之前工单
+        /// </summary>
+        private void ShowLastJobOrderBiaisInfo(int orderindex)
+        {
+            Common.LastJobOrderHandler lastJobOrderHandler = new Common.LastJobOrderHandler();
+            List<DataModel.JobOrder> ProcessJobOrderList = lastJobOrderHandler.GetJLastJobOrderList();
+            
+            if (ProcessJobOrderList!=null)
+            {
+                DataModel.JobOrder CurrentProcessJobOrder = ProcessJobOrderList[orderindex];
+                if (CurrentProcessJobOrder != null)
+                {
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder = CurrentProcessJobOrder;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList = ProcessJobOrderList;
+                    ShowJobOrderBiaisInfo();
+                    UpdateMachineStatusTotalDateTime();
+                    UpdateMachineCompleteDateTime();
+                    UpdateMachineNondefectiveCount();
+                    UpdateMachineNoCompletedCount();
+                }
+            }
+             
+        }
 
         /// <summary>
         /// 显示工单基础信息
@@ -825,6 +851,9 @@ namespace MES_MonitoringClient
             }
             else
             {
+                //删除旧工单
+                Common.LastJobOrderHandler lastJobOrderHandler = new Common.LastJobOrderHandler();
+                lastJobOrderHandler.DeleteLastJobOrder();
                 #region 工单基础信息
                 //防止加入控件时发生闪烁
                 this.tableLayoutPanel9.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(this.tableLayoutPanel9, true, null);
@@ -854,6 +883,11 @@ namespace MES_MonitoringClient
                     //获取所有可用的机器状态               
                     foreach (var item in mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList)
                     {
+                        //保存当前工单id
+                            DataModel.LastJobOrder lastJobOrder = new DataModel.LastJobOrder();
+                            lastJobOrder.JobOrderID = item.JobOrderID;
+                            lastJobOrder.ChangeDate = DateTime.Now;
+                            lastJobOrderHandler.SaveLastJobOrder(lastJobOrder);                   
                         //声明一个按钮
                         Button jobOrderButton = new Button
                         {
