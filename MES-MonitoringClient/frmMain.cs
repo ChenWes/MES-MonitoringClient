@@ -18,6 +18,9 @@ using LiveCharts.Wpf;
 using MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace MES_MonitoringClient
 {
@@ -84,6 +87,18 @@ namespace MES_MonitoringClient
         public ChartValues<DataModel.MachineTemperature> MachineTemperature1ChartValues { get; set; }
 
         /*---------------------------------------------------------------------------------------*/
+
+        /*---------------------------------------------------------------------------------------*/
+        //当前程序名
+        private string processName = Process.GetCurrentProcess().ProcessName;
+        //更新地址
+        private string update_Path = new DirectoryInfo(Application.StartupPath).Parent.Parent.FullName+ @"\Mes_Update\Mes_Update.exe";
+        //旧版本
+        string oldVersion = Common.ConfigFileHandler.GetAppConfig("Version");
+        //安装包名
+        //private string nstallation_package_name = null;
+        //使用WebClient下载
+        //启动程序目录
         //后台线程变量
         //Thread timerThread = null;
 
@@ -179,6 +194,8 @@ namespace MES_MonitoringClient
                 StatusLightThreadClass = new Thread(StatusLightThreadFunction);
                 StatusLightThreadClass.Start();
 
+                //检测更新
+                NowVersion();
 
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
 
@@ -1913,6 +1930,139 @@ namespace MES_MonitoringClient
             }
         }
 
+        //判断版本号
+        /// <summary>
+        /// 判断版本号
+        /// </summary>
+        public void NowVersion()
+        {
+            string newVersion = GetJsonDate("ClientVersionCode");
+            if(newVersion !=""&&!(newVersion is null))
+            {
+                if (oldVersion == newVersion)
+                {
+                    // this.lab_Version.Text = "版本：" + Application.ProductVersion.ToString();
+                    this.btn_Version.Text = "检测新版本";
+                }
+                else
+                {
+                    // this.lab_Version.Text = "当前版本：" + Application.ProductVersion.ToString();
+                    this.btn_Version.Text = "可升级";
+                    this.btn_Version.ForeColor = Color.Green;
+                }
+
+            }
+            else
+            {
+                this.btn_Version.Text = "无信息";
+            }
+        }
+        //判断是否升级
+        /// <summary>
+        /// 判断是否升级
+        /// </summary>
+        private void btn_Version_Click(object sender, EventArgs e)
+        {
+            string newVersion = GetJsonDate("ClientVersionCode");
+            if (newVersion != "" && !(newVersion is null))
+            {
+                if (oldVersion == newVersion)
+                {
+                    MessageBox.Show("当前版本为最新版本", "提示");
+                }
+                else
+                {
+                    if (MessageBox.Show("检测到新版本" + newVersion + "，确认是否继续升级？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                    {
+                        if (btn_StatusLight.Text == "生产中")
+                        {
+                            MessageBox.Show("正在生产中，请先更改状态", "提示");
+                            return;
+                        }
+                        else
+                        {
+                            if (File.Exists(update_Path))
+                            {
+                                Process process = new Process();
+                                process.StartInfo.FileName = update_Path;
+                                string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+                                var url = new Uri(basicHttpUrl + GetJsonDate("FilePath"));
+                                string path = new DirectoryInfo(Application.StartupPath).Parent.FullName;
+                                string ClientVersionCode = newVersion;
+                                string ClientVersionName = GetJsonDate("ClientVersionName");
+                                string ClientVersionDesc = GetJsonDate("ClientVersionDesc");
+                                string Remark = GetJsonDate("Remark");
+                                string CreateAt = GetJsonDate("CreateAt");
+                                if (CreateAt != "" && !(CreateAt is null))
+                                {
+                                    CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                                }
+                                string LastUpdateAt = GetJsonDate("LastUpdateAt");
+                                if (LastUpdateAt != "" && !(LastUpdateAt is null))
+                                {
+                                    LastUpdateAt = "\""+DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")+"\"";
+                                }
+                                process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
+                                process.Start();
+                                KillProgram();
+                            }
+                            else
+                            {
+                                MessageBox.Show("不存在更新程序" + update_Path);
+                            }
+
+                        }
+
+
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("获取不到版本信息");
+            }
+           
+
+        }
+
+        /// <summary>
+        /// 关闭系统进程
+        /// </summary>
+        public void KillProgram()
+        {
+            Process[] processList = Process.GetProcesses();
+            foreach (Process process in processList)
+            {
+                if (process.ProcessName == processName)
+                {
+                    process.Kill();
+
+                }
+            }
+        }
+        /// <summary>
+        /// 获取json数据
+        /// </summary>
+        private string GetJsonDate(string pro)
+        {
+            try
+            {
+                string ClientVersionCode = "";
+                string jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
+                var jobj = JArray.Parse(jsonString);
+                foreach (var ss in jobj)
+                {
+                    ClientVersionCode = ((JObject)ss)[pro].ToString();
+                }
+                return ClientVersionCode;
+            }
+            catch
+            {
+                return null;
+            }
+          
+        }
+      
 
     }
 }

@@ -35,6 +35,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_Title = new System.Windows.Forms.Label();
             this.lab_DateTime = new System.Windows.Forms.Label();
+            this.btn_Version = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
             this.btn_Start = new System.Windows.Forms.Button();
@@ -192,9 +193,10 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
-            this.tableLayoutPanel1.ColumnCount = 8;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34F));
+            this.tableLayoutPanel1.ColumnCount = 9;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
@@ -203,12 +205,13 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.Controls.Add(this.lab_Title, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lab_DateTime, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel5, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Version, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel5, 8, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 5, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -241,6 +244,19 @@
             this.lab_DateTime.Size = new System.Drawing.Size(72, 16);
             this.lab_DateTime.TabIndex = 9;
             this.lab_DateTime.Text = "当前时间";
+            // 
+            // btn_Version
+            // 
+            this.btn_Version.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Version.FlatAppearance.BorderSize = 0;
+            this.btn_Version.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Version.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_Version.Location = new System.Drawing.Point(577, 3);
+            this.btn_Version.Name = "btn_Version";
+            this.btn_Version.Size = new System.Drawing.Size(53, 44);
+            this.btn_Version.TabIndex = 14;
+            this.btn_Version.UseVisualStyleBackColor = true;
+            this.btn_Version.Click += new System.EventHandler(this.btn_Version_Click);
             // 
             // panel5
             // 
@@ -1681,6 +1697,7 @@
         private System.Windows.Forms.Button btn_Start;
         private System.Windows.Forms.Button btn_Stop;
         private System.Windows.Forms.Button btn_Recovery;
+        private System.Windows.Forms.Button btn_Version;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
