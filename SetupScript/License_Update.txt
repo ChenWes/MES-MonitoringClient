@@ -1,0 +1,5 @@
+MES Monitoring Client Update v1.0.0
+
+该软件目前只应用于MES数据收集系统客户端更新
+
+广东翠峰机器人股份有限公司

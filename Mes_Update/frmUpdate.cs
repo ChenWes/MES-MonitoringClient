@@ -23,7 +23,6 @@ namespace Mes_Update
         private string serviceName = "MES-MonitoringService";//服务程序进程名
         private string serverPath=null;//mes目录
         private string service_folder = @"\Service";//Service文件夹
-        private string client_folder = @"\Client";//Service文件夹
         private string log_folder = @"\log";//log文件夹
         private string uninsexe = @"C:\Program Files\MES-Monitoring-Client\unins000.exe";//卸载程序目录                                                                    
         private string processName = Process.GetCurrentProcess().ProcessName;   //当前程序名
@@ -56,7 +55,7 @@ namespace Mes_Update
         {
             if (this.txt_Download.Text == "")
             {
-                KillUpdateProgram();
+                //KillUpdateProgram();
             }
         }
       
@@ -122,17 +121,15 @@ namespace Mes_Update
 
                 unload_timer.Enabled = false;
                 lab_out.Text = "卸载成功,准备删除残留文件，等待后台服务关闭";
-                System.Threading.Thread.Sleep(2000);
+                //System.Threading.Thread.Sleep(2000);
                 deleteService_timer.Enabled = true;
                 deleteService_timer.Tick += new EventHandler(delete_Tick);
                 return;
             }
-             else if(Process.GetProcessesByName(unloadName).Length <= 0 && File.Exists(uninsexe)&&Directory.Exists(serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + client_folder))
+             else if(Process.GetProcessesByName(unloadName).Length <= 0 && File.Exists(uninsexe))
             {
-                EnableBtn(true);
-                unload_timer.Enabled = false;
+                EnableBtn(true);    
                 this.lab_out.Text = "取消卸载";
-                return;
             }
            
         }
@@ -211,7 +208,7 @@ namespace Mes_Update
                 File.Delete(this.txt_SavePath.Text);
                 this.lab_out.Text = "更新成功";
                 MessageBox.Show("更新成功");
-                KillUpdateProgram();
+                //KillUpdateProgram();
                 return;
             }
             else if(Process.GetProcessesByName(installName).Length <= 0&& Process.GetProcessesByName(serviceName).Length <=0)
@@ -250,7 +247,7 @@ namespace Mes_Update
                 {
                     process.StartInfo.FileName = uninsexe;
                     process.Start();
-                    System.Threading.Thread.Sleep(1000);//防止进程启动慢造成下一步报错
+                    //System.Threading.Thread.Sleep(1000);
                     unloadName = process.ProcessName;
                     serverPath = process.MainModule.FileName;
                     this.lab_out.Text = "正在卸载";
@@ -296,7 +293,7 @@ namespace Mes_Update
                 {
                     process.StartInfo.FileName = this.txt_SavePath.Text;
                     process.Start();
-                    System.Threading.Thread.Sleep(1000);
+                    //System.Threading.Thread.Sleep(1000);
                     installName = process.ProcessName;
                     this.lab_out.Text = "正在安装";
                     this.EnableBtn(false);
@@ -389,7 +386,7 @@ namespace Mes_Update
             }
             return false;
         }
-        /// <summary>
+       /* /// <summary>
         /// 关闭系统进程
         /// </summary>
         private void KillUpdateProgram()
@@ -403,7 +400,7 @@ namespace Mes_Update
 
                 }
             }
-        }
+        }*/
         /// <summary>
         /// 控制按钮启用
         /// </summary>

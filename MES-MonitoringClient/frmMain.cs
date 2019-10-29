@@ -1986,13 +1986,13 @@ namespace MES_MonitoringClient
                                 Process process = new Process();
                                 process.StartInfo.FileName = update_Path;
                                 string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
-                                var url = new Uri(basicHttpUrl + GetJsonDate("FilePath"));
-                                string path = new DirectoryInfo(Application.StartupPath).Parent.FullName;
-                                string ClientVersionCode = newVersion;
-                                string ClientVersionName = GetJsonDate("ClientVersionName");
-                                string ClientVersionDesc = GetJsonDate("ClientVersionDesc");
-                                string Remark = GetJsonDate("Remark");
-                                string CreateAt = GetJsonDate("CreateAt");
+                                string url = "\"" + basicHttpUrl + GetJsonDate("FilePath")+"\"" ;
+                                string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName+"\"";
+                                string ClientVersionCode = "\"" + newVersion+"\"" ;
+                                string ClientVersionName = "\"" + GetJsonDate("ClientVersionName")+"\"" ;
+                                string ClientVersionDesc = "\""+GetJsonDate("ClientVersionDesc")+"\"";
+                                string Remark = "\""+GetJsonDate("Remark")+ "\"";
+                                string CreateAt =  GetJsonDate("CreateAt") ;
                                 if (CreateAt != "" && !(CreateAt is null))
                                 {
                                     CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
@@ -2010,10 +2010,7 @@ namespace MES_MonitoringClient
                             {
                                 MessageBox.Show("不存在更新程序" + update_Path);
                             }
-
                         }
-
-
                     }
                 }
             }
