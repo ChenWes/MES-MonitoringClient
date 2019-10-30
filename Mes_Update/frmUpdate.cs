@@ -15,6 +15,7 @@ namespace Mes_Update
 {
     public partial class frmUpdate : Form
     {
+        #region 字段/属性
         Timer unload_timer = new Timer(); //卸载定时器
         Timer deleteService_timer = new Timer(); //删除定时器
         Timer install_timer = new Timer(); //安装定时器
@@ -27,17 +28,22 @@ namespace Mes_Update
         private string uninsexe = @"C:\Program Files\MES-Monitoring-Client\unins000.exe";//卸载程序目录                                                                    
         private string processName = Process.GetCurrentProcess().ProcessName;   //当前程序名
         private int count = 0;//记时
-        Process process = new Process();
+        Process process = new Process();//定义新进程
+        #endregion
+
+        #region 方法
         public frmUpdate(string[] arg)
         {
             InitializeComponent();
+            //设置定时器
             unload_timer.Enabled = false;
             unload_timer.Interval = 1000;
             deleteService_timer.Enabled = false;
             deleteService_timer.Interval = 1000;
             install_timer.Enabled = false;
             install_timer.Interval = 1000;
-            if (arg.Length > 0)
+            //如果传参数为8个，则赋值
+            if (arg.Length == 8)
             {
                 this.txt_Download.Text = arg[0];//下载路径
                 uninsexe = arg[1] + @"\unins000.exe";//卸载路径
@@ -51,12 +57,17 @@ namespace Mes_Update
             this.lab_path.Text = "卸载程序所在目录：" + uninsexe;
         }
 
+        public frmUpdate()
+        {
+        }
+
         private void frmUpdate_Load(object sender, EventArgs e)
         {
-            if (this.txt_Download.Text == "")
+            //是否需要在外部打开程序
+           /* if (this.txt_Download.Text == "")
             {
                 //KillUpdateProgram();
-            }
+            }*/
         }
       
         /// <summary>
@@ -65,8 +76,15 @@ namespace Mes_Update
         //下载
         private void btn_Download_Click(object sender, EventArgs e)
         {
-           
-            TimeSpan ts1 = new TimeSpan(DateTime.Now.Ticks);
+            //停用定时器
+            unload_timer.Enabled = false;
+            deleteService_timer.Enabled = false;
+            install_timer.Enabled = false;
+            //记录状态
+            this.lab_out.Text = "正在下载";
+            //停用安装按钮
+            this.buttonInstall.Enabled = false;
+            //使用WebClient下载
             using (WebClient wc = new WebClient())
             {
 
@@ -83,21 +101,26 @@ namespace Mes_Update
 
                     try
                     {
+                        //判断目标文件夹是否存在，如不在则创建
                         if (!Directory.Exists(this.txt_SavePath.Text.Substring(0, this.txt_SavePath.Text.LastIndexOf(@"\"))))
                         {
                             Directory.CreateDirectory(this.txt_SavePath.Text.Substring(0, this.txt_SavePath.Text.LastIndexOf(@"\")));
                         }
+                        //判断链接是否可访问，5s延时
                         if (CheckUrlVisit(this.txt_Download.Text.Trim()))
                         {
                             wc.Proxy = null;
                             Uri address = new Uri(txt_Download.Text.ToString());
                             wc.DownloadFileAsync(address, txt_SavePath.Text.ToString());
+                            //进度条响应
                             wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
+                            //下载完成后
                             wc.DownloadFileCompleted += new AsyncCompletedEventHandler(wc_DownloadFileCompleted);
                         }
                         else
                         {
-                            MessageBox.Show("下载超时，请检查下载地址并重试");
+                            MessageBox.Show("下载超时，请检查下载地址和网络并重试");
+                            this.buttonInstall.Enabled = true;
                         }
                       
                     }
@@ -110,12 +133,12 @@ namespace Mes_Update
 
         }
         /// <summary>
-        /// 等待卸载完成
+        /// 等待卸载完成定时器
         /// </summary>
-        //等待卸载完成
+        //等待卸载完成定时器
         private void unins_Tick(object o, EventArgs e)
         {
-            
+            //判断卸载进程及卸载程序是否存在
             if (Process.GetProcessesByName(unloadName).Length <= 0&&!File.Exists(uninsexe))
             {
 
@@ -129,12 +152,12 @@ namespace Mes_Update
              else if(Process.GetProcessesByName(unloadName).Length <= 0 && File.Exists(uninsexe))
             {
                 EnableBtn(true);    
-                this.lab_out.Text = "取消卸载";
+                this.lab_out.Text = "取消卸载，如取消更新，请注意重启后台服务";
             }
            
         }
         /// <summary>
-        /// 等待删除完成
+        /// 等待删除完成定时器
         /// </summary>
         //等待删除完成
         private void delete_Tick(object o, EventArgs e)
@@ -150,6 +173,7 @@ namespace Mes_Update
                 install();
                 return;
             }
+            //30s后强制结束服务
             if (Process.GetProcessesByName(serviceName).Length > 0 && count > 30)
             {
                 KillProgram();
@@ -164,6 +188,8 @@ namespace Mes_Update
             
             
                 this.lab_out.Text = "下载完成";
+                this.buttonInstall.Enabled = true;
+               //存在卸载程序
                 if (File.Exists(this.txt_SavePath.Text) && File.Exists(uninsexe))
                 {
                     this.lab_out.Text = "下载完成->等待确认";
@@ -177,6 +203,7 @@ namespace Mes_Update
                         this.lab_out.Text = "下载完成->取消安装";
                     }
                 }
+                //不存在卸载程序
                 else if (File.Exists(this.txt_SavePath.Text) && !File.Exists(uninsexe))
                 {
                     this.lab_out.Text = "下载完成->等待确认";
@@ -245,9 +272,13 @@ namespace Mes_Update
             {
                 if (!ifexistInstall(uninsexe))
                 {
+                    if(Process.GetProcessesByName(serviceName).Length > 0)
+                    {
+                        KillProgram();
+                    }
                     process.StartInfo.FileName = uninsexe;
                     process.Start();
-                    //System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(50);
                     unloadName = process.ProcessName;
                     serverPath = process.MainModule.FileName;
                     this.lab_out.Text = "正在卸载";
@@ -293,7 +324,7 @@ namespace Mes_Update
                 {
                     process.StartInfo.FileName = this.txt_SavePath.Text;
                     process.Start();
-                    //System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(50);
                     installName = process.ProcessName;
                     this.lab_out.Text = "正在安装";
                     this.EnableBtn(false);
@@ -336,7 +367,7 @@ namespace Mes_Update
         }
 
       
-
+        //关闭窗口前确认
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("确定退出吗", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -367,7 +398,7 @@ namespace Mes_Update
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show(e.Message);
             }
             
         }
@@ -417,7 +448,7 @@ namespace Mes_Update
             try
             {
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.Timeout = 3000;
+                req.Timeout = 5000;
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 if (resp.StatusCode == HttpStatusCode.OK)
                 {
@@ -433,5 +464,6 @@ namespace Mes_Update
             return false;
 
         }
+        #endregion
     }
 }

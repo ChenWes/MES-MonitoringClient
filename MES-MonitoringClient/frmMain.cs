@@ -95,6 +95,12 @@ namespace MES_MonitoringClient
         private string update_Path = new DirectoryInfo(Application.StartupPath).Parent.Parent.FullName+ @"\Mes_Update\Mes_Update.exe";
         //旧版本
         string oldVersion = Common.ConfigFileHandler.GetAppConfig("Version");
+        //更新密码
+        string password= Common.ConfigFileHandler.GetAppConfig("Update_Password");
+        //获取服务端新版本信息
+        string jsonString = null;
+        private int click =0;
+        private DateTime clickTime ;
         //安装包名
         //private string nstallation_package_name = null;
         //使用WebClient下载
@@ -194,8 +200,14 @@ namespace MES_MonitoringClient
                 StatusLightThreadClass = new Thread(StatusLightThreadFunction);
                 StatusLightThreadClass.Start();
 
+                //显示版本号
+                this.lab_Version.Text = this.lab_Version.Text+oldVersion;
                 //检测更新
-                NowVersion();
+                ThreadStart threadStart_getJson = new ThreadStart(getJson);//通过ThreadStart委托告诉子线程执行什么方法　　
+                Thread thread_getJson = new Thread(threadStart_getJson);
+                thread_getJson.Start();//启动新线程
+                this.lab_log.Text = "正在检测";
+                //NowVersion();
 
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
 
@@ -1930,96 +1942,51 @@ namespace MES_MonitoringClient
             }
         }
 
-        //判断版本号
-        /// <summary>
-        /// 判断版本号
-        /// </summary>
-        public void NowVersion()
-        {
-            string newVersion = GetJsonDate("ClientVersionCode");
-            if(newVersion !=""&&!(newVersion is null))
-            {
-                if (oldVersion == newVersion)
-                {
-                    // this.lab_Version.Text = "版本：" + Application.ProductVersion.ToString();
-                    this.btn_Version.Text = "检测新版本";
-                }
-                else
-                {
-                    // this.lab_Version.Text = "当前版本：" + Application.ProductVersion.ToString();
-                    this.btn_Version.Text = "可升级";
-                    this.btn_Version.ForeColor = Color.Green;
-                }
-
-            }
-            else
-            {
-                this.btn_Version.Text = "无信息";
-            }
-        }
+       
         //判断是否升级
         /// <summary>
         /// 判断是否升级
         /// </summary>
         private void btn_Version_Click(object sender, EventArgs e)
         {
-            string newVersion = GetJsonDate("ClientVersionCode");
-            if (newVersion != "" && !(newVersion is null))
+            
+            if (click > 0)
             {
-                if (oldVersion == newVersion)
+                click = 0;
+                TimeSpan span = DateTime.Now - clickTime;
+                if (span.Milliseconds < SystemInformation.DoubleClickTime)
                 {
-                    MessageBox.Show("当前版本为最新版本", "提示");
-                }
-                else
-                {
-                    if (MessageBox.Show("检测到新版本" + newVersion + "，确认是否继续升级？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                    //检查机器状态
+                    if (btn_StatusLight.Text == "生产中")
                     {
-                        if (btn_StatusLight.Text == "生产中")
-                        {
-                            MessageBox.Show("正在生产中，请先更改状态", "提示");
-                            return;
-                        }
-                        else
-                        {
-                            if (File.Exists(update_Path))
-                            {
-                                Process process = new Process();
-                                process.StartInfo.FileName = update_Path;
-                                string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
-                                string url = "\"" + basicHttpUrl + GetJsonDate("FilePath")+"\"" ;
-                                string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName+"\"";
-                                string ClientVersionCode = "\"" + newVersion+"\"" ;
-                                string ClientVersionName = "\"" + GetJsonDate("ClientVersionName")+"\"" ;
-                                string ClientVersionDesc = "\""+GetJsonDate("ClientVersionDesc")+"\"";
-                                string Remark = "\""+GetJsonDate("Remark")+ "\"";
-                                string CreateAt =  GetJsonDate("CreateAt") ;
-                                if (CreateAt != "" && !(CreateAt is null))
-                                {
-                                    CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
-                                }
-                                string LastUpdateAt = GetJsonDate("LastUpdateAt");
-                                if (LastUpdateAt != "" && !(LastUpdateAt is null))
-                                {
-                                    LastUpdateAt = "\""+DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")+"\"";
-                                }
-                                process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
-                                process.Start();
-                                KillProgram();
-                            }
-                            else
-                            {
-                                MessageBox.Show("不存在更新程序" + update_Path);
-                            }
-                        }
+                        MessageBox.Show("正在生产中，请先更改状态", "提示");
+                        return;
                     }
-                }
+                    //输入密码
+                    string response = Microsoft.VisualBasic.Interaction.InputBox("请输入密码", "用户输入");
+                    if (response.Trim() == "")
+                    {
+                        return;
+                    }
+                    if (response.Trim() == password)
+                    {
+                        ThreadStart threadStart_Update = new ThreadStart(start_Update);//通过ThreadStart委托告诉子线程执行什么方法　　
+                        Thread thread_Update = new Thread(threadStart_Update);
+                        thread_Update.Start();//启动新线程
+                        this.lab_log.Text = "正在检测";
+                        this.lab_log.ForeColor= Color.White;
+                    }
+                    else
+                    {
+                        MessageBox.Show("密码错误");
+                    }           
+                }      
             }
             else
             {
-                MessageBox.Show("获取不到版本信息");
+                click++;
+                clickTime = DateTime.Now;
             }
-           
-
         }
 
         /// <summary>
@@ -2038,28 +2005,167 @@ namespace MES_MonitoringClient
             }
         }
         /// <summary>
-        /// 获取json数据
+        /// 显示可升级状态，新线程运行方法
         /// </summary>
-        private string GetJsonDate(string pro)
+        /// 开始升级
+        private void start_Update()
         {
+           
             try
             {
-                string ClientVersionCode = "";
-                string jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
-                var jobj = JArray.Parse(jsonString);
-                foreach (var ss in jobj)
-                {
-                    ClientVersionCode = ((JObject)ss)[pro].ToString();
-                }
-                return ClientVersionCode;
+                jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
             }
             catch
             {
+                // MessageBox.Show("获取不到版本信息");
+                this.Invoke(new Action(() =>
+                {
+                    this.lab_log.Text = "检测失败";
+                    this.lab_log.ForeColor = Color.White;
+                }));
+
+                return;
+            }
+            //委托
+            this.Invoke(new Action(() => { 
+                
+                string newVersion = GetJsonDate("ClientVersionCode");
+                if (newVersion != "" && !(newVersion is null))
+                {
+                    if (oldVersion == newVersion)
+                    {
+                        this.lab_log.Text = "最新版本";
+                        this.lab_log.ForeColor = Color.White;
+                        MessageBox.Show("当前版本为最新版本", "提示");
+                    }
+                    else
+                    {
+                        this.lab_log.Text = "可升级";
+                        this.lab_log.ForeColor = Color.Green;
+                        if (MessageBox.Show("检测到新版本" + newVersion + "，确认是否继续升级？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                        {
+                            
+                            
+                            
+                                if (File.Exists(update_Path))
+                                {
+                                    Process process = new Process();
+                                    process.StartInfo.FileName = update_Path;
+                                    string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+                                    string url = "\"" + basicHttpUrl + GetJsonDate("FilePath") + "\"";
+                                    string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName + "\"";
+                                    string ClientVersionCode = "\"" + newVersion + "\"";
+                                    string ClientVersionName = "\"" + GetJsonDate("ClientVersionName") + "\"";
+                                    string ClientVersionDesc = "\"" + GetJsonDate("ClientVersionDesc") + "\"";
+                                    string Remark = "\"" + GetJsonDate("Remark") + "\"";
+                                    string CreateAt = GetJsonDate("CreateAt");
+                                    if (CreateAt != "" && !(CreateAt is null))
+                                    {
+                                        CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                                    }
+                                    string LastUpdateAt = GetJsonDate("LastUpdateAt");
+                                    if (LastUpdateAt != "" && !(LastUpdateAt is null))
+                                    {
+                                        LastUpdateAt = "\"" + DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                                    }
+                                    process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
+                                    process.Start();
+                                    KillProgram();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("不存在更新程序" + update_Path);
+                                    this.lab_log.Text = "可升级";
+                                    this.lab_log.ForeColor = Color.Green;
+                                }
+                            
+                        }
+                        else
+                        {
+                            this.lab_log.Text = "可升级";
+                            this.lab_log.ForeColor = Color.Green;
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("获取不到版本信息");
+                    this.lab_log.Text = "获取不到版本信息";
+                }
+            }));
+        }
+        /// <summary>
+        /// 显示可升级状态
+        /// </summary>
+        private void getJson()
+        {
+
+            try
+            {
+                jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
+            }
+            catch
+            {
+               // MessageBox.Show("获取不到版本信息");
+                this.Invoke(new Action(() => 
+                { 
+                    this.lab_log.Text = "检测失败";
+                }));
+
+            return;
+            }
+            this.Invoke(new Action(() =>
+            {
+               string newVersion = GetJsonDate("ClientVersionCode");
+               if (newVersion != "" && !(newVersion is null))
+               {
+                if (oldVersion == newVersion)
+                {
+                    // this.lab_Version.Text = "版本：" + Application.ProductVersion.ToString();
+                    this.lab_log.Text = "最新版本";
+                }
+                else
+                {
+                    // this.lab_Version.Text = "当前版本：" + Application.ProductVersion.ToString();
+                    this.lab_log.Text = "可升级";
+                    this.lab_log.ForeColor = Color.Green;
+                }
+
+               }
+               else
+               {
+                this.lab_log.Text = "无信息";
+               }
+            }));
+
+        }
+        /// <summary>
+        /// 获取json详细数据
+        /// </summary>
+        private string GetJsonDate(string pro)
+        {
+            if (jsonString != null)
+            {
+                try
+                {
+                    string ClientVersionCode = "";
+
+                    var jobj = JArray.Parse(jsonString);
+                    foreach (var ss in jobj)
+                    {
+                        ClientVersionCode = ((JObject)ss)[pro].ToString();
+                    }
+                    return ClientVersionCode;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            else
+            {
                 return null;
             }
-          
         }
-      
-
     }
 }

@@ -123,7 +123,7 @@
             this.lab_out.Name = "lab_out";
             this.lab_out.Size = new System.Drawing.Size(53, 12);
             this.lab_out.TabIndex = 8;
-            this.lab_out.Text = "等待安装";
+            this.lab_out.Text = "等待操作";
             // 
             // lab_ServiceName
             // 
@@ -140,7 +140,7 @@
             this.lab_Version.Name = "lab_Version";
             this.lab_Version.Size = new System.Drawing.Size(71, 12);
             this.lab_Version.TabIndex = 10;
-            this.lab_Version.Text = "lab_Version";
+            this.lab_Version.Text = "版本号";
             // 
             // lab_Name
             // 
@@ -149,7 +149,7 @@
             this.lab_Name.Name = "lab_Name";
             this.lab_Name.Size = new System.Drawing.Size(53, 12);
             this.lab_Name.TabIndex = 11;
-            this.lab_Name.Text = "lab_Name";
+            this.lab_Name.Text = "版本名";
             // 
             // lab_Desc
             // 
@@ -158,7 +158,7 @@
             this.lab_Desc.Name = "lab_Desc";
             this.lab_Desc.Size = new System.Drawing.Size(53, 12);
             this.lab_Desc.TabIndex = 12;
-            this.lab_Desc.Text = "lab_Desc";
+            this.lab_Desc.Text = "描述";
             // 
             // lab_Remark
             // 
@@ -167,7 +167,7 @@
             this.lab_Remark.Name = "lab_Remark";
             this.lab_Remark.Size = new System.Drawing.Size(65, 12);
             this.lab_Remark.TabIndex = 13;
-            this.lab_Remark.Text = "lab_Remark";
+            this.lab_Remark.Text = "备注";
             // 
             // lab_CreatAt
             // 
@@ -176,7 +176,7 @@
             this.lab_CreatAt.Name = "lab_CreatAt";
             this.lab_CreatAt.Size = new System.Drawing.Size(71, 12);
             this.lab_CreatAt.TabIndex = 14;
-            this.lab_CreatAt.Text = "lab_CreatAt";
+            this.lab_CreatAt.Text = "创建日期";
             // 
             // lab_UpdateAt
             // 
@@ -185,7 +185,7 @@
             this.lab_UpdateAt.Name = "lab_UpdateAt";
             this.lab_UpdateAt.Size = new System.Drawing.Size(77, 12);
             this.lab_UpdateAt.TabIndex = 15;
-            this.lab_UpdateAt.Text = "lab_UpdateAt";
+            this.lab_UpdateAt.Text = "更新日期";
             // 
             // lab_path
             // 

@@ -121,6 +121,8 @@
             this.btn_ReceiveDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
+            this.lab_Version = new System.Windows.Forms.Label();
+            this.lab_log = new System.Windows.Forms.Label();
             this.tableLayoutPanel33 = new System.Windows.Forms.TableLayoutPanel();
             this.pieChart_MachineStatus = new LiveCharts.WinForms.PieChart();
             this.tableLayoutPanel34 = new System.Windows.Forms.TableLayoutPanel();
@@ -250,7 +252,7 @@
             this.btn_Version.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_Version.FlatAppearance.BorderSize = 0;
             this.btn_Version.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Version.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_Version.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
             this.btn_Version.Location = new System.Drawing.Point(577, 3);
             this.btn_Version.Name = "btn_Version";
             this.btn_Version.Size = new System.Drawing.Size(53, 44);
@@ -1373,10 +1375,13 @@
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel6.ColumnCount = 1;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel6.ColumnCount = 3;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel6.Controls.Add(this.lab_UploadDataServiceStatus, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.lab_Version, 1, 0);
+            this.tableLayoutPanel6.Controls.Add(this.lab_log, 2, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(498, 635);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -1396,6 +1401,30 @@
             this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(482, 14);
             this.lab_UploadDataServiceStatus.TabIndex = 17;
             this.lab_UploadDataServiceStatus.Text = "正在查找数据上传服务运行状态";
+            // 
+            // lab_Version
+            // 
+            this.lab_Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_Version.AutoSize = true;
+            this.lab_Version.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_Version.ForeColor = System.Drawing.Color.White;
+            this.lab_Version.Location = new System.Drawing.Point(199, 5);
+            this.lab_Version.Name = "lab_Version";
+            this.lab_Version.Size = new System.Drawing.Size(139, 14);
+            this.lab_Version.TabIndex = 18;
+            this.lab_Version.Text = "当前版本：";
+            // 
+            // lab_log
+            // 
+            this.lab_log.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_log.AutoSize = true;
+            this.lab_log.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_log.ForeColor = System.Drawing.Color.White;
+            this.lab_log.Location = new System.Drawing.Point(345, 5);
+            this.lab_log.Name = "lab_log";
+            this.lab_log.Size = new System.Drawing.Size(141, 14);
+            this.lab_log.TabIndex = 19;
+            this.lab_log.Text = "lab_log";
             // 
             // tableLayoutPanel33
             // 
@@ -1710,6 +1739,8 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox txt_TotalRejectsCount;
         private System.Windows.Forms.Button btn_CompleteJobOrder;
+        private System.Windows.Forms.Label lab_Version;
+        private System.Windows.Forms.Label lab_log;
     }
 }
 
