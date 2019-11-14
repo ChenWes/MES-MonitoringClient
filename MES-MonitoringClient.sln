@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MES-MonitoringService", "ME
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MES-MonitoringClient-ManualTest", "MES-MonitoringClient-ManualTest\MES-MonitoringClient-ManualTest.csproj", "{C6AE8454-9447-4C4E-8D0F-8A75D5E9D25A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MES-Service-Defend", "MES-Service-Defend\MES-Service-Defend.csproj", "{B27CD34C-3669-4A80-B4BE-ED587A69E1EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
