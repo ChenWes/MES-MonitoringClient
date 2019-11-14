@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -21,11 +22,13 @@ namespace Mes_Update
         Timer install_timer = new Timer(); //安装定时器
         private string unloadName = null;//卸载程序进程名
         private string installName = null;//安装程序进程名
-        private string serviceName = "MES-MonitoringService";//服务程序进程名
+        private string serviceName = ConfigurationManager.AppSettings["serviceName"].ToString();//服务程序进程名
+        private string DefendServiceName = ConfigurationManager.AppSettings["DefendServiceName"].ToString();//守护服务程序进程名
         private string serverPath=null;//mes目录
-        private string service_folder = @"\Service";//Service文件夹
-        private string log_folder = @"\log";//log文件夹
-        private string uninsexe = @"C:\Program Files\MES-Monitoring-Client\unins000.exe";//卸载程序目录                                                                    
+        private string service_folder = ConfigurationManager.AppSettings["service_folder"].ToString();//Service文件夹
+        private string defendservice_folder = ConfigurationManager.AppSettings["defendservice_folder"].ToString();//DefendService文件夹
+        private string log_folder = ConfigurationManager.AppSettings["log_folder"].ToString();//log文件夹
+        private string uninsexe = @"C:\Program Files\MES-Monitoring-Client" + ConfigurationManager.AppSettings["uninsexe"].ToString();//卸载程序目录                                                                    
         private string processName = Process.GetCurrentProcess().ProcessName;   //当前程序名
         private int count = 0;//记时
         Process process = new Process();//定义新进程
@@ -46,7 +49,7 @@ namespace Mes_Update
             if (arg.Length == 8)
             {
                 this.txt_Download.Text = arg[0];//下载路径
-                uninsexe = arg[1] + @"\unins000.exe";//卸载路径
+                uninsexe = arg[1] + ConfigurationManager.AppSettings["uninsexe"].ToString();//卸载路径
                 this.lab_Version.Text = "版本编号：" + arg[2];
                 this.lab_Name.Text = "版本名称：" + arg[3];
                 this.lab_Desc.Text = "版本描述：" + arg[4];
@@ -138,11 +141,12 @@ namespace Mes_Update
         //等待卸载完成定时器
         private void unins_Tick(object o, EventArgs e)
         {
+            unload_timer.Stop();
             //判断卸载进程及卸载程序是否存在
             if (Process.GetProcessesByName(unloadName).Length <= 0&&!File.Exists(uninsexe))
             {
 
-                unload_timer.Enabled = false;
+                //unload_timer.Enabled = false;
                 lab_out.Text = "卸载成功,准备删除残留文件，等待后台服务关闭";
                 //System.Threading.Thread.Sleep(2000);
                 deleteService_timer.Enabled = true;
@@ -154,7 +158,9 @@ namespace Mes_Update
                 EnableBtn(true);    
                 this.lab_out.Text = "取消卸载，如取消更新，请注意重启后台服务";
             }
-           
+            unload_timer.Start();
+
+
         }
         /// <summary>
         /// 等待删除完成定时器
@@ -162,22 +168,39 @@ namespace Mes_Update
         //等待删除完成
         private void delete_Tick(object o, EventArgs e)
         {
+            deleteService_timer.Stop();
             count++;
-            if (Process.GetProcessesByName(serviceName).Length <= 0&&!ifexistInstall(installName))
+            if (Process.GetProcessesByName(DefendServiceName).Length <= 0&&!ifexistInstall(installName))
             {
-                deleteService_timer.Enabled = false;
-                string path = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + service_folder;
-                DeleteDir(path);
-                this.lab_out.Text ="成功删除："+ path;
-                MessageBox.Show("成功删除："+ path);
+                //deleteService_timer.Enabled = false;
+                string dspath = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + defendservice_folder;
+                DeleteDir(dspath);
+                this.lab_out.Text ="成功删除："+ dspath;
+                MessageBox.Show("成功删除："+ dspath);
+
+               
+            }
+            //删除service
+            if (Process.GetProcessesByName(serviceName).Length <= 0 && !ifexistInstall(installName))
+            {
+                string spath = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + service_folder;
+                DeleteDir(spath);
+                this.lab_out.Text = "成功删除：" + spath;
+                MessageBox.Show("成功删除：" + spath);
                 install();
                 return;
             }
+           
             //30s后强制结束服务
-            if (Process.GetProcessesByName(serviceName).Length > 0 && count > 30)
+            if (Process.GetProcessesByName(DefendServiceName).Length > 0 && count > 30)
             {
-                KillProgram();
+                KillProgram(DefendServiceName);
+                if (Process.GetProcessesByName(serviceName).Length > 0 && count > 30)
+                {
+                    KillProgram(serviceName);
+                }
             }
+            deleteService_timer.Start();
         }
         /// <summary>
         /// 提示下载完成,是否继续安装
@@ -229,9 +252,10 @@ namespace Mes_Update
         //等待安装完成
         private void install_Tick(object o, EventArgs e)
         {
+            install_timer.Stop();
             if (Process.GetProcessesByName(installName).Length <= 0&& Process.GetProcessesByName(serviceName).Length >0)
             {
-                install_timer.Enabled = false;
+                //install_timer.Enabled = false;
                 File.Delete(this.txt_SavePath.Text);
                 this.lab_out.Text = "更新成功";
                 MessageBox.Show("更新成功");
@@ -241,10 +265,11 @@ namespace Mes_Update
             else if(Process.GetProcessesByName(installName).Length <= 0&& Process.GetProcessesByName(serviceName).Length <=0)
             {
                 EnableBtn(true);
-                install_timer.Enabled = false;
+                //install_timer.Enabled = false;
                 this.lab_out.Text = "取消安装";
                 return;
             }
+            install_timer.Start();
         }
         /// <summary>
         /// 定义进度条响应事件
@@ -272,9 +297,13 @@ namespace Mes_Update
             {
                 if (!ifexistInstall(uninsexe))
                 {
-                    if(Process.GetProcessesByName(serviceName).Length > 0)
+                    if (Process.GetProcessesByName(DefendServiceName).Length > 0)
                     {
-                        KillProgram();
+                        KillProgram(DefendServiceName);
+                    }
+                    if (Process.GetProcessesByName(serviceName).Length > 0)
+                    {
+                        KillProgram(serviceName);
                     }
                     process.StartInfo.FileName = uninsexe;
                     process.Start();
@@ -383,7 +412,7 @@ namespace Mes_Update
         /// <summary>
         /// 关闭服务进程
         /// </summary>
-        private void KillProgram()
+        private void KillProgram(string serviceName)
         {
             try
             {
