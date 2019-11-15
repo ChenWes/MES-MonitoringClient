@@ -110,18 +110,26 @@ namespace MES_Service_Defend
         void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             _timer.Stop();
-            //如果服务状态为停止，则重新启动服务
-            if (!CheckSericeStart(toWatchServiceName))
+            //检测服务有没安装
+            if (CheckSericeInstaller(toWatchServiceName))
             {
-                Common.LogHandler.WriteLog("检测到服务已停止");
-                StartService(toWatchServiceName);
-            }
-            //如果存在Unacked，则重启服务
-            else if (CheckUnacked())
-            {
-                StopService(toWatchServiceName);
-                StartService(toWatchServiceName);
+                //如果服务状态为停止，则重新启动服务
+                if (!CheckSericeStart(toWatchServiceName))
+                {
+                    Common.LogHandler.WriteLog("检测到服务已停止");
+                    StartService(toWatchServiceName);
+                }
+                //如果存在Unacked，则重启服务
+                else if (CheckUnacked())
+                {
+                    StopService(toWatchServiceName);
+                    StartService(toWatchServiceName);
 
+                }
+            }
+            else
+            {
+                Common.LogHandler.WriteLog("服务未安装");
             }
             _timer.Start();
         }
@@ -167,7 +175,34 @@ namespace MES_Service_Defend
                 Common.LogHandler.WriteLog("StartService出错：", ex);
             
             }
+           
         }
+        /// <summary>
+        /// 判断服务有无安装
+        /// </summary>
+        /// <param name="serviceName"></param>
+        private bool CheckSericeInstaller(string serviceName)
+        {
+            bool result = false;
+            try
+            {
+                ServiceController[] services = ServiceController.GetServices();
+                foreach (ServiceController service in services)
+                {
+                    if (service.ServiceName.Trim() == serviceName.Trim())
+                    {
+                        result = true;
+                    }
+                }
+             
+            }
+            catch(Exception ex)
+            {
+                Common.LogHandler.WriteLog("CheckSericeInstaller出错：", ex);
+            }
+            return result;
+        }
+
         /// <summary>
         /// 判断服务有无启动
         /// </summary>
