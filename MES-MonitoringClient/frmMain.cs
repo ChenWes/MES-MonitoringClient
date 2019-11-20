@@ -827,9 +827,10 @@ namespace MES_MonitoringClient
                 DataModel.JobOrder CurrentProcessJobOrder = ProcessJobOrderList[orderindex];
                 if (CurrentProcessJobOrder != null)
                 {
-                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder = CurrentProcessJobOrder;
+                    //mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder = CurrentProcessJobOrder;
                     mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList = ProcessJobOrderList;
-                    ShowJobOrderBiaisInfo();
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(orderindex);
+                    //ShowJobOrderBiaisInfo();
                     UpdateMachineStatusTotalDateTime();
                     UpdateMachineCompleteDateTime();
                     UpdateMachineNondefectiveCount();
