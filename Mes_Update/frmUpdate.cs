@@ -141,26 +141,22 @@ namespace Mes_Update
         //等待卸载完成定时器
         private void unins_Tick(object o, EventArgs e)
         {
-            unload_timer.Stop();
             //判断卸载进程及卸载程序是否存在
             if (Process.GetProcessesByName(unloadName).Length <= 0&&!File.Exists(uninsexe))
             {
 
-                //unload_timer.Enabled = false;
+                unload_timer.Enabled = false;
                 lab_out.Text = "卸载成功,准备删除残留文件，等待后台服务关闭";
                 //System.Threading.Thread.Sleep(2000);
                 deleteService_timer.Enabled = true;
                 deleteService_timer.Tick += new EventHandler(delete_Tick);
-                return;
             }
              else if(Process.GetProcessesByName(unloadName).Length <= 0 && File.Exists(uninsexe))
             {
                 EnableBtn(true);    
                 this.lab_out.Text = "取消卸载，如取消更新，请注意重启后台服务";
+               
             }
-            unload_timer.Start();
-
-
         }
         /// <summary>
         /// 等待删除完成定时器
@@ -168,39 +164,43 @@ namespace Mes_Update
         //等待删除完成
         private void delete_Tick(object o, EventArgs e)
         {
-            deleteService_timer.Stop();
             count++;
-            if (Process.GetProcessesByName(DefendServiceName).Length <= 0&&!ifexistInstall(installName))
+            if (count<=30)
             {
-                //deleteService_timer.Enabled = false;
-                string dspath = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + defendservice_folder;
-                DeleteDir(dspath);
-                this.lab_out.Text ="成功删除："+ dspath;
-                MessageBox.Show("成功删除："+ dspath);
+                if (Process.GetProcessesByName(DefendServiceName).Length <= 0 && Process.GetProcessesByName(serviceName).Length <= 0 && !ifexistInstall(installName))
+                {
+                    deleteService_timer.Enabled = false;
+                    string dspath = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + defendservice_folder;
+                    if (Directory.Exists(dspath))
+                    {
+                        DeleteDir(dspath);
+                        this.lab_out.Text = "成功删除：" + dspath;
+                        MessageBox.Show("成功删除：" + dspath);
+                    }
+                    string spath = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + service_folder;
+                    if (Directory.Exists(spath))
+                    {
+                        DeleteDir(spath);
+                        this.lab_out.Text = "成功删除：" + spath;
+                        MessageBox.Show("成功删除：" + spath);
+                    }
+                    install();
+                }
+            }
 
-               
-            }
-            //删除service
-            if (Process.GetProcessesByName(serviceName).Length <= 0 && !ifexistInstall(installName))
+            else
             {
-                string spath = serverPath.Substring(0, serverPath.LastIndexOf(@"\")) + service_folder;
-                DeleteDir(spath);
-                this.lab_out.Text = "成功删除：" + spath;
-                MessageBox.Show("成功删除：" + spath);
-                install();
-                return;
-            }
-           
-            //30s后强制结束服务
-            if (Process.GetProcessesByName(DefendServiceName).Length > 0 && count > 30)
-            {
-                KillProgram(DefendServiceName);
-                if (Process.GetProcessesByName(serviceName).Length > 0 && count > 30)
+                //30s后强制结束服务
+                if (Process.GetProcessesByName(DefendServiceName).Length > 0)
+                {
+                    KillProgram(DefendServiceName);
+                }
+                if (Process.GetProcessesByName(serviceName).Length > 0)
                 {
                     KillProgram(serviceName);
                 }
-            }
-            deleteService_timer.Start();
+                count = 0;
+            } 
         }
         /// <summary>
         /// 提示下载完成,是否继续安装
@@ -252,24 +252,24 @@ namespace Mes_Update
         //等待安装完成
         private void install_Tick(object o, EventArgs e)
         {
-            install_timer.Stop();
             if (Process.GetProcessesByName(installName).Length <= 0&& Process.GetProcessesByName(serviceName).Length >0)
             {
-                //install_timer.Enabled = false;
+                install_timer.Enabled = false;
+                //删除安装包
                 File.Delete(this.txt_SavePath.Text);
                 this.lab_out.Text = "更新成功";
                 MessageBox.Show("更新成功");
+               
                 //KillUpdateProgram();
                 return;
             }
             else if(Process.GetProcessesByName(installName).Length <= 0&& Process.GetProcessesByName(serviceName).Length <=0)
             {
+                install_timer.Enabled = false;
                 EnableBtn(true);
-                //install_timer.Enabled = false;
                 this.lab_out.Text = "取消安装";
                 return;
             }
-            install_timer.Start();
         }
         /// <summary>
         /// 定义进度条响应事件
