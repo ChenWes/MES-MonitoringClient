@@ -36,6 +36,19 @@ namespace MES_MonitoringClient
         //操作类型（修改状态、上班、下班等）
         public OperationType MC_OperationType;
 
+        public enum OperationType_Prompt
+        {
+            StartJobOrder,
+            StopJobOrder,
+            finishJobOrder,
+            ResumeJobOrder,
+            ChangeMachineType,
+            Quit
+        }
+        //类型提示
+        public OperationType_Prompt MC_OperationType_Prompt;
+
+        
         //是否主动取消刷卡
         public bool MC_IsManualCancel = false;
 
@@ -78,6 +91,35 @@ namespace MES_MonitoringClient
                 if (!serialPort1.IsOpen)
                 {
                     serialPort1.Open();
+                }
+                //判断操作类型
+                if( MC_OperationType_Prompt  == OperationType_Prompt.finishJobOrder)
+                {
+                    this.lab_ScanStatus.Text = "即将完成工单，请确认刷卡";
+                }
+                else if(MC_OperationType_Prompt == OperationType_Prompt.ResumeJobOrder)
+                {
+                    this.lab_ScanStatus.Text = "即将恢复工单，请确认刷卡";
+                }
+                else if(MC_OperationType_Prompt == OperationType_Prompt.StopJobOrder)
+                {
+                    this.lab_ScanStatus.Text = "即将暂停工单，请确认刷卡";
+                }
+                else if (MC_OperationType_Prompt == OperationType_Prompt.StartJobOrder)
+                {
+                    this.lab_ScanStatus.Text = "即将开始工单，请确认刷卡";
+                }
+                else if (MC_OperationType_Prompt == OperationType_Prompt.ChangeMachineType)
+                {
+                    this.lab_ScanStatus.Text = "即将更改机器状态，请确认刷卡";
+                }
+                else if (MC_OperationType_Prompt == OperationType_Prompt.Quit)
+                {
+                    this.lab_ScanStatus.Text = "即将退出系统，请确认刷卡";
+                }
+                else
+                {
+                    this.lab_ScanStatus.Text = "等待刷卡";
                 }
             }
             catch (Exception ex)

@@ -14,9 +14,19 @@ namespace MES_MonitoringClient
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
+			bool ret = false;
+			System.Threading.Mutex running = new System.Threading.Mutex(true, Application.ProductName, out ret);
+			if (ret)
+			{
+			Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmMain());
-        }
+			}
+			else
+			{
+				MessageBox.Show("程序运行中，请不要同时运行本程序！", "提示！", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				Application.Exit();
+			}
+		}
     }
 }
