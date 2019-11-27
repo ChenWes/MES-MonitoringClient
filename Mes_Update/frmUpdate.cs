@@ -477,7 +477,7 @@ namespace Mes_Update
             try
             {
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.Timeout = 5000;
+                req.Timeout = 20000;
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 if (resp.StatusCode == HttpStatusCode.OK)
                 {

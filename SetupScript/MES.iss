@@ -124,6 +124,7 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Newtons
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Topshelf.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Topshelf.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 ;如果有日志，则复制日志，如果没有，则不复制
