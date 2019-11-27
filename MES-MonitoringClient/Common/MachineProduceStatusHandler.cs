@@ -800,7 +800,12 @@ namespace MES_MonitoringClient.Common
                 }
                 else
                 {
-
+                    //记录未处理工单
+                    List<DataModel.JobOrder> unProcessJobOrderList = new List<DataModel.JobOrder>();
+                    foreach (var jobOrderItem in ProcessJobOrderList)
+                    {
+                        unProcessJobOrderList.Add(jobOrderItem);
+                    }
                     foreach (var MouldProductItem in CurrentMouldProduct.ProductList)
                     {
                         //查询出对应的工单先，查看工单有多少个
@@ -817,6 +822,9 @@ namespace MES_MonitoringClient.Common
                             {
                                 //找到工单
                                 var getFilterJobOrder = findJobOrderListByProductCode[i];
+
+                                //移除已处理工单
+                                unProcessJobOrderList.Remove(getFilterJobOrder);
 
                                 //找到它本身的生产数量、不良品数量（所有机器都算进来）
                                 var sumProductCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
@@ -844,6 +852,11 @@ namespace MES_MonitoringClient.Common
                                 ProcessJobOrderMachineProduceCount(getFilterJobOrder, MouldProductItem.ProductCount);
                             }
                         }
+                    }
+                    foreach (var jobOrderItem in unProcessJobOrderList)
+                    {
+                        //处理加1
+                        ProcessJobOrderMachineProduceCount(jobOrderItem, 1);
                     }
                 }
 
