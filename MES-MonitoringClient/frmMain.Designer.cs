@@ -35,6 +35,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_Title = new System.Windows.Forms.Label();
             this.lab_DateTime = new System.Windows.Forms.Label();
+            this.btn_Version = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
             this.btn_Start = new System.Windows.Forms.Button();
@@ -120,6 +121,8 @@
             this.btn_ReceiveDataLight = new MES_MonitoringClient.Common.Component.CircularButton();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_UploadDataServiceStatus = new System.Windows.Forms.Label();
+            this.lab_Version = new System.Windows.Forms.Label();
+            this.lab_log = new System.Windows.Forms.Label();
             this.tableLayoutPanel33 = new System.Windows.Forms.TableLayoutPanel();
             this.pieChart_MachineStatus = new LiveCharts.WinForms.PieChart();
             this.tableLayoutPanel34 = new System.Windows.Forms.TableLayoutPanel();
@@ -192,9 +195,10 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
-            this.tableLayoutPanel1.ColumnCount = 8;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34F));
+            this.tableLayoutPanel1.ColumnCount = 9;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
@@ -203,12 +207,13 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
             this.tableLayoutPanel1.Controls.Add(this.lab_Title, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lab_DateTime, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel5, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Version, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel5, 8, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 5, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -241,6 +246,19 @@
             this.lab_DateTime.Size = new System.Drawing.Size(72, 16);
             this.lab_DateTime.TabIndex = 9;
             this.lab_DateTime.Text = "当前时间";
+            // 
+            // btn_Version
+            // 
+            this.btn_Version.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Version.FlatAppearance.BorderSize = 0;
+            this.btn_Version.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Version.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
+            this.btn_Version.Location = new System.Drawing.Point(577, 3);
+            this.btn_Version.Name = "btn_Version";
+            this.btn_Version.Size = new System.Drawing.Size(53, 44);
+            this.btn_Version.TabIndex = 14;
+            this.btn_Version.UseVisualStyleBackColor = true;
+            this.btn_Version.Click += new System.EventHandler(this.btn_Version_Click);
             // 
             // panel5
             // 
@@ -1357,10 +1375,13 @@
             // tableLayoutPanel6
             // 
             this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel6.ColumnCount = 1;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel6.ColumnCount = 3;
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel6.Controls.Add(this.lab_UploadDataServiceStatus, 0, 0);
+            this.tableLayoutPanel6.Controls.Add(this.lab_Version, 1, 0);
+            this.tableLayoutPanel6.Controls.Add(this.lab_log, 2, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(498, 635);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -1380,6 +1401,30 @@
             this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(482, 14);
             this.lab_UploadDataServiceStatus.TabIndex = 17;
             this.lab_UploadDataServiceStatus.Text = "正在查找数据上传服务运行状态";
+            // 
+            // lab_Version
+            // 
+            this.lab_Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_Version.AutoSize = true;
+            this.lab_Version.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_Version.ForeColor = System.Drawing.Color.White;
+            this.lab_Version.Location = new System.Drawing.Point(199, 5);
+            this.lab_Version.Name = "lab_Version";
+            this.lab_Version.Size = new System.Drawing.Size(139, 14);
+            this.lab_Version.TabIndex = 18;
+            this.lab_Version.Text = "当前版本：";
+            // 
+            // lab_log
+            // 
+            this.lab_log.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_log.AutoSize = true;
+            this.lab_log.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_log.ForeColor = System.Drawing.Color.White;
+            this.lab_log.Location = new System.Drawing.Point(345, 5);
+            this.lab_log.Name = "lab_log";
+            this.lab_log.Size = new System.Drawing.Size(141, 14);
+            this.lab_log.TabIndex = 19;
+            this.lab_log.Text = "lab_log";
             // 
             // tableLayoutPanel33
             // 
@@ -1681,6 +1726,7 @@
         private System.Windows.Forms.Button btn_Start;
         private System.Windows.Forms.Button btn_Stop;
         private System.Windows.Forms.Button btn_Recovery;
+        private System.Windows.Forms.Button btn_Version;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
@@ -1693,6 +1739,8 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox txt_TotalRejectsCount;
         private System.Windows.Forms.Button btn_CompleteJobOrder;
+        private System.Windows.Forms.Label lab_Version;
+        private System.Windows.Forms.Label lab_log;
     }
 }
 
