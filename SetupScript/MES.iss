@@ -26,7 +26,8 @@ OutputBaseFilename=MES-MonitoringClient-Setup
 ;压缩包
 Compression=lzma
 SolidCompression=yes
-;安装包图标文件SetupIconFile=D:\document\mes\setup.ico
+;安装包图标文件
+SetupIconFile=D:\document\mes\setup.ico
 ;安装时需要提供管理员权限
 PrivilegesRequired=admin
 ;许可文件
@@ -105,6 +106,26 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log4
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Microsoft.Diagnostics.Tracing.EventSource.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Microsoft.Diagnostics.Tracing.EventSource.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 
+;DefendService的文件夹
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\log4net.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\log4net.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MES-Service-Defend.exe"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MES-Service-Defend.exe.config"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MES-Service-Defend.pdb"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MongoDB.Bson.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MongoDB.Bson.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MongoDB.Driver.Core.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MongoDB.Driver.Core.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MongoDB.Driver.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Newtonsoft.Json.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Newtonsoft.Json.pdb"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Topshelf.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
+Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Topshelf.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 ;如果有日志，则复制日志，如果没有，则不复制
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
 
@@ -129,11 +150,16 @@ Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 ;以下的方式可以直接运行，其中有Components:Service;当选中了服务才会安装服务      
 ;Flags:postinstall点击完成后，才会进行服务的安装，因为在处理RabbitMQ的服务器参数时，不会直接替换参数的
 Filename: "{app}\Service\MES-MonitoringService.exe"; Description:"安装并运行MES客户端数据上传服务"; Parameters: " install start"; Components:Service; Flags:postinstall runhidden hidewizard;
+;安装Defend服务
+Filename: "{app}\DefendService\MES-Service-Defend.exe"; Description:"安装并运行MES服务端守护服务"; Parameters: " install start"; Components:DefendService; Flags:postinstall runhidden hidewizard;
 ;安装完成后启动应用
 Filename: "{app}\Client\MES-MonitoringClient.exe"; Description: "{cm:LaunchProgram,MES Monitoring Client}"; Flags:postinstall skipifsilent unchecked      
 
 
 [UninstallRun]
+;卸载守护服务
+Filename: {sys}\sc.exe; Parameters: "stop MESServiceDefend" ; Flags: runhidden; Components:DefendService
+Filename: {sys}\sc.exe; Parameters: "delete MESServiceDefend" ; Flags: runhidden; Components:DefendService
 ;卸载时，停止服务并删除服务
 Filename: {sys}\sc.exe; Parameters: "stop MESUploadDataService" ; Flags: runhidden; Components:Service
 Filename: {sys}\sc.exe; Parameters: "delete MESUploadDataService" ; Flags: runhidden; Components:Service
@@ -155,7 +181,8 @@ Name: "custom";     Description: "Custom Installation"; Flags: iscustom
 
 [Components]
 Name: "Client";     Description: "应用界面";  Types: normaltype custom
-Name: "Service";    Description: "后台服务";  Types: normaltype custom
+Name: "Service";    Description: "后台服务";  Types: normaltype custom
+Name: "DefendService";    Description: "守护服务";  Types: normaltype custom
 
 [Code]
 var CustomPage: TInputQueryWizardPage;
@@ -225,7 +252,21 @@ begin
         StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'" />', True);
         //application need check mongodb service replace to 1  
         StringChangeEx(str, '<add key="CheckMongoDBService" value="0"/>','<add key="CheckMongoDBService" value="1"/>', True);        
+        SaveStringToFile(strFilename, str, False);    
+        
+         //守护服务
+      strFilename := ExpandConstant('{app}\DefendService\MES-Service-Defend.exe.config');
+
+      if FileExists(strFilename) then
+      begin
+        // Replace the values in the .config file and save it
+        LoadStringFromFile(strFilename, str);
+        //通过替换完整的key，找到所有<add key="RabbitMQServerHostName" value="localhost"/>内容并替换成以下值
+        StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost" />','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'" />', True); 
+        //application need check mongodb service replace to 1  
+        //StringChangeEx(str, '<add key="CheckMongoDBService" value="0"/>','<add key="CheckMongoDBService" value="1"/>', True);        
         SaveStringToFile(strFilename, str, False);             
+      end;         
       end;
    end;
 end;
