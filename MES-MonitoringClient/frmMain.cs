@@ -291,6 +291,7 @@ namespace MES_MonitoringClient
                     {
                         frmScanRFID newfrmScanRFID = new frmScanRFID();
                         newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.OffPower;
+                        newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.Quit;
                         newfrmScanRFID.ShowDialog();
 
                         if (!newfrmScanRFID.MC_IsManualCancel)
@@ -1504,6 +1505,7 @@ namespace MES_MonitoringClient
                 frmScanRFID newfrmScanRFID = new frmScanRFID();
                 //指定为选择机器状态
                 newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ChangeMachineType;
+                newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.ChangeMachineType;
                 newfrmScanRFID.ShowDialog();
 
                 //如果主动返回则不处理
@@ -1660,6 +1662,7 @@ namespace MES_MonitoringClient
                 //{
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StartJobOrder;
+                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.StartJobOrder;
                     newfrmScanRFID.ShowDialog();
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
@@ -1710,6 +1713,7 @@ namespace MES_MonitoringClient
                 {
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StopJobOrder;
+                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.StopJobOrder;
                     newfrmScanRFID.ShowDialog();
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
@@ -1753,10 +1757,18 @@ namespace MES_MonitoringClient
         {
             try
             {
+                if(this.txt_NoCompletedCount.Text.Trim() !="0" && txt_NoCompletedCount.Text.Trim() != "")
+                {
+                    if (MessageBox.Show("未完成数量为"+ this.txt_NoCompletedCount.Text.Trim() + "，请确认是否继续完成工单", "完成工单提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+                    {
+                        return;
+                    }
+                }
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
                 {
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StopJobOrder;
+                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.finishJobOrder;
                     newfrmScanRFID.ShowDialog();
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
@@ -1804,6 +1816,7 @@ namespace MES_MonitoringClient
                 //{
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ResumeJobOrder;
+                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.ResumeJobOrder;
                     newfrmScanRFID.ShowDialog();
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
