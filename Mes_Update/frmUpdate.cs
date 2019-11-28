@@ -28,7 +28,8 @@ namespace Mes_Update
         private string service_folder = ConfigurationManager.AppSettings["service_folder"].ToString();//Service文件夹
         private string defendservice_folder = ConfigurationManager.AppSettings["defendservice_folder"].ToString();//DefendService文件夹
         private string log_folder = ConfigurationManager.AppSettings["log_folder"].ToString();//log文件夹
-        private string uninsexe = @"C:\Program Files\MES-Monitoring-Client" + ConfigurationManager.AppSettings["uninsexe"].ToString();//卸载程序目录                                                                    
+        private string uninsexe = @"C:\Program Files\MES-Monitoring-Client" + ConfigurationManager.AppSettings["uninsexe"].ToString();//卸载程序目录  
+        private int timerInterval = Convert.ToInt32(ConfigurationManager.AppSettings["timerInterval"])*1000;//卸载程序目录 
         private string processName = Process.GetCurrentProcess().ProcessName;   //当前程序名
         private int count = 0;//记时
         Process process = new Process();//定义新进程
@@ -477,7 +478,7 @@ namespace Mes_Update
             try
             {
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.Timeout = 20000;
+                req.Timeout = timerInterval;
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 if (resp.StatusCode == HttpStatusCode.OK)
                 {
