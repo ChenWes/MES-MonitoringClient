@@ -346,7 +346,7 @@ namespace MES_MonitoringClient.Common
                 #region 当前记录操作
 
                 //当前时间
-                StartDateTime = DateTime.Now.ToLocalTime();
+                StartDateTime = EndDateTime;
 
                 //更新状态
                 MachineStatusID = newMachineStatusID;
@@ -393,7 +393,7 @@ namespace MES_MonitoringClient.Common
                         LastOperationMachineStatusLogID = dataEntity.Id.ToString();
 
                         //最后时间
-                        EndDateTime = System.DateTime.Now.ToLocalTime();
+                        //EndDateTime = System.DateTime.Now.ToLocalTime();
                         //计算相隔时间（秒数）
                         int useTotalSecond = 0;
                         if (dataEntity.StartDateTime != null)

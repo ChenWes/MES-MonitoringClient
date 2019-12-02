@@ -298,6 +298,8 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+                //处理生产中的工单
+                StopOtherJobOrder();
                 //传入的工单参数
                 ProcessJobOrderList = jobOrderList;
 
@@ -357,7 +359,33 @@ namespace MES_MonitoringClient.Common
                 throw ex;
             }
         }
+        /// <summary>
+        /// 暂停所有生产中的工单
+        /// </summary>
+        public void StopOtherJobOrder()
+        {
+            try
+            {
+                //处理生产中的工单
+                List<DataModel.JobOrder> startedJobOrders = ((List<DataModel.JobOrder>)Common.JobOrderHelper.GetAllJobOrder()).FindAll(x => x.Status == "Producing");
+                //更新至数据库
+                foreach (DataModel.JobOrder jobOrderItem in startedJobOrders)
+                {
+                    //找到没结束的处理记录
+                    var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
+                    //结束时间为当前时间
+                    findMachineProcessLog.ProduceEndDate = System.DateTime.Now;
+                    jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
+                    //需要返回值，并更新回class
+                    DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         /// <summary>
         /// 切换当前工单
         /// </summary>

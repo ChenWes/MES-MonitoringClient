@@ -790,7 +790,7 @@ namespace MES_MonitoringClient
                 #region 机器状态对比饼图
 
                 //显示标签
-                Func<ChartPoint, string> labelPoint = chartPoint => string.Format("{0}", string.Format("{0:D2}时:{1:D2}分:{2:D2}秒", TimeSpan.FromSeconds(chartPoint.Y).Hours, TimeSpan.FromSeconds(chartPoint.Y).Minutes, TimeSpan.FromSeconds(chartPoint.Y).Seconds, TimeSpan.FromSeconds(chartPoint.Y).Milliseconds));
+                Func<ChartPoint, string> labelPoint = chartPoint => string.Format("{0}", string.Format("{0:D2}天{1:D2}时{2:D2}分{3:D2}秒", TimeSpan.FromSeconds(chartPoint.Y).Days, TimeSpan.FromSeconds(chartPoint.Y).Hours, TimeSpan.FromSeconds(chartPoint.Y).Minutes, TimeSpan.FromSeconds(chartPoint.Y).Seconds, TimeSpan.FromSeconds(chartPoint.Y).Milliseconds));
                 SeriesCollection seriesViews = new SeriesCollection();
 
                 var converter = new System.Windows.Media.BrushConverter();
