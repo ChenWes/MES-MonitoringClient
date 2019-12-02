@@ -1826,11 +1826,18 @@ namespace MES_MonitoringClient
                         List<DataModel.JobOrder> jobOrderList = newfrmScanRFID.MC_frmChangeJobOrderPara;
                         if (jobOrderList == null || jobOrderList.Count == 0) throw new Exception("未选择工单！");
 
-                        //设置订单，无论是开始还是恢复
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
+						if (btn_StatusLight.Text != "生产中")
+						{
+						//设置订单，无论是开始还是恢复
+						mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
+						}
+						else
+						{
+						MessageBox.Show("工单生产中，请先暂停工单后再选择工单", "提示");
+						}
 
-                        //找到生产中状态
-                        DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());
+					//找到生产中状态
+					DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());
 
                         //更改状态
                         mc_MachineStatusHander.ChangeStatus(
