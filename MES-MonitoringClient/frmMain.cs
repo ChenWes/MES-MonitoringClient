@@ -1658,41 +1658,49 @@ namespace MES_MonitoringClient
         {
             try
             {
-                //if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
-                //{
-                    frmScanRFID newfrmScanRFID = new frmScanRFID();
-                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StartJobOrder;
-                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.StartJobOrder;
-                    newfrmScanRFID.ShowDialog();
+				if (btn_StatusLight.Text != "生产中")
+				{
+					//if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
+					//{
+					frmScanRFID newfrmScanRFID = new frmScanRFID();
+					newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StartJobOrder;
+					newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.StartJobOrder;
+					newfrmScanRFID.ShowDialog();
 
-                    if (!newfrmScanRFID.MC_IsManualCancel)
-                    {
-                        //获取订单
-                        List<DataModel.JobOrder> jobOrderList = newfrmScanRFID.MC_frmChangeJobOrderPara;
-                        if (jobOrderList == null || jobOrderList.Count == 0) throw new Exception("未选择工单！");
+					if (!newfrmScanRFID.MC_IsManualCancel)
+					{
+						//获取订单
+						List<DataModel.JobOrder> jobOrderList = newfrmScanRFID.MC_frmChangeJobOrderPara;
+						if (jobOrderList == null || jobOrderList.Count == 0) throw new Exception("未选择工单！");
 
-                        //设置订单，无论是开始还是恢复
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
+						//设置订单，无论是开始还是恢复
+						mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
 
-                        //找到生产中状态
-                        DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());
+						//找到生产中状态
+						DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());
 
-                        //更改状态
-                        mc_MachineStatusHander.ChangeStatus(
-                            machineStatus._id,
-                            machineStatus.MachineStatusCode,
-                            machineStatus.MachineStatusName,
-                            machineStatus.MachineStatusDesc,
-                            machineStatus.StatusColor,
+						//更改状态
+						mc_MachineStatusHander.ChangeStatus(
+							machineStatus._id,
+							machineStatus.MachineStatusCode,
+							machineStatus.MachineStatusName,
+							machineStatus.MachineStatusDesc,
+							machineStatus.StatusColor,
 
-                            newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
-                            newfrmScanRFID.MC_EmployeeInfo._id
-                        );
+							newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
+							newfrmScanRFID.MC_EmployeeInfo._id
+						);
 
 
-                    }
-                //}
-            }
+					}
+				}
+				else
+				{
+					MessageBox.Show("工单【生产中】，请【暂停】工单后，重新选择【开始工单】", "提示");
+				}
+
+				//}
+			}
             catch (Exception ex)
             {
                 Common.LogHandler.WriteLog("开始工单错误", ex);
@@ -1812,9 +1820,11 @@ namespace MES_MonitoringClient
         {
             try
             {
-                //if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
-                //{
-                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+				if (btn_StatusLight.Text != "生产中")
+				{ 
+					//if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
+					//{
+					frmScanRFID newfrmScanRFID = new frmScanRFID();
                     newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.ResumeJobOrder;
                     newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.ResumeJobOrder;
                     newfrmScanRFID.ShowDialog();
@@ -1826,15 +1836,11 @@ namespace MES_MonitoringClient
                         List<DataModel.JobOrder> jobOrderList = newfrmScanRFID.MC_frmChangeJobOrderPara;
                         if (jobOrderList == null || jobOrderList.Count == 0) throw new Exception("未选择工单！");
 
-						if (btn_StatusLight.Text != "生产中")
-						{
+						
 						//设置订单，无论是开始还是恢复
 						mc_MachineStatusHander.mc_MachineProduceStatusHandler.SetJobOrder(jobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
-						}
-						else
-						{
-						MessageBox.Show("工单生产中，请先暂停工单后再选择工单", "提示");
-						}
+					
+						
 
 					//找到生产中状态
 					DataModel.MachineStatus machineStatus = Common.MachineStatusHelper.GetMachineStatusByCode(Common.MachineStatus.eumMachineStatus.Produce.ToString());
@@ -1851,9 +1857,14 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo._id
                         );
                     }
-                //}
-            }
-            catch (Exception ex)
+				}
+				else
+				{
+					MessageBox.Show("工单【生产中】，请【暂停】工单后，重新选择【恢复工单】", "提示");
+				}
+				//}
+			}
+			catch (Exception ex)
             {
                 Common.LogHandler.WriteLog("恢复工单错误", ex);
                 ShowErrorMessage("恢复工单错误，原因是：" + ex.Message, "恢复工单错误");
