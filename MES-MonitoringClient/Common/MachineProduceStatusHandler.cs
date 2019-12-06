@@ -348,8 +348,8 @@ namespace MES_MonitoringClient.Common
 
                 //更新完的class
                 ProcessJobOrderList = newJobOrderList;
-
-
+                //更新周期
+                LastProductUseMilliseconds = 0;
                 //当前工单
                 ChangeCurrentProcessJobOrder(0);
 
@@ -420,7 +420,8 @@ namespace MES_MonitoringClient.Common
 
                 //界面显示基本消息
                 SettingJobOrderBasicInfo();
-
+                //更新实际周期
+                UpdateMachineLifeCycleTimeDelegate();
                 //计算预计完成时间
                 SettingMachineCompleteDateTime();
 
@@ -754,7 +755,7 @@ namespace MES_MonitoringClient.Common
         public void SettingMachineLifeCycleTime()
         {
             SettingMachineNoCompleteCount();
-
+            UpdateMachineCompleteDateTimeDelegate();
             UpdateMachineLifeCycleTimeDelegate();
         }
 
@@ -817,6 +818,7 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+                CurrentMouldProduct = Common.MouldProductHelper.GetMmouldProductByMouldCode(CurrentProcessJobOrder.MouldCode);
                 if (CurrentMouldProduct == null)
                 {
                     //每次处理数量                                    
