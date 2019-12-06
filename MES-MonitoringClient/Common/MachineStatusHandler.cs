@@ -298,7 +298,7 @@ namespace MES_MonitoringClient.Common
             try
             {
                 #region 上一条未完成的机器状态日志记录
-
+                DateTime Now= DateTime.Now.ToLocalTime();
                 //重新开始计时器及线程
                 if (DateTimeThreadClass != null && TTimerClass != null)
                 {
@@ -311,7 +311,7 @@ namespace MES_MonitoringClient.Common
                     TTimerClass = null;
 
                     //更新最后时间
-                    EndDateTime = DateTime.Now.ToLocalTime();
+                    EndDateTime = Now;
 
                     //保存至DB中/*******************/嫁动率的主要数据来源
 
@@ -346,7 +346,7 @@ namespace MES_MonitoringClient.Common
                 #region 当前记录操作
 
                 //当前时间
-                StartDateTime = DateTime.Now.ToLocalTime();
+                StartDateTime = Now;
 
                 //更新状态
                 MachineStatusID = newMachineStatusID;
@@ -393,7 +393,7 @@ namespace MES_MonitoringClient.Common
                         LastOperationMachineStatusLogID = dataEntity.Id.ToString();
 
                         //最后时间
-                        EndDateTime = System.DateTime.Now.ToLocalTime();
+                        EndDateTime = Now;
                         //计算相隔时间（秒数）
                         int useTotalSecond = 0;
                         if (dataEntity.StartDateTime != null)
