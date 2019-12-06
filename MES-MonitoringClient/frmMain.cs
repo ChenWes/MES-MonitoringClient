@@ -951,7 +951,8 @@ namespace MES_MonitoringClient
                     txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
 
                     //产品
-                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
+                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode+"(1出"+getUnits().ToString()+")";
+                    
                     txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductDescription;
                     //txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
 
@@ -1042,8 +1043,14 @@ namespace MES_MonitoringClient
                     //标准生命周期
                     double dbl_PlanWorkTime = 0;
                     double.TryParse(txt_StandardProduceSecond.Text.Trim(), out dbl_PlanWorkTime);
+                    //实际生命周期
+                    double RealWorkTime=0; 
+                    RealWorkTime = mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds / 1000.000;
+                    //未完成数
+                    int uncompletednum = 0;
+                    int.TryParse(this.txt_NoCompletedCount.Text,out uncompletednum);
                     //找到本机
-                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id);
+                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.FindLast(t => t.MachineID == MC_Machine._id);
 
                     if (machineProcessLog.ProduceStartDate != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount > 0)
                     {
@@ -1051,8 +1058,23 @@ namespace MES_MonitoringClient
                         txt_StartDateTime.Text = machineProcessLog.ProduceStartDate.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
 
                         //预计完成工时间
-                        System.DateTime PlanDateTime = machineProcessLog.ProduceStartDate.AddSeconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount * dbl_PlanWorkTime);
-                        txt_PlanCompleteDateTime.Text = PlanDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                        System.DateTime PlanDateTime;
+                        int units = getUnits();
+                        if (units > 0)
+                        {
+                            if (RealWorkTime > 0)
+                            {
+                                PlanDateTime = DateTime.Now.AddSeconds(uncompletednum * RealWorkTime / units);
+                            }
+                            else
+                            {
+                                PlanDateTime = DateTime.Now.AddSeconds(uncompletednum * dbl_PlanWorkTime / units);
+
+                            }
+                            txt_PlanCompleteDateTime.Text = PlanDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                        }
+                       
+                        
                     }
 
                 }
@@ -1111,6 +1133,29 @@ namespace MES_MonitoringClient
                 }
             }
         }
+        /// <summary>
+        /// 获取1出几
+        /// </summary>
+        private int getUnits()
+        {
+            DataModel.MouldProduct CurrentMouldProduct= Common.MouldProductHelper.GetMmouldProductByMouldCode(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldCode);
+            if (CurrentMouldProduct == null)
+            {
+               return  1;
+            }
+            else
+            {
+                var MouldProductItem = CurrentMouldProduct.ProductList.Find(t => t.ProductCode== mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode);
+                if (MouldProductItem != null)
+                {
+                    return MouldProductItem.ProductCount;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        }
 
         /// <summary>
         /// 未完成数量处理
@@ -1137,6 +1182,8 @@ namespace MES_MonitoringClient
                 txt_TotalRejectsCount.Text = sumErrorCount.ToString();
                 //未完成数量
                 txt_NoCompletedCount.Text = (orderCount - sumProductCount + sumErrorCount).ToString();
+                //1出几
+                txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode+ "（1出" +getUnits().ToString()+"）";
             }
         }
 
