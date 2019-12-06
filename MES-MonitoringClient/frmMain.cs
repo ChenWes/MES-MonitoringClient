@@ -100,6 +100,7 @@ namespace MES_MonitoringClient
         //获取服务端新版本信息
         string jsonString = null;
         private int click =0;
+        private int Registerclick = 0;
         private DateTime clickTime ;
         //安装包名
         //private string nstallation_package_name = null;
@@ -1643,10 +1644,56 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void btn_MachineName_Click(object sender, EventArgs e)
         {
-            frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
-            newfrmMachineRegister.ShowDialog();
+            Common.MachineRegisterInfoHelper machineRegisterInfoHelperClass = new Common.MachineRegisterInfoHelper();
+            DataModel.Machine machineInfoEntity = machineRegisterInfoHelperClass.GetMachineRegisterInfo();
 
-            CheckMachineRegister();
+            if (machineInfoEntity == null)
+            {
+                frmMachineRegister newfrmMachineRegister = new frmMachineRegister();
+                newfrmMachineRegister.ShowDialog();
+                CheckMachineRegister();
+            }
+            else
+            {
+                if (Registerclick > 0)
+                {
+                    Registerclick = 0;
+                    TimeSpan span = DateTime.Now - clickTime;
+                    if (span.Milliseconds < SystemInformation.DoubleClickTime)
+                    {
+                        //输入密码
+                        string response = Microsoft.VisualBasic.Interaction.InputBox("请输入密码", "用户输入");
+                        if (response.Trim() == "")
+                        {
+                            return;
+                        }
+                        if (response.Trim() == password)
+                        {
+                            //同步数据
+                            if (Common.SyncDataHelper.SyncData_AllCollection())
+                            {
+                                MessageBox.Show("基础数据同步成功");
+                            }
+                            else
+                            {
+                                MessageBox.Show("基础数据同步失败");
+                            }
+                           
+                        }
+                        else
+                        {
+                            MessageBox.Show("密码错误");
+                        }
+                    }
+                }
+                else
+                {
+                    Registerclick++;
+                    clickTime = DateTime.Now;
+                }
+            }
+           
+            
         }
 
         /// <summary>
@@ -1965,7 +2012,7 @@ namespace MES_MonitoringClient
 
                     //如果存在机器注册信息，则显示机器名，也不可再注册
                     btn_MachineName.Text = machineInfoEntity.MachineCode;
-                    btn_MachineName.Enabled = false;
+                    //btn_MachineName.Enabled = false;
                 }
             }
             catch (Exception ex)
