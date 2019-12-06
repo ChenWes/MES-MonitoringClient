@@ -1062,16 +1062,24 @@ namespace MES_MonitoringClient
                         int units = getUnits();
                         if (units > 0)
                         {
-                            if (RealWorkTime > 0)
+                            if (uncompletednum > 0)
                             {
-                                PlanDateTime = DateTime.Now.AddSeconds(uncompletednum * RealWorkTime / units);
+                                if (RealWorkTime > 0)
+                                {
+                                    PlanDateTime = DateTime.Now.AddSeconds(uncompletednum * RealWorkTime / units);
+                                }
+                                else
+                                {
+                                    PlanDateTime = DateTime.Now.AddSeconds(uncompletednum * dbl_PlanWorkTime / units);
+
+                                }
+                                txt_PlanCompleteDateTime.Text = PlanDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
                             }
                             else
                             {
-                                PlanDateTime = DateTime.Now.AddSeconds(uncompletednum * dbl_PlanWorkTime / units);
-
+                                txt_PlanCompleteDateTime.Text = DateTime.Now.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
                             }
-                            txt_PlanCompleteDateTime.Text = PlanDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                            
                         }
                        
                         
