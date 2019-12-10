@@ -56,7 +56,7 @@ namespace MES_MonitoringClient
         //向串口6发送的默认信号（默认是AA10086）
         static string mc_DefaultSignal = Common.ConfigFileHandler.GetAppConfig("SendDataDefaultSignal");
         //必须的串口端口
-        static string[] mc_DefaultRequiredSerialPortName = Common.ConfigFileHandler.GetAppConfig("CheckSerialPort").Split(',');
+        static string[] mc_DefaultRequiredSerialPortName = {Common.ConfigFileHandler.GetAppConfig("RFIDSerialPortName"), Common.ConfigFileHandler.GetAppConfig("SendDataSerialPortName") };
 
         //时间线程方法
         Thread DateTimeThreadClass = null;
