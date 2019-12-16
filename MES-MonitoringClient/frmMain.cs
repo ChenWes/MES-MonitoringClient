@@ -853,10 +853,10 @@ namespace MES_MonitoringClient
             Common.LastJobOrderHandler lastJobOrderHandler = new Common.LastJobOrderHandler();
             List<DataModel.JobOrder> ProcessJobOrderList = lastJobOrderHandler.GetJLastJobOrderList();
             
-            if (ProcessJobOrderList!=null)
+            if (ProcessJobOrderList!=null && ProcessJobOrderList.Count>orderindex)
             {
                 DataModel.JobOrder CurrentProcessJobOrder = ProcessJobOrderList[orderindex];
-                if (CurrentProcessJobOrder != null)
+                if (CurrentProcessJobOrder != null )
                 {
                     //mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder = CurrentProcessJobOrder;
                     mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList = ProcessJobOrderList;
@@ -949,7 +949,10 @@ namespace MES_MonitoringClient
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
                 {
                     //工单号
-                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID + " ==> " + mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
+                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
+
+                    //送达部门
+                    this.txt_Dept.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ServiceDepartment;
 
                     //产品
                     txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode+"(1出"+getUnits().ToString()+")";
@@ -983,6 +986,8 @@ namespace MES_MonitoringClient
                     //工单号
                     txt_JobOrderCode.Text = "";
 
+                    //送达部门
+                    this.txt_Dept.Text = "";
                     //产品
                     txt_MaterialCode.Text = "";
                     txt_MaterialName.Text = "";
