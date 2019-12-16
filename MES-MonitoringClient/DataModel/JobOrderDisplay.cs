@@ -72,11 +72,13 @@ namespace MES_MonitoringClient.DataModel
         
 		public string Status { get; set; }
 
-		//[BsonElement("MachineID")]
-		//public string MachineID { get; set; }
+        public string ServiceDepartment { get; set; }
 
-        
+        //[BsonElement("MachineID")]
+        //public string MachineID { get; set; }
+
+
         //blic int Sort { get; set; }
-       
+
     }
 }

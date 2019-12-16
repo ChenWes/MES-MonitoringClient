@@ -132,7 +132,7 @@ namespace MES_MonitoringClient.Common
 
 
                 //一种写法，暂时未关联到客户外部信息
-                var getdocument = (from jo in jobOrderCollection.AsQueryable()                                       
+                var getdocument = (from jo in jobOrderCollection.AsQueryable()
                                    where jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() || jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString()
                                    orderby jo.Sort, jo.DeliveryDate
                                    select new DataModel.JobOrderDisplay
@@ -158,6 +158,7 @@ namespace MES_MonitoringClient.Common
 
                                        Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
                                        ID = jo._id,
+                                       ServiceDepartment = jo.ServiceDepartment,
                                    }
                                 ).ToList();
 
@@ -208,7 +209,8 @@ namespace MES_MonitoringClient.Common
 
                                        Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
 									   ID = jo._id,
-								   }
+                                       ServiceDepartment = jo.ServiceDepartment,
+                                   }
                                 ).ToList();
 
 
@@ -264,6 +266,7 @@ namespace MES_MonitoringClient.Common
 
                                            Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
                                            ID = jo._id,
+                                           ServiceDepartment = jo.ServiceDepartment,
                                        }
                                     ).ToList();
 
@@ -299,7 +302,7 @@ namespace MES_MonitoringClient.Common
 
                                            Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
                                            ID = jo._id,
-
+                                           ServiceDepartment = jo.ServiceDepartment,
                                        }
                                     ).ToEnumerable().ToList();
 
