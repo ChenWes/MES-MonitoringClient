@@ -1760,8 +1760,8 @@ namespace MES_MonitoringClient
         {
             try
             {
-				if (btn_StatusLight.Text != "生产中")
-				{
+				//if (btn_StatusLight.Text != "生产中")
+				//{
 					//if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
 					//{
 					frmScanRFID newfrmScanRFID = new frmScanRFID();
@@ -1795,11 +1795,11 @@ namespace MES_MonitoringClient
 
 
 					}
-				}
-				else
-				{
-					MessageBox.Show("工单【生产中】，请【暂停】工单后，重新选择【开始工单】", "提示");
-				}
+				//}
+				//else
+				//{
+				//	MessageBox.Show("工单【生产中】，请【暂停】工单后，重新选择【开始工单】", "提示");
+				//}
 
 				//}
 			}
@@ -1922,8 +1922,8 @@ namespace MES_MonitoringClient
         {
             try
             {
-				if (btn_StatusLight.Text != "生产中")
-				{ 
+				//if (btn_StatusLight.Text != "生产中")
+				//{ 
 					//if (mc_MachineStatusHander.MachineStatusCode != Common.MachineStatus.eumMachineStatus.Produce.ToString())
 					//{
 					frmScanRFID newfrmScanRFID = new frmScanRFID();
@@ -1959,11 +1959,11 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo._id
                         );
                     }
-				}
-				else
-				{
-					MessageBox.Show("工单【生产中】，请【暂停】工单后，重新选择【恢复工单】", "提示");
-				}
+				//}
+				//else
+				//{
+				//	MessageBox.Show("工单【生产中】，请【暂停】工单后，重新选择【恢复工单】", "提示");
+				//}
 				//}
 			}
 			catch (Exception ex)
