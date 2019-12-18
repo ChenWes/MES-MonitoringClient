@@ -102,6 +102,8 @@ namespace MES_MonitoringClient
         private int click =0;
         private int Registerclick = 0;
         private DateTime clickTime ;
+        private bool listening = false;//是否没有执行完invoke相关操作
+        private bool closing = false;//是否正在关闭串口，执行Application.DoEvents，并阻止再次invoke
         //安装包名
         //private string nstallation_package_name = null;
         //使用WebClient下载
@@ -341,6 +343,9 @@ namespace MES_MonitoringClient
                         //串口关闭
                         if (serialPort6.IsOpen)
                         {
+                            closing = true;
+
+                            while (listening) Application.DoEvents();
                             serialPort6.Close();
                         }
 
@@ -1271,8 +1276,10 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void serialPort6_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
+            if (closing) return;//如果正在关闭，忽略操作，直接返回，尽快的完成串口监听线程的一次循环
             try
-            {                
+            {
+                listening = true;//设置标记，已经开始处理数据。
                 System.IO.Ports.SerialPort COM = (System.IO.Ports.SerialPort)sender;
 
                 StringBuilder stringBuilder = new StringBuilder();
@@ -1351,6 +1358,13 @@ namespace MES_MonitoringClient
                 //响铃并显示异常给用户
                 //System.Media.SystemSounds.Beep.Play();                
                 Common.LogHandler.WriteLog("串口6获取数据错误", ex);
+            }
+            finally
+
+            {
+
+                listening = false;//用完了，ui可以关闭串口
+
             }
         }
 
