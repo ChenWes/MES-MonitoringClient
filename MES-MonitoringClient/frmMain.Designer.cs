@@ -72,8 +72,10 @@
             this.txt_StandardProduceSecond = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.tableLayoutPanel19 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel35 = new System.Windows.Forms.TableLayoutPanel();
             this.label8 = new System.Windows.Forms.Label();
             this.txt_JobOrderCode = new System.Windows.Forms.TextBox();
+            this.tableLayoutPanel36 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel20 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel26 = new System.Windows.Forms.TableLayoutPanel();
             this.txt_NoCompletedCount = new System.Windows.Forms.TextBox();
@@ -133,6 +135,8 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label21 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
+            this.txt_Dept = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -149,6 +153,8 @@
             this.tableLayoutPanel28.SuspendLayout();
             this.tableLayoutPanel27.SuspendLayout();
             this.tableLayoutPanel19.SuspendLayout();
+            this.tableLayoutPanel35.SuspendLayout();
+            this.tableLayoutPanel36.SuspendLayout();
             this.tableLayoutPanel20.SuspendLayout();
             this.tableLayoutPanel26.SuspendLayout();
             this.tableLayoutPanel25.SuspendLayout();
@@ -736,18 +742,33 @@
             // tableLayoutPanel19
             // 
             this.tableLayoutPanel19.ColumnCount = 2;
-            this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 85F));
-            this.tableLayoutPanel19.Controls.Add(this.label8, 0, 0);
-            this.tableLayoutPanel19.Controls.Add(this.txt_JobOrderCode, 1, 0);
+            this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel19.Controls.Add(this.tableLayoutPanel35, 0, 0);
+            this.tableLayoutPanel19.Controls.Add(this.tableLayoutPanel36, 1, 0);
             this.tableLayoutPanel19.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel19.Location = new System.Drawing.Point(4, 35);
             this.tableLayoutPanel19.Name = "tableLayoutPanel19";
             this.tableLayoutPanel19.RowCount = 1;
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
             this.tableLayoutPanel19.Size = new System.Drawing.Size(482, 39);
             this.tableLayoutPanel19.TabIndex = 16;
+            // 
+            // tableLayoutPanel35
+            // 
+            this.tableLayoutPanel35.ColumnCount = 2;
+            this.tableLayoutPanel35.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel35.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel35.Controls.Add(this.label8, 0, 0);
+            this.tableLayoutPanel35.Controls.Add(this.txt_JobOrderCode, 1, 0);
+            this.tableLayoutPanel35.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel35.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel35.Name = "tableLayoutPanel35";
+            this.tableLayoutPanel35.RowCount = 1;
+            this.tableLayoutPanel35.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel35.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
+            this.tableLayoutPanel35.Size = new System.Drawing.Size(235, 33);
+            this.tableLayoutPanel35.TabIndex = 0;
             // 
             // label8
             // 
@@ -755,11 +776,11 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(4, 12);
+            this.label8.Location = new System.Drawing.Point(17, 9);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(63, 14);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "工单编号";
+            this.label8.Size = new System.Drawing.Size(35, 14);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "工单";
             // 
             // txt_JobOrderCode
             // 
@@ -769,8 +790,24 @@
             this.txt_JobOrderCode.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txt_JobOrderCode.Location = new System.Drawing.Point(75, 6);
             this.txt_JobOrderCode.Name = "txt_JobOrderCode";
-            this.txt_JobOrderCode.Size = new System.Drawing.Size(404, 26);
-            this.txt_JobOrderCode.TabIndex = 1;
+            this.txt_JobOrderCode.Size = new System.Drawing.Size(159, 26);
+            this.txt_JobOrderCode.TabIndex = 2;
+            // 
+            // tableLayoutPanel36
+            // 
+            this.tableLayoutPanel36.ColumnCount = 2;
+            this.tableLayoutPanel36.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel36.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel36.Controls.Add(this.txt_Dept, 0, 0);
+            this.tableLayoutPanel36.Controls.Add(this.label23, 0, 0);
+            this.tableLayoutPanel36.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel36.Location = new System.Drawing.Point(244, 3);
+            this.tableLayoutPanel36.Name = "tableLayoutPanel36";
+            this.tableLayoutPanel36.RowCount = 1;
+            this.tableLayoutPanel36.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel36.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
+            this.tableLayoutPanel36.Size = new System.Drawing.Size(235, 33);
+            this.tableLayoutPanel36.TabIndex = 1;
             // 
             // tableLayoutPanel20
             // 
@@ -1550,11 +1587,34 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(403, 102);
+            this.label21.Location = new System.Drawing.Point(399, 102);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(24, 64);
             this.label21.TabIndex = 2;
             this.label21.Text = "当\r\n班\r\n人\r\n员";
+            // 
+            // label23
+            // 
+            this.label23.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label23.ForeColor = System.Drawing.Color.White;
+            this.label23.Location = new System.Drawing.Point(3, 9);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(63, 14);
+            this.label23.TabIndex = 2;
+            this.label23.Text = "送达部门";
+            // 
+            // txt_Dept
+            // 
+            this.txt_Dept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Dept.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_Dept.Enabled = false;
+            this.txt_Dept.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_Dept.Location = new System.Drawing.Point(73, 3);
+            this.txt_Dept.Name = "txt_Dept";
+            this.txt_Dept.Size = new System.Drawing.Size(159, 26);
+            this.txt_Dept.TabIndex = 3;
             // 
             // frmMain
             // 
@@ -1594,7 +1654,10 @@
             this.tableLayoutPanel27.ResumeLayout(false);
             this.tableLayoutPanel27.PerformLayout();
             this.tableLayoutPanel19.ResumeLayout(false);
-            this.tableLayoutPanel19.PerformLayout();
+            this.tableLayoutPanel35.ResumeLayout(false);
+            this.tableLayoutPanel35.PerformLayout();
+            this.tableLayoutPanel36.ResumeLayout(false);
+            this.tableLayoutPanel36.PerformLayout();
             this.tableLayoutPanel20.ResumeLayout(false);
             this.tableLayoutPanel26.ResumeLayout(false);
             this.tableLayoutPanel26.PerformLayout();
@@ -1683,8 +1746,6 @@
         private System.Windows.Forms.TextBox txt_MouldCode;
         private System.Windows.Forms.TextBox txt_MaterialCode;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txt_JobOrderCode;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel24;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel23;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel21;
@@ -1741,6 +1802,12 @@
         private System.Windows.Forms.Button btn_CompleteJobOrder;
         private System.Windows.Forms.Label lab_Version;
         private System.Windows.Forms.Label lab_log;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel35;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel36;
+        private System.Windows.Forms.TextBox txt_JobOrderCode;
+        private System.Windows.Forms.TextBox txt_Dept;
+        private System.Windows.Forms.Label label23;
     }
 }
 

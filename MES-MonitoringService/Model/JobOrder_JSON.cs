@@ -75,6 +75,19 @@ namespace MES_MonitoringService.Model
         [BsonElement("MachineAcceptLog")]
         public List<string> MachineAcceptLog { get; set; }
 
+        [BsonElement("ProductDescription")]
+        public string ProductDescription { get; set; }
+
+
+
+        [BsonElement("MouldCode")]
+        public string MouldCode { get; set; }
+
+        [BsonElement("Sort")]
+        public int Sort { get; set; }
+
+        [BsonElement("ServiceDepartment")]
+        public string ServiceDepartment { get; set; }
 
         public JobOrder_JSON(Model.JobOrder jobOrder)
         {
@@ -119,6 +132,10 @@ namespace MES_MonitoringService.Model
             }
 
             MachineAcceptLog = jobOrder.MachineAcceptLog;
+            ProductDescription = jobOrder.ProductDescription;
+            MouldCode = jobOrder.MouldCode;
+            Sort = jobOrder.Sort;
+            ServiceDepartment = jobOrder.ServiceDepartment;
         }
 
 

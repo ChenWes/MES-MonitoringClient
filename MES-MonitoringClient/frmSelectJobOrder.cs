@@ -131,7 +131,7 @@ namespace MES_MonitoringClient
 			try
 			{
 
-                int rowID = 16;
+                int rowID = dgv_JobOrder.ColumnCount-1;
 
 				
 				if (e.RowIndex > -1)
@@ -403,6 +403,11 @@ namespace MES_MonitoringClient
             sumNeedSecondDesc_Column.HeaderText = "预计生产时间";
             sumNeedSecondDesc_Column.DataPropertyName = "sumNeedSecondDesc";
             dgv_JobOrder.Columns.Add(sumNeedSecondDesc_Column);
+
+            DataGridViewTextBoxColumn ServiceDepartment_Column = new DataGridViewTextBoxColumn();
+            ServiceDepartment_Column.HeaderText = "送达部门";
+            ServiceDepartment_Column.DataPropertyName = "ServiceDepartment";
+            dgv_JobOrder.Columns.Add(ServiceDepartment_Column);
 
             DataGridViewTextBoxColumn id_Column = new DataGridViewTextBoxColumn();
             id_Column.HeaderText = "ID";
