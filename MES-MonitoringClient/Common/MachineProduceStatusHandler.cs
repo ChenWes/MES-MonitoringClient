@@ -867,7 +867,11 @@ namespace MES_MonitoringClient.Common
 
                                     //处理加1
                                     ProcessJobOrderMachineProduceCount(getFilterJobOrder, MouldProductItem.ProductCount);
-
+                                    //同产品不同工单，不加1处理
+                                    for (int j = i + 1; j < findJobOrderListByProductCode.Count; j++)
+                                    {
+                                        unProcessJobOrderList.Remove(findJobOrderListByProductCode[j]);
+                                    }
                                     break;
                                 }
                             }
