@@ -34,6 +34,7 @@
             this.txt_CardID = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel_Test = new System.Windows.Forms.Panel();
+            this.label5 = new System.Windows.Forms.Label();
             this.txt_LoopOrder = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -67,6 +68,12 @@
             this.btn_Operation = new System.Windows.Forms.Button();
             this.serialPort4 = new System.IO.Ports.SerialPort(this.components);
             this.txt_log = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel_Test.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,6 +111,11 @@
             // panel_Test
             // 
             this.panel_Test.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_Test.Controls.Add(this.label19);
+            this.panel_Test.Controls.Add(this.textBox2);
+            this.panel_Test.Controls.Add(this.label9);
+            this.panel_Test.Controls.Add(this.textBox1);
+            this.panel_Test.Controls.Add(this.label5);
             this.panel_Test.Controls.Add(this.txt_LoopOrder);
             this.panel_Test.Controls.Add(this.label10);
             this.panel_Test.Controls.Add(this.label18);
@@ -136,8 +148,17 @@
             this.panel_Test.Controls.Add(this.txt_ASignal);
             this.panel_Test.Location = new System.Drawing.Point(14, 58);
             this.panel_Test.Name = "panel_Test";
-            this.panel_Test.Size = new System.Drawing.Size(774, 188);
+            this.panel_Test.Size = new System.Drawing.Size(774, 228);
             this.panel_Test.TabIndex = 3;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 175);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(53, 12);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "持续发送";
             // 
             // txt_LoopOrder
             // 
@@ -411,7 +432,7 @@
             // 
             // btn_Operation
             // 
-            this.btn_Operation.Location = new System.Drawing.Point(36, 267);
+            this.btn_Operation.Location = new System.Drawing.Point(27, 306);
             this.btn_Operation.Name = "btn_Operation";
             this.btn_Operation.Size = new System.Drawing.Size(75, 23);
             this.btn_Operation.TabIndex = 0;
@@ -431,11 +452,61 @@
             this.txt_log.TabIndex = 4;
             this.txt_log.Text = "";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(393, 306);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "持续发送";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(65, 172);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(680, 21);
+            this.textBox1.TabIndex = 5;
+            this.textBox1.Text = "CFCECFCEECCEECCECFCECFCECFCEECCEECCECFCECFCCFCEECCEECCECFCECFCECFCEECCEECCECFCECF" +
+    "CECFCEECCEECCECFCECFCEC";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(10, 204);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(53, 12);
+            this.label9.TabIndex = 6;
+            this.label9.Text = "时间间隔";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(69, 201);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(28, 21);
+            this.textBox2.TabIndex = 7;
+            this.textBox2.Text = "1";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(103, 204);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(17, 12);
+            this.label19.TabIndex = 8;
+            this.label19.Text = "秒";
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1011, 345);
+            this.ClientSize = new System.Drawing.Size(1011, 381);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.txt_log);
             this.Controls.Add(this.panel_Test);
             this.Controls.Add(this.label1);
@@ -492,6 +563,13 @@
         private System.Windows.Forms.TextBox txt_GSignal;
         private System.Windows.Forms.TextBox txt_GSecond;
         private System.Windows.Forms.RichTextBox txt_log;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

@@ -193,6 +193,97 @@ namespace MES_MonitoringClient_ManualTest
 
             return newArray;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+             
+            double interval = 1;
+            double.TryParse(this.textBox2.Text.Trim(), out interval);
+            this.timer1.Interval = (int)(interval*1000);
+            if (this.timer1.Enabled)
+            {
+                this.timer1.Enabled = false;
+                this.button1.Text = "开始";
+            }
+            else
+            {
+                this.timer1.Enabled = true;
+                this.button1.Text = "停止";
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            this.timer1.Stop();
+            try
+            {
+                Regex reg = new Regex(@"^[A-H]+$");
+                Match m = reg.Match(this.textBox1.Text.Trim());
+                if (!m.Success)
+                {
+                    MessageBox.Show("只允许输入[]字符");
+                    return;
+                }
+
+                //开始及结束                 
+                if (!SendTestSignal_Flag) { if (!serialPort4.IsOpen) serialPort4.Open(); }
+
+
+                int AllLength = this.textBox1.Text.Trim().Length - 1;
+                string OperSignal = this.textBox1.Text.Trim().Substring(OperIndex, 1);
+
+                txt_log.Multiline = true;
+                txt_log.ScrollBars = RichTextBoxScrollBars.Vertical;
+                txt_log.SelectionColor = System.Drawing.Color.Green;
+
+
+                switch (OperSignal)
+                {
+                    case "A":
+                        SendTestSignal(txt_ASignal.Text.Trim(), int.Parse(txt_ASecond.Text.Trim()));
+                        txt_log.AppendText(txt_ASignal.Text.Trim() + "\r");
+                        break;
+                    case "B":
+                        SendTestSignal(txt_BSignal.Text.Trim(), int.Parse(txt_BSecond.Text.Trim()));
+                        txt_log.AppendText(txt_BSignal.Text.Trim() + "\r");
+                        break;
+                    case "C":
+                        SendTestSignal(txt_CSignal.Text.Trim(), int.Parse(txt_CSecond.Text.Trim()));
+                        txt_log.AppendText(txt_CSignal.Text.Trim() + "\r");
+                        break;
+                    case "D":
+                        SendTestSignal(txt_DSignal.Text.Trim(), int.Parse(txt_DSecond.Text.Trim()));
+                        txt_log.AppendText(txt_DSignal.Text.Trim() + "\r");
+                        break;
+                    case "E":
+                        SendTestSignal(txt_ESignal.Text.Trim(), int.Parse(txt_ESecond.Text.Trim()));
+                        txt_log.AppendText(txt_ESignal.Text.Trim() + "\r");
+                        break;
+                    case "F":
+                        SendTestSignal(txt_FSignal.Text.Trim(), int.Parse(txt_FSecond.Text.Trim()));
+                        txt_log.AppendText(txt_FSignal.Text.Trim() + "\r");
+                        break;
+                    case "G":
+                        SendTestSignal(txt_GSignal.Text.Trim(), int.Parse(txt_GSecond.Text.Trim()));
+                        txt_log.AppendText(txt_GSignal.Text.Trim() + "\r");
+                        break;
+                    default:
+                        break;
+                }
+
+                OperIndex++;
+                if (OperIndex == AllLength) OperIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                this.timer1.Start();
+            }
+        
+        }
     }
 
 
