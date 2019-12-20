@@ -1735,29 +1735,9 @@ namespace MES_MonitoringClient
                     TimeSpan span = DateTime.Now - clickTime;
                     if (span.Milliseconds < SystemInformation.DoubleClickTime)
                     {
-                        //输入密码
-                        string response = Microsoft.VisualBasic.Interaction.InputBox("请输入密码", "用户输入");
-                        if (response.Trim() == "")
-                        {
-                            return;
-                        }
-                        if (response.Trim() == password)
-                        {
-                            //同步数据
-                            if (Common.SyncDataHelper.SyncData_AllCollection())
-                            {
-                                MessageBox.Show("基础数据同步成功");
-                            }
-                            else
-                            {
-                                MessageBox.Show("基础数据同步失败");
-                            }
-                           
-                        }
-                        else
-                        {
-                            MessageBox.Show("密码错误");
-                        }
+                            ThreadStart threadStart_SyncData = new ThreadStart(start_SyncData);//通过ThreadStart委托告诉子线程执行什么方法　　
+                            Thread thread_SyncData = new Thread(threadStart_SyncData);
+                            thread_SyncData.Start();//启动新线程
                     }
                 }
                 else
@@ -1769,7 +1749,55 @@ namespace MES_MonitoringClient
            
             
         }
-
+        /// <summary>
+        /// 同步基础表
+        /// </summary>
+        /// 开始同步
+        private void start_SyncData()
+        {
+            string name = this.btn_MachineName.Text;
+            try
+            {
+               
+                this.Invoke(new Action(() =>
+                {
+                    this.btn_MachineName.Text = "正在同步";
+                    this.btn_MachineName.Enabled = false;
+                }));
+                //同步
+                if (Common.SyncDataHelper.SyncData_AllCollection())
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        this.btn_MachineName.Text = "同步成功";
+                        ShowJobOrderBiaisInfo();
+                    }));
+                }
+                //4s后按钮值为初始值
+                Thread.Sleep(3000);
+                this.Invoke(new Action(() =>
+                {
+                    this.btn_MachineName.Text = name;
+                    this.btn_MachineName.Enabled = true;
+                }));
+               
+            }
+            catch
+            {
+                this.Invoke(new Action(() =>
+                {
+                    this.btn_MachineName.Text = "同步失败";
+                }));
+                Thread.Sleep(3000);
+                this.Invoke(new Action(() =>
+                {
+                    this.btn_MachineName.Text =name;
+                    this.btn_MachineName.Enabled = true;
+                }));
+               
+                return;
+            }
+        }
         /// <summary>
         /// 开始按钮
         /// </summary>
