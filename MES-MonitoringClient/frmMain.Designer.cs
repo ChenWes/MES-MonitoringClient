@@ -1100,6 +1100,7 @@
             this.txt_StartDateTime.Location = new System.Drawing.Point(73, 3);
             this.txt_StartDateTime.Name = "txt_StartDateTime";
             this.txt_StartDateTime.Size = new System.Drawing.Size(158, 26);
+            this.txt_StartDateTime.Enabled = false;
             this.txt_StartDateTime.TabIndex = 2;
             // 
             // label3

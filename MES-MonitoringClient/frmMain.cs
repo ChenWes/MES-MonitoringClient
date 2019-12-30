@@ -937,6 +937,10 @@ namespace MES_MonitoringClient
                             Dock = DockStyle.Fill,
                             BackColor = Color.WhiteSmoke
                         };
+                        if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID == item.JobOrderID)
+                        {
+                            jobOrderButton.BackColor = Color.PaleGreen;
+                        }
                         //事件
                         jobOrderButton.Click += new System.EventHandler(btnSelectJobOrder_click);
                         //将可用的工单动态用按钮的形式加载到表格中
