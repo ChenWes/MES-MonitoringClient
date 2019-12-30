@@ -45,6 +45,7 @@
             this.lab_CreatAt = new System.Windows.Forms.Label();
             this.lab_UpdateAt = new System.Windows.Forms.Label();
             this.lab_path = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // lab_downloadPath
@@ -76,7 +77,7 @@
             // 
             this.txt_SavePath.Location = new System.Drawing.Point(71, 217);
             this.txt_SavePath.Name = "txt_SavePath";
-            this.txt_SavePath.Size = new System.Drawing.Size(419, 21);
+            this.txt_SavePath.Size = new System.Drawing.Size(434, 21);
             this.txt_SavePath.TabIndex = 3;
             this.txt_SavePath.Text = "C:\\Program Files\\MES-Install-Pack\\MES-MonitoringClient-Setup.exe";
             // 
@@ -108,7 +109,7 @@
             // 
             // buttonInstall
             // 
-            this.buttonInstall.Location = new System.Drawing.Point(86, 360);
+            this.buttonInstall.Location = new System.Drawing.Point(86, 372);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(75, 23);
             this.buttonInstall.TabIndex = 7;
@@ -119,7 +120,7 @@
             // lab_out
             // 
             this.lab_out.AutoSize = true;
-            this.lab_out.Location = new System.Drawing.Point(84, 327);
+            this.lab_out.Location = new System.Drawing.Point(84, 341);
             this.lab_out.Name = "lab_out";
             this.lab_out.Size = new System.Drawing.Size(53, 12);
             this.lab_out.TabIndex = 8;
@@ -138,52 +139,52 @@
             this.lab_Version.AutoSize = true;
             this.lab_Version.Location = new System.Drawing.Point(13, 44);
             this.lab_Version.Name = "lab_Version";
-            this.lab_Version.Size = new System.Drawing.Size(71, 12);
+            this.lab_Version.Size = new System.Drawing.Size(41, 12);
             this.lab_Version.TabIndex = 10;
             this.lab_Version.Text = "版本号";
             // 
             // lab_Name
             // 
             this.lab_Name.AutoSize = true;
-            this.lab_Name.Location = new System.Drawing.Point(13, 74);
+            this.lab_Name.Location = new System.Drawing.Point(246, 44);
             this.lab_Name.Name = "lab_Name";
-            this.lab_Name.Size = new System.Drawing.Size(53, 12);
+            this.lab_Name.Size = new System.Drawing.Size(41, 12);
             this.lab_Name.TabIndex = 11;
             this.lab_Name.Text = "版本名";
             // 
             // lab_Desc
             // 
             this.lab_Desc.AutoSize = true;
-            this.lab_Desc.Location = new System.Drawing.Point(12, 98);
+            this.lab_Desc.Location = new System.Drawing.Point(13, 74);
             this.lab_Desc.Name = "lab_Desc";
-            this.lab_Desc.Size = new System.Drawing.Size(53, 12);
+            this.lab_Desc.Size = new System.Drawing.Size(29, 12);
             this.lab_Desc.TabIndex = 12;
             this.lab_Desc.Text = "描述";
             // 
             // lab_Remark
             // 
             this.lab_Remark.AutoSize = true;
-            this.lab_Remark.Location = new System.Drawing.Point(13, 125);
+            this.lab_Remark.Location = new System.Drawing.Point(13, 102);
             this.lab_Remark.Name = "lab_Remark";
             this.lab_Remark.Size = new System.Drawing.Size(65, 12);
             this.lab_Remark.TabIndex = 13;
-            this.lab_Remark.Text = "备注";
+            this.lab_Remark.Text = "备    注：";
             // 
             // lab_CreatAt
             // 
             this.lab_CreatAt.AutoSize = true;
-            this.lab_CreatAt.Location = new System.Drawing.Point(12, 151);
+            this.lab_CreatAt.Location = new System.Drawing.Point(12, 167);
             this.lab_CreatAt.Name = "lab_CreatAt";
-            this.lab_CreatAt.Size = new System.Drawing.Size(71, 12);
+            this.lab_CreatAt.Size = new System.Drawing.Size(53, 12);
             this.lab_CreatAt.TabIndex = 14;
             this.lab_CreatAt.Text = "创建日期";
             // 
             // lab_UpdateAt
             // 
             this.lab_UpdateAt.AutoSize = true;
-            this.lab_UpdateAt.Location = new System.Drawing.Point(12, 182);
+            this.lab_UpdateAt.Location = new System.Drawing.Point(12, 193);
             this.lab_UpdateAt.Name = "lab_UpdateAt";
-            this.lab_UpdateAt.Size = new System.Drawing.Size(77, 12);
+            this.lab_UpdateAt.Size = new System.Drawing.Size(53, 12);
             this.lab_UpdateAt.TabIndex = 15;
             this.lab_UpdateAt.Text = "更新日期";
             // 
@@ -196,11 +197,21 @@
             this.lab_path.TabIndex = 16;
             this.lab_path.Text = "卸载程序所在目录";
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.AcceptsTab = true;
+            this.richTextBox1.Location = new System.Drawing.Point(86, 102);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(419, 59);
+            this.richTextBox1.TabIndex = 19;
+            this.richTextBox1.Text = "";
+            // 
             // frmUpdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(657, 407);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.lab_path);
             this.Controls.Add(this.lab_UpdateAt);
             this.Controls.Add(this.lab_CreatAt);
@@ -247,6 +258,7 @@
         private System.Windows.Forms.Label lab_CreatAt;
         private System.Windows.Forms.Label lab_UpdateAt;
         private System.Windows.Forms.Label lab_path;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 

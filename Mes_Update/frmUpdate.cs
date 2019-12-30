@@ -54,7 +54,7 @@ namespace Mes_Update
                 this.lab_Version.Text = "版本编号：" + arg[2];
                 this.lab_Name.Text = "版本名称：" + arg[3];
                 this.lab_Desc.Text = "版本描述：" + arg[4];
-                this.lab_Remark.Text = "备    注：" + arg[5];
+                this.richTextBox1.Text =  arg[5];
                 this.lab_CreatAt.Text = "创建日期：" + arg[6];
                 this.lab_UpdateAt.Text = "更新日期：" + arg[7];
             }
@@ -110,7 +110,7 @@ namespace Mes_Update
                         {
                             Directory.CreateDirectory(this.txt_SavePath.Text.Substring(0, this.txt_SavePath.Text.LastIndexOf(@"\")));
                         }
-                        //判断链接是否可访问，5s延时
+                        //判断链接是否可访问，20s延时
                         if (CheckUrlVisit(this.txt_Download.Text.Trim()))
                         {
                             wc.Proxy = null;
@@ -210,7 +210,11 @@ namespace Mes_Update
         private void wc_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             
-            
+            if(new FileInfo(this.txt_SavePath.Text.Trim()).Length == 0)
+            {
+                MessageBox.Show("下载失败，请重试！");
+                return;
+            }
                 this.lab_out.Text = "下载完成";
                 this.buttonInstall.Enabled = true;
                //存在卸载程序
@@ -260,8 +264,7 @@ namespace Mes_Update
                 File.Delete(this.txt_SavePath.Text);
                 this.lab_out.Text = "更新成功";
                 MessageBox.Show("更新成功");
-               
-                //KillUpdateProgram();
+                KillUpdateProgram();
                 return;
             }
             else if(Process.GetProcessesByName(installName).Length <= 0&& Process.GetProcessesByName(serviceName).Length <=0)
@@ -447,7 +450,7 @@ namespace Mes_Update
             }
             return false;
         }
-       /* /// <summary>
+        /// <summary>
         /// 关闭系统进程
         /// </summary>
         private void KillUpdateProgram()
@@ -461,7 +464,7 @@ namespace Mes_Update
 
                 }
             }
-        }*/
+        }
         /// <summary>
         /// 控制按钮启用
         /// </summary>
@@ -478,6 +481,8 @@ namespace Mes_Update
             try
             {
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                req.Proxy = null;
+                req.Method = "HEAD";
                 req.Timeout = timerInterval;
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
                 if (resp.StatusCode == HttpStatusCode.OK)
