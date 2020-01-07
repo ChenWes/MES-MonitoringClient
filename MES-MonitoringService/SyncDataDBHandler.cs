@@ -89,7 +89,7 @@ namespace MES_MonitoringService
 
                     if (action.ToUpper() == ActionType.ADD.ToString())
                     {
-                        return SyncJobOrder_Add(collectionName, bsonDocument);
+                        return SyncJobOrder_Add(collectionName,id, bsonDocument);
                     }
                     else if (action.ToUpper() == ActionType.EDIT.ToString())
                     {
@@ -138,7 +138,7 @@ namespace MES_MonitoringService
 
                 if (action.ToUpper() == ActionType.ADD.ToString())
                 {
-                    return SyncEmployee_Add(collectionName, bsonDocument);
+                    return SyncEmployee_Add(collectionName,id, bsonDocument);
                 }
                 else if (action.ToUpper() == ActionType.EDIT.ToString())
                 {
@@ -220,11 +220,18 @@ namespace MES_MonitoringService
 
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
                 var filterID = new BsonDocument("_id", id);
-
-                bsonDocument.Remove("_id");
-                collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));
-
-
+                var getCollection = collection.Find(filterID).FirstOrDefault();
+                if (getCollection == null)
+                {
+                    //调用新增方法
+                    return SyncData_Add(collectionName, id, bsonDocument);
+                }
+                else
+                {
+                    //直接修改（移除_id，如果修改_id将出错）
+                    bsonDocument.Remove("_id");
+                    collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));
+                }
                 #endregion
 
                 return true;
@@ -277,7 +284,7 @@ namespace MES_MonitoringService
         /// <param name="collectionName"></param>
         /// <param name="bsonDocument"></param>
         /// <returns></returns>
-        public static bool SyncJobOrder_Add(string collectionName, BsonDocument bsonDocument)
+        public static bool SyncJobOrder_Add(string collectionName,string id, BsonDocument bsonDocument)
         {
             try
             {
@@ -287,9 +294,18 @@ namespace MES_MonitoringService
                 BsonElement syncFlag_BsonElement;
                 if (bsonDocument.TryGetElement("IsSyncToServer", out syncFlag_BsonElement) == false) bsonDocument.Add(new BsonElement("IsSyncToServer", false));
 
-                var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);                
-                collection.InsertOne(bsonDocument);
+                var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
+                var filterID = new BsonDocument("_id", id);
+                var getCollection = collection.Find(filterID).FirstOrDefault();
 
+                if (getCollection == null)
+                {
+                    collection.InsertOne(bsonDocument);
+                }
+                else
+                {
+                    SyncJobOrder_Edit(collectionName, id, bsonDocument);
+                }
                 #endregion
 
                 return true;
@@ -325,7 +341,7 @@ namespace MES_MonitoringService
                 if (getCollection == null)
                 {
                     //调用新增方法
-                    return SyncJobOrder_Add(collectionName, bsonDocument);
+                    return SyncJobOrder_Add(collectionName,id, bsonDocument);
                 }
                 else
                 {
@@ -358,7 +374,7 @@ namespace MES_MonitoringService
         /// <param name="collectionName"></param>
         /// <param name="bsonDocument"></param>
         /// <returns></returns>
-        public static bool SyncEmployee_Add(string collectionName, BsonDocument bsonDocument)
+        public static bool SyncEmployee_Add(string collectionName,string id, BsonDocument bsonDocument)
         {
             try
             {
@@ -367,8 +383,17 @@ namespace MES_MonitoringService
 
                 #region 新增
 
-                var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);                
-                collection.InsertOne(bsonDocument);
+                var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
+                var filterID = new BsonDocument("_id", id);
+                var getCollection = collection.Find(filterID).FirstOrDefault();
+                if (getCollection == null)
+                {
+                    collection.InsertOne(bsonDocument);
+                }
+                else
+                {
+                    SyncEmployee_Edit(collectionName, id, bsonDocument);
+                }
 
                 #endregion
 
@@ -398,10 +423,18 @@ namespace MES_MonitoringService
 
                 bsonDocument.Add(new BsonElement("IsSyncImage", false));
                 bsonDocument.Add(new BsonElement("LocalFileName", ""));
-                bsonDocument.Remove("_id");
-                collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));                
-
-
+                var getCollection = collection.Find(filterID).FirstOrDefault();
+                if (getCollection == null)
+                {
+                    //调用新增方法
+                    return SyncEmployee_Add(collectionName, id, bsonDocument);
+                }
+                else
+                {
+                    //直接修改（移除_id，如果修改_id将出错）
+                    bsonDocument.Remove("_id");
+                    collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));
+                }
                 #endregion
 
                 return true;
