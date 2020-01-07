@@ -312,8 +312,9 @@ namespace MES_MonitoringService
                     {
                         /*当上传至服务器以后，更改数据*/
                         /*---------------------------------------------------------*/
-                        //使用ID作为条件
-                        var filterID = Builders<BsonDocument>.Filter.Eq("_id", id);
+
+                        //使用整个对象作为条件
+                        var filterID = Builders<BsonDocument>.Filter.And(data);
                         //更改值为已上传
                         var update = Builders<BsonDocument>.Update.Set("IsSyncToServer", true);
                         //查找并修改文档
