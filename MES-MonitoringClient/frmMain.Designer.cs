@@ -136,6 +136,7 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label21 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.circleProgramBar = new MES_MonitoringClient.Common.Component.CircleProgramBar();
             this.txt_Dept = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -1471,7 +1472,7 @@
             this.tableLayoutPanel33.ColumnCount = 1;
             this.tableLayoutPanel33.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel33.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel33.Controls.Add(this.pieChart_MachineStatus, 0, 0);
+            this.tableLayoutPanel33.Controls.Add(this.circleProgramBar, 0, 0);
             this.tableLayoutPanel33.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel33.Location = new System.Drawing.Point(498, 319);
             this.tableLayoutPanel33.Name = "tableLayoutPanel33";
@@ -1480,6 +1481,23 @@
             this.tableLayoutPanel33.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 309F));
             this.tableLayoutPanel33.Size = new System.Drawing.Size(490, 310);
             this.tableLayoutPanel33.TabIndex = 8;
+
+            // 
+            // circleProgramBar
+            // 
+            this.circleProgramBar.BottomColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.circleProgramBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.circleProgramBar.FinishedColor = System.Drawing.Color.Red;
+            this.circleProgramBar.Font = new System.Drawing.Font("宋体", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.circleProgramBar.ForeColor = System.Drawing.Color.White;
+            this.circleProgramBar.Location = new System.Drawing.Point(4, 4);
+            this.circleProgramBar.MaxValue = 100;
+            this.circleProgramBar.Name = "circleProgramBar";
+            this.circleProgramBar.Progress = 0;
+            this.circleProgramBar.Size = new System.Drawing.Size(482, 302);
+            this.circleProgramBar.TabIndex = 0;
+            this.circleProgramBar.Text = "circleProgramBar1";
+            this.circleProgramBar.TopColor = System.Drawing.Color.Lime;
             // 
             // pieChart_MachineStatus
             // 
@@ -1811,6 +1829,7 @@
         private System.Windows.Forms.TextBox txt_JobOrderCode;
         private System.Windows.Forms.TextBox txt_Dept;
         private System.Windows.Forms.Label label23;
+        private Common.Component.CircleProgramBar circleProgramBar;
     }
 }
 
