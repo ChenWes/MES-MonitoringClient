@@ -313,7 +313,7 @@ namespace Mes_Update
                     process.Start();
                     System.Threading.Thread.Sleep(50);
                     unloadName = process.ProcessName;
-                    serverPath = process.MainModule.FileName;
+                    serverPath = uninsexe;
                     this.lab_out.Text = "正在卸载";
                     EnableBtn(false);
                     unload_timer.Enabled = true;
