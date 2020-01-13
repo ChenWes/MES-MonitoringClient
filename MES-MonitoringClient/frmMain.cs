@@ -989,9 +989,16 @@ namespace MES_MonitoringClient
                     txt_TotalRejectsCount.Text = sumErrorCount.ToString();
                     //不良品数
                     txt_RejectsCount.Text = machineProcessLog.ErrorCount.ToString();
+                    //工单进度条
+
+                    //进度条
+                    this.circleProgramBar.MaxValue = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
+                    this.circleProgramBar.Progress = sumProductCount;             
                 }
                 else
                 {
+                    //进度条
+                    this.circleProgramBar.Progress = 0;
                     //工单号
                     txt_JobOrderCode.Text = "";
 
@@ -1192,21 +1199,44 @@ namespace MES_MonitoringClient
             }
             else
             {
-                int orderCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
+                {
 
-                var sumProductCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
-                var sumErrorCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
-                var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id && t.ProduceStartDate == t.ProduceEndDate);
+                    int orderCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
 
-                //产量
-                txt_ProductTotalCount.Text = sumProductCount.ToString() + " / " + machineProcessLog.ProduceCount.ToString();
+                    var sumProductCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
+                    var sumErrorCount = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+                    var machineProcessLog = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MachineProcessLog.Find(t => t.MachineID == MC_Machine._id && t.ProduceStartDate == t.ProduceEndDate);
 
-                //总不良品
-                txt_TotalRejectsCount.Text = sumErrorCount.ToString();
-                //未完成数量
-                txt_NoCompletedCount.Text = (orderCount - sumProductCount + sumErrorCount).ToString();
-                //1出几
-                txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode+ "（1出" +getUnits().ToString()+"）";
+                    //产量
+                    txt_ProductTotalCount.Text = sumProductCount.ToString() + " / " + machineProcessLog.ProduceCount.ToString();
+
+                    //总不良品
+                    txt_TotalRejectsCount.Text = sumErrorCount.ToString();
+                    //未完成数量
+                    txt_NoCompletedCount.Text = (orderCount - sumProductCount + sumErrorCount).ToString();
+                    //1出几
+                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode + "（1出" + getUnits().ToString() + "）";
+
+                    //进度条
+                   
+                    this.circleProgramBar.MaxValue = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
+                    this.circleProgramBar.Progress = sumProductCount;
+                    //this.progressBar_JobOrder.Visible = false;
+                    //this.circleProgramBar.Progress = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
+                    // this.label24.Text = "超产" + (sumProductCount - mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount);
+                    //this.label24.BackColor = Color.Red;
+
+
+                    //double value = sumProductCount * 100 / this.progressBar_JobOrder.Maximum;
+                    //this.label24.Text = value.ToString() + "%";
+
+                }
+                else
+                {
+                    this.circleProgramBar.Progress = 0;
+                }
+
             }
         }
 
