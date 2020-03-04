@@ -280,10 +280,53 @@ namespace MES_MonitoringClient.Common
             }
         }
 
-        /// <summary>
-        /// 清空工单
-        /// </summary>
-        public void ClearJobOrder()
+		public void AutomaticCompleteJobOrder()
+		{
+			try
+			{
+				List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
+				//更新至数据库
+				foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
+				{
+
+					//找到没结束的处理记录
+					var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
+					//结束时间为当前时间
+					findMachineProcessLog.ProduceEndDate = System.DateTime.Now;
+
+					jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Completed.ToString();
+					//完成时间及操作人
+					jobOrderItem.CompletedDate = System.DateTime.Now;
+					//jobOrderItem.CompletedOperaterID = operaterID;
+
+					//需要返回值，并更新回class
+					DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
+					newJobOrderList.Add(jobOrder);
+				}
+
+				//更新完的class
+				ProcessJobOrderList = null;
+				CurrentProcessJobOrder = null;
+
+				//界面显示基本消息
+				SettingJobOrderBasicInfo();
+
+				//计算预计完成时间
+				SettingMachineCompleteDateTime();
+
+				//计算未完成数量
+				SettingMachineNondefectiveCount();
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+
+		/// <summary>
+		/// 清空工单
+		/// </summary>
+		public void ClearJobOrder()
         {
 
         }
@@ -359,10 +402,78 @@ namespace MES_MonitoringClient.Common
                 throw ex;
             }
         }
-        /// <summary>
-        /// 暂停所有生产中的工单
-        /// </summary>
-        public void StopOtherJobOrder()
+
+		public void SetJobOrder1(List<DataModel.JobOrder> jobOrderList)
+		{
+			try
+			{
+				//处理生产中的工单
+				StopOtherJobOrder();
+				//传入的工单参数
+				ProcessJobOrderList = jobOrderList;
+
+				//设置工单处理记录（在工单基础之上直接修改）                
+				List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
+				foreach (DataModel.JobOrder jobOrderItem in jobOrderList)
+				{
+					//找到本机生产记录
+					//var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id);
+
+					//如果没有，则新增本机生产记录
+					//if (jobOrderItem.MachineProcessLog == null || jobOrderItem.MachineProcessLog.Count == 0 || findMachineProcessLog == null)
+					//{
+
+					//解决思路，一次生产，按一次计算
+
+					DataModel.JobOrder_MachineProcessLog newJobOrder_MachineProcessLog = new DataModel.JobOrder_MachineProcessLog();
+					newJobOrder_MachineProcessLog._id = ObjectId.GenerateNewId().ToString();
+
+					newJobOrder_MachineProcessLog.MachineID = MC_machine._id;
+
+					//开始及结束取同一个值
+					DateTime orderStartDate = System.DateTime.Now;
+					newJobOrder_MachineProcessLog.ProduceStartDate = orderStartDate;
+					newJobOrder_MachineProcessLog.ProduceEndDate = orderStartDate;
+
+					newJobOrder_MachineProcessLog.ProduceCount = 0;
+					newJobOrder_MachineProcessLog.ErrorCount = 0;
+
+					//newJobOrder_MachineProcessLog.EmployeeID = operaterID;
+
+					//机器处理记录
+					//jobOrderItem.MachineProcessLog.Add(newJobOrder_MachineProcessLog);
+					//}
+				}
+
+				//更新至数据库
+				foreach (DataModel.JobOrder jobOrderItem in jobOrderList)
+				{
+					jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString();
+
+					//需要返回值，并更新回class
+					DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
+					newJobOrderList.Add(jobOrder);
+				}
+
+				//更新完的class
+				ProcessJobOrderList = newJobOrderList;
+				//更新周期
+				LastProductUseMilliseconds = 0;
+				//当前工单
+				ChangeCurrentProcessJobOrder(0);
+
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+
+
+		/// <summary>
+		/// 暂停所有生产中的工单
+		/// </summary>
+		public void StopOtherJobOrder()
         {
             try
             {

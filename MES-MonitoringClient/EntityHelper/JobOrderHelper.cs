@@ -23,12 +23,13 @@ namespace MES_MonitoringClient.Common
         public static string MC_JobOrderCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderCollectionName");
 
 
-        /// <summary>
-        /// 通过ID获取工单
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public static DataModel.JobOrder GetJobOrderByID(string id)
+
+		/// <summary>
+		/// 通过ID获取工单
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public static DataModel.JobOrder GetJobOrderByID(string id)
         {
             try
             {
@@ -98,8 +99,6 @@ namespace MES_MonitoringClient.Common
                 throw;
             }
         }
-
-
 
 
         public static object GetAllJobOrder()
@@ -318,6 +317,113 @@ namespace MES_MonitoringClient.Common
             }
 
         }
+
+		//模具查找工单列表
+		public static List<DataModel.JobOrder> GetJobOrderByMouldCode_1(string pi_MouldCode, string pi_GetType)
+		{
+			try
+			{
+				var jobOrderCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.JobOrder>(MC_JobOrderCollectionName);
+
+
+				if (pi_GetType == "1")
+				{
+
+					//未开始或生产中工单
+					var getdocument = (from jo in jobOrderCollection.AsQueryable()
+									   where (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() || jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString())
+									   && jo.MouldCode.Contains(pi_MouldCode)
+									   orderby jo.Sort, jo.DeliveryDate
+									   select new DataModel.JobOrder
+									   
+									   {
+
+
+										   JobOrderID = jo.JobOrderID,
+										   JobOrderNumber = jo.JobOrderNumber,
+										   ProductCode = jo.ProductCode,
+										   ProductCategory = jo.ProductCategory,
+										   OrderCount = jo.OrderCount,
+										   MaterialCode = jo.MaterialCode,
+										   DeliveryDate = jo.DeliveryDate,
+										   MachineTonnage = jo.MachineTonnage,
+										   MouldCode = jo.MouldCode,
+										   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
+										   MachineID = jo.MachineID,
+										   MachineAcceptLog= jo.MachineAcceptLog,
+										   MachineChangeLog= jo.MachineChangeLog,
+										   _id = jo._id,
+
+
+
+
+
+										   //sumProduceCount = jo.MachineProcessLog.Select(t => t.ProduceCount).Sum(),
+										   // sumErrorCount = jo.MachineProcessLog.Select(t => t.ErrorCount).Sum(),
+										   //sumNoCompleted = jo.OrderCount - jo.MachineProcessLog.Select(t => t.ProduceCount).Sum() + jo.MachineProcessLog.Select(t => t.ErrorCount).Sum(),
+										   //sumNeedSecond = (jo.OrderCount - jo.MachineProcessLog.Select(t => t.ProduceCount).Sum() + jo.MachineProcessLog.Select(t => t.ErrorCount).Sum()) * jo.MouldStandardProduceSecond,
+										   //sumNeedSecondDesc = "",
+
+										   Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
+										  // ID = jo._id,
+										   ServiceDepartment = jo.ServiceDepartment,
+									   }
+									).ToList();
+					
+					return getdocument;
+				}
+				else if (pi_GetType == "2")
+				{
+					//暂停工单
+					var getdocument = (from jo in jobOrderCollection.AsQueryable()
+									   where jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString()
+									   && jo.MouldCode.Contains(pi_MouldCode)
+									   orderby jo.Sort, jo.DeliveryDate
+									   select new DataModel.JobOrder
+									   {
+
+										   JobOrderID = jo.JobOrderID,
+										   JobOrderNumber = jo.JobOrderNumber,
+										   ProductCode = jo.ProductCode,
+										   ProductCategory = jo.ProductCategory,
+										   OrderCount = jo.OrderCount,
+										   MaterialCode = jo.MaterialCode,
+										   DeliveryDate = jo.DeliveryDate,
+										   MachineTonnage = jo.MachineTonnage,
+										   MouldCode = jo.MouldCode,
+										   MouldStandardProduceSecond = jo.MouldStandardProduceSecond,
+										   MachineID = jo.MachineID,
+										   MachineAcceptLog = jo.MachineAcceptLog,
+										   MachineChangeLog = jo.MachineChangeLog,
+										   MachineProcessLog = jo.MachineProcessLog,
+										   _id = jo._id,
+
+
+										   // sumProduceCount = jo.MachineProcessLog.Select(t => t.ProduceCount).Sum(),
+										   //sumErrorCount = jo.MachineProcessLog.Select(t => t.ErrorCount).Sum(),
+										   //sumNoCompleted = jo.OrderCount - jo.MachineProcessLog.Select(t => t.ProduceCount).Sum() + jo.MachineProcessLog.Select(t => t.ErrorCount).Sum(),
+										   //sumNeedSecond = (jo.OrderCount - jo.MachineProcessLog.Select(t => t.ProduceCount).Sum() + jo.MachineProcessLog.Select(t => t.ErrorCount).Sum()) * jo.MouldStandardProduceSecond,
+										   //sumNeedSecondDesc = "",
+
+										   Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
+										  // ID = jo._id,
+										   ServiceDepartment = jo.ServiceDepartment,
+									   }
+									).ToEnumerable().ToList();
+
+
+					return getdocument;
+				}
+
+				return null;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+
+		}
+
 
 
 		/// <summary>

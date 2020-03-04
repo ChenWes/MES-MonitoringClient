@@ -485,14 +485,206 @@ namespace MES_MonitoringClient.Common
             }
         }
 
-        /*修改机器状态*/
-        /*-------------------------------------------------------------------------------------*/
 
-        /// <summary>
-        /// 获取机器各状态持续总时间
-        /// </summary>
-        /// <returns></returns>
-        public List<DataModel.MachineStatusUseTime> GetMachineUseTimeList()
+		public void ChangeStatus1(string newMachineStatusID, string newMachineStatusCode, string newMachineStatusName, string newMachineStatusDesc, string newMachineStatusColor)
+		{
+			try
+			{
+				#region 上一条未完成的机器状态日志记录
+				DateTime Now = DateTime.Now.ToLocalTime();
+				//重新开始计时器及线程
+				if (DateTimeThreadClass != null && TTimerClass != null)
+				{
+					//取消线程
+					DateTimeThreadClass.Abort();
+					Thread.SpinWait(1000);
+
+					//停止定时器
+					TTimerClass.StopTimmer();
+					TTimerClass = null;
+
+					//更新最后时间
+					EndDateTime = Now;
+
+					//保存至DB中/*******************/嫁动率的主要数据来源
+
+					//判断最后一个记录ID（来自于没有结束的机器状态日志记录ID）
+					if (!string.IsNullOrEmpty(LastOperationMachineStatusLogID))
+					{
+						//计算相隔时间（秒数）
+						int useTotalSecond = 0;
+						if (LastOperationDateTime != null)
+						{
+							TimeSpan timeSpan = EndDateTime - LastOperationDateTime;
+							useTotalSecond = (int)timeSpan.TotalSeconds;
+						}
+
+						//找到单个记录
+						var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
+
+						//修改（写入结束标识、结束时间、中间持续的时间秒数）
+						var update = Builders<DataModel.MachineStatusLog>.Update
+							.Set("EndDateTime", EndDateTime)
+							.Set("UseTotalSeconds", useTotalSecond)
+							.Set("IsStopFlag", true);
+
+						//更新数据库
+						machineStatusLogCollection.UpdateOne(filterID, update);
+					}
+
+				}
+
+				#endregion
+
+				#region 当前记录操作
+
+				//当前时间
+				StartDateTime = Now;
+
+				//更新状态
+				MachineStatusID = newMachineStatusID;
+				MachineStatusCode = newMachineStatusCode;
+				MachineStatusName = newMachineStatusName;
+				MachineStatusDesc = newMachineStatusDesc;
+				MachineStatusColor = newMachineStatusColor;
+
+				//更新人员
+				//OperatePersonName = employeeName;
+				//OperatePersonCardID = employeeCardID;
+
+				//清空时间开始计时
+				HoldStatusTotalMilliseconds = 0;
+
+
+				//开始一个新线程，处理状态的时间
+				DateTimeThreadFunction = new ThreadStart(DateTimeTimer);
+				DateTimeThreadClass = new Thread(DateTimeThreadFunction);
+				DateTimeThreadClass.Start();
+
+				//当前机器状态记录写入DB
+
+				#region 上次退出界面，但未完成机器状态的完成记录
+
+				//查询数据库，是否有未完成的数据（上次退出界面，但未完成机器状态的完成记录）
+				//如果有，先完成未完成的数据
+				//如果没有，直接新增
+				if (string.IsNullOrEmpty(LastOperationMachineStatusLogID))
+				{
+					var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultMachineStatusMongodbCollectionName);
+					var filter = Builders<BsonDocument>.Filter.And(new FilterDefinition<BsonDocument>[] {
+							Builders<BsonDocument>.Filter.Eq("IsStopFlag", false),
+							Builders<BsonDocument>.Filter.Eq("UseTotalSeconds", 0),
+							Builders<BsonDocument>.Filter.Eq("EndDateTime", BsonNull.Value),
+						});
+
+					var result = Common.MongodbHandler.GetInstance().Find(collection, filter).FirstOrDefault();
+
+					if (result != null)
+					{
+						var dataEntity = BsonSerializer.Deserialize<DataModel.MachineStatusLog>(result);
+
+						LastOperationMachineStatusLogID = dataEntity.Id.ToString();
+
+						//最后时间
+						EndDateTime = Now;
+						//计算相隔时间（秒数）
+						int useTotalSecond = 0;
+						if (dataEntity.StartDateTime != null)
+						{
+							TimeSpan timeSpan = EndDateTime - dataEntity.StartDateTime.Value;
+							useTotalSecond = (int)timeSpan.TotalSeconds;
+						}
+
+						//找到单个记录
+						var filterID = Builders<DataModel.MachineStatusLog>.Filter.Eq("_id", ObjectId.Parse(LastOperationMachineStatusLogID));
+
+						//修改（写入结束标识、结束时间、中间持续的时间秒数）
+						var update = Builders<DataModel.MachineStatusLog>.Update
+							.Set("EndDateTime", EndDateTime)
+							.Set("UseTotalSeconds", useTotalSecond)
+							.Set("IsStopFlag", true);
+
+						//更新数据库
+						machineStatusLogCollection.UpdateOne(filterID, update);
+					}
+				}
+
+				#endregion
+
+
+				#region 当前机器状态日志记录保存至DB
+
+				//新增的机器状态日志记录实体
+				DataModel.MachineStatusLog newMachineStatusLog = new DataModel.MachineStatusLog();
+
+				newMachineStatusLog.StatusID = MachineStatusID;
+				newMachineStatusLog.StatusCode = MachineStatusCode;
+				newMachineStatusLog.StatusName = MachineStatusName;
+				newMachineStatusLog.StatusDesc = MachineStatusDesc;
+
+				//开始与结束时间一致
+				newMachineStatusLog.StartDateTime = StartDateTime;
+				//此时EndDateTime为Null，方便下次查询未完成的机器状态日志记录
+				//newMachineStatus.EndDateTime = null;
+				//使用的秒数
+				newMachineStatusLog.UseTotalSeconds = 0;
+
+				//未结束标识
+				//未上传标识与未更新至服务器标识
+				newMachineStatusLog.IsStopFlag = false;
+				newMachineStatusLog.IsUploadToServer = false;
+				newMachineStatusLog.IsUpdateToServer = false;
+
+				//MAC地址
+				newMachineStatusLog.LocalMacAddress = Common.CommonFunction.getMacAddress();
+
+				//机器ID不为空，则保存到数据库中
+				if (mc_MachineProduceStatusHandler.MC_machine != null)
+				{
+					newMachineStatusLog.MachineID = mc_MachineProduceStatusHandler.MC_machine._id;
+				}
+				//修改状态刷卡ID
+				if (!string.IsNullOrEmpty(OperatePersonCardID))
+				{
+					newMachineStatusLog.CardID = OperatePersonCardID;
+				}
+
+				//插入DB
+				machineStatusLogCollection.InsertOne(newMachineStatusLog);
+
+				//暂存ID（方便下一次更改机器状态时，可以结束掉现在插入的机器状态日志记录）
+				LastOperationMachineStatusLogID = newMachineStatusLog.Id.ToString();
+				//最后操作时间
+				LastOperationDateTime = StartDateTime;
+
+				#endregion
+
+
+				#endregion
+
+				#region 更新界面状态灯&更新时间占比图
+
+				//回调更新界面，状态灯
+				UpdateMachineStatusLightDelegate();
+
+				//回调更新界面，各状态占比时间
+				UpdateMachineStatusPieChartDelegate(GetMachineUseTimeList());
+
+				#endregion
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+		/*修改机器状态*/
+		/*-------------------------------------------------------------------------------------*/
+
+		/// <summary>
+		/// 获取机器各状态持续总时间
+		/// </summary>
+		/// <returns></returns>
+		public List<DataModel.MachineStatusUseTime> GetMachineUseTimeList()
         {
             List<DataModel.MachineStatusUseTime> returnList = new List<DataModel.MachineStatusUseTime>();
 
