@@ -79,6 +79,9 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("ServiceDepartment")]
         public string ServiceDepartment { get; set; }
 
+        [BsonElement("CollectionNum")]
+        public int CollectionNum { get; set; }
+
         [BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog> MachineProcessLog { get; set; }
 

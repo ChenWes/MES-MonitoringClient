@@ -795,6 +795,8 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+                //采集次数加1
+                jobOrder.CollectionNum = jobOrder.CollectionNum + 1;
                 //加数时，处理的是同一机器且未结束的记录==》同一机器生产多次，加数在最后一次（即未完成的那一次）
                 var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
 
