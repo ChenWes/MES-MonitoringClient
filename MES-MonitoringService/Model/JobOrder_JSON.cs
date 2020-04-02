@@ -89,8 +89,8 @@ namespace MES_MonitoringService.Model
         [BsonElement("ServiceDepartment")]
         public string ServiceDepartment { get; set; }
 
-        [BsonElement("CollectionNum")]
-        public int CollectionNum { get; set; }
+        [BsonElement("MouldLifecycle")]
+        public int MouldLifecycle { get; set; }
 
         public JobOrder_JSON(Model.JobOrder jobOrder)
         {
@@ -139,7 +139,7 @@ namespace MES_MonitoringService.Model
             MouldCode = jobOrder.MouldCode;
             Sort = jobOrder.Sort;
             ServiceDepartment = jobOrder.ServiceDepartment;
-            CollectionNum = jobOrder.CollectionNum;
+            MouldLifecycle = jobOrder.MouldLifecycle;
         }
 
 

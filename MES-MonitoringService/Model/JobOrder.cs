@@ -91,8 +91,8 @@ namespace MES_MonitoringService.Model
         [BsonElement("ServiceDepartment")]
         public string ServiceDepartment { get; set; }
 
-        [BsonElement("CollectionNum")]
-        public int CollectionNum { get; set; }
+        [BsonElement("MouldLifecycle")]
+        public int MouldLifecycle { get; set; }
 
 
         public override string getCollectionName()
