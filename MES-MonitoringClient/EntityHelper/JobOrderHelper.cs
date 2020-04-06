@@ -79,6 +79,7 @@ namespace MES_MonitoringClient.Common
 
                 BsonDocument updatedocument = jobOrder.ToBsonDocument();
                 updatedocument.Remove("_id");
+                updatedocument.Set("LastUpdateAt", DateTime.Now);
                 updatedocument.Set("IsSyncToServer", false);
 
                 BsonDocument updateResult = collection.FindOneAndUpdate(filterid, updatedocument);
