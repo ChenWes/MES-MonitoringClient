@@ -378,8 +378,7 @@ namespace MES_MonitoringService
         {
             try
             {
-                bsonDocument.Add(new BsonElement("IsSyncImage", false));
-                bsonDocument.Add(new BsonElement("LocalFileName", ""));
+                
 
                 #region 新增
 
@@ -388,6 +387,8 @@ namespace MES_MonitoringService
                 var getCollection = collection.Find(filterID).FirstOrDefault();
                 if (getCollection == null)
                 {
+                    bsonDocument.Add(new BsonElement("IsSyncImage", false));
+                    bsonDocument.Add(new BsonElement("LocalFileName", ""));
                     collection.InsertOne(bsonDocument);
                 }
                 else
@@ -420,9 +421,6 @@ namespace MES_MonitoringService
 
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
                 var filterID = new BsonDocument("_id", id);
-
-                bsonDocument.Add(new BsonElement("IsSyncImage", false));
-                bsonDocument.Add(new BsonElement("LocalFileName", ""));
                 var getCollection = collection.Find(filterID).FirstOrDefault();
                 if (getCollection == null)
                 {
@@ -433,6 +431,8 @@ namespace MES_MonitoringService
                 {
                     //直接修改（移除_id，如果修改_id将出错）
                     bsonDocument.Remove("_id");
+                    bsonDocument.Add(new BsonElement("IsSyncImage", false));
+                    bsonDocument.Add(new BsonElement("LocalFileName", ""));
                     collection.FindOneAndUpdate(filterID, Builders<BsonDocument>.Update.Combine(bsonDocument));
                 }
                 #endregion
