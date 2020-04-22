@@ -2172,7 +2172,7 @@ namespace MES_MonitoringClient
                 if (span.Milliseconds < SystemInformation.DoubleClickTime)
                 {
                     //检查机器状态
-                    if (btn_StatusLight.Text == "生产中")
+                    if (mc_MachineStatusHander.MachineStatusCode== "Produce")
                     {
                         MessageBox.Show("正在生产中，请先更改状态", "提示");
                         return;
