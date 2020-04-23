@@ -336,7 +336,7 @@ namespace MES_MonitoringClient
 
             DataGridViewTextBoxColumn JobOrderNumber_Column = new DataGridViewTextBoxColumn();
             JobOrderNumber_Column.HeaderText = "工单Number";
-            JobOrderNumber_Column.DataPropertyName = "JobOrderID";
+            JobOrderNumber_Column.DataPropertyName = "JobOrderNumber";
             dgv_JobOrder.Columns.Add(JobOrderNumber_Column);
 
             DataGridViewTextBoxColumn ProductCode_Column = new DataGridViewTextBoxColumn();
