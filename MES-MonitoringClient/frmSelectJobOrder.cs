@@ -307,6 +307,8 @@ namespace MES_MonitoringClient
             dgv_JobOrder.DefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FFFFFF");
             // 选中行背景色
             dgv_JobOrder.DefaultCellStyle.SelectionBackColor = ColorTranslator.FromHtml("#C7C9CC");
+            // 选中行前景色
+            dgv_JobOrder.DefaultCellStyle.SelectionForeColor = Color.BlueViolet;
             // 隔行背景色
             dgv_JobOrder.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#F6F6F6");
             // 行高自适应
