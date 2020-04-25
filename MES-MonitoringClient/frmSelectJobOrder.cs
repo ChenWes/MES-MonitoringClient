@@ -307,6 +307,8 @@ namespace MES_MonitoringClient
             dgv_JobOrder.DefaultCellStyle.BackColor = ColorTranslator.FromHtml("#FFFFFF");
             // 选中行背景色
             dgv_JobOrder.DefaultCellStyle.SelectionBackColor = ColorTranslator.FromHtml("#C7C9CC");
+            // 选中行前景色
+            dgv_JobOrder.DefaultCellStyle.SelectionForeColor = Color.BlueViolet;
             // 隔行背景色
             dgv_JobOrder.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#F6F6F6");
             // 行高自适应
@@ -336,7 +338,7 @@ namespace MES_MonitoringClient
 
             DataGridViewTextBoxColumn JobOrderNumber_Column = new DataGridViewTextBoxColumn();
             JobOrderNumber_Column.HeaderText = "工单Number";
-            JobOrderNumber_Column.DataPropertyName = "JobOrderID";
+            JobOrderNumber_Column.DataPropertyName = "JobOrderNumber";
             dgv_JobOrder.Columns.Add(JobOrderNumber_Column);
 
             DataGridViewTextBoxColumn ProductCode_Column = new DataGridViewTextBoxColumn();

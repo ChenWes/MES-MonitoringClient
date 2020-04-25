@@ -255,8 +255,11 @@ namespace MES_MonitoringClient.Common
                     MachineStatusDesc = latestMachineStatusLog.StatusDesc;
                     MachineStatusColor = machineStatus.StatusColor;
 
-                    //更新人员
-                    OperatePersonName = employee.EmployeeName;
+                    if (employee != null)
+                    {
+                        //更新人员
+                        OperatePersonName = employee.EmployeeName;
+                    }
                     OperatePersonCardID = latestMachineStatusLog.CardID;
                     
 

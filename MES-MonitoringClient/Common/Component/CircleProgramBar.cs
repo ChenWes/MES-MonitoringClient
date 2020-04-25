@@ -183,8 +183,8 @@ namespace MES_MonitoringClient.Common.Component
                 //绘制进度值
                // this.penTop.Width = (size - (sizeOffset * 2));
                 g.DrawArc(this.penTop, rectangle, 0, (int)topAngle);//绘制进度条
-                SizeF proValSize = g.MeasureString(this.progress * 100 / maxValue + "%", this.Font);//计算文字的范围
-                g.DrawString(this.progress * 100 /maxValue+ "%", this.Font, new SolidBrush(this.ForeColor), rectangle.X + rectangle.Width / 2 - proValSize.Width / 2, rectangle.Y + rectangle.Height / 2 - proValSize.Height / 2);
+                SizeF proValSize = g.MeasureString(Math.Round((double)this.progress * 100 / maxValue, 2) + "%", this.Font);//计算文字的范围
+                g.DrawString(Math.Round((double)this.progress * 100 / maxValue, 2) + "%", this.Font, new SolidBrush(this.ForeColor), rectangle.X + rectangle.Width / 2 - proValSize.Width / 2, rectangle.Y + rectangle.Height / 2 - proValSize.Height / 2);
             }
           
         }
