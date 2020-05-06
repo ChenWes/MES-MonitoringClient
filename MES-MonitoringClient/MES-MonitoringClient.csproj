@@ -120,6 +120,7 @@
     <Compile Include="Common\JobOrderStatus.cs" />
     <Compile Include="DataModel\Customer.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
+    <Compile Include="DataModel\JobOrderFirstProduceLog.cs" />
     <Compile Include="DataModel\LastJobOrder.cs" />
     <Compile Include="DataModel\OffPowerLog.cs" />
     <Compile Include="DataModel\MachineChangeLog.cs" />

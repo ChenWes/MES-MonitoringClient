@@ -63,6 +63,15 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         private static string defaultMachineProduceLifeCycleMongodbCollectionName = "MachineLifeCycle";
 
+        /// <summary>
+        ///工单第一次生产记录默认Mongodb集合名
+        /// </summary>
+        private static string defaultJobOrderFirstProduceLogCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderFirstProduceLogCollectionName");
+
+        /// <summary>
+        /// 工单第一次生产记录
+        /// </summary>
+        private IMongoCollection<DataModel.JobOrderFirstProduceLog> jobOrderFirstProduceLogCollection;
 
         /// <summary>
         /// 产品生命周期（计算次数）
@@ -188,6 +197,8 @@ namespace MES_MonitoringClient.Common
             _MachineProcedureListForCount = new List<MachineProcedure>();
 
             machineProcuceLifeCycleCollection = MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.MachineProduceLifeCycle>(defaultMachineProduceLifeCycleMongodbCollectionName);
+
+            jobOrderFirstProduceLogCollection = MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.JobOrderFirstProduceLog>(defaultJobOrderFirstProduceLogCollectionName);
         }
 
 
@@ -316,6 +327,7 @@ namespace MES_MonitoringClient.Common
 
                     //解决思路，一次生产，按一次计算
 
+
                     DataModel.JobOrder_MachineProcessLog newJobOrder_MachineProcessLog = new DataModel.JobOrder_MachineProcessLog();
                     newJobOrder_MachineProcessLog._id = ObjectId.GenerateNewId().ToString();
 
@@ -339,11 +351,22 @@ namespace MES_MonitoringClient.Common
                 //更新至数据库
                 foreach (DataModel.JobOrder jobOrderItem in jobOrderList)
                 {
+                    //获取工单状态
+                    string status = jobOrderItem.Status;
                     jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString();
 
                     //需要返回值，并更新回class
                     DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
                     newJobOrderList.Add(jobOrder);
+                    if(status== Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString())
+                    {
+                        DataModel.JobOrderFirstProduceLog jobOrderFirstProduceLog = new DataModel.JobOrderFirstProduceLog();
+                        jobOrderFirstProduceLog.JobOrderID = jobOrderItem._id;
+                        jobOrderFirstProduceLog.MachineID= MC_machine._id;
+                        jobOrderFirstProduceLog.IsSyncToServer = false;
+                        jobOrderFirstProduceLogCollection.InsertOne(jobOrderFirstProduceLog);
+                    }
+
                 }
 
                 //更新完的class
