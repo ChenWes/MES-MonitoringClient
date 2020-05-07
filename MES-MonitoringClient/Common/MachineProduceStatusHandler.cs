@@ -358,11 +358,13 @@ namespace MES_MonitoringClient.Common
                     //需要返回值，并更新回class
                     DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
                     newJobOrderList.Add(jobOrder);
+                    //保存第一次生产记录
                     if(status== Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString())
                     {
                         DataModel.JobOrderFirstProduceLog jobOrderFirstProduceLog = new DataModel.JobOrderFirstProduceLog();
                         jobOrderFirstProduceLog.JobOrderID = jobOrderItem._id;
                         jobOrderFirstProduceLog.MachineID= MC_machine._id;
+                        jobOrderFirstProduceLog.StartDateTime = DateTime.Now;
                         jobOrderFirstProduceLog.IsSyncToServer = false;
                         jobOrderFirstProduceLogCollection.InsertOne(jobOrderFirstProduceLog);
                     }

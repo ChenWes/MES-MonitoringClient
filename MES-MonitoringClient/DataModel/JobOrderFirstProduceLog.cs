@@ -21,8 +21,12 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("MachineID")]
         public string MachineID { get; set; }
 
+        [BsonElement("StartDateTime")]
+        public DateTime StartDateTime { get; set; }
+
         [BsonElement("IsSyncToServer")]
         public bool IsSyncToServer { get; set; }
+
 
     }
 }

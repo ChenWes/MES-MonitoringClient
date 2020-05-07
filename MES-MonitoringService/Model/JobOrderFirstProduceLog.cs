@@ -21,6 +21,9 @@ namespace MES_MonitoringService.Model
         [BsonElement("MachineID")]
         public string MachineID { get; set; }
 
+        [BsonElement("StartDateTime")]
+        public DateTime StartDateTime { get; set; }
+
     }
 
 }
