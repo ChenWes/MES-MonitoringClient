@@ -441,7 +441,7 @@ namespace MES_MonitoringService
                     //转换成类
                     var jobOrderFirstProduceLogEntity = BsonSerializer.Deserialize<Model.JobOrderFirstProduceLog>(data);
 
-                  
+                    Common.LogHandler.WriteLog("开始发送，等待答复");
 
                     //jobOrderEntity.ToJson(jsonWriterSettings)
                     //读取Mongodb机器状态日志并上传至队列中
