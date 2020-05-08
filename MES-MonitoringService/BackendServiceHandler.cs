@@ -24,6 +24,8 @@ namespace MES_MonitoringService
         private static string defaultUploaJobOrderdDataIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("UploadJobOrderDataIntervalMilliseconds");
         //同步用户头像间隔时间
         private static string defaultSyneEmployeeImageIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("SyncEmployeeImageIntervalMilliseconds");
+        //同步工单第一次生产间隔时间
+        private static string defaultSyneJobOrderFirstProduceLogIntervalMilliseconds = Common.ConfigFileHandler.GetAppConfig("SyncJobOrderFirstProduceLogIntervalMilliseconds");
 
         //机器状态日志Mongodb数据集名称
         private static string defaultMachineStatusLogMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLogCollectionName");
@@ -33,6 +35,8 @@ namespace MES_MonitoringService
         private static string defaultMachineRegisterMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineRegisterCollectionName");
         //员工
         private static string defaultEmployeeMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeCollectionName");
+        //工单第一次生产记录
+        private static string defaultJobOrderFirstProduceLogMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderFirstProduceLogCollectionName");
 
         //机器状态对应的交换机、路由、队列名称
         private static string defaultMachineStatus_ExchangeName = Common.ConfigFileHandler.GetAppConfig("MachineStatusLog_ExchangeName");
@@ -44,6 +48,11 @@ namespace MES_MonitoringService
         private static string defaultJobOrder_ExchangeName = Common.ConfigFileHandler.GetAppConfig("JobOrder_ExchangeName");
         private static string defaultJobOrder_RoutingKey = Common.ConfigFileHandler.GetAppConfig("JobOrder_RoutingKey");
         private static string defaultJobOrder_QueueName = Common.ConfigFileHandler.GetAppConfig("JobOrder_QueueName");
+
+        //工单第一次生产记录对应的交换机、路由、队列名称
+        private static string defaultJobOrderFirstProduceLogLog_ExchangeName = Common.ConfigFileHandler.GetAppConfig("JobOrderFirstProduceLog_ExchangeName");
+        private static string defaultJobOrderFirstProduceLog_RoutingKey = Common.ConfigFileHandler.GetAppConfig("JobOrderFirstProduceLog_RoutingKey");
+        private static string defaultJobOrderFirstProduceLog_QueueName = Common.ConfigFileHandler.GetAppConfig("JobOrderFirstProduceLog_QueueName");
 
         //同步数据对应的队列名称
         private static string defaultSyncData_QueueName_Prefix = Common.ConfigFileHandler.GetAppConfig("SyncData_QueueName_Prefix");
@@ -60,6 +69,7 @@ namespace MES_MonitoringService
         private System.Timers.Timer _timer;
         private System.Timers.Timer _SyncJobOrderTimer;
         private System.Timers.Timer _SyncEmployeeImageTimer;
+        private System.Timers.Timer _SyncJobOrderFirstProduceLogTimer;
 
         /// <summary>
         /// 上传数据至服务器
@@ -80,6 +90,7 @@ namespace MES_MonitoringService
                 else
                 {
                     //MongoDB服务正常
+
 
                     #region 同步机器状态信息            
 
@@ -117,6 +128,18 @@ namespace MES_MonitoringService
                     _SyncEmployeeImageTimer.Elapsed += SyncEmployeeImageTimerElapsed;
 
                     #endregion
+
+                    #region 同步第一次生产记录           
+
+                    //定时任务间隔时间
+                    timeInterval = 0;
+                    long.TryParse(defaultSyneJobOrderFirstProduceLogIntervalMilliseconds, out timeInterval);
+
+                    //定时任务
+                    _SyncJobOrderFirstProduceLogTimer = new System.Timers.Timer(timeInterval) { AutoReset = true };
+                    _SyncJobOrderFirstProduceLogTimer.Elapsed += SyncJobOrderFirstProduceLogElapsed;
+
+                    #endregion
                 }
 
 
@@ -133,6 +156,10 @@ namespace MES_MonitoringService
                 if (_SyncJobOrderTimer != null)
                 {
                     _SyncJobOrderTimer.Start();
+                }
+                if (_SyncJobOrderFirstProduceLogTimer != null)
+                {
+                    _SyncJobOrderFirstProduceLogTimer.Start();
                 }
             }
             catch (Exception ex)
@@ -173,6 +200,19 @@ namespace MES_MonitoringService
         {           
             //同步头像
             ProcessEmployeeImage();
+        }
+
+        /// <summary>
+        /// 同步工单第一次生产
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SyncJobOrderFirstProduceLogElapsed(object sender, ElapsedEventArgs e)
+        {
+            _SyncJobOrderFirstProduceLogTimer.Enabled = false;
+            //处理工单第一次生产
+            ProcessJobOrderFirstProduceLog();
+            _SyncJobOrderFirstProduceLogTimer.Enabled = true;
         }
 
         /// <summary>
@@ -385,6 +425,54 @@ namespace MES_MonitoringService
             }
         }
 
+        //处理第一次生产记录
+        private void ProcessJobOrderFirstProduceLog()
+        {
+            try
+            {
+                //找到工单集合
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultJobOrderFirstProduceLogMongodbCollectionName);
+                //找到更新标识工单记录
+                var newfilter = Builders<BsonDocument>.Filter.Eq("IsSyncToServer", false);
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+                //循环处理
+                foreach (var data in getdocument)
+                {
+                    //转换成类
+                    var jobOrderFirstProduceLogEntity = BsonSerializer.Deserialize<Model.JobOrderFirstProduceLog>(data);
+
+                    Common.LogHandler.WriteLog("开始发送，等待答复");
+
+                    //jobOrderEntity.ToJson(jsonWriterSettings)
+                    //读取Mongodb机器状态日志并上传至队列中
+                    bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(
+                            defaultJobOrderFirstProduceLogLog_ExchangeName,
+                            defaultJobOrderFirstProduceLog_RoutingKey,
+                            defaultJobOrderFirstProduceLog_QueueName,
+                            Newtonsoft.Json.JsonConvert.SerializeObject(jobOrderFirstProduceLogEntity)
+                        );
+
+                    if (sendToServerFlag)
+                    {
+                        /*当上传至服务器以后，更改数据*/
+                        /*---------------------------------------------------------*/
+
+                        //使用整个对象作为条件
+                        var filterID = Builders<BsonDocument>.Filter.And(data);
+                        //更改值为已上传
+                        var update = Builders<BsonDocument>.Update.Set("IsSyncToServer", true);
+                        //查找并修改文档
+                        Common.MongodbHandler.GetInstance().FindOneAndUpdate(collection, filterID, update);
+                        Common.LogHandler.WriteLog("工单_id["+jobOrderFirstProduceLogEntity.JobOrderID+"]第一次生产已同步");
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.LogHandler.WriteLog("MES同步工单第一次生产记录发现错误，请管理员及时处理。" + ex.Message);
+            }
+        }
         /// <summary>
         /// 检查记录注册情况
         /// </summary>
