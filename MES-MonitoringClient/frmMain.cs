@@ -993,7 +993,7 @@ namespace MES_MonitoringClient
 
                     //进度条
                     this.circleProgramBar.MaxValue = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
-                    this.circleProgramBar.Progress = sumProductCount;             
+                    this.circleProgramBar.Progress = sumProductCount-sumErrorCount;             
                 }
                 else
                 {
@@ -1221,7 +1221,7 @@ namespace MES_MonitoringClient
                     //进度条
                    
                     this.circleProgramBar.MaxValue = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
-                    this.circleProgramBar.Progress = sumProductCount;
+                    this.circleProgramBar.Progress = sumProductCount-sumErrorCount;
                     //this.progressBar_JobOrder.Visible = false;
                     //this.circleProgramBar.Progress = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
                     // this.label24.Text = "超产" + (sumProductCount - mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount);
