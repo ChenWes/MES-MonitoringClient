@@ -320,13 +320,38 @@ namespace MES_MonitoringClient.Common
 
         }
 
+        /// <summary>
+        /// 通过模具编号和产品查询
+        /// </summary>
+        /// <param name="pi_MouldCode"></param>
+        /// <param name="pi_ProductCode"></param>
+        /// <returns></returns>
+        public static List<DataModel.JobOrder> GetJobOrderByMouldCodeAndProductCode(string pi_MouldCode, string pi_ProductCode)
+        {
+            try
+            {
+                var jobOrderCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.JobOrder>(MC_JobOrderCollectionName);
+                //未开始或生产中工单
+                var getdocument = (from jo in jobOrderCollection.AsQueryable()
+                                   where (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() || jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString())
+                                   && jo.MouldCode.Contains(pi_MouldCode) && jo.ProductCode.Contains(pi_ProductCode)
+                                   orderby jo.ReceiveDate ascending
+                                   select jo
+                                   ).ToEnumerable().ToList();
+                return getdocument;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-		/// <summary>
-		/// 处理工单的生产记录
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public static bool SettingMachineOperation(string id)
+        }
+        /// <summary>
+        /// 处理工单的生产记录
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static bool SettingMachineOperation(string id)
         {
             try
             {
