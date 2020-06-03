@@ -392,7 +392,7 @@ namespace MES_MonitoringClient.Common
             try
             {
                 //处理生产中的工单
-                List<DataModel.JobOrder> startedJobOrders = ((List<DataModel.JobOrder>)Common.JobOrderHelper.GetAllJobOrder()).FindAll(x => x.Status == "Producing");
+                List<DataModel.JobOrder> startedJobOrders = ((List<DataModel.JobOrder>)Common.JobOrderHelper.GetAllJobOrder()).FindAll(x => x.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString());
                 //更新至数据库
                 foreach (DataModel.JobOrder jobOrderItem in startedJobOrders)
                 {
