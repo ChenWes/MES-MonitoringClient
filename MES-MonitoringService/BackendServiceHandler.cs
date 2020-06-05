@@ -175,7 +175,7 @@ namespace MES_MonitoringService
         /// <param name="e"></param>
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            _SyncEmployeeImageTimer.Enabled=false;
+            _timer.Stop();
             //处理机器状态
             ProcessMachineStatusLog();            
 
@@ -184,15 +184,15 @@ namespace MES_MonitoringService
                 //检测注册
                 CheckMachineRegister();
             }
-            _SyncEmployeeImageTimer.Enabled=true;
+            _timer.Start();
         }
 
         private void SyncJobOrderElapsed(object sender, ElapsedEventArgs e)
         {
-            _SyncEmployeeImageTimer.Enabled = false;
+            _SyncJobOrderTimer.Stop();
             //处理工单
             ProcessJobOrder();
-            _SyncEmployeeImageTimer.Enabled = true;
+            _SyncJobOrderTimer.Start();
         }
 
         /// <summary>
@@ -202,10 +202,10 @@ namespace MES_MonitoringService
         /// <param name="e"></param>
         private void SyncEmployeeImageTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            _SyncEmployeeImageTimer.Enabled = false;
+            _SyncEmployeeImageTimer.Stop();
             //同步头像
             ProcessEmployeeImage();
-            _SyncEmployeeImageTimer.Enabled=true;
+            _SyncEmployeeImageTimer.Start();
         }
 
         /// <summary>
@@ -215,10 +215,10 @@ namespace MES_MonitoringService
         /// <param name="e"></param>
         private void SyncJobOrderFirstProduceLogElapsed(object sender, ElapsedEventArgs e)
         {
-            _SyncJobOrderFirstProduceLogTimer.Enabled = false;
+            _SyncJobOrderFirstProduceLogTimer.Stop();
             //处理工单第一次生产
             ProcessJobOrderFirstProduceLog();
-            _SyncJobOrderFirstProduceLogTimer.Enabled = true;
+            _SyncJobOrderFirstProduceLogTimer.Start();
         }
 
         /// <summary>
