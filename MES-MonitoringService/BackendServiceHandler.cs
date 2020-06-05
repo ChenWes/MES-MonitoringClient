@@ -175,6 +175,7 @@ namespace MES_MonitoringService
         /// <param name="e"></param>
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
+            _SyncEmployeeImageTimer.Enabled=false;
             //处理机器状态
             ProcessMachineStatusLog();            
 
@@ -183,12 +184,15 @@ namespace MES_MonitoringService
                 //检测注册
                 CheckMachineRegister();
             }
+            _SyncEmployeeImageTimer.Enabled=true;
         }
 
         private void SyncJobOrderElapsed(object sender, ElapsedEventArgs e)
         {
+            _SyncEmployeeImageTimer.Enabled = false;
             //处理工单
             ProcessJobOrder();
+            _SyncEmployeeImageTimer.Enabled = true;
         }
 
         /// <summary>
@@ -197,9 +201,11 @@ namespace MES_MonitoringService
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SyncEmployeeImageTimerElapsed(object sender, ElapsedEventArgs e)
-        {           
+        {
+            _SyncEmployeeImageTimer.Enabled = false;
             //同步头像
             ProcessEmployeeImage();
+            _SyncEmployeeImageTimer.Enabled=true;
         }
 
         /// <summary>
@@ -248,7 +254,6 @@ namespace MES_MonitoringService
                     )
                 });
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
-
                 //循环处理
                 foreach (var data in getdocument)
                 {
@@ -373,7 +378,7 @@ namespace MES_MonitoringService
         {
             try
             {
-                Common.LogHandler.WriteLog("开始同步下载员工照片信息");
+                //Common.LogHandler.WriteLog("开始同步下载员工照片信息");
 
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultEmployeeMongodbCollectionName);
 
