@@ -782,7 +782,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(35, 14);
             this.label8.TabIndex = 1;
-            this.label8.Text = "工单";
+            this.label8.Text = "工单编号";
             // 
             // txt_JobOrderCode
             // 

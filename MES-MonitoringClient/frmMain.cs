@@ -78,6 +78,9 @@ namespace MES_MonitoringClient
         ThreadStart StatusLightThreadFunction = null;
         Common.TimmerHandler StatusLightTimerClass = null;
 
+        //检测更新定时器
+        Common.TimmerHandler checkUpdateTimerClass = null;
+
         /*---------------------------------------------------------------------------------------*/
 
         //状态操作类
@@ -205,11 +208,20 @@ namespace MES_MonitoringClient
 
                 //显示版本号
                 this.lab_Version.Text = this.lab_Version.Text+oldVersion;
+
+                this.lab_log.Text = "正在检测";
+
                 //检测更新
-                ThreadStart threadStart_getJson = new ThreadStart(getJson);//通过ThreadStart委托告诉子线程执行什么方法　　
+                ThreadStart threadStart_getJson = new ThreadStart(getJson);
                 Thread thread_getJson = new Thread(threadStart_getJson);
                 thread_getJson.Start();//启动新线程
-                this.lab_log.Text = "正在检测";
+
+                //检测更新
+                ThreadStart threadStart_getJsonTimer = new ThreadStart(CheckUpdateTimer);　
+                Thread thread_getJsonTimer = new Thread(threadStart_getJsonTimer);
+                thread_getJsonTimer.Start();//启动新线程
+
+               
                 //NowVersion();
 
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
@@ -419,6 +431,24 @@ namespace MES_MonitoringClient
                 SDTimerClass = new Common.TimmerHandler(sendDataTimeInterval, true, (o, a) =>
                 {
                     SendDataToSerialPort(mc_DefaultSignal);
+                }, true);
+            }
+            catch (Exception ex)
+            {
+                SDTimerClass = null;
+            }
+        }
+        /// <summary>
+        /// 定时检测版本
+        /// </summary>
+        private void CheckUpdateTimer()
+        {
+            try
+            {
+                //1小时检测
+                checkUpdateTimerClass = new Common.TimmerHandler(60*60*1000, true, (o, a) =>
+                {
+                    getJson();
                 }, true);
             }
             catch (Exception ex)
@@ -957,8 +987,8 @@ namespace MES_MonitoringClient
 
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
                 {
-                    //工单号
-                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
+                    //工单编号
+                    txt_JobOrderCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderNumber;
 
                     //送达部门
                     this.txt_Dept.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ServiceDepartment;
@@ -2314,7 +2344,10 @@ namespace MES_MonitoringClient
         /// </summary>
         private void getJson()
         {
-
+            this.Invoke(new Action(() =>
+            {
+                this.lab_log.Text = "正在检测";
+            }));
             try
             {
                 jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
