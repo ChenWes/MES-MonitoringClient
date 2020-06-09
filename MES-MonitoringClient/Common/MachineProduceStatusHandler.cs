@@ -977,8 +977,12 @@ namespace MES_MonitoringClient.Common
             List<DataModel.JobOrder> findJobOrderList = JobOrderHelper.GetJobOrderByMouldCodeAndProductCode(jobOrderList[0].MouldCode, jobOrderList[0].ProductCode);
             if (findJobOrderList.Count() > 0)
             {
+
                 //完成工单
                 //更新至数据库
+
+                //保存员工
+                string lastOperaterID = jobOrderList[0].MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate).EmployeeID;
                 foreach (DataModel.JobOrder jobOrderItem in jobOrderList)
                 {
 
@@ -991,7 +995,7 @@ namespace MES_MonitoringClient.Common
                     //完成时间及操作人
                     jobOrderItem.CompletedDate = System.DateTime.Now;
                     //取上一张工单选择人为完成员工
-                    jobOrderItem.CompletedOperaterID = jobOrderList[0].MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate).EmployeeID;
+                    jobOrderItem.CompletedOperaterID = lastOperaterID;
 
                     //不需要返回值，并更新回class
                     JobOrderHelper.UpdateJobOrder(jobOrderItem, false);
@@ -1012,7 +1016,7 @@ namespace MES_MonitoringClient.Common
                 newJobOrder_MachineProcessLog.ProduceCount = 0;
                 newJobOrder_MachineProcessLog.ErrorCount = 0;
                 //取上一张工单选择人为完成员工
-                newJobOrder_MachineProcessLog.EmployeeID = jobOrderList[0].MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate).EmployeeID;
+                newJobOrder_MachineProcessLog.EmployeeID = lastOperaterID;
 
                 //机器处理记录
                 findJobOrderList[0].MachineProcessLog.Add(newJobOrder_MachineProcessLog);
