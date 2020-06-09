@@ -443,18 +443,12 @@ namespace MES_MonitoringClient
         /// </summary>
         private void CheckUpdateTimer()
         {
-            try
-            {
                 //1小时检测
                 checkUpdateTimerClass = new Common.TimmerHandler(60*60*1000, true, (o, a) =>
                 {
                     getJson();
                 }, true);
-            }
-            catch (Exception ex)
-            {
-                SDTimerClass = null;
-            }
+         
         }
 
         /// <summary>
