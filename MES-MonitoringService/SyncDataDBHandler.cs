@@ -294,10 +294,6 @@ namespace MES_MonitoringService
                 BsonElement syncFlag_BsonElement;
                 if (bsonDocument.TryGetElement("IsSyncToServer", out syncFlag_BsonElement) == false) bsonDocument.Add(new BsonElement("IsSyncToServer", false));
 
-                //增加接收时间，方便自动切换工单
-                BsonElement ReceiveDate_BsonElement;
-                if (bsonDocument.TryGetElement("ReceiveDate", out ReceiveDate_BsonElement) == false) bsonDocument.Add(new BsonElement("ReceiveDate", DateTime.Now));
-
                 var collection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<BsonDocument>(collectionName);
                 var filterID = new BsonDocument("_id", id);
                 var getCollection = collection.Find(filterID).FirstOrDefault();

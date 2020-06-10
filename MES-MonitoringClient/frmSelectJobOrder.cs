@@ -69,7 +69,13 @@ namespace MES_MonitoringClient
                     //已开始，但未结束的工单
                     jobOrders = Common.JobOrderHelper.GetJobOrderBySuspend();
 				}
-
+                //转换为本地时间
+                for(int i=0;i<jobOrders.Count();i++)
+                {
+                    jobOrders[i].sort = i + 1;
+                    jobOrders[i].ReceiveDate = jobOrders[i].ReceiveDate.ToLocalTime();
+                }
+                
                 dgv_JobOrder.DataSource = FormatNeedSecond(jobOrders);
 
 
@@ -248,6 +254,12 @@ namespace MES_MonitoringClient
 
 
                 List<DataModel.JobOrderDisplay> jobOrders = Common.JobOrderHelper.GetJobOrderByMouldCode(txt_MouldCode.Text.Trim(), type);
+                //转换为本地时间
+                for (int i = 0; i < jobOrders.Count(); i++)
+                {
+                    jobOrders[i].sort = i + 1;
+                    jobOrders[i].ReceiveDate = jobOrders[i].ReceiveDate.ToLocalTime();
+                }
 
                 dgv_JobOrder.DataSource = FormatNeedSecond(jobOrders);
 
@@ -323,6 +335,10 @@ namespace MES_MonitoringClient
             //不允许自动添加列
             dgv_JobOrder.AutoGenerateColumns = false;
 
+            DataGridViewTextBoxColumn sort_Column = new DataGridViewTextBoxColumn();
+            sort_Column.HeaderText = "序号";
+            sort_Column.DataPropertyName = "sort";
+            dgv_JobOrder.Columns.Add(sort_Column);
 
             DataGridViewCheckBoxColumn checkBoxColumn = new DataGridViewCheckBoxColumn();
             checkBoxColumn.HeaderText = "选择";
@@ -410,6 +426,11 @@ namespace MES_MonitoringClient
             ServiceDepartment_Column.HeaderText = "送达部门";
             ServiceDepartment_Column.DataPropertyName = "ServiceDepartment";
             dgv_JobOrder.Columns.Add(ServiceDepartment_Column);
+
+            DataGridViewTextBoxColumn ReceiveDate_Column = new DataGridViewTextBoxColumn();
+            ReceiveDate_Column.HeaderText = "排单时间";
+            ReceiveDate_Column.DataPropertyName = "ReceiveDate";
+            dgv_JobOrder.Columns.Add(ReceiveDate_Column);
 
             DataGridViewTextBoxColumn id_Column = new DataGridViewTextBoxColumn();
             id_Column.HeaderText = "ID";
