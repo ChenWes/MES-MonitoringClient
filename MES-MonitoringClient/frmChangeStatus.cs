@@ -47,7 +47,7 @@ namespace MES_MonitoringClient
                         Size = new Size() { Height = 80, Width = 150 },
                         BackColor = Common.CommonFunction.colorHx16toRGB(item.StatusColor),
                         FlatStyle = FlatStyle.Flat,
-                        ForeColor = Color.White,
+                        ForeColor = Common.CommonFunction.getReverseForeColor(Common.CommonFunction.colorHx16toRGB(item.StatusColor)),
                         Tag = item._id + splitMachineStatusPara + item.MachineStatusCode + splitMachineStatusPara + item.MachineStatusName + splitMachineStatusPara + item.MachineStatusDesc + splitMachineStatusPara + item.StatusColor
 
                     };
