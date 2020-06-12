@@ -309,10 +309,10 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
-                //处理生产中的工单
-                StopOtherJobOrder();
-                //传入的工单参数
-                ProcessJobOrderList = jobOrderList;
+
+
+                //处理生产中的工单并传入的工单参数
+                ProcessJobOrderList = StopOtherJobOrder(jobOrderList);
 
                 //设置工单处理记录（在工单基础之上直接修改）                
                 List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
@@ -387,12 +387,16 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 暂停所有生产中的工单
         /// </summary>
-        public void StopOtherJobOrder()
+        public List<DataModel.JobOrder> StopOtherJobOrder(List<DataModel.JobOrder> jobOrderList)
         {
             try
             {
+                //传入最新工单
+                List<DataModel.JobOrder> newJobOrderList = jobOrderList;
                 //处理生产中的工单
+
                 List<DataModel.JobOrder> startedJobOrders = ((List<DataModel.JobOrder>)Common.JobOrderHelper.GetAllJobOrder()).FindAll(x => x.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString());
+
                 //更新至数据库
                 foreach (DataModel.JobOrder jobOrderItem in startedJobOrders)
                 {
@@ -403,12 +407,23 @@ namespace MES_MonitoringClient.Common
                     jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString();
 
                     //需要返回值，并更新回class
-                    DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, false);
+                    DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
+                    //查找传入的工单是否有修改
+                    foreach (DataModel.JobOrder oldJobOrder in jobOrderList.ToArray())
+                    {
+                        if (oldJobOrder._id == jobOrderItem._id)
+                        {
+                            newJobOrderList.Remove(oldJobOrder);
+                            newJobOrderList.Add(jobOrder);
+                        }
+                    }
                 }
+                return newJobOrderList;
             }
             catch (Exception ex)
             {
                 throw;
+                
             }
         }
         /// <summary>
