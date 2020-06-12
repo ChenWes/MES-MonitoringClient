@@ -868,8 +868,9 @@ namespace MES_MonitoringClient
 
                 //设置状态灯
                 btn_StatusLight.Text = mc_MachineStatusHander.MachineStatusName;
-                btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+                //btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
                 btn_StatusLight.BackColor = Common.CommonFunction.colorHx16toRGB(mc_MachineStatusHander.MachineStatusColor);
+                btn_StatusLight.ForeColor = Common.CommonFunction.getReverseForeColor(btn_StatusLight.BackColor);
 
                 #endregion
             }
@@ -988,9 +989,9 @@ namespace MES_MonitoringClient
                     this.txt_Dept.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ServiceDepartment;
 
                     //产品
-                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode+"(1出"+getUnits().ToString()+")";
+                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
                     
-                    txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductDescription;
+                    txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductDescription+"(1出" + getUnits().ToString() + ")";
                     //txt_MaterialSpecification.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.Material.MaterialSpecification;
 
 
@@ -1239,11 +1240,11 @@ namespace MES_MonitoringClient
                     txt_TotalRejectsCount.Text = sumErrorCount.ToString();
                     //未完成数量
                     txt_NoCompletedCount.Text = (orderCount - sumProductCount + sumErrorCount).ToString();
-                    //1出几
-                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode + "（1出" + getUnits().ToString() + "）";
+                    txt_MaterialCode.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode;
+                    txt_MaterialName.Text = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductDescription+"(1出" + getUnits().ToString() + ")";
 
                     //进度条
-                   
+
                     this.circleProgramBar.MaxValue = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.OrderCount;
                     this.circleProgramBar.Progress = sumProductCount-sumErrorCount;
                     //this.progressBar_JobOrder.Visible = false;
@@ -1304,8 +1305,9 @@ namespace MES_MonitoringClient
         private void SettingMachineStatusLight()
         {
             btn_StatusLight.Text = mc_MachineStatusHander.MachineStatusName;
-            btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            //btn_StatusLight.ForeColor = System.Drawing.Color.FromArgb(255, 255, 255);
             btn_StatusLight.BackColor = Common.CommonFunction.colorHx16toRGB(mc_MachineStatusHander.MachineStatusColor);
+            btn_StatusLight.ForeColor = Common.CommonFunction.getReverseForeColor(btn_StatusLight.BackColor);
         }
 
         /// <summary>

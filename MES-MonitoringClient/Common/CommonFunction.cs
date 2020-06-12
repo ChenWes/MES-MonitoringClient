@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using System.ServiceProcess;
 using System.Net.Sockets;
 using System.Net;
+using System.Drawing;
 
 namespace MES_MonitoringClient.Common
 {
@@ -289,5 +290,15 @@ namespace MES_MonitoringClient.Common
         {
             return Common.ConfigFileHandler.GetAppConfig("BackendServerProtocol") + "://" + Common.ConfigFileHandler.GetAppConfig("BackendServerHost") + ":" + Common.ConfigFileHandler.GetAppConfig("BackendServerPort");
         }
+
+        ///<summary>
+        ///根据rgb设置颜色
+        ///</summary>
+        public static Color getReverseForeColor(Color color)
+        {
+            return ((0.299 * color.R + 0.587 * color.G + 0.114 * color.B) / 255) > 0.5 ? Color.Black : Color.White;
+        }
+
+
     }
 }
