@@ -82,6 +82,9 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("MouldLifecycle")]
         public int MouldLifecycle { get; set; }
 
+        [BsonElement("ReceiveDate")]
+        public DateTime ReceiveDate { get; set; }
+
         [BsonElement("MachineProcessLog")]
         public List<JobOrder_MachineProcessLog> MachineProcessLog { get; set; }
 

@@ -160,8 +160,9 @@ namespace MES_MonitoringClient.Common
                                        Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
                                        ID = jo._id,
                                        ServiceDepartment = jo.ServiceDepartment,
+                                       ReceiveDate = jo.MachineChangeLog.Last().ChangeDate,
                                    }
-                                ).ToList();
+                                ).ToList().OrderBy(t => t.ReceiveDate).ToList();
 
 
                 return getdocument;
@@ -187,7 +188,6 @@ namespace MES_MonitoringClient.Common
                 //一种写法，暂时未关联到客户外部信息
                 var getdocument = (from jo in jobOrderCollection.AsQueryable()
                                    where jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString()
-                                   orderby jo.Sort, jo.DeliveryDate
                                    select new DataModel.JobOrderDisplay
                                    {
 
@@ -209,10 +209,11 @@ namespace MES_MonitoringClient.Common
                                        sumNeedSecondDesc = "",
 
                                        Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
-									   ID = jo._id,
+                                       ID = jo._id,
                                        ServiceDepartment = jo.ServiceDepartment,
+                                       ReceiveDate = jo.MachineChangeLog.Last().ChangeDate,
                                    }
-                                ).ToList();
+                                ).ToList().OrderBy(t=>t.ReceiveDate).ToList();
 
 
                 return getdocument;
@@ -268,8 +269,9 @@ namespace MES_MonitoringClient.Common
                                            Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() ? "未开始" : (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString() ? "生产中" : "未知")),
                                            ID = jo._id,
                                            ServiceDepartment = jo.ServiceDepartment,
+                                           ReceiveDate = jo.MachineChangeLog.Last().ChangeDate,
                                        }
-                                    ).ToList();
+                                    ).ToList().OrderBy(t => t.ReceiveDate).ToList();
 
 
                     return getdocument;
@@ -304,9 +306,9 @@ namespace MES_MonitoringClient.Common
                                            Status = (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString() ? "暂停中" : "未知"),
                                            ID = jo._id,
                                            ServiceDepartment = jo.ServiceDepartment,
+                                           ReceiveDate = jo.MachineChangeLog.Last().ChangeDate,
                                        }
-                                    ).ToEnumerable().ToList();
-
+                                    ).ToEnumerable().ToList().OrderBy(t => t.ReceiveDate).ToList();
 
                     return getdocument;
                 }
@@ -320,13 +322,62 @@ namespace MES_MonitoringClient.Common
 
         }
 
+        /// <summary>
+        /// 通过模具编号和产品查询
+        /// </summary>
+        /// <param name="pi_MouldCode"></param>
+        /// <param name="pi_ProductCode"></param>
+        /// <returns></returns>
+        public static List<DataModel.JobOrder> GetJobOrderByMouldCodeAndProductCode(string pi_MouldCode, string pi_ProductCode)
+        {
+            try
+            {
+                var jobOrderCollection = Common.MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.JobOrder>(MC_JobOrderCollectionName);
+                //未开始或生产中工单
+                var getdocument = (from jo in jobOrderCollection.AsQueryable()
+                                   where (jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() || jo.Status == Common.JobOrderStatus.eumJobOrderStatus.Suspend.ToString())
+                                   && jo.MouldCode.Contains(pi_MouldCode) && jo.ProductCode.Contains(pi_ProductCode)
+                                   select new DataModel.JobOrder
+                                   {
+                                       JobOrderID=jo.JobOrderID,
+                                       JobOrderNumber=jo.JobOrderNumber,
+                                       ProductCode=jo.ProductCode,
+                                       ProductDescription = jo.ProductDescription,
+                                       ProductCategory =jo.ProductCategory,
+                                       OrderCount=jo.OrderCount,
+                                       MaterialCode=jo.MaterialCode,
+                                       DeliveryDate=jo.DeliveryDate,
+                                       MachineTonnage=jo.MachineTonnage,
+                                       MouldCode = jo.MouldCode,
+                                       MouldStandardProduceSecond =jo.MouldStandardProduceSecond,
+                                       Remark=jo.Remark,
+                                       Status=jo.Status,
+                                       MachineID=jo.MachineID,
+                                       CompletedDate=jo.CompletedDate,
+                                       CompletedOperaterID=jo.CompletedOperaterID,
+                                       Sort = jo.Sort,     
+                                       ServiceDepartment = jo.ServiceDepartment,
+                                       MouldLifecycle = jo.MouldLifecycle,
+                                       ReceiveDate = jo.MachineChangeLog.Last().ChangeDate,
+                                       MachineProcessLog =jo.MachineProcessLog,
+                                       MachineChangeLog=jo.MachineChangeLog,
+                                       MachineAcceptLog=jo.MachineAcceptLog,
+                                   }
+                                   ).ToEnumerable().ToList().OrderBy(t => t.ReceiveDate).ToList();
+                return getdocument;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-		/// <summary>
-		/// 处理工单的生产记录
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public static bool SettingMachineOperation(string id)
+        }
+        /// <summary>
+        /// 处理工单的生产记录
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static bool SettingMachineOperation(string id)
         {
             try
             {
