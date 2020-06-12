@@ -368,7 +368,14 @@ namespace MES_MonitoringClient
             }
             catch (Exception ex)
             {
-                ShowErrorMessage("RFID串口获取数据时出错", "serialPort1_DataReceived");
+                //写日志
+                Common.LogHandler.WriteLog("RFID串口获取数据时出错", ex);
+                //委托主线程报错，防止报错消息被隐藏
+                this.Invoke(new Action(() =>
+                 {
+                     ShowErrorMessage("RFID串口获取数据时出错，请重试", "serialPort1_DataReceived");
+                 }));
+              
                 //响铃并显示异常给用户
                 System.Media.SystemSounds.Beep.Play();
             }
