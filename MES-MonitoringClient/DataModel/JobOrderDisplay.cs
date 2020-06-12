@@ -74,6 +74,10 @@ namespace MES_MonitoringClient.DataModel
 
         public string ServiceDepartment { get; set; }
 
+        public DateTime ReceiveDate { get; set; }
+
+        public int sort { get; set; }
+
         //[BsonElement("MachineID")]
         //public string MachineID { get; set; }
 

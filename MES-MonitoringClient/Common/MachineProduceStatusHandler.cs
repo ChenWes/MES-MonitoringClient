@@ -392,7 +392,7 @@ namespace MES_MonitoringClient.Common
             try
             {
                 //处理生产中的工单
-                List<DataModel.JobOrder> startedJobOrders = ((List<DataModel.JobOrder>)Common.JobOrderHelper.GetAllJobOrder()).FindAll(x => x.Status == "Producing");
+                List<DataModel.JobOrder> startedJobOrders = ((List<DataModel.JobOrder>)Common.JobOrderHelper.GetAllJobOrder()).FindAll(x => x.Status == Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString());
                 //更新至数据库
                 foreach (DataModel.JobOrder jobOrderItem in startedJobOrders)
                 {
@@ -885,7 +885,7 @@ namespace MES_MonitoringClient.Common
                                 var sumProductCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
                                 var sumErrorCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
 
-                                if (getFilterJobOrder.OrderCount >= (sumProductCount - sumErrorCount))
+                                if (getFilterJobOrder.OrderCount > (sumProductCount - sumErrorCount))
                                 {
                                     //还没有生产完
                                     isFindNoOverJobOrder = true;
@@ -905,10 +905,7 @@ namespace MES_MonitoringClient.Common
                             //全部都够数了？？（即从未加数）
                             if (isFindNoOverJobOrder == false)
                             {
-                                //找到最后一个工单，强行加数
-                                var getFilterJobOrder = findJobOrderListByProductCode[findJobOrderListByProductCode.Count - 1];
-                                //处理加1
-                                ProcessJobOrderMachineProduceCount(getFilterJobOrder, MouldProductItem.ProductCount);
+                                AutoChangeJobOrder(findJobOrderListByProductCode, MouldProductItem.ProductCount);
                             }
                         }
                     }
@@ -966,13 +963,96 @@ namespace MES_MonitoringClient.Common
                     //全部都够数了？？（即从未加数）
                     if (isFindNoOverJobOrder == false)
                     {
-                        //找到最后一个工单，强行加数
-                        var getFilterJobOrder = findJobOrderListByProductCode[findJobOrderListByProductCode.Count - 1];
-                        //处理加1
-                        ProcessJobOrderMachineProduceCount(getFilterJobOrder, 1);
+                        AutoChangeJobOrder(findJobOrderListByProductCode,1);
                     }
                 }
             }
+        }
+
+        //自动切换工单
+        private void AutoChangeJobOrder(List<DataModel.JobOrder> jobOrderList, int productCount)
+        {
+            //判断是否存在同产品同模具并且还有未完成数量并且处于未开始或者暂停中，否，找到最后一个工单，强行加数
+            //是，加入新工单
+            List<DataModel.JobOrder> findJobOrderList = JobOrderHelper.GetJobOrderByMouldCodeAndProductCode(jobOrderList[0].MouldCode, jobOrderList[0].ProductCode);
+            if (findJobOrderList.Count() > 0)
+            {
+
+                //完成工单
+                //更新至数据库
+
+                //保存员工
+                string lastOperaterID = jobOrderList[0].MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate).EmployeeID;
+                foreach (DataModel.JobOrder jobOrderItem in jobOrderList)
+                {
+
+                    //找到没结束的处理记录
+                    var findMachineProcessLog = jobOrderItem.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
+                    //结束时间为当前时间
+                    findMachineProcessLog.ProduceEndDate = System.DateTime.Now;
+
+                    jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Completed.ToString();
+                    //完成时间及操作人
+                    jobOrderItem.CompletedDate = System.DateTime.Now;
+                    //取上一张工单选择人为完成员工
+                    jobOrderItem.CompletedOperaterID = lastOperaterID;
+
+                    //不需要返回值，并更新回class
+                    JobOrderHelper.UpdateJobOrder(jobOrderItem, false);
+                    ProcessJobOrderList.Remove(jobOrderItem);
+
+                }
+                //开始新工单
+                DataModel.JobOrder_MachineProcessLog newJobOrder_MachineProcessLog = new DataModel.JobOrder_MachineProcessLog();
+                newJobOrder_MachineProcessLog._id = ObjectId.GenerateNewId().ToString();
+
+                newJobOrder_MachineProcessLog.MachineID = MC_machine._id;
+
+                //开始及结束取同一个值
+                DateTime orderStartDate = System.DateTime.Now;
+                newJobOrder_MachineProcessLog.ProduceStartDate = orderStartDate;
+                newJobOrder_MachineProcessLog.ProduceEndDate = orderStartDate;
+
+                newJobOrder_MachineProcessLog.ProduceCount = 0;
+                newJobOrder_MachineProcessLog.ErrorCount = 0;
+                //取上一张工单选择人为完成员工
+                newJobOrder_MachineProcessLog.EmployeeID = lastOperaterID;
+
+                //机器处理记录
+                findJobOrderList[0].MachineProcessLog.Add(newJobOrder_MachineProcessLog);
+
+
+
+                //更新至数据库
+
+                findJobOrderList[0].Status = Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString();
+
+                //需要返回值，并更新回class
+                DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(findJobOrderList[0], true);
+
+                ProcessJobOrderList.Add(findJobOrderList[0]);
+                CurrentProcessJobOrder = findJobOrderList[0];
+
+                //界面显示基本消息
+                SettingJobOrderBasicInfo();
+
+                //计算未完成数量
+                SettingMachineNondefectiveCount();
+
+                //计算预计完成时间
+                SettingMachineCompleteDateTime();
+
+                ProcessJobOrderMachineProduceCount(findJobOrderList[0], productCount);
+
+            }
+            else
+            {
+                //找到最后一个工单，强行加数
+                var getFilterJobOrder = jobOrderList[jobOrderList.Count - 1];
+                //处理加1
+                ProcessJobOrderMachineProduceCount(getFilterJobOrder, productCount);
+            }
+
         }
     }
 }

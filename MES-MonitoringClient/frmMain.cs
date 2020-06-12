@@ -1948,13 +1948,6 @@ namespace MES_MonitoringClient
         {
             try
             {
-                if(this.txt_NoCompletedCount.Text.Trim() !="0" && txt_NoCompletedCount.Text.Trim() != "")
-                {
-                    if (MessageBox.Show("未完成数量为"+ this.txt_NoCompletedCount.Text.Trim() + "，请确认是否继续完成工单", "完成工单提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
-                    {
-                        return;
-                    }
-                }
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
                 {
                     frmScanRFID newfrmScanRFID = new frmScanRFID();
