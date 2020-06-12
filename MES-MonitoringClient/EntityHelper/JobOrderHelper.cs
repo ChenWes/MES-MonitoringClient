@@ -362,6 +362,11 @@ namespace MES_MonitoringClient.Common
                                        MachineProcessLog =jo.MachineProcessLog,
                                        MachineChangeLog=jo.MachineChangeLog,
                                        MachineAcceptLog=jo.MachineAcceptLog,
+                                       _id=jo._id,
+                                       CreateAt=jo.CreateAt,
+                                       CreateBy=jo.CreateBy,
+                                       LastUpdateAt=jo.LastUpdateAt,
+                                       LastUpdateBy=jo.LastUpdateBy,
                                    }
                                    ).ToEnumerable().ToList().OrderBy(t => t.ReceiveDate).ToList();
                 return getdocument;
