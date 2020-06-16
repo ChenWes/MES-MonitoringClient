@@ -11,7 +11,7 @@ AppId={{F6C5E189-481C-4249-96B0-D30C7E6CB320}
 ;应用名称
 AppName=MES Monitoring Client
 ;应用版本号
-AppVersion=1.2.9
+AppVersion=1.2.10
 ;AppVerName=MES Monitoring Client 1.0
 ;应用发布方
 AppPublisher=广东翠峰机器人科技股份有限公司
@@ -22,7 +22,7 @@ DisableDirPage=auto
 ;安装后不会出现在开始应用菜单
 DisableProgramGroupPage=no
 ;安装包文件名
-OutputBaseFilename=MES-MonitoringClient-Setup1.2.9
+OutputBaseFilename=MES-MonitoringClient-Setup
 ;压缩包
 Compression=lzma
 SolidCompression=yes
