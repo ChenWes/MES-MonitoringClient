@@ -262,8 +262,8 @@ namespace MES_MonitoringService.Common
                 var messageBody = System.Text.Encoding.UTF8.GetBytes(message);
                 SendChannel.BasicPublish(ExchangeName, RoutingKey, props, messageBody);
 
-                //等待确认
-                return SendChannel.WaitForConfirms();
+                //等待确认,1分钟超时
+                return SendChannel.WaitForConfirms(new TimeSpan(TimeSpan.TicksPerMinute));
 
             }
             catch (Exception ex)
