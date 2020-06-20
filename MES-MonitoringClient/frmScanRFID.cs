@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,7 +36,8 @@ namespace MES_MonitoringClient
             StartJobOrder,
             StopJobOrder,
             ResumeJobOrder,
-            OffPower
+            OffPower,
+            Update
         }
         //操作类型（修改状态、上班、下班等）
         public OperationType MC_OperationType;
@@ -43,7 +49,8 @@ namespace MES_MonitoringClient
             finishJobOrder,
             ResumeJobOrder,
             ChangeMachineType,
-            Quit
+            Quit,
+            Update
         }
         //类型提示
         public OperationType_Prompt MC_OperationType_Prompt;
@@ -61,6 +68,26 @@ namespace MES_MonitoringClient
         //开始订单参数
         public List<DataModel.JobOrder> MC_frmChangeJobOrderPara = null;
 
+        //获取服务端新版本信息
+        string jsonString = null;
+        //旧版本
+        string oldVersion = Common.ConfigFileHandler.GetAppConfig("Version");
+
+        //当前程序名
+        private string processName = Process.GetCurrentProcess().ProcessName;
+        //更新地址
+        private string update_Path = new DirectoryInfo(Application.StartupPath).Parent.Parent.FullName + @"\Mes_Update\Mes_Update.exe";
+
+        //守护服务名
+        private string defendServiceName = "MESServiceDefend";
+        //守护进程名
+        private string defendProgramName = "MES-Service-Defend";
+        //MES服务名
+        private string MESServiceName = "MESUploadDataService";
+        //MES服务进程名
+        private string MESProgramName = "MES-MonitoringService";
+        //MES系统进程名
+        private string MESClientProgramName = "MES-MonitoringClient";
         /*---------------------------------------------------------------------------------------*/
         //private long COM1_ReceiveDataCount = 0;
         //private StringBuilder COM1_DataStringBuilder = new StringBuilder();
@@ -116,6 +143,10 @@ namespace MES_MonitoringClient
                 else if (MC_OperationType_Prompt == OperationType_Prompt.Quit)
                 {
                     this.lab_ScanStatus.Text = "即将退出系统，请确认刷卡";
+                }
+                else if (MC_OperationType_Prompt == OperationType_Prompt.Update)
+                {
+                    this.lab_ScanStatus.Text = "即将更新系统，请确认刷卡";
                 }
                 else
                 {
@@ -434,6 +465,26 @@ namespace MES_MonitoringClient
                         //恢复工单
                         OnResumeJobOrder();
                         break;
+                    case OperationType.Update:
+                        if (MC_EmployeeInfo.JobPostionResponsibility!=null&&MC_EmployeeInfo.JobPostionResponsibility.Trim()=="系统管理员")
+                        {
+                            if (File.Exists(update_Path))
+                            {
+                                ThreadStart threadStart_Update = new ThreadStart(start_Update);//通过ThreadStart委托告诉子线程执行什么方法　　
+                                Thread thread_Update = new Thread(threadStart_Update);
+                                thread_Update.Start();//启动新线程
+                                this.lab_CardID.Text = "正在检测";
+                            }
+                            else
+                            {
+                                MessageBox.Show("不存在更新程序" + update_Path);
+                            }
+                        }
+                        else
+                        {
+                            ShowErrorMessage("对不起，您没有相应权限", "权限认证");
+                        }
+                        break;
                     case OperationType.OffPower:                                                
                     default:
                         break;
@@ -714,6 +765,241 @@ namespace MES_MonitoringClient
             }
 
             return returnFlag;
+        }
+        /// <summary>
+        /// 显示可升级状态，新线程运行方法
+        /// </summary>
+        /// 开始升级
+        private void start_Update()
+        {
+
+            try
+            {
+                jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
+            }
+            catch
+            {
+                // MessageBox.Show("获取不到版本信息");
+                this.Invoke(new Action(() =>
+                {
+                    this.lab_CardID.Text = "检测失败";
+                }));
+
+                return;
+            }
+            //委托
+            this.Invoke(new Action(() => {
+
+                string newVersion = GetJsonDate("ClientVersionCode");
+                if (newVersion != "" && !(newVersion is null))
+                {
+                    if (oldVersion == newVersion)
+                    {
+                        this.lab_CardID.Text = "当前版本为最新版本";
+                    }
+                    else
+                    {
+                        this.lab_CardID.Text = "可升级";
+                        if (File.Exists(update_Path))
+                        {
+                            if (CheckSericeStart(defendServiceName, defendProgramName))
+                            {
+                                StopService(defendServiceName, defendProgramName);
+                            }
+                            if (CheckSericeStart(MESServiceName, MESProgramName))
+                            {
+                                StopService(MESServiceName, MESProgramName);
+                            }
+                            Process process = new Process();
+                            process.StartInfo.FileName = update_Path;
+                            string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+                            string url = "\"" + basicHttpUrl + GetJsonDate("FilePath") + "\"";
+                            string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName + "\"";
+                            string ClientVersionCode = "\"" + newVersion + "\"";
+                            string ClientVersionName = "\"" + GetJsonDate("ClientVersionName") + "\"";
+                            string ClientVersionDesc = "\"" + GetJsonDate("ClientVersionDesc") + "\"";
+                            string Remark = "\"" + GetJsonDate("Remark") + "\"";
+                            string CreateAt = GetJsonDate("CreateAt");
+                            if (CreateAt != "" && !(CreateAt is null))
+                            {
+                                CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                            }
+                            string LastUpdateAt = GetJsonDate("LastUpdateAt");
+                            if (LastUpdateAt != "" && !(LastUpdateAt is null))
+                            {
+                                LastUpdateAt = "\"" + DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                            }
+                            process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
+                            process.Start();
+                            KillProgram();
+                        }
+                        else
+                        {
+                            MessageBox.Show("不存在更新程序" + update_Path);
+                            this.lab_CardID.Text = "可升级";
+                        }
+
+                    }
+                }
+                else
+                {
+                    this.lab_CardID.Text = "获取不到版本信息";
+                }
+            }));
+        }
+        /// <summary>
+        /// 判断服务有无启动
+        /// </summary>
+        /// <param name="serviceName">服务名</param>
+        /// /// <param name="programName">进程名</param>
+        private bool CheckSericeStart(string serviceName, string programName)
+        {
+            bool result = true;
+            try
+            {
+                ServiceController[] services = ServiceController.GetServices();
+                foreach (ServiceController service in services)
+                {
+                    if (service.ServiceName.Trim() == serviceName.Trim())
+                    {
+                        //已停止
+                        if (service.Status == ServiceControllerStatus.Stopped)
+                        {
+                            result = false;
+                        }
+                        //处理服务器一直处于正在停止状态
+                        else if (service.Status == ServiceControllerStatus.StopPending)
+                        {
+
+                            service.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(0, 0, 30));
+
+                            if (service.Status == ServiceControllerStatus.Stopped)
+                            {
+                                result = false;
+                            }
+                            else
+                            {
+
+                                KillProgram(programName);
+                                result = false;
+                            }
+                        }
+                        //处理服务器一直处于正在启动状态
+                        else if (service.Status == ServiceControllerStatus.StartPending)
+                        {
+                            service.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 30));
+                            if (service.Status == ServiceControllerStatus.StartPending)
+                            {
+
+                                KillProgram(programName);
+                                result = false;
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        /// <summary>
+        /// 关闭系统进程
+        /// </summary>
+        public void KillProgram()
+        {
+            Process[] processList = Process.GetProcesses();
+            foreach (Process process in processList)
+            {
+                if (process.ProcessName == processName)
+                {
+                    process.Kill();
+
+                }
+            }
+        }
+        /// <summary>
+        /// 关闭服务进程
+        /// </summary>
+        private void KillProgram(string serviceName)
+        {
+            try
+            {
+                Process[] processList = Process.GetProcesses();
+                foreach (Process process in processList)
+                {
+                    if (process.ProcessName == serviceName)
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+        }
+        /// <summary>
+        /// 获取json详细数据
+        /// </summary>
+        private string GetJsonDate(string pro)
+        {
+            if (jsonString != null)
+            {
+                try
+                {
+                    string ClientVersionCode = "";
+
+                    var jobj = JArray.Parse(jsonString);
+                    foreach (var ss in jobj)
+                    {
+                        ClientVersionCode = ((JObject)ss)[pro].ToString();
+                    }
+                    return ClientVersionCode;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        /// <param name="serviceName">要停止的服务名称</param>
+        private void StopService(string serviceName, string programName)
+        {
+            try
+            {
+                ServiceController[] services = ServiceController.GetServices();
+                foreach (ServiceController service in services)
+                {
+                    if (service.ServiceName.Trim() == serviceName.Trim())
+                    {
+                        service.Stop();
+                        //直到服务停止
+                        service.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(0, 0, 30));
+                        if (!CheckSericeStart(serviceName, programName))
+                        {
+                            break;
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
     }
 }

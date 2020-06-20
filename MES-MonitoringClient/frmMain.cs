@@ -2190,30 +2190,10 @@ namespace MES_MonitoringClient
                 TimeSpan span = DateTime.Now - clickTime;
                 if (span.Milliseconds < SystemInformation.DoubleClickTime)
                 {
-                    //检查机器状态
-                    if (mc_MachineStatusHander.MachineStatusCode== "Produce")
-                    {
-                        MessageBox.Show("正在生产中，请先更改状态", "提示");
-                        return;
-                    }
-                    //输入密码
-                    string response = Microsoft.VisualBasic.Interaction.InputBox("请输入密码", "用户输入");
-                    if (response.Trim() == "")
-                    {
-                        return;
-                    }
-                    if (response.Trim() == password)
-                    {
-                        ThreadStart threadStart_Update = new ThreadStart(start_Update);//通过ThreadStart委托告诉子线程执行什么方法　　
-                        Thread thread_Update = new Thread(threadStart_Update);
-                        thread_Update.Start();//启动新线程
-                        this.lab_log.Text = "正在检测";
-                        this.lab_log.ForeColor= Color.White;
-                    }
-                    else
-                    {
-                        MessageBox.Show("密码错误");
-                    }           
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.Update;
+                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.Update;
+                    newfrmScanRFID.ShowDialog();
                 }      
             }
             else
@@ -2276,49 +2256,38 @@ namespace MES_MonitoringClient
                     {
                         this.lab_log.Text = "可升级";
                         this.lab_log.ForeColor = Color.Green;
-                        if (MessageBox.Show("检测到新版本" + newVersion + "，确认是否继续升级？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
+                        if (File.Exists(update_Path))
                         {
-                            
-                            
-                            
-                                if (File.Exists(update_Path))
-                                {
-                                    Process process = new Process();
-                                    process.StartInfo.FileName = update_Path;
-                                    string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
-                                    string url = "\"" + basicHttpUrl + GetJsonDate("FilePath") + "\"";
-                                    string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName + "\"";
-                                    string ClientVersionCode = "\"" + newVersion + "\"";
-                                    string ClientVersionName = "\"" + GetJsonDate("ClientVersionName") + "\"";
-                                    string ClientVersionDesc = "\"" + GetJsonDate("ClientVersionDesc") + "\"";
-                                    string Remark = "\"" + GetJsonDate("Remark") + "\"";
-                                    string CreateAt = GetJsonDate("CreateAt");
-                                    if (CreateAt != "" && !(CreateAt is null))
-                                    {
-                                        CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
-                                    }
-                                    string LastUpdateAt = GetJsonDate("LastUpdateAt");
-                                    if (LastUpdateAt != "" && !(LastUpdateAt is null))
-                                    {
-                                        LastUpdateAt = "\"" + DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
-                                    }
-                                    process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
-                                    process.Start();
-                                    KillProgram();
-                                }
-                                else
-                                {
-                                    MessageBox.Show("不存在更新程序" + update_Path);
-                                    this.lab_log.Text = "可升级";
-                                    this.lab_log.ForeColor = Color.Green;
-                                }
-                            
+                            Process process = new Process();
+                            process.StartInfo.FileName = update_Path;
+                            string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+                            string url = "\"" + basicHttpUrl + GetJsonDate("FilePath") + "\"";
+                            string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName + "\"";
+                            string ClientVersionCode = "\"" + newVersion + "\"";
+                            string ClientVersionName = "\"" + GetJsonDate("ClientVersionName") + "\"";
+                            string ClientVersionDesc = "\"" + GetJsonDate("ClientVersionDesc") + "\"";
+                            string Remark = "\"" + GetJsonDate("Remark") + "\"";
+                            string CreateAt = GetJsonDate("CreateAt");
+                            if (CreateAt != "" && !(CreateAt is null))
+                            {
+                                CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                            }
+                            string LastUpdateAt = GetJsonDate("LastUpdateAt");
+                            if (LastUpdateAt != "" && !(LastUpdateAt is null))
+                            {
+                                LastUpdateAt = "\"" + DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                            }
+                            process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
+                            process.Start();
+                            KillProgram();
                         }
                         else
                         {
+                            MessageBox.Show("不存在更新程序" + update_Path);
                             this.lab_log.Text = "可升级";
                             this.lab_log.ForeColor = Color.Green;
                         }
+                       
                     }
                 }
                 else
