@@ -87,6 +87,14 @@ namespace Mes_Update
                 {
                     KillProgram(MESClientProgramName);
                 }
+                if (ifexistInstall(MESProgramName))
+                {
+                    KillProgram(MESProgramName);
+                }
+                if (ifexistInstall(defendProgramName))
+                {
+                    KillProgram(defendProgramName);
+                }
                 this.Invoke(new Action(() =>
                 {
                     this.lab_out.Text = "开始更新文件";
@@ -146,7 +154,7 @@ namespace Mes_Update
         /// </summary>
         private void Download()
         {
-            this.lab_out.Text = "正在下载";
+           
             //使用WebClient下载
              using (WebClient wc = new WebClient())
               {
@@ -164,6 +172,7 @@ namespace Mes_Update
 
                       try
                       {
+                          this.lab_out.Text = "正在下载";
                           //判断目标文件夹是否存在，如不在则创建
                           if (!Directory.Exists(this.txt_SavePath.Text.Substring(0, this.txt_SavePath.Text.LastIndexOf(@"\"))))
                           {
@@ -215,7 +224,7 @@ namespace Mes_Update
         //关闭窗口前确认
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (thread_Update.IsAlive)
+            if (thread_Update!=null&&thread_Update.IsAlive)
             {
                 MessageBox.Show("正在更新，不能关闭");
                 e.Cancel = false;
@@ -333,6 +342,11 @@ namespace Mes_Update
             }
             catch (Exception ex)
             {
+                this.Invoke(new Action(() =>
+                {
+                    this.lab_out.Text = "更新文件出错："+ex.ToString();
+
+                }));
                 return false;
             }
            
