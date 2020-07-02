@@ -80,6 +80,7 @@ namespace MES_MonitoringClient
 
         //检测更新定时器
         Common.TimmerHandler checkUpdateTimerClass = null;
+        Thread thread_getJsonTimer = null;
 
         /*---------------------------------------------------------------------------------------*/
 
@@ -107,6 +108,9 @@ namespace MES_MonitoringClient
         private DateTime clickTime ;
         private bool listening = false;//是否没有执行完invoke相关操作
         private bool closing = false;//是否正在关闭串口，执行Application.DoEvents，并阻止再次invoke
+        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+        bool haveEmployee = false;
+        bool haveQC = false;
         //安装包名
         //private string nstallation_package_name = null;
         //使用WebClient下载
@@ -218,10 +222,10 @@ namespace MES_MonitoringClient
 
                 //检测更新
                 ThreadStart threadStart_getJsonTimer = new ThreadStart(CheckUpdateTimer);　
-                Thread thread_getJsonTimer = new Thread(threadStart_getJsonTimer);
+                thread_getJsonTimer = new Thread(threadStart_getJsonTimer);
                 thread_getJsonTimer.Start();//启动新线程
 
-               
+                showClockIn();
                 //NowVersion();
 
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
@@ -330,7 +334,12 @@ namespace MES_MonitoringClient
                             e.Cancel = true;
                             return;
                         }
-
+                        //检测更新
+                        if (thread_getJsonTimer != null && checkUpdateTimerClass != null)
+                        {
+                            checkUpdateTimerClass.StopTimmer();
+                            thread_getJsonTimer.Abort();
+                        }
                         //定时器
                         if (DateTimeThreadClass != null && TTimerClass != null)
                         {
@@ -1688,6 +1697,7 @@ namespace MES_MonitoringClient
                         newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                         newfrmScanRFID.MC_EmployeeInfo._id
                         );
+                    showNoEmployee();
                 }
 
             }
@@ -1899,9 +1909,8 @@ namespace MES_MonitoringClient
 							newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
 							newfrmScanRFID.MC_EmployeeInfo._id
 						);
-
-
-					}
+                        showNoEmployee();
+                    }
 				//}
 				//else
 				//{
@@ -1951,6 +1960,7 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                             );
+                        showNoEmployee();
                     }
                 }
                 else
@@ -1999,6 +2009,7 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                             );
+                        showNoEmployee();
                     }
                 }
                 else
@@ -2058,6 +2069,7 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                         );
+                    showNoEmployee();
                     }
 				//}
 				//else
@@ -2402,6 +2414,101 @@ namespace MES_MonitoringClient
             else
             {
                 return null;
+            }
+        }
+        private void btn_ClockIn_Click(object sender, EventArgs e)
+        {
+            frmAttend newfrmAttend = new frmAttend();
+            newfrmAttend.ShowDialog();
+            if (!newfrmAttend.MC_IsManualCancel)
+            {
+                showClockIn();
+            }
+        }
+        private void btn_refresh_Click(object sender, EventArgs e)
+        {
+
+        }
+        ///<summary>
+        ///显示QC和员工
+        ///</summary>
+        private void showClockIn()
+        {
+            Common.ClockInRecordHandler clockInRecordHandler = new Common.ClockInRecordHandler();
+            List<DataModel.ClockInRecord> displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
+            haveEmployee = false;
+            haveQC = false;
+            foreach (var item in displayClockInRecords)
+            {
+                DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(item.EmployeeID);
+                if (employee != null)
+                {
+                    DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
+                    if (jobPositon != null)
+                    {
+                        string jobPositionCode = jobPositon.JobPositionCode;
+                        if (jobPositionCode == frmAttend.JobPositionCode.Employee.ToString())
+                        {
+                            haveEmployee = true;
+                            this.label21.Text = employee.EmployeeName;
+                            if (System.IO.File.Exists(Application.StartupPath + "\\image\\" + employee.LocalFileName))
+                            {
+                                pictureBox4.Image = Image.FromFile(Application.StartupPath + "\\image\\" + employee.LocalFileName);
+                            }
+                            else
+                            {
+                                this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                            }
+
+                        }
+                        else if (jobPositionCode == frmAttend.JobPositionCode.QC.ToString())
+                        {
+                            haveQC = true;
+                            this.label20.Text = employee.EmployeeName;
+                            if (System.IO.File.Exists(Application.StartupPath + "\\image\\" + employee.LocalFileName))
+                            {
+                                pictureBox3.Image = Image.FromFile(Application.StartupPath + "\\image\\" + employee.LocalFileName);
+                            }
+                            else
+                            {
+                                this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                            }
+
+                        }
+                    }
+                }
+            }
+            //处理无员工情况
+            showNoEmployee();
+        }
+        ///<summary>
+        ///处理无员工情况
+        /// </summary>
+        private void showNoEmployee()
+        {
+            if (!haveEmployee)
+            {
+                this.label21.Text = "";
+                if ((mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()))
+                {
+                    this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("rednoemployee.Image")));
+                }
+                else
+                {
+                    this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("noemployee.Image")));
+                }
+            }
+            if (!haveQC)
+            {
+                this.label20.Text = "";
+                if ((mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()))
+                {
+                    this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("rednoemployee.Image")));
+                }
+                else
+                {
+                    this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("noemployee.Image")));
+                }
             }
         }
     }

@@ -115,9 +115,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
+    <Compile Include="Common\ClockInRecordHandler.cs" />
     <Compile Include="Common\LastJobOrderHandler.cs" />
     <Compile Include="Common\MachineStatus.cs" />
     <Compile Include="Common\JobOrderStatus.cs" />
+    <Compile Include="DataModel\ClockInRecord.cs" />
     <Compile Include="DataModel\Customer.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
     <Compile Include="DataModel\JobOrderFirstProduceLog.cs" />
@@ -170,6 +172,12 @@
     <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
     <Compile Include="DataModel\SyncData.cs" />
+    <Compile Include="frmAttend.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAttend.Designer.cs">
+      <DependentUpon>frmAttend.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmChangeStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +210,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmAttend.resx">
+      <DependentUpon>frmAttend.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmChangeStatus.resx">
       <DependentUpon>frmChangeStatus.cs</DependentUpon>
     </EmbeddedResource>
@@ -244,6 +255,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLL\System.ServiceProcess.dll" />
+    <None Include="Resources\rednoemployee.png" />
+    <None Include="Resources\noemployee.png" />
+    <None Include="Resources\noimage.png" />
+    <None Include="Resources\btn_refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

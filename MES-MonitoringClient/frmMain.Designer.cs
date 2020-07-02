@@ -134,8 +134,16 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.label21 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel37 = new System.Windows.Forms.TableLayoutPanel();
+            this.btn_refresh = new System.Windows.Forms.Button();
+            this.btn_ClockIn = new System.Windows.Forms.Button();
             this.circleProgramBar = new MES_MonitoringClient.Common.Component.CircleProgramBar();
             this.txt_Dept = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
@@ -159,6 +167,7 @@
             this.tableLayoutPanel20.SuspendLayout();
             this.tableLayoutPanel26.SuspendLayout();
             this.tableLayoutPanel25.SuspendLayout();
+            this.tableLayoutPanel37.SuspendLayout();
             this.panel8.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel12.SuspendLayout();
@@ -180,6 +189,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.SuspendLayout();
             // 
             // serialPort6
@@ -1512,22 +1522,31 @@
             // 
             this.tableLayoutPanel34.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tableLayoutPanel34.ColumnCount = 4;
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 143F));
-            this.tableLayoutPanel34.Controls.Add(this.label18, 0, 1);
-            this.tableLayoutPanel34.Controls.Add(this.label19, 1, 1);
-            this.tableLayoutPanel34.Controls.Add(this.label20, 2, 1);
-            this.tableLayoutPanel34.Controls.Add(this.pictureBox1, 0, 0);
-            this.tableLayoutPanel34.Controls.Add(this.pictureBox2, 1, 0);
-            this.tableLayoutPanel34.Controls.Add(this.pictureBox3, 2, 0);
-            this.tableLayoutPanel34.Controls.Add(this.label21, 3, 0);
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel34.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel34.Controls.Add(this.label18, 0, 2);
+            this.tableLayoutPanel34.Controls.Add(this.label19, 1, 2);
+            this.tableLayoutPanel34.Controls.Add(this.label20, 2, 2);
+            this.tableLayoutPanel34.Controls.Add(this.label21, 2, 2);
+            this.tableLayoutPanel34.Controls.Add(this.pictureBox1, 0, 1);
+            this.tableLayoutPanel34.Controls.Add(this.pictureBox2, 1, 1);
+            this.tableLayoutPanel34.Controls.Add(this.pictureBox3, 2, 1);
+            this.tableLayoutPanel34.Controls.Add(this.pictureBox4, 3, 1);
+            this.tableLayoutPanel34.Controls.Add(this.label24, 0, 0);
+            this.tableLayoutPanel34.Controls.Add(this.label25, 1, 0);
+            this.tableLayoutPanel34.Controls.Add(this.label26, 2, 0);
+            this.tableLayoutPanel34.Controls.Add(this.label27, 3, 0);
+            this.tableLayoutPanel34.Controls.Add(this.tableLayoutPanel37, 0, 3);
             this.tableLayoutPanel34.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel34.Location = new System.Drawing.Point(3, 319);
             this.tableLayoutPanel34.Name = "tableLayoutPanel34";
-            this.tableLayoutPanel34.RowCount = 2;
+            this.tableLayoutPanel34.RowCount = 4;
+            
+            this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel34.Size = new System.Drawing.Size(489, 310);
             this.tableLayoutPanel34.TabIndex = 9;
@@ -1542,7 +1561,7 @@
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(88, 32);
             this.label18.TabIndex = 2;
-            this.label18.Text = "领班（吴仕红）";
+            this.label18.Text = "";
             // 
             // label19
             // 
@@ -1554,7 +1573,7 @@
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(88, 32);
             this.label19.TabIndex = 2;
-            this.label19.Text = "员工（杨仙仙）";
+            this.label19.Text = "";
             // 
             // label20
             // 
@@ -1566,7 +1585,110 @@
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(88, 32);
             this.label20.TabIndex = 2;
-            this.label20.Text = "检验（蓝杰尧）";
+            this.label20.Text = "";
+            // 
+            // label21
+            // 
+            this.label21.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.ForeColor = System.Drawing.Color.White;
+            this.label21.Location = new System.Drawing.Point(403, 102);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(24, 64);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "";
+            // 
+            // label24
+            // 
+            this.label24.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label24.ForeColor = System.Drawing.Color.White;
+            this.label24.Location = new System.Drawing.Point(13, 273);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(88, 32);
+            this.label24.TabIndex = 2;
+            this.label24.Text = "领班";
+            // 
+            // label25
+            // 
+            this.label25.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label25.ForeColor = System.Drawing.Color.White;
+            this.label25.Location = new System.Drawing.Point(127, 273);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(88, 32);
+            this.label25.TabIndex = 2;
+            this.label25.Text = "组长";
+            // 
+            // label26
+            // 
+            this.label26.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label26.ForeColor = System.Drawing.Color.White;
+            this.label26.Location = new System.Drawing.Point(241, 273);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(88, 32);
+            this.label26.TabIndex = 2;
+            this.label26.Text = "检验";
+            // 
+            // label27
+            // 
+            this.label27.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.ForeColor = System.Drawing.Color.White;
+            this.label27.Location = new System.Drawing.Point(403, 102);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(27, 64);
+            this.label27.TabIndex = 2;
+            this.label27.Text = "员工";
+            // 
+            // tableLayoutPanel37
+            // 
+            this.tableLayoutPanel37.ColumnCount = 2;
+            this.tableLayoutPanel37.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel37.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel37.Controls.Add(this.btn_refresh, 0, 0);
+            this.tableLayoutPanel37.Controls.Add(this.btn_ClockIn, 1, 0);
+            this.tableLayoutPanel37.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel37.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel37.Name = "tableLayoutPanel37";
+            this.tableLayoutPanel37.RowCount = 1;
+            this.tableLayoutPanel37.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel37.Size = new System.Drawing.Size(235, 33);
+            this.tableLayoutPanel37.TabIndex = 0;
+            this.tableLayoutPanel34.SetColumnSpan(this.tableLayoutPanel37, 4);
+            this.tableLayoutPanel37.Margin = new System.Windows.Forms.Padding(0);
+            // 
+            // btn_refresh
+            // 
+            this.btn_refresh.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_refresh.FlatAppearance.BorderSize = 0;
+            this.btn_refresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_refresh.Image = ((System.Drawing.Image)(resources.GetObject("btn_refresh.Image")));
+            this.btn_refresh.Location = new System.Drawing.Point(872, 3);
+            this.btn_refresh.Name = "btn_refresh";
+            this.btn_refresh.Size = new System.Drawing.Size(53, 44);
+            this.btn_refresh.TabIndex = 12;
+            this.btn_refresh.UseVisualStyleBackColor = true;
+            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
+            // 
+            // btn_ClockIn
+            // 
+            this.btn_ClockIn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_ClockIn.FlatAppearance.BorderSize = 0;
+            this.btn_ClockIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_ClockIn.Image = ((System.Drawing.Image)(resources.GetObject("btn_ClockIn.Image")));
+            this.btn_ClockIn.Location = new System.Drawing.Point(872, 3);
+            this.btn_ClockIn.Name = "btn_clockIn";
+            this.btn_ClockIn.Size = new System.Drawing.Size(53, 44);
+            this.btn_ClockIn.TabIndex = 12;
+            this.btn_ClockIn.UseVisualStyleBackColor = true;
+            this.btn_ClockIn.Click += new System.EventHandler(this.btn_ClockIn_Click);
             // 
             // pictureBox1
             // 
@@ -1593,7 +1715,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            //this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
             this.pictureBox3.Location = new System.Drawing.Point(232, 4);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(107, 261);
@@ -1601,17 +1723,17 @@
             this.pictureBox3.TabIndex = 3;
             this.pictureBox3.TabStop = false;
             // 
-            // label21
+            // pictureBox4
             // 
-            this.label21.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(403, 102);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(24, 64);
-            this.label21.TabIndex = 2;
-            this.label21.Text = "当\r\n班\r\n人\r\n员";
+            this.pictureBox4.Dock = System.Windows.Forms.DockStyle.Fill;
+          //  this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox4.Location = new System.Drawing.Point(232, 4);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(107, 261);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox4.TabIndex = 3;
+            this.pictureBox4.TabStop = false;
+           
             // 
             // label23
             // 
@@ -1712,9 +1834,12 @@
             this.tableLayoutPanel33.ResumeLayout(false);
             this.tableLayoutPanel34.ResumeLayout(false);
             this.tableLayoutPanel34.PerformLayout();
+            this.tableLayoutPanel37.ResumeLayout(false);
+            this.tableLayoutPanel37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1812,6 +1937,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button btn_CloseWindow;
         private System.Windows.Forms.Button btn_MinimizeWindows;
@@ -1830,6 +1956,13 @@
         private System.Windows.Forms.TextBox txt_Dept;
         private System.Windows.Forms.Label label23;
         private Common.Component.CircleProgramBar circleProgramBar;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel37;
+        private System.Windows.Forms.Button btn_refresh;
+        private System.Windows.Forms.Button btn_ClockIn;
     }
 }
 
