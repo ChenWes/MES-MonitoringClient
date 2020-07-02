@@ -1542,7 +1542,7 @@
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(88, 32);
             this.label18.TabIndex = 2;
-            this.label18.Text = "领班（吴仕红）";
+            this.label18.Text = "领班（陈红波）";
             // 
             // label19
             // 

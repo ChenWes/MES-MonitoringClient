@@ -244,6 +244,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLL\System.ServiceProcess.dll" />
+    <None Include="Resources\18080037_陈红波.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
