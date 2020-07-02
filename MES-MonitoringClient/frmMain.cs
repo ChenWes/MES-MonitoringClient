@@ -2219,6 +2219,85 @@ namespace MES_MonitoringClient
             }
         }
         /// <summary>
+        /// 显示可升级状态，新线程运行方法
+        /// </summary>
+        /// 开始升级
+        private void start_Update()
+        {
+           
+            try
+            {
+                jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
+            }
+            catch
+            {
+                // MessageBox.Show("获取不到版本信息");
+                this.Invoke(new Action(() =>
+                {
+                    this.lab_log.Text = "检测失败";
+                    this.lab_log.ForeColor = Color.White;
+                }));
+
+                return;
+            }
+            //委托
+            this.Invoke(new Action(() => { 
+                
+                string newVersion = GetJsonDate("ClientVersionCode");
+                if (newVersion != "" && !(newVersion is null))
+                {
+                    if (oldVersion == newVersion)
+                    {
+                        this.lab_log.Text = "最新版本";
+                        this.lab_log.ForeColor = Color.White;
+                        MessageBox.Show("当前版本为最新版本", "提示");
+                    }
+                    else
+                    {
+                        this.lab_log.Text = "可升级";
+                        this.lab_log.ForeColor = Color.Green;
+                        if (File.Exists(update_Path))
+                        {
+                            Process process = new Process();
+                            process.StartInfo.FileName = update_Path;
+                            string basicHttpUrl = Common.CommonFunction.GenerateBackendUri();
+                            string url = "\"" + basicHttpUrl + GetJsonDate("FilePath") + "\"";
+                            string path = "\"" + new DirectoryInfo(Application.StartupPath).Parent.FullName + "\"";
+                            string ClientVersionCode = "\"" + newVersion + "\"";
+                            string ClientVersionName = "\"" + GetJsonDate("ClientVersionName") + "\"";
+                            string ClientVersionDesc = "\"" + GetJsonDate("ClientVersionDesc") + "\"";
+                            string Remark = "\"" + GetJsonDate("Remark") + "\"";
+                            string CreateAt = GetJsonDate("CreateAt");
+                            if (CreateAt != "" && !(CreateAt is null))
+                            {
+                                CreateAt = "\"" + DateTime.Parse(CreateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                            }
+                            string LastUpdateAt = GetJsonDate("LastUpdateAt");
+                            if (LastUpdateAt != "" && !(LastUpdateAt is null))
+                            {
+                                LastUpdateAt = "\"" + DateTime.Parse(LastUpdateAt).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") + "\"";
+                            }
+                            process.StartInfo.Arguments = string.Format("{0} {1} {2} {3} {4} {5} {6} {7}", url, path, ClientVersionCode, ClientVersionName, ClientVersionDesc, Remark, CreateAt, LastUpdateAt);
+                            process.Start();
+                            KillProgram();
+                        }
+                        else
+                        {
+                            MessageBox.Show("不存在更新程序" + update_Path);
+                            this.lab_log.Text = "可升级";
+                            this.lab_log.ForeColor = Color.Green;
+                        }
+                       
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("获取不到版本信息");
+                    this.lab_log.Text = "获取不到版本信息";
+                }
+            }));
+        }
+        /// <summary>
         /// 显示可升级状态
         /// </summary>
         private void getJson()

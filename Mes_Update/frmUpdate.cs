@@ -105,8 +105,7 @@ namespace Mes_Update
                 {
                     this.Invoke(new Action(() =>
                     {
-                        this.lab_out.Text = "正在启动服务和程序";
-
+                        this.lab_out.Text = "更新完成";
                     }));
                     //启动服务和程序
                     if (!CheckSericeStart(defendServiceName, defendProgramName))
