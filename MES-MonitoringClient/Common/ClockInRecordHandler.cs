@@ -62,13 +62,14 @@ namespace MES_MonitoringClient.Common
                 var newfilter = Builders<BsonDocument>.Filter.Eq("EmployeeID", employeeID);
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
 
+
                 foreach (var data in getdocument)
                 {
                     //转换成类
-                    var jobOrderFirstProduceLogEntity = BsonSerializer.Deserialize<DataModel.ClockInRecord>(data);
-                    if (jobOrderFirstProduceLogEntity.StartDate == jobOrderFirstProduceLogEntity.EndDate)
+                    var ClockInRecordEntity = BsonSerializer.Deserialize<DataModel.ClockInRecord>(data);
+                    if (ClockInRecordEntity.StartDate == ClockInRecordEntity.EndDate)
                     {
-                        return jobOrderFirstProduceLogEntity;
+                        return ClockInRecordEntity;
                     }
                 }
                 return null;
@@ -103,17 +104,17 @@ namespace MES_MonitoringClient.Common
         ///<summary>
         ///更新记录（签退）
         ///</summary>
-        public void UpdateClockInRecord(DataModel.ClockInRecord clockInRecord)
+        public void UpdateClockInRecord(DataModel.ClockInRecord clockInRecord,bool isAuto)
         {
             try
             {
                 //查找ID
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultClockInRecordMongodbCollectionName);
                 var filterid = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(clockInRecord._id));
-                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, filterid).ToList();
                 BsonDocument updatedocument = clockInRecord.ToBsonDocument();
                 updatedocument.Remove("_id");
                 updatedocument.Set("EndDate", DateTime.Now);
+                updatedocument.Set("IsAuto", isAuto);
                 updatedocument.Set("IsUploadToServer", false);
 
                 BsonDocument updateResult = collection.FindOneAndUpdate(filterid, updatedocument);

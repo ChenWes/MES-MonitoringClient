@@ -123,8 +123,8 @@
             // tlp_view
             // 
             this.tlp_view.ColumnCount = 2;
-            this.tlp_view.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tlp_view.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tlp_view.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.tlp_view.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlp_view.Controls.Add(this.tableLayoutPanel1, 1, 0);
             this.tlp_view.Controls.Add(this.tlp_imagelist, 0, 0);
             this.tlp_view.Dock = System.Windows.Forms.DockStyle.Fill;

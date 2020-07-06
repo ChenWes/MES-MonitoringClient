@@ -45,8 +45,7 @@ namespace MES_MonitoringClient
         TableLayoutPanel tableLayoutPanel;
         //签到的打卡记录
         List<DataModel.ClockInRecord> inClockInRecords=new List<DataModel.ClockInRecord>();
-        //签退的打卡记录，用于更新
-        List<DataModel.ClockInRecord> outClockInRecords = new List<DataModel.ClockInRecord>();
+ 
         //用于显示
         List<DataModel.ClockInRecord> displayClockInRecords = new List<DataModel.ClockInRecord>();
         //本机
@@ -112,10 +111,16 @@ namespace MES_MonitoringClient
                 //RFID配置端口默认配置
                 // RFIDSerialPortGetDefaultSetting();
                 //
-                AddImage("1557370922467.jpg", "蔡春旺", "99200154");
-                tlp_manage.Controls.Add(imageTableLayoutPanel, 0, 1);
-                AddImage("1557370930997.jpg", "蔡春旺", "99200154");
-                tlp_manage.Controls.Add(imageTableLayoutPanel, 1, 1);
+                if(frmMain.head!=null)
+                {
+                    AddImage(frmMain.head.LocalFileName, frmMain.head.EmployeeName, frmMain.head.EmployeeCode,null);
+                    tlp_manage.Controls.Add(imageTableLayoutPanel, 0, 1);
+                }
+                if (frmMain.charge != null)
+                {
+                    AddImage(frmMain.charge.LocalFileName,frmMain.charge.EmployeeName, frmMain.charge.EmployeeCode,null);
+                    tlp_manage.Controls.Add(imageTableLayoutPanel, 1, 1);
+                }
                 //加载QC和员工
                 displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
                 showImage(displayClockInRecords);
@@ -145,6 +150,8 @@ namespace MES_MonitoringClient
                 while (listening) Application.DoEvents();
                 serialPort1.Close();
             }
+            Thread.Sleep(50);
+            
         }
 
         /// <summary>
@@ -152,7 +159,7 @@ namespace MES_MonitoringClient
         /// </summary>
         private void DateTimeTimer()
         {
-            Common.TimmerHandler TTimerClass = new Common.TimmerHandler(1000, true, (o, a) =>
+            TTimerClass = new Common.TimmerHandler(1000, true, (o, a) =>
             {
                 SetDateTime();
             }, true);
@@ -174,52 +181,32 @@ namespace MES_MonitoringClient
                 {
                     lab_DateTime.Text = string.Format("当前时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     //2分钟自动关闭
-                    if((DateTime.Now-startTime)>=new TimeSpan(0, 2, 0))
+                    if ((DateTime.Now - startTime) >= new TimeSpan(0, 2, 0))
                     {
                         //取消操作
                         MC_IsManualCancel = true;
                         MC_EmployeeInfo = null;
                         this.Close();
                     }
-
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage(ex.Message, "设置当前时间错误");
+                //ShowErrorMessage(ex.Message, "设置当前时间错误");
                 Common.LogHandler.WriteLog("设置当前时间错误", ex);
+                //TTimerClass = null;
             }
+         
+                  
+            
+            
         }
-        /// <summary>
-        /// 根据员工数量排版
-        /// </summary>
-        private void AddTablePanel(string imagePath, string name, string num)
-        {
-            tableLayoutPanel = new TableLayoutPanel();
-            tableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            int count = 10;
-            tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            tableLayoutPanel.ColumnCount = count;
-            // tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-
-            tableLayoutPanel.RowCount = 1;
-            tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            for (int i = 0; i < count; i++)
-            {
-                tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-                AddImage(imagePath, name, num);
-                tableLayoutPanel.Controls.Add(imageTableLayoutPanel, i, 0);
-            }
-
-
-
-            tlp_employee.Controls.Add(tableLayoutPanel, 0, 1);
-        }
+       
 
         /// <summary>
         /// 加入图，姓名及工号
         /// </summary>
-        private void AddImage(string imagePath, string name, string num)
+        private void AddImage(string imagePath, string name, string num,string time)
         {
             imageTableLayoutPanel = new TableLayoutPanel();
             //图片
@@ -257,16 +244,33 @@ namespace MES_MonitoringClient
             lab_name.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             lab_name.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             lab_name.ForeColor = System.Drawing.Color.White;
+            //签到时间
+            Label lab_time = new Label();
+            lab_time.AutoSize = true;
+            lab_time.Dock = System.Windows.Forms.DockStyle.Fill;
+            if (time != null)
+            {
+                lab_time.Text = "签到：" + time;
+            }
+            else
+            {
+                lab_time.Text = "";
+            }
+            lab_time.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lab_time.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            lab_time.ForeColor = System.Drawing.Color.White;
 
-           
+
 
             imageTableLayoutPanel.ColumnCount = 1;
             imageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             imageTableLayoutPanel.Controls.Add(lab_num, 0, 1);
             imageTableLayoutPanel.Controls.Add(lab_name, 0, 2);
+            imageTableLayoutPanel.Controls.Add(lab_time, 0, 3);
             imageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            imageTableLayoutPanel.RowCount = 3;
+            imageTableLayoutPanel.RowCount = 4;
             imageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            imageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             imageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             imageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
         }
@@ -530,7 +534,7 @@ namespace MES_MonitoringClient
                         if (jobPositon != null)
                         {
                             string jobPositionCode = jobPositon.JobPositionCode;
-                            AddImage(employee.LocalFileName, employee.EmployeeName, employee.EmployeeCode);
+                            AddImage(employee.LocalFileName, employee.EmployeeName, employee.EmployeeCode,item.StartDate.ToLocalTime().ToString("MM-dd HH:mm"));
 
                             if (jobPositionCode == JobPositionCode.Employee.ToString())
                             {
@@ -595,6 +599,7 @@ namespace MES_MonitoringClient
                                 newClockInRecord.StartDate = Now;
                                 newClockInRecord.EndDate = Now;
                                 newClockInRecord.IsUploadToServer = false;
+                                newClockInRecord.IsAuto = false;
                                 //用于添加
                                 inClockInRecords.Add(newClockInRecord);
                                 //QC有就替换，无就新增
@@ -618,7 +623,7 @@ namespace MES_MonitoringClient
 
                             }
                             this.lab_type.ForeColor = System.Drawing.Color.LawnGreen;
-                            AddImage(MC_EmployeeInfo.LocalFileName, MC_EmployeeInfo.EmployeeName, MC_EmployeeInfo.EmployeeCode);
+                            AddImage(MC_EmployeeInfo.LocalFileName, MC_EmployeeInfo.EmployeeName, MC_EmployeeInfo.EmployeeCode,null);
                             tableLayoutPanel1.Controls.Remove(lab_wait);
                             tableLayoutPanel1.Controls.Add(imageTableLayoutPanel, 0, 2);
                             tlp_employee.Controls.Remove(tableLayoutPanel);
@@ -629,7 +634,7 @@ namespace MES_MonitoringClient
                         {
                             this.lab_type.Text = "职位不符:"+jobPositionCode;
                             this.lab_type.ForeColor = System.Drawing.Color.Red;
-                            AddImage(MC_EmployeeInfo.LocalFileName, MC_EmployeeInfo.EmployeeName, MC_EmployeeInfo.EmployeeCode);
+                            AddImage(MC_EmployeeInfo.LocalFileName, MC_EmployeeInfo.EmployeeName, MC_EmployeeInfo.EmployeeCode,null);
                             tableLayoutPanel1.Controls.Remove(lab_wait);
                             tableLayoutPanel1.Controls.Add(imageTableLayoutPanel, 0, 2);
                         }
@@ -638,7 +643,7 @@ namespace MES_MonitoringClient
                     {
                         this.lab_type.Text = "不存在该职位";
                         this.lab_type.ForeColor = System.Drawing.Color.Red;
-                        AddImage(MC_EmployeeInfo.LocalFileName, MC_EmployeeInfo.EmployeeName, MC_EmployeeInfo.EmployeeCode);
+                        AddImage(MC_EmployeeInfo.LocalFileName, MC_EmployeeInfo.EmployeeName, MC_EmployeeInfo.EmployeeCode,null);
                         tableLayoutPanel1.Controls.Remove(lab_wait);
                         tableLayoutPanel1.Controls.Add(imageTableLayoutPanel, 0, 2);
                     }
@@ -654,17 +659,23 @@ namespace MES_MonitoringClient
         ///</summary>
         private bool CheckIfExist(string employeeID)
         {
-            clockInRecord = clockInRecordHandler.QueryClockInRecordByEmployeeID(employeeID);
-            if (clockInRecord != null)
+            try
             {
-                return true;
+                clockInRecord = clockInRecordHandler.QueryClockInRecordByEmployeeID(employeeID);
+                if (clockInRecord != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+             catch (Exception ex)
             {
-                return false;
+                throw ex;
             }
-              
-            
+
 
         }
         /// <summary>
@@ -723,7 +734,7 @@ namespace MES_MonitoringClient
             {
                 if (clockInRecord!=null)
                 {
-                    clockInRecordHandler.UpdateClockInRecord(clockInRecord);
+                    clockInRecordHandler.UpdateClockInRecord(clockInRecord,false);
                 }
                 foreach (var item in inClockInRecords)
                 {

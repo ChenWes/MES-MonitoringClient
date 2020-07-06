@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\BsonHelper.cs" />
+    <Compile Include="Common\MachineResponsiblePersonHandler.cs" />
     <Compile Include="Common\ColorDesign.cs" />
     <Compile Include="Common\CommonFunction.cs" />
     <Compile Include="Common\Component\CircleProgramBar.cs">
@@ -116,11 +117,17 @@
     </Compile>
     <Compile Include="Common\ConfigFileHandler.cs" />
     <Compile Include="Common\ClockInRecordHandler.cs" />
+    <Compile Include="Common\EmployeeWorkScheduleHandler.cs" />
+    <Compile Include="Common\WorkshopResponsiblePersonHandler.cs" />
     <Compile Include="Common\LastJobOrderHandler.cs" />
     <Compile Include="Common\MachineStatus.cs" />
     <Compile Include="Common\JobOrderStatus.cs" />
+    <Compile Include="Common\WorkShiftHandler.cs" />
+    <Compile Include="DataModel\MachineResponsiblePerson.cs" />
     <Compile Include="DataModel\ClockInRecord.cs" />
     <Compile Include="DataModel\Customer.cs" />
+    <Compile Include="DataModel\EmployeeWorkSchedule.cs" />
+    <Compile Include="DataModel\WorkshopResponsiblePerson.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
     <Compile Include="DataModel\JobOrderFirstProduceLog.cs" />
     <Compile Include="DataModel\LastJobOrder.cs" />

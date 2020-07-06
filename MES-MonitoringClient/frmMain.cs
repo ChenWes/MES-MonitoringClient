@@ -21,6 +21,7 @@ using MongoDB.Driver;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace MES_MonitoringClient
 {
@@ -81,7 +82,10 @@ namespace MES_MonitoringClient
         //检测更新定时器
         Common.TimmerHandler checkUpdateTimerClass = null;
         Thread thread_getJsonTimer = null;
-
+        //更新图片定时器
+        Thread UpdateImageThreadClass = null;
+        ThreadStart UpdateImageThreadFunction = null;
+        Common.TimmerHandler UpdateImageTimerClass = null;
         /*---------------------------------------------------------------------------------------*/
 
         //状态操作类
@@ -111,6 +115,19 @@ namespace MES_MonitoringClient
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
         bool haveEmployee = false;
         bool haveQC = false;
+        bool haveHead = false;
+        bool haveCharge = false;
+        //记录领班
+        public static DataModel.Employee head = null;
+        //记录组长
+        public static DataModel.Employee charge = null;
+        //当前班次开始时间
+        private DateTime? nowStartTime = null;
+        //当前班次结束时间
+        private DateTime? nowEndTime = null;
+        //照片地址
+        string imagePath= Common.ConfigFileHandler.GetAppConfig("EmployeeImageFolder");
+
         //安装包名
         //private string nstallation_package_name = null;
         //使用WebClient下载
@@ -179,12 +196,11 @@ namespace MES_MonitoringClient
                 mc_MachineStatusHander.ShowStatusPieChart();
 
 
-
+             
                 //初始化最后一次机器状态
                 mc_MachineStatusHander.GetLatestMachineStatusLog();
 
-                //显示最后一次工单信息
-                ShowLastJobOrderBiaisInfo(0);
+              
                 //打开端口
                 if (!serialPort6.IsOpen)
                 {
@@ -215,19 +231,27 @@ namespace MES_MonitoringClient
 
                 this.lab_log.Text = "正在检测";
 
-                //检测更新
-                ThreadStart threadStart_getJson = new ThreadStart(getJson);
-                Thread thread_getJson = new Thread(threadStart_getJson);
-                thread_getJson.Start();//启动新线程
+               
 
                 //检测更新
                 ThreadStart threadStart_getJsonTimer = new ThreadStart(CheckUpdateTimer);　
                 thread_getJsonTimer = new Thread(threadStart_getJsonTimer);
                 thread_getJsonTimer.Start();//启动新线程
-
+                //显示打卡
                 showClockIn();
-                //NowVersion();
 
+                if (MC_Machine != null)
+                {
+                    //显示最后一次工单信息
+                    ShowLastJobOrderBiaisInfo(0);
+                    UpdateImageThreadFunction = new ThreadStart(UpdateImageTimer);
+                    UpdateImageThreadClass = new Thread(UpdateImageThreadFunction);
+                    UpdateImageThreadClass.Start();//启动新线程
+                }
+              
+             
+                //NowVersion();
+                
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
 
                 //txt_WorkOrderCount.Text = "999999";
@@ -339,6 +363,12 @@ namespace MES_MonitoringClient
                         {
                             checkUpdateTimerClass.StopTimmer();
                             thread_getJsonTimer.Abort();
+                        }
+                        //更新照片
+                        if (UpdateImageThreadClass != null && UpdateImageTimerClass != null)
+                        {
+                            UpdateImageTimerClass.StopTimmer();
+                            UpdateImageThreadClass.Abort();
                         }
                         //定时器
                         if (DateTimeThreadClass != null && TTimerClass != null)
@@ -452,14 +482,27 @@ namespace MES_MonitoringClient
         /// </summary>
         private void CheckUpdateTimer()
         {
-                //1小时检测
-                checkUpdateTimerClass = new Common.TimmerHandler(60*60*1000, true, (o, a) =>
-                {
-                    getJson();
-                }, true);
-         
+            //1小时检测
+            getJson();
+            checkUpdateTimerClass = new Common.TimmerHandler(60*60*1000, true, (o, a) =>
+            {
+                getJson();
+            }, true);
         }
 
+        /// <summary>
+        /// 定时更新图片
+        /// </summary>
+        private void UpdateImageTimer()
+        {
+            //1分钟检测
+            showHeadAndCharge();
+            UpdateImageTimerClass = new Common.TimmerHandler(10*1000, true, (o, a) =>
+            {
+                showHeadAndCharge();
+            }, true);
+
+        }
         /// <summary>
         /// 获取温度定时器
         /// </summary>
@@ -2451,13 +2494,13 @@ namespace MES_MonitoringClient
                         {
                             haveEmployee = true;
                             this.label21.Text = employee.EmployeeName;
-                            if (System.IO.File.Exists(Application.StartupPath + "\\image\\" + employee.LocalFileName))
+                            if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
-                                pictureBox4.Image = Image.FromFile(Application.StartupPath + "\\image\\" + employee.LocalFileName);
+                                pictureBoxEmp.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
                             }
                             else
                             {
-                                this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                                this.pictureBoxEmp.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
                             }
 
                         }
@@ -2465,13 +2508,13 @@ namespace MES_MonitoringClient
                         {
                             haveQC = true;
                             this.label20.Text = employee.EmployeeName;
-                            if (System.IO.File.Exists(Application.StartupPath + "\\image\\" + employee.LocalFileName))
+                            if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
-                                pictureBox3.Image = Image.FromFile(Application.StartupPath + "\\image\\" + employee.LocalFileName);
+                                pictureBoxQC.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
                             }
                             else
                             {
-                                this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                                this.pictureBoxQC.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
                             }
 
                         }
@@ -2481,6 +2524,38 @@ namespace MES_MonitoringClient
             //处理无员工情况
             showNoEmployee();
         }
+
+        ///<summary>
+        ///处理不在当前班次的打卡记录
+        /// </summary>
+        private void autoSignOut()
+        {
+            Common.ClockInRecordHandler clockInRecordHandler = new Common.ClockInRecordHandler();
+            List<DataModel.ClockInRecord> displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
+            if (nowStartTime != null)
+            {
+                foreach (var item in displayClockInRecords)
+                {
+                    if (item.StartDate.ToLocalTime().AddHours(1) < nowStartTime)
+                    {
+                        DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(item.EmployeeID);
+                        if (employee != null)
+                        {
+                            DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
+                            //QC不处理
+                            if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
+                            {
+                                clockInRecordHandler.UpdateClockInRecord(item, true);
+                            }
+                        }
+                        else
+                        {
+                            clockInRecordHandler.UpdateClockInRecord(item, true);
+                        }
+                    }
+                }
+            }
+        }
         ///<summary>
         ///处理无员工情况
         /// </summary>
@@ -2489,27 +2564,198 @@ namespace MES_MonitoringClient
             if (!haveEmployee)
             {
                 this.label21.Text = "";
-                if ((mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()))
-                {
-                    this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("rednoemployee.Image")));
-                }
-                else
-                {
-                    this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("noemployee.Image")));
-                }
+                this.pictureBoxEmp.Image = null;
+                this.label27.ForeColor = System.Drawing.Color.Yellow;
+            }
+            else
+            {
+                this.label27.ForeColor = System.Drawing.Color.Chartreuse;
             }
             if (!haveQC)
             {
                 this.label20.Text = "";
-                if ((mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()))
+                this.pictureBoxQC.Image = null;
+                this.label26.ForeColor = System.Drawing.Color.Yellow;
+            }
+            else
+            {
+                this.label26.ForeColor = System.Drawing.Color.Chartreuse;
+            }
+            if (!haveCharge)
+            {
+                charge = null;
+                this.label19.Text = "";
+                this.pictureBoxCharge.Image = null;
+                this.label25.ForeColor = System.Drawing.Color.Yellow;
+            }
+            else
+            {
+                this.label25.ForeColor = System.Drawing.Color.Chartreuse;
+            }
+            if (!haveHead)
+            {
+                head = null;
+                this.label18.Text = "";
+                this.pictureBoxHead.Image = null;
+                this.label24.ForeColor = System.Drawing.Color.Yellow;
+            }
+            else
+            {
+                this.label24.ForeColor = System.Drawing.Color.Chartreuse;
+            }
+        }
+        ///<summary>
+        ///显示领班和组长
+        /// </summary>
+        private delegate void showHeadDelegate();
+        private void showHeadAndCharge()
+        {
+            try
+            {
+                if (this.InvokeRequired)
                 {
-                    this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("rednoemployee.Image")));
+                    try
+                    {
+                        this.Invoke(new SetDateTimeDelegate(showHeadAndCharge));
+                    }
+                    catch (Exception ex)
+                    {
+                        //响铃并显示异常给用户
+                        System.Media.SystemSounds.Beep.Play();
+                    }
                 }
                 else
                 {
-                    this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("noemployee.Image")));
+                    //找到本机器负责员工
+                    List<DataModel.WorkshopResponsiblePerson> headAreas = Common.WorkshopResponsiblePersonHandler.findEmployeeByWorkshopID(MC_Machine.WorkshopID);
+                    //找到组长
+                    List<DataModel.MachineResponsiblePerson> chargeAreas = Common.MachineResponsiblePersonHandler.findChargeAreaByMachineID(MC_Machine._id);
+                    DateTime now = DateTime.Now;
+                    string today = now.ToString("yyyy-MM-dd");
+                    string lastday = now.AddDays(-1).ToString("yyyy-MM-dd");
+                    string maxTime = today + "T23:59:59Z";
+                    string minTime = lastday + "T00:00:00Z";
+                    haveHead = false;
+                    haveCharge = false;
+                    nowStartTime = null;
+                    nowEndTime = null;
+                    foreach (var item in headAreas)
+                    {
+                        foreach (var employeeID in item.ResponsiblePersonID)
+                        {
+                            //通过班次找到适合该时间的该员工
+                            //通过（员工，时间）找到今天和昨天的班次
+                            List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, employeeID);
+                            foreach (var employeeScheduling in employeeSchedulings)
+                            {
+                                //找到班次对应时间
+                                DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
+                                DateTime dt;
+                                DateTime.TryParse(employeeScheduling.ScheduleDate,out dt);
+                                if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
+                                {
+                                    //同一天
+                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                    employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                }
+                                else
+                                {
+
+                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                    employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                }
+                                //当前时间谁值班
+                                if (employeeScheduling.startTime <= now && employeeScheduling.endTime >= now)
+                                {
+                                    DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
+                                    if (employee != null)
+                                    {
+                                        nowStartTime = employeeScheduling.startTime;
+                                        nowEndTime = employeeScheduling.endTime;
+                                        head = employee;
+                                        haveHead = true;
+                                        this.label18.Text = employee.EmployeeName;
+                                        if (System.IO.File.Exists(Application.StartupPath +imagePath+ "\\" + employee.LocalFileName))
+                                        {
+                                            pictureBoxHead.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
+                                        }
+                                        else
+                                        {
+                                            this.pictureBoxHead.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                                        }
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                    }
+
+                    foreach (var item in chargeAreas)
+                    {
+                        //通过班次找到适合该时间的该员工
+                        //通过（员工，时间）找到今天和昨天的班次
+                        foreach (var employeeID in item.ResponsiblePersonID)
+                        {
+                            List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, employeeID);
+                            foreach (var employeeScheduling in employeeSchedulings)
+                            {
+
+                                //找到班次对应时间
+                                DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
+                                DateTime dt;
+                                DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
+                                if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
+                                {
+                                    //同一天
+                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                    employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                }
+                                else
+                                {
+
+                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                    employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                }
+                                //当前时间谁值班
+                                if (employeeScheduling.startTime <= now && employeeScheduling.endTime >= now)
+                                {
+                                    DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
+                                    if (employee != null)
+                                    {
+                                        nowStartTime = employeeScheduling.startTime;
+                                        nowEndTime = employeeScheduling.endTime;
+                                        charge = employee;
+                                        haveCharge = true;
+                                        this.label19.Text = employee.EmployeeName;
+                                        if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
+                                        {
+                                            pictureBoxCharge.Image = Image.FromFile(Application.StartupPath + imagePath+ "\\" + employee.LocalFileName);
+                                        }
+                                        else
+                                        {
+                                            this.pictureBoxCharge.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    autoSignOut();
+                    showClockIn();
+                    showNoEmployee();
                 }
             }
+            catch(Exception ex)
+            {
+                Common.LogHandler.WriteLog("显示领班和组长错误", ex);
+            }
+           
         }
     }
 }
