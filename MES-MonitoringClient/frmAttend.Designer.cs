@@ -42,7 +42,10 @@
             this.lab_type = new System.Windows.Forms.Label();
             this.tlp_imagelist = new System.Windows.Forms.TableLayoutPanel();
             this.tlp_employee = new System.Windows.Forms.TableLayoutPanel();
+            this.tlp_button = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.tlp_manage = new System.Windows.Forms.TableLayoutPanel();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -54,6 +57,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.tlp_imagelist.SuspendLayout();
             this.tlp_employee.SuspendLayout();
+            this.tlp_button.SuspendLayout();
             this.tlp_manage.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,9 +76,9 @@
             this.tlp_mian.Location = new System.Drawing.Point(0, 0);
             this.tlp_mian.Name = "tlp_mian";
             this.tlp_mian.RowCount = 3;
-            this.tlp_mian.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tlp_mian.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             this.tlp_mian.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_mian.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tlp_mian.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 130F));
             this.tlp_mian.Size = new System.Drawing.Size(1048, 685);
             this.tlp_mian.TabIndex = 1;
             // 
@@ -199,7 +203,7 @@
             this.tlp_imagelist.Name = "tlp_imagelist";
             this.tlp_imagelist.RowCount = 2;
             this.tlp_imagelist.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlp_imagelist.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlp_imagelist.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tlp_imagelist.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlp_imagelist.Size = new System.Drawing.Size(723, 423);
             this.tlp_imagelist.TabIndex = 1;
@@ -209,7 +213,7 @@
             this.tlp_employee.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tlp_employee.ColumnCount = 1;
             this.tlp_employee.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_employee.Controls.Add(this.label2, 0, 0);
+            this.tlp_employee.Controls.Add(this.tlp_button, 0, 0);
             this.tlp_employee.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlp_employee.Location = new System.Drawing.Point(3, 214);
             this.tlp_employee.Name = "tlp_employee";
@@ -219,17 +223,66 @@
             this.tlp_employee.Size = new System.Drawing.Size(717, 206);
             this.tlp_employee.TabIndex = 3;
             // 
+            // tlp_button
+            // 
+            this.tlp_button.ColumnCount = 3;
+            this.tlp_button.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tlp_button.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlp_button.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.tlp_button.Controls.Add(this.button1, 0, 0);
+            this.tlp_button.Controls.Add(this.label2, 1, 0);
+            this.tlp_button.Controls.Add(this.button2, 2, 0);
+            this.tlp_button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlp_button.Location = new System.Drawing.Point(3, 214);
+            this.tlp_button.Margin = new System.Windows.Forms.Padding(0);
+            this.tlp_button.Name = "tlp_button";
+            this.tlp_button.RowCount = 1;
+            this.tlp_button.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlp_button.Size = new System.Drawing.Size(717, 206);
+            this.tlp_button.TabIndex = 3;
+            this.tlp_button.Margin = new System.Windows.Forms.Padding(0);
+            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.ForeColor = System.Drawing.Color.Chartreuse;
-            this.label2.Location = new System.Drawing.Point(338, 8);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 16);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "员工";
+             this.label2.AutoSize = true;
+             this.label2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+             this.label2.ForeColor = System.Drawing.Color.Chartreuse;
+             this.label2.Location = new System.Drawing.Point(338, 8);
+             this.label2.Name = "label2";
+             this.label2.Size = new System.Drawing.Size(40, 16);
+             this.label2.TabIndex = 3;
+             this.label2.Text = "员工";
+            // 
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.button1.Location = new System.Drawing.Point(3, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(24, 24);
+            this.button1.TabIndex = 14;
+            this.button1.Text = "<<";
+            this.button1.Font= new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.button2.Location = new System.Drawing.Point(3, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(24, 24);
+            this.button2.TabIndex = 14;
+            this.button2.Text = ">>";
+            this.button2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // tlp_manage
             // 
@@ -260,7 +313,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(40, 16);
             this.label5.TabIndex = 2;
-            this.label5.Text = "校验";
+            this.label5.Text = "QC";
             // 
             // label4
             // 
@@ -296,7 +349,7 @@
             this.lab_title.Name = "lab_title";
             this.lab_title.Size = new System.Drawing.Size(71, 29);
             this.lab_title.TabIndex = 3;
-            this.lab_title.Text = "打卡";
+            this.lab_title.Text = "签卡";
             // 
             // frmAttend
             // 
@@ -321,6 +374,8 @@
             this.tlp_imagelist.ResumeLayout(false);
             this.tlp_employee.ResumeLayout(false);
             this.tlp_employee.PerformLayout();
+            this.tlp_button.ResumeLayout(false);
+            this.tlp_button.PerformLayout();
             this.tlp_manage.ResumeLayout(false);
             this.tlp_manage.PerformLayout();
             this.ResumeLayout(false);
@@ -340,6 +395,7 @@
         private System.Windows.Forms.Label lab_title;
         private System.Windows.Forms.TableLayoutPanel tlp_manage;
         private System.Windows.Forms.TableLayoutPanel tlp_employee;
+        private System.Windows.Forms.TableLayoutPanel tlp_button;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
@@ -347,5 +403,7 @@
         private System.Windows.Forms.Label lab_wait;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lab_type;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

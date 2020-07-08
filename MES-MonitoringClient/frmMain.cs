@@ -2545,11 +2545,13 @@ namespace MES_MonitoringClient
                             //QC不处理
                             if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
                             {
+                                item.EndDate = DateTime.Now;
                                 clockInRecordHandler.UpdateClockInRecord(item, true);
                             }
                         }
                         else
                         {
+                            item.EndDate = DateTime.Now;
                             clockInRecordHandler.UpdateClockInRecord(item, true);
                         }
                     }

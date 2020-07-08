@@ -123,6 +123,7 @@
     <Compile Include="Common\MachineStatus.cs" />
     <Compile Include="Common\JobOrderStatus.cs" />
     <Compile Include="Common\WorkShiftHandler.cs" />
+    <Compile Include="DataModel\displayClockInRecord.cs" />
     <Compile Include="DataModel\MachineResponsiblePerson.cs" />
     <Compile Include="DataModel\ClockInRecord.cs" />
     <Compile Include="DataModel\Customer.cs" />

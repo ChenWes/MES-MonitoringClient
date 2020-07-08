@@ -113,7 +113,6 @@ namespace MES_MonitoringClient.Common
                 var filterid = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(clockInRecord._id));
                 BsonDocument updatedocument = clockInRecord.ToBsonDocument();
                 updatedocument.Remove("_id");
-                updatedocument.Set("EndDate", DateTime.Now);
                 updatedocument.Set("IsAuto", isAuto);
                 updatedocument.Set("IsUploadToServer", false);
 

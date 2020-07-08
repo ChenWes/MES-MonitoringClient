@@ -1633,7 +1633,7 @@
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(88, 32);
             this.label26.TabIndex = 2;
-            this.label26.Text = "检验";
+            this.label26.Text = "QC";
             // 
             // label27
             // 
