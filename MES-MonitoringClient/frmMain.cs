@@ -2481,6 +2481,7 @@ namespace MES_MonitoringClient
             List<DataModel.ClockInRecord> displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
             haveEmployee = false;
             haveQC = false;
+            int employeenum = 0;
             foreach (var item in displayClockInRecords)
             {
                 DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(item.EmployeeID);
@@ -2493,6 +2494,8 @@ namespace MES_MonitoringClient
                         if (jobPositionCode == frmAttend.JobPositionCode.Employee.ToString())
                         {
                             haveEmployee = true;
+                            employeenum++;
+                            this.label27.Text = "员工("+employeenum+")";
                             this.label21.Text = employee.EmployeeName;
                             if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
@@ -2507,6 +2510,7 @@ namespace MES_MonitoringClient
                         else if (jobPositionCode == frmAttend.JobPositionCode.QC.ToString())
                         {
                             haveQC = true;
+
                             this.label20.Text = employee.EmployeeName;
                             if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
@@ -2539,9 +2543,9 @@ namespace MES_MonitoringClient
                     if (item.StartDate.ToLocalTime().AddHours(1) < nowStartTime)
                     {
                         DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(item.EmployeeID);
-                        if (employee != null)
+                        if (employee == null)
                         {
-                            DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
+                           /* DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
                             //QC不处理
                             if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
                             {
@@ -2550,7 +2554,7 @@ namespace MES_MonitoringClient
                             }
                         }
                         else
-                        {
+                        {*/
                             item.EndDate = DateTime.Now;
                             clockInRecordHandler.UpdateClockInRecord(item, true);
                         }
@@ -2568,6 +2572,7 @@ namespace MES_MonitoringClient
                 this.label21.Text = "";
                 this.pictureBoxEmp.Image = null;
                 this.label27.ForeColor = System.Drawing.Color.Yellow;
+                this.label27.Text = "员工";
             }
             else
             {
