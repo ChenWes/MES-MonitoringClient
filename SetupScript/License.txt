@@ -1,4 +1,4 @@
-MES Monitoring Client v1.2.10
+MES Monitoring Client v1.2.12
 
 该软件目前只应用于MES数据收集系统客户端
 
