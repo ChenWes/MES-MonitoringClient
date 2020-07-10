@@ -8,44 +8,47 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 
 AppId={{F6C5E189-481C-4249-96B0-D30C7E6CB320}
-;Ó¦ÓÃÃû³Æ
+;åº”ç”¨åç§°
 AppName=MES Monitoring Client
-;Ó¦ÓÃ°æ±¾ºÅ
+;åº”ç”¨ç‰ˆæœ¬å·
 AppVersion=1.2.12
 ;AppVerName=MES Monitoring Client 1.0
-;Ó¦ÓÃ·¢²¼·½
-AppPublisher=¹ã¶«´ä·å»úÆ÷ÈË¿Æ¼¼¹É·İÓĞÏŞ¹«Ë¾
-;°²×°Ä¿Â¼Ãû³Æ
+;åº”ç”¨å‘å¸ƒæ–¹
+AppPublisher=å¹¿ä¸œç¿ å³°æœºå™¨äººç§‘æŠ€è‚¡ä»½æœ‰é™å…¬å¸
+;å®‰è£…ç›®å½•åç§°
 DefaultDirName={pf64}\MES-Monitoring-Client
-;°²×°Ä¿Â¼²»¿ÉÑ¡Ôñ
+;å®‰è£…ç›®å½•ä¸å¯é€‰æ‹©
 DisableDirPage=auto
-;°²×°ºó²»»á³öÏÖÔÚ¿ªÊ¼Ó¦ÓÃ²Ëµ¥
+;å®‰è£…åä¸ä¼šå‡ºç°åœ¨å¼€å§‹åº”ç”¨èœå•
 DisableProgramGroupPage=no
-;°²×°°üÎÄ¼şÃû
+;å®‰è£…åŒ…æ–‡ä»¶å
 OutputBaseFilename=MES-MonitoringClient-Setup
-;Ñ¹Ëõ°ü
+;å‹ç¼©åŒ…
 Compression=lzma
 SolidCompression=yes
-;°²×°°üÍ¼±êÎÄ¼ş
+;å®‰è£…åŒ…å›¾æ ‡æ–‡ä»¶
 SetupIconFile=D:\document\mes\setup.ico
-;°²×°Ê±ĞèÒªÌá¹©¹ÜÀíÔ±È¨ÏŞ
+;å®‰è£…æ—¶éœ€è¦æä¾›ç®¡ç†å‘˜æƒé™
 PrivilegesRequired=admin
-;Ğí¿ÉÎÄ¼ş
+;è®¸å¯æ–‡ä»¶
 LicenseFile=D:\report\wes\MES-MonitoringClient\SetupScript\License.txt
 
 
-[Languages]Name: "english"; MessagesFile: "compiler:Default.isl"
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "chs"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 [Tasks]
-;×ÀÃæÔö¼Ó¿ì½İÍ¼±êName: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-;¿ì½İ·½Ê½Name: quicklaunchicon; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:CreateQuickLaunchIcon}"; Flags: unchecked
+;æ¡Œé¢å¢åŠ å¿«æ·å›¾æ ‡
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+;å¿«æ·æ–¹å¼
+Name: quicklaunchicon; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:CreateQuickLaunchIcon}"; Flags: unchecked
 
 
 [Files]
-;°²×°ÎÄ¼ş
+;å®‰è£…æ–‡ä»¶
 
-;ClientµÄÎÄ¼ş¼Ğ
+;Clientçš„æ–‡ä»¶å¤¹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\*"; DestDir: "{app}\Client"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\DnsClient.dll"; DestDir: "{app}\Client"; Flags: ignoreversion;  Components: Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\DnsClient.xml"; DestDir: "{app}\Client"; Flags: ignoreversion;  Components: Client
@@ -66,7 +69,9 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Mongo
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.Core.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.Core.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\MongoDB.Driver.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\RabbitMQ.Client.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Buffers.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newtonsoft.Json.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
@@ -75,8 +80,9 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newto
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 
-;Èç¹ûÓĞÈÕÖ¾£¬Ôò¸´ÖÆÈÕÖ¾£¬Èç¹ûÃ»ÓĞ£¬Ôò²»¸´ÖÆ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log.log"; DestDir: "{app}\Client"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
-;ServiceµÄÎÄ¼ş¼Ğ
+;å¦‚æœæœ‰æ—¥å¿—ï¼Œåˆ™å¤åˆ¶æ—¥å¿—ï¼Œå¦‚æœæ²¡æœ‰ï¼Œåˆ™ä¸å¤åˆ¶
+;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log.log"; DestDir: "{app}\Client"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
+;Serviceçš„æ–‡ä»¶å¤¹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\DnsClient.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
@@ -106,7 +112,7 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log4
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Microsoft.Diagnostics.Tracing.EventSource.dll"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\Microsoft.Diagnostics.Tracing.EventSource.xml"; DestDir: "{app}\Service"; Flags: ignoreversion; Components:Service
 
-;DefendServiceµÄÎÄ¼ş¼Ğ
+;DefendServiceçš„æ–‡ä»¶å¤¹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\log4net.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\log4net.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
@@ -127,53 +133,53 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\RabbitM
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\System.Runtime.InteropServices.RuntimeInformation.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Topshelf.dll"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
 Source: "D:\report\wes\MES-MonitoringClient\MES-Service-Defend\bin\Debug\Topshelf.xml"; DestDir: "{app}\DefendService"; Flags: ignoreversion; Components:DefendService
-;Èç¹ûÓĞÈÕÖ¾£¬Ôò¸´ÖÆÈÕÖ¾£¬Èç¹ûÃ»ÓĞ£¬Ôò²»¸´ÖÆ
+;å¦‚æœæœ‰æ—¥å¿—ï¼Œåˆ™å¤åˆ¶æ—¥å¿—ï¼Œå¦‚æœæ²¡æœ‰ï¼Œåˆ™ä¸å¤åˆ¶
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\log.log"; DestDir: "{app}\Service"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
 
 ;NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-;×ÀÃæÍ¼±ê
+;æ¡Œé¢å›¾æ ‡
 Name: "{commondesktop}\MES Monitoring Client"; Filename: "{app}\Client\MES-MonitoringClient.exe"; Tasks: desktopicon
-;ÔÚ¡°¿ªÊ¼¡±--¡°³ÌĞò¡±Àï£¬Ìí¼ÓÒ»¸ö¿ªÊ¼µÄ¿ì½İ·½Ê½
+;åœ¨â€œå¼€å§‹â€--â€œç¨‹åºâ€é‡Œï¼Œæ·»åŠ ä¸€ä¸ªå¼€å§‹çš„å¿«æ·æ–¹å¼
 Name: "{commonprograms}\MES Client\MES Monitoring Client"; Filename: "{app}\Client\MES-MonitoringClient.exe"
-;ÔÚ¡°¿ªÊ¼¡±--¡°³ÌĞò¡±Àï£¬Ìí¼ÓÒ»¸öĞ¶ÔØµÄ¿ì½İ·½Ê½
+;åœ¨â€œå¼€å§‹â€--â€œç¨‹åºâ€é‡Œï¼Œæ·»åŠ ä¸€ä¸ªå¸è½½çš„å¿«æ·æ–¹å¼
 Name: "{commonprograms}\MES Client\Uninstall Application"; Filename: "{uninstallexe}"
 
 [Registry]
-;¿ª»úÆô¶¯
+;å¼€æœºå¯åŠ¨
 Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "MES Monitoring Client"; ValueData: """{app}\Client\MES-MonitoringClient.exe"""; Flags: uninsdeletevalue
 
 
 [run]
-;Á½ÖÖ·½·¨¶¼¿ÉÒÔ°²×°·şÎñ£¬ÉÏÃæµÄ¿ÉÒÔ½«·şÎñ°²×°ºÃ£¬µ«²»ÄÜÖ±½ÓÔËĞĞ
+;ä¸¤ç§æ–¹æ³•éƒ½å¯ä»¥å®‰è£…æœåŠ¡ï¼Œä¸Šé¢çš„å¯ä»¥å°†æœåŠ¡å®‰è£…å¥½ï¼Œä½†ä¸èƒ½ç›´æ¥è¿è¡Œ
 ;Filename: {sys}\sc.exe; Parameters: "create MESUploadDataService start= auto binPath= ""{app}\Service\MES-MonitoringService.exe""" ; Flags: runhidden
-;ÒÔÏÂµÄ·½Ê½¿ÉÒÔÖ±½ÓÔËĞĞ£¬ÆäÖĞÓĞComponents:Service;µ±Ñ¡ÖĞÁË·şÎñ²Å»á°²×°·şÎñ      
-;Flags:postinstallµã»÷Íê³Éºó£¬²Å»á½øĞĞ·şÎñµÄ°²×°£¬ÒòÎªÔÚ´¦ÀíRabbitMQµÄ·şÎñÆ÷²ÎÊıÊ±£¬²»»áÖ±½ÓÌæ»»²ÎÊıµÄ
-Filename: "{app}\Service\MES-MonitoringService.exe"; Description:"°²×°²¢ÔËĞĞMES¿Í»§¶ËÊı¾İÉÏ´«·şÎñ"; Parameters: " install start"; Components:Service; Flags:postinstall runhidden hidewizard;
-;°²×°Defend·şÎñ
-Filename: "{app}\DefendService\MES-Service-Defend.exe"; Description:"°²×°²¢ÔËĞĞMES·şÎñ¶ËÊØ»¤·şÎñ"; Parameters: " install start"; Components:DefendService; Flags:postinstall runhidden hidewizard;
-;°²×°Íê³ÉºóÆô¶¯Ó¦ÓÃ
+;ä»¥ä¸‹çš„æ–¹å¼å¯ä»¥ç›´æ¥è¿è¡Œï¼Œå…¶ä¸­æœ‰Components:Service;å½“é€‰ä¸­äº†æœåŠ¡æ‰ä¼šå®‰è£…æœåŠ¡      
+;Flags:postinstallç‚¹å‡»å®Œæˆåï¼Œæ‰ä¼šè¿›è¡ŒæœåŠ¡çš„å®‰è£…ï¼Œå› ä¸ºåœ¨å¤„ç†RabbitMQçš„æœåŠ¡å™¨å‚æ•°æ—¶ï¼Œä¸ä¼šç›´æ¥æ›¿æ¢å‚æ•°çš„
+Filename: "{app}\Service\MES-MonitoringService.exe"; Description:"å®‰è£…å¹¶è¿è¡ŒMESå®¢æˆ·ç«¯æ•°æ®ä¸Šä¼ æœåŠ¡"; Parameters: " install start"; Components:Service; Flags:postinstall runhidden hidewizard;
+;å®‰è£…DefendæœåŠ¡
+Filename: "{app}\DefendService\MES-Service-Defend.exe"; Description:"å®‰è£…å¹¶è¿è¡ŒMESæœåŠ¡ç«¯å®ˆæŠ¤æœåŠ¡"; Parameters: " install start"; Components:DefendService; Flags:postinstall runhidden hidewizard;
+;å®‰è£…å®Œæˆåå¯åŠ¨åº”ç”¨
 Filename: "{app}\Client\MES-MonitoringClient.exe"; Description: "{cm:LaunchProgram,MES Monitoring Client}"; Flags:postinstall skipifsilent unchecked      
 
 
 [UninstallRun]
-;Ğ¶ÔØÊØ»¤·şÎñ
+;å¸è½½å®ˆæŠ¤æœåŠ¡
 Filename: {sys}\sc.exe; Parameters: "stop MESServiceDefend" ; Flags: runhidden; Components:DefendService
 Filename: {sys}\sc.exe; Parameters: "delete MESServiceDefend" ; Flags: runhidden; Components:DefendService
-;Ğ¶ÔØÊ±£¬Í£Ö¹·şÎñ²¢É¾³ı·şÎñ
+;å¸è½½æ—¶ï¼Œåœæ­¢æœåŠ¡å¹¶åˆ é™¤æœåŠ¡
 Filename: {sys}\sc.exe; Parameters: "stop MESUploadDataService" ; Flags: runhidden; Components:Service
 Filename: {sys}\sc.exe; Parameters: "delete MESUploadDataService" ; Flags: runhidden; Components:Service
 
 [Messages]
-;°²×°Ê±£¬windowsÈÎÎñÀ¸ÌáÊ¾±êÌâ
+;å®‰è£…æ—¶ï¼Œwindowsä»»åŠ¡æ æç¤ºæ ‡é¢˜
 SetupAppTitle=MES Monitoring Client Setup
-;°²×°Ê±£¬°²×°Òıµ¼±êÌâ
+;å®‰è£…æ—¶ï¼Œå®‰è£…å¼•å¯¼æ ‡é¢˜
 SetupWindowTitle=MES Monitoring Client Setup
-;ÔÚ½çÃæ×óÏÂ½Ç¼ÓÎÄ×Ö
-BeveledLabel=¹ã¶«´ä·å»úÆ÷ÈË¹É·İÓĞÏŞ¹«Ë¾
-;Ğ¶ÔØ¶Ô»°¿òËµÃ÷
-ConfirmUninstall=ÄúÕæµÄÏëÒª´ÓµçÄÔÖĞĞ¶ÔØ %1 Âğ?%n%n°´ [ÊÇ] ÔòÍêÈ«É¾³ı %1 ÒÔ¼°ËüµÄËùÓĞ×é¼ş;%n°´ [·ñ]ÔòÈÃÈí¼ş¼ÌĞøÁôÔÚÄúµÄµçÄÔÉÏ.
+;åœ¨ç•Œé¢å·¦ä¸‹è§’åŠ æ–‡å­—
+BeveledLabel=å¹¿ä¸œç¿ å³°æœºå™¨äººè‚¡ä»½æœ‰é™å…¬å¸
+;å¸è½½å¯¹è¯æ¡†è¯´æ˜
+ConfirmUninstall=æ‚¨çœŸçš„æƒ³è¦ä»ç”µè„‘ä¸­å¸è½½ %1 å—?%n%næŒ‰ [æ˜¯] åˆ™å®Œå…¨åˆ é™¤ %1 ä»¥åŠå®ƒçš„æ‰€æœ‰ç»„ä»¶;%næŒ‰ [å¦]åˆ™è®©è½¯ä»¶ç»§ç»­ç•™åœ¨æ‚¨çš„ç”µè„‘ä¸Š.
 
 
 [Types]
@@ -181,15 +187,16 @@ Name: "normaltype"; Description: "Normal Setup"
 Name: "custom";     Description: "Custom Installation"; Flags: iscustom
 
 [Components]
-Name: "Client";     Description: "Ó¦ÓÃ½çÃæ";  Types: normaltype custom
-Name: "Service";    Description: "ºóÌ¨·şÎñ";  Types: normaltype custom
-Name: "DefendService";    Description: "ÊØ»¤·şÎñ";  Types: normaltype custom
+Name: "Client";     Description: "åº”ç”¨ç•Œé¢";  Types: normaltype custom
+Name: "Service";    Description: "åå°æœåŠ¡";  Types: normaltype custom
+Name: "DefendService";    Description: "å®ˆæŠ¤æœåŠ¡";  Types: normaltype custom
+
 
 [Code]
 var CustomPage: TInputQueryWizardPage;
 var CustomAPIPage: TInputQueryWizardPage;
 
-//ÉèÖÃRabbit Server Host
+//è®¾ç½®Rabbit Server Host
 function NextButtonClick(CurPage: Integer): Boolean;
 var
   str: string;
@@ -205,8 +212,8 @@ begin
       begin
         // Set Custom Page initial values
         CustomPage := CreateInputQueryPage(wpSelectComponents, 
-        'RabbitMQ ÅäÖÃ', 'MES·şÎñĞÅÏ¢ÅäÖÃ', 
-        'ÇëÊäÈëRabbitMQ Server HostµØÖ·£¬È»ºóµã»÷ ÏÂÒ»²½ °´Å¥');
+        'RabbitMQ é…ç½®', 'MESæœåŠ¡ä¿¡æ¯é…ç½®', 
+        'è¯·è¾“å…¥RabbitMQ Server Hoståœ°å€ï¼Œç„¶åç‚¹å‡» ä¸‹ä¸€æ­¥ æŒ‰é’®');
         CustomPage.Add('RabbitMQ Server Host:', False);        
         CustomPage.Values[0] := '172.19.0.153';                
       end;
@@ -217,8 +224,8 @@ begin
       begin
         // Set Custom Page initial values
         CustomAPIPage := CreateInputQueryPage(wpSelectComponents, 
-        'API ÅäÖÃ', 'MES·şÎñĞÅÏ¢ÅäÖÃ', 
-        'ÇëÊäÈëAPI Server HostµØÖ·£¬È»ºóµã»÷ ÏÂÒ»²½ °´Å¥');
+        'API é…ç½®', 'MESæœåŠ¡ä¿¡æ¯é…ç½®', 
+        'è¯·è¾“å…¥API Server Hoståœ°å€ï¼Œç„¶åç‚¹å‡» ä¸‹ä¸€æ­¥ æŒ‰é’®');
         CustomAPIPage.Add('API Server Host:', False);        
         CustomAPIPage.Values[0] := '172.19.0.153';                
       end;
@@ -226,14 +233,14 @@ begin
 
   if CurPage = wpFinished then
    begin
-      //ÕÒµ½ÎÄ¼şµØÏÂ
+      //æ‰¾åˆ°æ–‡ä»¶åœ°ä¸‹
       strFilename := ExpandConstant('{app}\Service\MES-MonitoringService.exe.config');
 
       if FileExists(strFilename) then
       begin
         // Replace the values in the .config file and save it
         LoadStringFromFile(strFilename, str);
-        //Í¨¹ıÌæ»»ÍêÕûµÄkey£¬ÕÒµ½ËùÓĞ<add key="RabbitMQServerHostName" value="localhost"/>ÄÚÈİ²¢Ìæ»»³ÉÒÔÏÂÖµ
+        //é€šè¿‡æ›¿æ¢å®Œæ•´çš„keyï¼Œæ‰¾åˆ°æ‰€æœ‰<add key="RabbitMQServerHostName" value="localhost"/>å†…å®¹å¹¶æ›¿æ¢æˆä»¥ä¸‹å€¼
         StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost" />','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'" />', True); 
         StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'" />', True); 
         //application need check mongodb service replace to 1  
@@ -242,27 +249,27 @@ begin
       end;
   
 
-      //ÕÒµ½ÎÄ¼şµØÏÂ
+      //æ‰¾åˆ°æ–‡ä»¶åœ°ä¸‹
       strFilename := ExpandConstant('{app}\Client\MES-MonitoringClient.exe.config');
 
       if FileExists(strFilename) then
       begin
         // Replace the values in the .config file and save it
         LoadStringFromFile(strFilename, str);
-        //Í¨¹ıÌæ»»ÍêÕûµÄkey£¬ÕÒµ½ËùÓĞ<add key="RabbitMQServerHostName" value="localhost"/>ÄÚÈİ²¢Ìæ»»³ÉÒÔÏÂÖµ
+        //é€šè¿‡æ›¿æ¢å®Œæ•´çš„keyï¼Œæ‰¾åˆ°æ‰€æœ‰<add key="RabbitMQServerHostName" value="localhost"/>å†…å®¹å¹¶æ›¿æ¢æˆä»¥ä¸‹å€¼
         StringChangeEx(str, '<add key="BackendServerHost" value="localhost" />','<add key="BackendServerHost" value="'+CustomAPIPage.Values[0]+'" />', True);
         //application need check mongodb service replace to 1  
         StringChangeEx(str, '<add key="CheckMongoDBService" value="0"/>','<add key="CheckMongoDBService" value="1"/>', True);        
         SaveStringToFile(strFilename, str, False);    
         
-         //ÊØ»¤·şÎñ
+         //å®ˆæŠ¤æœåŠ¡
       strFilename := ExpandConstant('{app}\DefendService\MES-Service-Defend.exe.config');
 
       if FileExists(strFilename) then
       begin
         // Replace the values in the .config file and save it
         LoadStringFromFile(strFilename, str);
-        //Í¨¹ıÌæ»»ÍêÕûµÄkey£¬ÕÒµ½ËùÓĞ<add key="RabbitMQServerHostName" value="localhost"/>ÄÚÈİ²¢Ìæ»»³ÉÒÔÏÂÖµ
+        //é€šè¿‡æ›¿æ¢å®Œæ•´çš„keyï¼Œæ‰¾åˆ°æ‰€æœ‰<add key="RabbitMQServerHostName" value="localhost"/>å†…å®¹å¹¶æ›¿æ¢æˆä»¥ä¸‹å€¼
         StringChangeEx(str, '<add key="RabbitMQServerHostName" value="localhost" />','<add key="RabbitMQServerHostName" value="'+CustomPage.Values[0]+'" />', True); 
         //application need check mongodb service replace to 1  
         //StringChangeEx(str, '<add key="CheckMongoDBService" value="0"/>','<add key="CheckMongoDBService" value="1"/>', True);        
@@ -273,18 +280,19 @@ begin
 end;
 
 [Code]
-//ÉèÖÃ½çÃæÎÄ×ÖÑÕÉ«
+//è®¾ç½®ç•Œé¢æ–‡å­—é¢œè‰²
 procedure InitializeWizard(); 
 begin 
-  //WizardForm.WELCOMELABEL1.Font.Color:= clGreen;//ÉèÖÃ¿ªÊ¼°²×°Ò³ÃæµÚÒ»¶ÎÎÄ×ÖµÄÑÕÉ«ÎªÂÌÉ« 
-  //WizardForm.WELCOMELABEL2.Font.Color:= clOlive;//ÉèÖÃ¿ªÊ¼°²×°Ò³ÃæµÚ¶ş¶ÎÎÄ×ÖµÄÑÕÉ«ÎªéÏé­ÂÌ 
-  //WizardForm.PAGENAMELABEL.Font.Color:= clRed;//ÉèÖÃĞí¿ÉĞ­ÒéÒ³ÃæµÚÒ»¶ÎÎÄ×ÖµÄÑÕÉ«ÎªºìÉ« 
-  //WizardForm.PAGEDESCRIPTIONLABEL.Font.Color:= clBlue; //ÉèÖÃĞí¿ÉĞ­ÒéÒ³ÃæµÚ¶ş¶ÎÎÄ×ÖµÄÑÕÉ«ÎªÀ¶É« 
-  WizardForm.MainPanel.Color:= clWhite;//ÉèÖÃ´°¸ñµÄÑÕÉ«Îª°×É«
+  //WizardForm.WELCOMELABEL1.Font.Color:= clGreen;//è®¾ç½®å¼€å§‹å®‰è£…é¡µé¢ç¬¬ä¸€æ®µæ–‡å­—çš„é¢œè‰²ä¸ºç»¿è‰² 
+  //WizardForm.WELCOMELABEL2.Font.Color:= clOlive;//è®¾ç½®å¼€å§‹å®‰è£…é¡µé¢ç¬¬äºŒæ®µæ–‡å­—çš„é¢œè‰²ä¸ºæ©„æ¦„ç»¿ 
+  //WizardForm.PAGENAMELABEL.Font.Color:= clRed;//è®¾ç½®è®¸å¯åè®®é¡µé¢ç¬¬ä¸€æ®µæ–‡å­—çš„é¢œè‰²ä¸ºçº¢è‰² 
+  //WizardForm.PAGEDESCRIPTIONLABEL.Font.Color:= clBlue; //è®¾ç½®è®¸å¯åè®®é¡µé¢ç¬¬äºŒæ®µæ–‡å­—çš„é¢œè‰²ä¸ºè“è‰² 
+  WizardForm.MainPanel.Color:= clWhite;//è®¾ç½®çª—æ ¼çš„é¢œè‰²ä¸ºç™½è‰²
  
 end;
 
-//Ğ¶ÔØºó´ò¿ªÍøÖ·
+
+//å¸è½½åæ‰“å¼€ç½‘å€
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   ErrorCode: Integer;
@@ -292,11 +300,11 @@ begin
   case CurUninstallStep of
     usUninstall:
       begin        
-        // ÕıÔÚĞ¶ÔØ
+        // æ­£åœ¨å¸è½½
       end;
     usPostUninstall:
       begin
-        //Ğ¶ÔØÍê³É       
+        //å¸è½½å®Œæˆ       
         //ShellExec('open', 'http://www.cfmm.com.cn/', '', '', SW_SHOW, ewNoWait, ErrorCode)
       end;
   end;

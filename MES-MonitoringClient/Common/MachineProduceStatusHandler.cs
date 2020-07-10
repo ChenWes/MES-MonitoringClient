@@ -1057,9 +1057,24 @@ namespace MES_MonitoringClient.Common
                 //计算预计完成时间
                 SettingMachineCompleteDateTime();
 
-                ProcessJobOrderMachineProduceCount(findJobOrderList[0], productCount);
 
+
+                //找到它本身的生产数量、不良品数量（所有机器都算进来）
+                var sumProductCount = findJobOrderList[0].MachineProcessLog.Sum(t => t.ProduceCount);
+                var sumErrorCount = findJobOrderList[0].MachineProcessLog.Sum(t => t.ErrorCount);
+                //不够数，则加，够数则切换到下一张工单
+                if (findJobOrderList[0].OrderCount > (sumProductCount - sumErrorCount))
+                {
+                    ProcessJobOrderMachineProduceCount(findJobOrderList[0], productCount);
+                }
+                else
+                {
+                    List<DataModel.JobOrder> jobOrders = new List<DataModel.JobOrder>();
+                    jobOrders.Add(findJobOrderList[0]);
+                    AutoChangeJobOrder(jobOrders, productCount);
+                }
             }
+
             else
             {
                 //找到最后一个工单，强行加数

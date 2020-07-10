@@ -28,6 +28,9 @@ namespace MES_MonitoringService
         public static string MC_MouldCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
         public static string MC_JobOrderCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderCollectionName");
         public static string MC_MouldProductCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldProductCollectionName");
+        public static string MC_WorkshopResponsiblePersonCollectionName= Common.ConfigFileHandler.GetAppConfig("WorkshopResponsiblePersonCollectionName");
+        public static string MC_MachineResponsiblePersonCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineResponsiblePersonCollectionName");
+        public static string MC_EmployeeWorkScheduleCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeWorkScheduleCollectionName");
 
         public enum SyncDataType
         {
@@ -48,6 +51,9 @@ namespace MES_MonitoringService
 
             Employee,
             JobOrder,
+            WorkshopResponsiblePerson,
+            MachineResponsiblePerson,
+            EmployeeWorkSchedule
         }
 
         /// <summary>
@@ -192,9 +198,26 @@ namespace MES_MonitoringService
 
                     #endregion
                 }
+                else if (type == SyncDataType.WorkshopResponsiblePerson.ToString())
+                {
+                    #region 车间负责人正常处理
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_WorkshopResponsiblePersonCollectionName, dataJson, id, action);
+                    #endregion
+                }
+                else if (type == SyncDataType.MachineResponsiblePerson.ToString())
+                {
+                    #region 机器负责人正常处理
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_MachineResponsiblePersonCollectionName, dataJson, id, action);
+                    #endregion
+                }
+                else if (type == SyncDataType.EmployeeWorkSchedule.ToString()) 
+                {
+                    #region 员工排班正常处理
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_EmployeeWorkScheduleCollectionName, dataJson, id, action);
+                    #endregion
+                }
 
                 return true;
-
             }
             catch (Exception ex)
             {
