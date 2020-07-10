@@ -76,7 +76,7 @@ namespace MES_MonitoringClient
         //当前程序名
         private string processName = Process.GetCurrentProcess().ProcessName;
         //更新地址
-        private string update_Path = new DirectoryInfo(Application.StartupPath).Parent.Parent.FullName + @"\Mes_Update\Mes_Update.exe";
+        private string update_Path = new DirectoryInfo(Application.StartupPath).FullName + @"\Mes_Update.exe";
 
         //守护服务名
         private string defendServiceName = "MESServiceDefend";
