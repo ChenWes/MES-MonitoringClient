@@ -35,7 +35,6 @@
             this.btn_Download = new System.Windows.Forms.Button();
             this.lab_downloadRate = new System.Windows.Forms.Label();
             this.progressBar_Download = new System.Windows.Forms.ProgressBar();
-            this.buttonInstall = new System.Windows.Forms.Button();
             this.lab_out = new System.Windows.Forms.Label();
             this.lab_ServiceName = new System.Windows.Forms.Label();
             this.lab_Version = new System.Windows.Forms.Label();
@@ -44,7 +43,6 @@
             this.lab_Remark = new System.Windows.Forms.Label();
             this.lab_CreatAt = new System.Windows.Forms.Label();
             this.lab_UpdateAt = new System.Windows.Forms.Label();
-            this.lab_path = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
@@ -79,7 +77,7 @@
             this.txt_SavePath.Name = "txt_SavePath";
             this.txt_SavePath.Size = new System.Drawing.Size(434, 21);
             this.txt_SavePath.TabIndex = 3;
-            this.txt_SavePath.Text = "C:\\Program Files\\MES-Install-Pack\\MES-MonitoringClient-Setup.exe";
+            this.txt_SavePath.Text = "C:\\Program Files\\MES-Install-Pack\\MES-MonitoringClient.zip";
             // 
             // btn_Download
             // 
@@ -106,16 +104,6 @@
             this.progressBar_Download.Name = "progressBar_Download";
             this.progressBar_Download.Size = new System.Drawing.Size(552, 23);
             this.progressBar_Download.TabIndex = 6;
-            // 
-            // buttonInstall
-            // 
-            this.buttonInstall.Location = new System.Drawing.Point(86, 372);
-            this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(75, 23);
-            this.buttonInstall.TabIndex = 7;
-            this.buttonInstall.Text = "开始安装";
-            this.buttonInstall.UseVisualStyleBackColor = true;
-            this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
             // 
             // lab_out
             // 
@@ -188,15 +176,6 @@
             this.lab_UpdateAt.TabIndex = 15;
             this.lab_UpdateAt.Text = "更新日期";
             // 
-            // lab_path
-            // 
-            this.lab_path.AutoSize = true;
-            this.lab_path.Location = new System.Drawing.Point(12, 254);
-            this.lab_path.Name = "lab_path";
-            this.lab_path.Size = new System.Drawing.Size(101, 12);
-            this.lab_path.TabIndex = 16;
-            this.lab_path.Text = "卸载程序所在目录";
-            // 
             // richTextBox1
             // 
             this.richTextBox1.AcceptsTab = true;
@@ -212,7 +191,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(657, 407);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.lab_path);
             this.Controls.Add(this.lab_UpdateAt);
             this.Controls.Add(this.lab_CreatAt);
             this.Controls.Add(this.lab_Remark);
@@ -221,7 +199,6 @@
             this.Controls.Add(this.lab_Version);
             this.Controls.Add(this.lab_ServiceName);
             this.Controls.Add(this.lab_out);
-            this.Controls.Add(this.buttonInstall);
             this.Controls.Add(this.progressBar_Download);
             this.Controls.Add(this.lab_downloadRate);
             this.Controls.Add(this.btn_Download);
@@ -248,7 +225,6 @@
         private System.Windows.Forms.Button btn_Download;
         private System.Windows.Forms.Label lab_downloadRate;
         private System.Windows.Forms.ProgressBar progressBar_Download;
-        private System.Windows.Forms.Button buttonInstall;
         private System.Windows.Forms.Label lab_out;
         private System.Windows.Forms.Label lab_ServiceName;
         private System.Windows.Forms.Label lab_Version;
@@ -257,7 +233,6 @@
         private System.Windows.Forms.Label lab_Remark;
         private System.Windows.Forms.Label lab_CreatAt;
         private System.Windows.Forms.Label lab_UpdateAt;
-        private System.Windows.Forms.Label lab_path;
         private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

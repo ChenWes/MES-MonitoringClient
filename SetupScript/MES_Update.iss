@@ -50,6 +50,7 @@ Name: "chs"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 ;ClientµÄÎÄ¼þ¼Ð
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\*"; DestDir: "{app}\Client"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\report\wes\MES-MonitoringClient\Mes_Update\bin\Debug\ICSharpCode.SharpZipLib.dll"; DestDir: "{app}"; Flags: ignoreversion;  Components: Client_Update
 Source: "D:\report\wes\MES-MonitoringClient\Mes_Update\bin\Debug\Mes_Update.exe"; DestDir: "{app}"; Flags: ignoreversion;  Components: Client_Update
 Source: "D:\report\wes\MES-MonitoringClient\Mes_Update\bin\Debug\Mes_Update.exe.config"; DestDir: "{app}"; Flags: ignoreversion;  Components: Client_Update
 Source: "D:\report\wes\MES-MonitoringClient\Mes_Update\bin\Debug\Mes_Update.pdb"; DestDir: "{app}"; Flags: ignoreversion;  Components: Client_Update

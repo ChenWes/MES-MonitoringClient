@@ -1,5 +1,5 @@
-MES Monitoring Client v1.2.11
+MES Monitoring Client v1.2.12
 
-������ĿǰֻӦ����MES�����ռ�ϵͳ�ͻ���
+该软件目前只应用于MES数据收集系统客户端
 
-�㶫�������˹ɷ����޹�˾
+广东翠峰机器人股份有限公司
