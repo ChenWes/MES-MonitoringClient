@@ -99,7 +99,7 @@ namespace Mes_Update
                 {
                     this.lab_out.Text = "开始更新文件";
                 }));
-                string savePath = new DirectoryInfo(Application.StartupPath).Parent.FullName;
+                string savePath = new DirectoryInfo(Application.StartupPath).Parent.Parent.FullName;
                 string zipPath = this.txt_SavePath.Text;
                 if (Compress(savePath, zipPath, null))
                 {
