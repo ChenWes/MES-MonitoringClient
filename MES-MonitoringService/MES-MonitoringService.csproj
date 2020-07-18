@@ -96,6 +96,8 @@
     <Compile Include="Model\MachineInfo.cs" />
     <Compile Include="Model\MachineProcessLog_JSON.cs" />
     <Compile Include="Model\MachineProcessLog.cs" />
+    <Compile Include="Model\MachineProduction.cs" />
+    <Compile Include="Model\MachineProduction_JSON.cs" />
     <Compile Include="SyncDataDBHandler.cs" />
     <Compile Include="Model\MachineStatusLog.cs" />
     <Compile Include="Model\MachineStatusLog_JSON.cs" />

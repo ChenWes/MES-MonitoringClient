@@ -62,5 +62,30 @@ namespace MES_MonitoringClient.Common
                 throw ex;
             }
         }
+        /// <summary>
+        /// 通过班次码找到班次
+        /// </summary>
+        /// <returns></returns>
+        public static DataModel.WorkShift QueryWorkShiftByCode(string workShiftCode)
+        {
+            try
+            {
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaultWorkShiftMongodbCollectionName);
+                var newfilter = Builders<BsonDocument>.Filter.Eq("WorkShiftCode", workShiftCode);
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+
+                foreach (var data in getdocument)
+                {
+                    //转换成类
+                    var WorkShiftEntity = BsonSerializer.Deserialize<DataModel.WorkShift>(data);
+                    return WorkShiftEntity;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
