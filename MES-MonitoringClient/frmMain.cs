@@ -252,11 +252,15 @@ namespace MES_MonitoringClient
 
                 if (MC_Machine != null)
                 {
+                   
                     //显示最后一次工单信息
                     ShowLastJobOrderBiaisInfo(0);
+                    //增加记录
+                    MachineProduction();
                     UpdateImageThreadFunction = new ThreadStart(UpdateImageTimer);
                     UpdateImageThreadClass = new Thread(UpdateImageThreadFunction);
                     UpdateImageThreadClass.Start();//启动新线程
+
                 }
               
              
@@ -638,7 +642,20 @@ namespace MES_MonitoringClient
             }*/
           
         }
-
+        /// <summary>
+        /// 初次启动时执行（工单在生产，就增加记录）
+        /// </summary>
+        private void MachineProduction()
+        {
+            List<DataModel.JobOrder> processJobOrderLists = mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList;
+            if (processJobOrderLists != null && processJobOrderLists.Count > 0)
+            {
+                foreach (var processJobOrder in processJobOrderLists)
+                {
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessMachineProduction(processJobOrder, 0);
+                }
+            }
+        }
         /// <summary>
         /// 获取温度定时器
         /// </summary>
