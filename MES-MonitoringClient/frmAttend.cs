@@ -225,7 +225,7 @@ namespace MES_MonitoringClient
                     DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
                     if (jobPositon != null)
                     {
-                        if (jobPositon.JobPositionCode == JobPositionCode.Employee.ToString())
+                        if (jobPositon.JobPositionCode == JobPositionCode.Employee.ToString()|| jobPositon.JobPositionCode == JobPositionCode.AG.ToString())
                         {
                             DataModel.displayClockInRecord displayClockInRecord = new DataModel.displayClockInRecord();
                             displayClockInRecord._id = item._id;
