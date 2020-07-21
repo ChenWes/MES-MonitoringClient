@@ -2621,7 +2621,7 @@ namespace MES_MonitoringClient
                     if (jobPositon != null)
                     {
                         string jobPositionCode = jobPositon.JobPositionCode;
-                        if (jobPositionCode == frmAttend.JobPositionCode.Employee.ToString())
+                        if (jobPositionCode == frmAttend.JobPositionCode.Employee.ToString()|| jobPositionCode == frmAttend.JobPositionCode.AG.ToString())
                         {
                             haveEmployee = true;
                             employeenum++;

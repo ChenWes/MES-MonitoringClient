@@ -25,7 +25,8 @@ namespace MES_MonitoringClient
         public enum JobPositionCode
         {
             Employee,
-            QC
+            QC,
+            AG
         }
 
 
@@ -640,10 +641,13 @@ namespace MES_MonitoringClient
                     if (jobPositon != null)
                     {
                         
-                        if(jobPositon.JobPositionCode== JobPositionCode.Employee.ToString())
+                        if(jobPositon.JobPositionCode== JobPositionCode.Employee.ToString()|| jobPositon.JobPositionCode == JobPositionCode.AG.ToString())
                         {
                             //需要在工单中添加员工
-                            isEmployee = true;
+                            if (jobPositon.JobPositionCode == JobPositionCode.Employee.ToString())
+                            {
+                                isEmployee = true;
+                            }
                             //需要更新数据库
                             isUpdate = true;
                             //检测是否存在未结束记录
