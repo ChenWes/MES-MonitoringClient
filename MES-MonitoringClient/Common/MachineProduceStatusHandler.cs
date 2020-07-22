@@ -1249,7 +1249,7 @@ namespace MES_MonitoringClient.Common
                                 DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
                                 if (employee != null)
                                 {
-                                    nowWorkShift.Date = dt;
+                                    nowWorkShift.Date = Convert.ToDateTime(dt.ToString("yyyy-MM-dd"));
                                     nowWorkShift.WorkShiftID = employeeScheduling.WorkShiftID;
                                     return nowWorkShift;
                                 }
@@ -1294,7 +1294,7 @@ namespace MES_MonitoringClient.Common
                                 DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
                                 if (employee != null)
                                 {
-                                    nowWorkShift.Date = dt;
+                                    nowWorkShift.Date = Convert.ToDateTime(dt.ToString("yyyy-MM-dd"));
                                     nowWorkShift.WorkShiftID = employeeScheduling.WorkShiftID;
                                     return nowWorkShift;
                                 }
@@ -1335,7 +1335,7 @@ namespace MES_MonitoringClient.Common
                         DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
                         if (employee != null)
                         {
-                            nowWorkShift.Date = dt;
+                            nowWorkShift.Date = Convert.ToDateTime(dt.ToString("yyyy-MM-dd"));
                             nowWorkShift.WorkShiftID = employeeScheduling.WorkShiftID;
                             return nowWorkShift;
                         }
