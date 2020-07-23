@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\BsonHelper.cs" />
+    <Compile Include="Common\MachineProductionHandler.cs" />
     <Compile Include="Common\MachineResponsiblePersonHandler.cs" />
     <Compile Include="Common\ColorDesign.cs" />
     <Compile Include="Common\CommonFunction.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="DataModel\ClockInRecord.cs" />
     <Compile Include="DataModel\Customer.cs" />
     <Compile Include="DataModel\EmployeeWorkSchedule.cs" />
+    <Compile Include="DataModel\NowWorkShift.cs" />
     <Compile Include="DataModel\WorkshopResponsiblePerson.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
     <Compile Include="DataModel\JobOrderFirstProduceLog.cs" />
@@ -216,6 +218,7 @@
     <Compile Include="frmSelectJobOrder.Designer.cs">
       <DependentUpon>frmSelectJobOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="DataModel\MachineProduction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmAttend.resx">

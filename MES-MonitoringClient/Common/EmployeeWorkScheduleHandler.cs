@@ -51,6 +51,35 @@ namespace MES_MonitoringClient.Common
                 throw ex;
             }
         }
-        
+        ///<summary>
+        ///通过时间查找
+        /// </summary>
+        public static List<DataModel.EmployeeWorkSchedule> findRecordByTime(string maxTime, string minTime)
+        {
+
+            try
+            {
+                List<DataModel.EmployeeWorkSchedule> employeeWorkSchedules = new List<DataModel.EmployeeWorkSchedule>();
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaulttEmployeeWorkScheduleMongodbCollectionName);
+                var newfilter = Builders<BsonDocument>.Filter.And(
+                    Builders<BsonDocument>.Filter.Gte("ScheduleDate", minTime),
+                    Builders<BsonDocument>.Filter.Lte("ScheduleDate", maxTime)
+                   );
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
+
+                foreach (var data in getdocument)
+                {
+                    //转换成类
+                    var EmployeeSchedulingEntity = BsonSerializer.Deserialize<DataModel.EmployeeWorkSchedule>(data);
+                    employeeWorkSchedules.Add(EmployeeSchedulingEntity);
+                }
+                return employeeWorkSchedules;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

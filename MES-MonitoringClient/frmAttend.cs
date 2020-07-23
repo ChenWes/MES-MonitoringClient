@@ -73,6 +73,8 @@ namespace MES_MonitoringClient
         private  int page = 1;
         //每页显示员工数量
         private int pagecount = 5;
+        //判断是否员工打卡
+        private bool isEmployee = false;
 
         /*---------------------------------------------------------------------------------------*/
         //private long COM1_ReceiveDataCount = 0;
@@ -640,6 +642,8 @@ namespace MES_MonitoringClient
                         
                         if(jobPositon.JobPositionCode== JobPositionCode.Employee.ToString())
                         {
+                            //需要在工单中添加员工
+                            isEmployee = true;
                             //需要更新数据库
                             isUpdate = true;
                             //检测是否存在未结束记录
@@ -846,11 +850,22 @@ namespace MES_MonitoringClient
             {
                 if (clockInRecord!=null)
                 {
+                    
                     clockInRecordHandler.UpdateClockInRecord(clockInRecord,false);
+                    if (isEmployee)
+                    {
+                        //结束计算工时
+                        frmMain.mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(clockInRecord.EmployeeID, clockInRecord.EndDate);
+                    }
                 }
                 foreach (var item in inClockInRecords)
                 {
                     clockInRecordHandler.SaveClockInRecord(item);
+                    if (isEmployee)
+                    {
+                        frmMain.mc_MachineStatusHander.mc_MachineProduceStatusHandler.addEmployee(item.EmployeeID, item.StartDate);
+                        //增加员工计算工时
+                    }
                 }
             }
             else
