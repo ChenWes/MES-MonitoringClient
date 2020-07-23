@@ -2666,32 +2666,73 @@ namespace MES_MonitoringClient
         {
             Common.ClockInRecordHandler clockInRecordHandler = new Common.ClockInRecordHandler();
             List<DataModel.ClockInRecord> displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
-            if (nowStartTime != null)
+            foreach (var item in displayClockInRecords)
             {
-                foreach (var item in displayClockInRecords)
+                DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(item.EmployeeID);
+                if (employee == null)
                 {
-                    if (item.StartDate.ToLocalTime().AddHours(1) < nowStartTime)
+                    /* DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
+                     //QC不处理
+                     if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
+                     {
+                         item.EndDate = DateTime.Now;
+                         clockInRecordHandler.UpdateClockInRecord(item, true);
+                     }
+                 }
+                 else
+                 {*/
+                    item.EndDate = DateTime.Now;
+                    clockInRecordHandler.UpdateClockInRecord(item, true);
+                }
+                else
+                {
+                    DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
+                    //QC不处理
+                    if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
                     {
-                        DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(item.EmployeeID);
-                        if (employee == null)
+                        //获取当天和昨天的班次
+                        DateTime now = DateTime.Now;
+                        string today = now.ToString("yyyy-MM-dd");
+                        string lastday = now.AddDays(-1).ToString("yyyy-MM-dd");
+                        string maxTime = today + "T23:59:59Z";
+                        string minTime = lastday + "T00:00:00Z";
+                        List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, item.EmployeeID);
+
+                        foreach (var employeeScheduling in employeeSchedulings)
                         {
-                           /* DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
-                            //QC不处理
-                            if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
+                            //找到班次对应时间
+                            DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
+                            if (workShift != null)
                             {
-                                item.EndDate = DateTime.Now;
-                                clockInRecordHandler.UpdateClockInRecord(item, true);
+                                DateTime dt;
+                                DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
+                                if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
+                                {
+                                    //同一天
+                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                    employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                }
+                                else
+                                {
+                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                    employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                }
+
                             }
-                        }
-                        else
-                        {*/
-                            item.EndDate = DateTime.Now;
-                            clockInRecordHandler.UpdateClockInRecord(item, true);
+                            if (now > employeeScheduling.endTime.AddMinutes(10) && employeeScheduling.endTime > item.StartDate.ToLocalTime())
+                            {
+                                item.EndDate = employeeScheduling.endTime.AddMinutes(10);
+                                clockInRecordHandler.UpdateClockInRecord(item, true);
+                                //结束计算工时
+                                mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(item.EmployeeID, item.EndDate);
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
+        
         ///<summary>
         ///处理无员工情况
         /// </summary>
