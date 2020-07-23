@@ -1557,14 +1557,81 @@ namespace MES_MonitoringClient.Common
                             }
                         }
                     }
-                    //未处理进行加1处理
-                    OneProcessMouldLifeCycle(unProcessJobOrderList);
+                    //处理找不到产品出数
+                    ProcessNoMouldProduc(unProcessJobOrderList, CurrentMouldProduct.ProductList);
                 }
 
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        //处理找不到产品出数
+        private void ProcessNoMouldProduc(List<DataModel.JobOrder> unProcessJobOrderList,List<DataModel.MouldProductList> mouldProductList)
+        {
+            if (unProcessJobOrderList.Count > 0)
+            {
+                foreach (var item in mouldProductList)
+                {
+
+                    List<DataModel.JobOrder> findJobOrderListByProductCode = unProcessJobOrderList.FindAll(t => getPrefix(t.ProductCode.ToUpper()) == getPrefix(item.ProductCode.ToUpper()));
+                    if (findJobOrderListByProductCode.Count > 0)
+                    {
+                        //是不是找到没有生产完的工单？？
+                        bool isFindNoOverJobOrder = false;
+
+                        //循环工单，看看是不是已经满数
+                        for (int i = 0; i < findJobOrderListByProductCode.Count; i++)
+                        {
+                            //找到工单
+                            var getFilterJobOrder = findJobOrderListByProductCode[i];
+
+                            //移除已处理工单
+                            unProcessJobOrderList.Remove(getFilterJobOrder);
+
+                            //找到它本身的生产数量、不良品数量（所有机器都算进来）
+                            var sumProductCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
+                            var sumErrorCount = getFilterJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+
+                            if (getFilterJobOrder.OrderCount > (sumProductCount - sumErrorCount))
+                            {
+                                //还没有生产完
+                                isFindNoOverJobOrder = true;
+
+                                //处理加1
+                                ProcessJobOrderMachineProduceCount(getFilterJobOrder, item.ProductCount);
+                                //同产品不同工单，不加1处理
+                                for (int j = i + 1; j < findJobOrderListByProductCode.Count; j++)
+                                {
+                                    unProcessJobOrderList.Remove(findJobOrderListByProductCode[j]);
+                                }
+                                break;
+                            }
+                        }
+
+                        //全部都够数了？？（即从未加数）
+                        if (isFindNoOverJobOrder == false)
+                        {
+                            AutoChangeJobOrder(findJobOrderListByProductCode, item.ProductCount);
+                        }
+                    }
+                }
+            }
+            //未处理进行加1处理
+            OneProcessMouldLifeCycle(unProcessJobOrderList);
+        }
+        //获取产品前缀
+        public string getPrefix(string productCode)
+        {
+            //能找到且位置不为0
+            if (productCode.LastIndexOf('-') > 0)
+            {
+                return productCode.Substring(0, productCode.LastIndexOf('-') - 0);
+            }
+            else
+            {
+                return productCode;
             }
         }
         //加1处理

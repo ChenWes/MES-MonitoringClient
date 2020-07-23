@@ -1404,14 +1404,22 @@ namespace MES_MonitoringClient
             }
             else
             {
-                var MouldProductItem = CurrentMouldProduct.ProductList.Find(t => t.ProductCode== mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode);
+                var MouldProductItem = CurrentMouldProduct.ProductList.Find(t => t.ProductCode.ToUpper()== mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode.ToUpper());
                 if (MouldProductItem != null)
                 {
                     return MouldProductItem.ProductCount;
                 }
                 else
                 {
-                    return 1;
+                    var NoMouldProductItem = CurrentMouldProduct.ProductList.Find(t => mc_MachineStatusHander.mc_MachineProduceStatusHandler.getPrefix(t.ProductCode.ToUpper()) == mc_MachineStatusHander.mc_MachineProduceStatusHandler.getPrefix(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.ProductCode.ToUpper()));
+                    if (NoMouldProductItem != null)
+                    {
+                        return NoMouldProductItem.ProductCount;
+                    }
+                    else
+                    {
+                        return 1;
+                    }
                 }
             }
         }
@@ -2613,7 +2621,7 @@ namespace MES_MonitoringClient
                     if (jobPositon != null)
                     {
                         string jobPositionCode = jobPositon.JobPositionCode;
-                        if (jobPositionCode == frmAttend.JobPositionCode.Employee.ToString())
+                        if (jobPositionCode == frmAttend.JobPositionCode.Employee.ToString()|| jobPositionCode == frmAttend.JobPositionCode.AG.ToString())
                         {
                             haveEmployee = true;
                             employeenum++;
