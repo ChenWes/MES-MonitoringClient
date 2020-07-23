@@ -559,7 +559,7 @@ namespace MES_MonitoringClient
                             {
                                 item.EmployeeProductionTimeList[i].EndTime = item.EndDateTime.ToLocalTime();
                                 //计算员工工时
-                                item.EmployeeProductionTimeList[i].WorkHour = Convert.ToDouble((item.EndDateTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours.ToString("0.000"));
+                                item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EndDateTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
                             }
                             i++;
                         }
@@ -573,7 +573,7 @@ namespace MES_MonitoringClient
                             {
                                 item.JobOrderProductionLog[j].ProduceEndDate = item.EndDateTime.ToLocalTime();
                             }
-                            jobOrderTime = jobOrderTime + Convert.ToDouble((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours.ToString("0.000"));
+                            jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                             j++;
                         }
                         item.JobOrderProductionTime = jobOrderTime;

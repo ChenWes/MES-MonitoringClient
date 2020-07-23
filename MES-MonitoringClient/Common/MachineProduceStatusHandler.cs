@@ -907,7 +907,7 @@ namespace MES_MonitoringClient.Common
                                 {
                                     if (employeeProductionTimeList.StartTime == employeeProductionTimeList.EndTime)
                                     {
-                                        item.EmployeeProductionTimeList[i].WorkHour = Convert.ToDouble((now - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours.ToString("0.000"));
+                                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((now - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
                                     }
                                     i++;
                                 }
@@ -917,11 +917,11 @@ namespace MES_MonitoringClient.Common
                                 {
                                     if (log.ProduceStartDate == log.ProduceEndDate)
                                     {
-                                        jobOrderTime = jobOrderTime + Convert.ToDouble((now - log.ProduceStartDate.ToLocalTime()).TotalHours.ToString("0.000"));
+                                        jobOrderTime = jobOrderTime + Math.Round((now - log.ProduceStartDate.ToLocalTime()).TotalHours,3);
                                     }
                                     else
                                     {
-                                        jobOrderTime = jobOrderTime + Convert.ToDouble((log.ProduceEndDate.ToLocalTime() - log.ProduceStartDate.ToLocalTime()).TotalHours.ToString("0.000"));
+                                        jobOrderTime = jobOrderTime + Math.Round((log.ProduceEndDate.ToLocalTime() - log.ProduceStartDate.ToLocalTime()).TotalHours,3);
                                     }
                                 }
                                 item.JobOrderProductionTime = jobOrderTime;
@@ -1130,7 +1130,7 @@ namespace MES_MonitoringClient.Common
                                         {
                                             //只更新工时
                                             item.EmployeeProductionTimeList[i].EndTime = endTime;
-                                            item.EmployeeProductionTimeList[i].WorkHour = Convert.ToDouble((endTime - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours.ToString("0.000"));
+                                            item.EmployeeProductionTimeList[i].WorkHour = Math.Round((endTime - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
                                             if (machineProductionHandler.AddEmployee(item, bsons) == null)
                                             {
                                                 endEmployee(employeeID, endTime);
@@ -1173,7 +1173,7 @@ namespace MES_MonitoringClient.Common
                             item.EmployeeProductionTimeList[i].EndTime = item.EndDateTime.ToLocalTime();
                         }
                         //计算员工工时
-                        item.EmployeeProductionTimeList[i].WorkHour = Convert.ToDouble((item.EmployeeProductionTimeList[i].EndTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours.ToString("0.000"));
+                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EmployeeProductionTimeList[i].EndTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
 
                     }
                     i++;
@@ -1200,7 +1200,7 @@ namespace MES_MonitoringClient.Common
                         }
 
                     }
-                    jobOrderTime = jobOrderTime + Convert.ToDouble((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours.ToString("0.000"));
+                    jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                     j++;
                 }
             item.JobOrderProductionTime = jobOrderTime;
