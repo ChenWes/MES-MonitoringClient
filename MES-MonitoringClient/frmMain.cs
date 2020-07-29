@@ -1002,6 +1002,25 @@ namespace MES_MonitoringClient
             else
             {
                 txt_ActualWorkTime.Text = Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
+               
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
+                {
+                    decimal time = (decimal)mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds / 1000;
+                    if ((double)time > mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond)
+                    {
+                        txt_ActualWorkTime.Enabled = true;
+                        txt_ActualWorkTime.ForeColor = Color.Red;//字体颜色设置
+                    }
+                    else
+                    {
+                        txt_ActualWorkTime.Enabled = false;
+                    }
+                }
+                else
+                {
+                    txt_ActualWorkTime.Enabled = false;
+                }
+                   
             }
         }
         /// <summary>
@@ -2200,7 +2219,7 @@ namespace MES_MonitoringClient
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
 
                         //清空工单
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.MC_EmployeeInfo._id);
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList,newfrmScanRFID.MC_EmployeeInfo._id);
 
                         //更新状态，状态来自于机器状态选择窗体
                         mc_MachineStatusHander.ChangeStatus(
@@ -2213,7 +2232,6 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                             );
-                        showNoEmployee();
                     }
                 }
                 else
@@ -2348,8 +2366,34 @@ namespace MES_MonitoringClient
 
                 int jobOrderIndex = 0;
                 int.TryParse(b1.Tag.ToString(), out jobOrderIndex);
-                //切换当前工单（显示）
-                mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex);
+
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID== mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList[jobOrderIndex].JobOrderID)
+                {
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    //有多张工单，完成一张工单，不需更改机器状态
+                    if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList.Count > 1)
+                    {
+                        //newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.;
+                        newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.SelectOneToFinish;
+                        newfrmScanRFID.JobOrder = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
+                        newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.SelectOneToFinish;
+                        newfrmScanRFID.ShowDialog();
+                        if (!newfrmScanRFID.MC_IsManualCancel)
+                        {
+                            List<DataModel.JobOrder> jobOrders = new List<DataModel.JobOrder>();
+                            jobOrders.Add(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder);
+                            //清空工单
+                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(jobOrders, newfrmScanRFID.MC_EmployeeInfo._id);
+                        }
+                    }
+                   
+                }
+                else
+                {
+                    //切换当前工单（显示）
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex);
+                }
+                
             }
             catch (Exception ex)
             {

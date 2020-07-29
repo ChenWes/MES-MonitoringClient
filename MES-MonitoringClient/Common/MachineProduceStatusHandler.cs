@@ -259,14 +259,14 @@ namespace MES_MonitoringClient.Common
             }
         }
 
-        public void CompleteJobOrder(string operaterID)
+        public void CompleteJobOrder(List<DataModel.JobOrder> jobOrders,string operaterID)
         {
             try
             {
-                List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
+               // List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
                 DateTime now = DateTime.Now;
                 //更新至数据库
-                foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
+                foreach (DataModel.JobOrder jobOrderItem in jobOrders.ToArray())
                 {
 
                     //找到没结束的处理记录
@@ -281,15 +281,23 @@ namespace MES_MonitoringClient.Common
 
                     //需要返回值，并更新回class
                     DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
-                    newJobOrderList.Add(jobOrder);
+                    ProcessJobOrderList.Remove(jobOrderItem);
                     //停止每小时计数
                     stopAdd(jobOrder, now);
                 }
 
                 //更新完的class
-                ProcessJobOrderList = null;
-                CurrentProcessJobOrder = null;
-
+                //ProcessJobOrderList = null;
+                if (ProcessJobOrderList.Count > 0)
+                {
+                    CurrentProcessJobOrder = ProcessJobOrderList[0];
+                }
+                else
+                {
+                    ProcessJobOrderList = null;
+                    CurrentProcessJobOrder = null;
+                }
+              
                 //界面显示基本消息
                 SettingJobOrderBasicInfo();
 

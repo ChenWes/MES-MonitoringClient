@@ -52,7 +52,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.9988F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0008F));
             this.tableLayoutPanel1.Controls.Add(this.lab_CardID, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.lab_ScanStatus, 1, 0);
+            this.tableLayoutPanel1.SetColumnSpan(this.lab_ScanStatus, 3);
             this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.btn_Confirm, 4, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -88,6 +89,7 @@
             this.lab_ScanStatus.Size = new System.Drawing.Size(89, 20);
             this.lab_ScanStatus.TabIndex = 0;
             this.lab_ScanStatus.Text = "等待刷卡";
+            //this.lab_ScanStatus.CloumnSpan=
             // 
             // btn_Cancel
             // 
