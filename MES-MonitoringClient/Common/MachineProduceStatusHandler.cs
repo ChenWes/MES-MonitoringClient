@@ -84,6 +84,10 @@ namespace MES_MonitoringClient.Common
         /// 产品生命周期（计算次数）
         /// </summary>
         private List<MachineProcedure> _MachineProcedureListForCount = null;
+        /// <summary>
+        /// 计数时间
+        /// </summary>
+        public DateTime addCountTime = DateTime.Now;
 
         /// <summary>
         /// 订单数量
@@ -401,6 +405,8 @@ namespace MES_MonitoringClient.Common
                 
                 //当前工单
                 ChangeCurrentProcessJobOrder(0);
+                //开始工单时间
+                addCountTime = DateTime.Now;
 
             }
             catch (Exception ex)
@@ -604,7 +610,9 @@ namespace MES_MonitoringClient.Common
 
                                     ProcessMouldLifeCycle();
 
+
                                     #endregion
+                                    addCountTime=DateTime.Now;
                                 }
 
                                 //订单未完成数量，等于订单数量减去已完成数量

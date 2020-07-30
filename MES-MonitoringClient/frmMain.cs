@@ -91,6 +91,11 @@ namespace MES_MonitoringClient
         Thread MachineProductionThreadClass = null;
         ThreadStart MachineProductionThreadFunction = null;
         Common.TimmerHandler MachineProductionTimerClass = null;
+
+        //5分钟未计数报警定时器
+        Thread ShowWarnThreadClass = null;
+        ThreadStart ShowWarnThreadFunction = null;
+        Common.TimmerHandler ShowWarnTimerClass = null;
         /*---------------------------------------------------------------------------------------*/
 
         //状态操作类
@@ -247,6 +252,11 @@ namespace MES_MonitoringClient
                 MachineProductionThreadFunction = new ThreadStart(MachineProductionTimer);
                 MachineProductionThreadClass = new Thread(MachineProductionThreadFunction);
                 MachineProductionThreadClass.Start();//启动新线程
+
+                //检查信号
+                ShowWarnThreadFunction = new ThreadStart(ShowWarnTimer);
+                ShowWarnThreadClass = new Thread(ShowWarnThreadFunction);
+                ShowWarnThreadClass.Start();//启动新线程
                 //显示打卡
                 showClockIn();
 
@@ -389,6 +399,12 @@ namespace MES_MonitoringClient
                         {
                             MachineProductionTimerClass.StopTimmer();
                             MachineProductionThreadClass.Abort();
+                        }
+                        //检测信号
+                        if (ShowWarnThreadClass != null && ShowWarnTimerClass != null)
+                        {
+                            ShowWarnTimerClass.StopTimmer();
+                            ShowWarnThreadClass.Abort();
                         }
                         //定时器
                         if (DateTimeThreadClass != null && TTimerClass != null)
@@ -536,7 +552,33 @@ namespace MES_MonitoringClient
             }, true);
 
         }
+        /// <summary>
+        /// 定时检查信号
+        /// </summary>
+        private void ShowWarnTimer()
+        {
+            //1分钟检测
+            ShowWarnTimerClass = new Common.TimmerHandler(60 * 1000, true, (o, a) =>
+            {
+                ShowWarn();
+            }, true);
 
+        }
+        private void ShowWarn()
+        {
+            ShowWarnTimerClass.StopTimmer();
+            if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
+            {
+                TimeSpan timeSpan = DateTime.Now - mc_MachineStatusHander.mc_MachineProduceStatusHandler.addCountTime;
+                if (timeSpan> new TimeSpan(TimeSpan.TicksPerMinute*5))
+                {
+                    frmWarn frmWarn = new frmWarn();
+                    frmWarn.ShowDialog();
+                }
+            }
+            ShowWarnTimerClass.StartTimmer();
+
+        }
         private void autoMachineProduction()
         {
 
