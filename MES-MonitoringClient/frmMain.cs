@@ -618,7 +618,7 @@ namespace MES_MonitoringClient
                             jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                             j++;
                         }
-                        item.JobOrderProductionTime = jobOrderTime;
+                        item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
                         if (machineProductionHandler.AutoStopMachineProduction(item, bsons) != null)
                         {
                             //应对生产中数量一直没变情况

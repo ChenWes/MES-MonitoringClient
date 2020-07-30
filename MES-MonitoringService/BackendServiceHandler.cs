@@ -549,7 +549,7 @@ namespace MES_MonitoringService
                         {
                             if (newItem.EmployeeID == oldItem.EmployeeID)
                             {
-                                newItem.WorkHour = newItem.WorkHour + oldItem.WorkHour;
+                                newItem.WorkHour = Math.Round(newItem.WorkHour + oldItem.WorkHour,3);
                                 flag = false;
                             }
                         }

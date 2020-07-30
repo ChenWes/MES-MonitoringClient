@@ -940,7 +940,7 @@ namespace MES_MonitoringClient.Common
                                         jobOrderTime = jobOrderTime + Math.Round((log.ProduceEndDate.ToLocalTime() - log.ProduceStartDate.ToLocalTime()).TotalHours,3);
                                     }
                                 }
-                                item.JobOrderProductionTime = jobOrderTime;
+                                item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
                                 //判断生产记录id是否一致
                                 var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
                                 if (findMachineProcessLog != null)
@@ -1219,7 +1219,7 @@ namespace MES_MonitoringClient.Common
                     jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                     j++;
                 }
-            item.JobOrderProductionTime = jobOrderTime;
+            item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
             machineProductionHandler.StopMachineProduction(item);
             }
         }
