@@ -693,7 +693,8 @@
             // 
             this.txt_ActualWorkTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_ActualWorkTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txt_ActualWorkTime.Enabled = false;
+            txt_ActualWorkTime.Enabled = false;
+            this.txt_ActualWorkTime.ReadOnly =true ;
             this.txt_ActualWorkTime.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txt_ActualWorkTime.Location = new System.Drawing.Point(73, 3);
             this.txt_ActualWorkTime.Name = "txt_ActualWorkTime";

@@ -84,6 +84,10 @@ namespace MES_MonitoringClient.Common
         /// 产品生命周期（计算次数）
         /// </summary>
         private List<MachineProcedure> _MachineProcedureListForCount = null;
+        /// <summary>
+        /// 计数时间
+        /// </summary>
+        public DateTime addCountTime = DateTime.Now;
 
         /// <summary>
         /// 订单数量
@@ -259,14 +263,14 @@ namespace MES_MonitoringClient.Common
             }
         }
 
-        public void CompleteJobOrder(string operaterID)
+        public void CompleteJobOrder(List<DataModel.JobOrder> jobOrders,string operaterID)
         {
             try
             {
-                List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
+               // List<DataModel.JobOrder> newJobOrderList = new List<DataModel.JobOrder>();
                 DateTime now = DateTime.Now;
                 //更新至数据库
-                foreach (DataModel.JobOrder jobOrderItem in ProcessJobOrderList)
+                foreach (DataModel.JobOrder jobOrderItem in jobOrders.ToArray())
                 {
 
                     //找到没结束的处理记录
@@ -281,15 +285,23 @@ namespace MES_MonitoringClient.Common
 
                     //需要返回值，并更新回class
                     DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
-                    newJobOrderList.Add(jobOrder);
+                    ProcessJobOrderList.Remove(jobOrderItem);
                     //停止每小时计数
                     stopAdd(jobOrder, now);
                 }
 
                 //更新完的class
-                ProcessJobOrderList = null;
-                CurrentProcessJobOrder = null;
-
+                //ProcessJobOrderList = null;
+                if (ProcessJobOrderList.Count > 0)
+                {
+                    CurrentProcessJobOrder = ProcessJobOrderList[0];
+                }
+                else
+                {
+                    ProcessJobOrderList = null;
+                    CurrentProcessJobOrder = null;
+                }
+              
                 //界面显示基本消息
                 SettingJobOrderBasicInfo();
 
@@ -393,6 +405,8 @@ namespace MES_MonitoringClient.Common
                 
                 //当前工单
                 ChangeCurrentProcessJobOrder(0);
+                //开始工单时间
+                addCountTime = DateTime.Now;
 
             }
             catch (Exception ex)
@@ -596,7 +610,9 @@ namespace MES_MonitoringClient.Common
 
                                     ProcessMouldLifeCycle();
 
+
                                     #endregion
+                                    addCountTime=DateTime.Now;
                                 }
 
                                 //订单未完成数量，等于订单数量减去已完成数量
@@ -924,7 +940,7 @@ namespace MES_MonitoringClient.Common
                                         jobOrderTime = jobOrderTime + Math.Round((log.ProduceEndDate.ToLocalTime() - log.ProduceStartDate.ToLocalTime()).TotalHours,3);
                                     }
                                 }
-                                item.JobOrderProductionTime = jobOrderTime;
+                                item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
                                 //判断生产记录id是否一致
                                 var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
                                 if (findMachineProcessLog != null)
@@ -1203,7 +1219,7 @@ namespace MES_MonitoringClient.Common
                     jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                     j++;
                 }
-            item.JobOrderProductionTime = jobOrderTime;
+            item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
             machineProductionHandler.StopMachineProduction(item);
             }
         }

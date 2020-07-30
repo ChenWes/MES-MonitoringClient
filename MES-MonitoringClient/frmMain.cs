@@ -91,6 +91,11 @@ namespace MES_MonitoringClient
         Thread MachineProductionThreadClass = null;
         ThreadStart MachineProductionThreadFunction = null;
         Common.TimmerHandler MachineProductionTimerClass = null;
+
+        //5分钟未计数报警定时器
+        Thread ShowWarnThreadClass = null;
+        ThreadStart ShowWarnThreadFunction = null;
+        Common.TimmerHandler ShowWarnTimerClass = null;
         /*---------------------------------------------------------------------------------------*/
 
         //状态操作类
@@ -247,6 +252,11 @@ namespace MES_MonitoringClient
                 MachineProductionThreadFunction = new ThreadStart(MachineProductionTimer);
                 MachineProductionThreadClass = new Thread(MachineProductionThreadFunction);
                 MachineProductionThreadClass.Start();//启动新线程
+
+                //检查信号
+                ShowWarnThreadFunction = new ThreadStart(ShowWarnTimer);
+                ShowWarnThreadClass = new Thread(ShowWarnThreadFunction);
+                ShowWarnThreadClass.Start();//启动新线程
                 //显示打卡
                 showClockIn();
 
@@ -389,6 +399,12 @@ namespace MES_MonitoringClient
                         {
                             MachineProductionTimerClass.StopTimmer();
                             MachineProductionThreadClass.Abort();
+                        }
+                        //检测信号
+                        if (ShowWarnThreadClass != null && ShowWarnTimerClass != null)
+                        {
+                            ShowWarnTimerClass.StopTimmer();
+                            ShowWarnThreadClass.Abort();
                         }
                         //定时器
                         if (DateTimeThreadClass != null && TTimerClass != null)
@@ -536,7 +552,33 @@ namespace MES_MonitoringClient
             }, true);
 
         }
+        /// <summary>
+        /// 定时检查信号
+        /// </summary>
+        private void ShowWarnTimer()
+        {
+            //1分钟检测
+            ShowWarnTimerClass = new Common.TimmerHandler(60 * 1000, true, (o, a) =>
+            {
+                ShowWarn();
+            }, true);
 
+        }
+        private void ShowWarn()
+        {
+            ShowWarnTimerClass.StopTimmer();
+            if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
+            {
+                TimeSpan timeSpan = DateTime.Now - mc_MachineStatusHander.mc_MachineProduceStatusHandler.addCountTime;
+                if (timeSpan> new TimeSpan(TimeSpan.TicksPerMinute*5))
+                {
+                    frmWarn frmWarn = new frmWarn();
+                    frmWarn.ShowDialog();
+                }
+            }
+            ShowWarnTimerClass.StartTimmer();
+
+        }
         private void autoMachineProduction()
         {
 
@@ -576,7 +618,7 @@ namespace MES_MonitoringClient
                             jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                             j++;
                         }
-                        item.JobOrderProductionTime = jobOrderTime;
+                        item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
                         if (machineProductionHandler.AutoStopMachineProduction(item, bsons) != null)
                         {
                             //应对生产中数量一直没变情况
@@ -1002,6 +1044,25 @@ namespace MES_MonitoringClient
             else
             {
                 txt_ActualWorkTime.Text = Common.CommonFunction.FormatMilliseconds(mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds);
+               
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder != null)
+                {
+                    decimal time = (decimal)mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds / 1000;
+                    if ((double)time > mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.MouldStandardProduceSecond)
+                    {
+                        txt_ActualWorkTime.Enabled = true;
+                        txt_ActualWorkTime.ForeColor = Color.Red;//字体颜色设置
+                    }
+                    else
+                    {
+                        txt_ActualWorkTime.Enabled = false;
+                    }
+                }
+                else
+                {
+                    txt_ActualWorkTime.Enabled = false;
+                }
+                   
             }
         }
         /// <summary>
@@ -2200,7 +2261,7 @@ namespace MES_MonitoringClient
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
 
                         //清空工单
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.MC_EmployeeInfo._id);
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList,newfrmScanRFID.MC_EmployeeInfo._id);
 
                         //更新状态，状态来自于机器状态选择窗体
                         mc_MachineStatusHander.ChangeStatus(
@@ -2213,7 +2274,6 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                             );
-                        showNoEmployee();
                     }
                 }
                 else
@@ -2348,8 +2408,34 @@ namespace MES_MonitoringClient
 
                 int jobOrderIndex = 0;
                 int.TryParse(b1.Tag.ToString(), out jobOrderIndex);
-                //切换当前工单（显示）
-                mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex);
+
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID== mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList[jobOrderIndex].JobOrderID)
+                {
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    //有多张工单，完成一张工单，不需更改机器状态
+                    if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList.Count > 1)
+                    {
+                        //newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.;
+                        newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.SelectOneToFinish;
+                        newfrmScanRFID.JobOrder = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
+                        newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.SelectOneToFinish;
+                        newfrmScanRFID.ShowDialog();
+                        if (!newfrmScanRFID.MC_IsManualCancel)
+                        {
+                            List<DataModel.JobOrder> jobOrders = new List<DataModel.JobOrder>();
+                            jobOrders.Add(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder);
+                            //清空工单
+                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(jobOrders, newfrmScanRFID.MC_EmployeeInfo._id);
+                        }
+                    }
+                   
+                }
+                else
+                {
+                    //切换当前工单（显示）
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex);
+                }
+                
             }
             catch (Exception ex)
             {

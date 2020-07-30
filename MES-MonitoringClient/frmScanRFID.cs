@@ -37,7 +37,8 @@ namespace MES_MonitoringClient
             StopJobOrder,
             ResumeJobOrder,
             OffPower,
-            Update
+            Update,
+            SelectOneToFinish
         }
         //操作类型（修改状态、上班、下班等）
         public OperationType MC_OperationType;
@@ -50,11 +51,13 @@ namespace MES_MonitoringClient
             ResumeJobOrder,
             ChangeMachineType,
             Quit,
-            Update
+            Update,
+            SelectOneToFinish
         }
         //类型提示
         public OperationType_Prompt MC_OperationType_Prompt;
-
+        //工单id
+        public string JobOrder = null;
         
         //是否主动取消刷卡
         public bool MC_IsManualCancel = false;
@@ -147,6 +150,10 @@ namespace MES_MonitoringClient
                 else if (MC_OperationType_Prompt == OperationType_Prompt.Update)
                 {
                     this.lab_ScanStatus.Text = "即将更新系统，请确认刷卡";
+                }
+                else if (MC_OperationType_Prompt == OperationType_Prompt.SelectOneToFinish)
+                {
+                    this.lab_ScanStatus.Text = "即将完成工单["+JobOrder+"]，请确认刷卡";
                 }
                 else
                 {
@@ -485,6 +492,9 @@ namespace MES_MonitoringClient
                             ShowErrorMessage("对不起，您没有相应权限", "权限认证");
                         }
                         break;
+                    case OperationType.SelectOneToFinish:
+                        //只完成工单不改机器状态
+
                     case OperationType.OffPower:                                                
                     default:
                         break;
