@@ -619,6 +619,7 @@ namespace MES_MonitoringClient
                             j++;
                         }
                         item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
+                        //到时结束工单时，如果工单还在生产就加一条记录
                         if (machineProductionHandler.AutoStopMachineProduction(item, bsons) != null)
                         {
                             //应对生产中数量一直没变情况
@@ -629,7 +630,7 @@ namespace MES_MonitoringClient
                                 {
                                     if (processJobOrder._id == item.JobOrderID)
                                     {
-                                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessMachineProduction(processJobOrder, 0);
+                                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessMachineProduction(processJobOrder, 0,DateTime.Now);
                                     }
 
                                 }
@@ -692,9 +693,40 @@ namespace MES_MonitoringClient
             List<DataModel.JobOrder> processJobOrderLists = mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList;
             if (processJobOrderLists != null && processJobOrderLists.Count > 0)
             {
-                foreach (var processJobOrder in processJobOrderLists)
+
+                //需要添加处理记录工单
+                List<DataModel.JobOrder> addMachineProductionJobOrders = new List<DataModel.JobOrder>();
+                foreach (var item in processJobOrderLists)
                 {
-                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessMachineProduction(processJobOrder, 0);
+                    bool isAdd = true;
+                    foreach (var machineProductionJobOrder in addMachineProductionJobOrders.ToArray())
+                    {
+                        if (machineProductionJobOrder.ProductCode == item.ProductCode)
+                        {
+                            var sumProductCount = machineProductionJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
+                            var sumErrorCount = machineProductionJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+                            //够数，替换
+                            if (machineProductionJobOrder.OrderCount <= (sumProductCount - sumErrorCount))
+                            {
+                                addMachineProductionJobOrders.Remove(machineProductionJobOrder);
+                                isAdd = true;
+                            }
+                            else
+                            {
+                                isAdd = false;
+                            }
+                            break;
+                        }
+                    }
+                    if (isAdd)
+                    {
+                        addMachineProductionJobOrders.Add(item);
+                    }
+
+                }
+                foreach (var item in addMachineProductionJobOrders)
+                {
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessMachineProduction(item, 0,DateTime.Now);
                 }
             }
         }
