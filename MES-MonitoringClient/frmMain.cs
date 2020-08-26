@@ -1187,7 +1187,7 @@ namespace MES_MonitoringClient
                 {
                     //mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder = CurrentProcessJobOrder;
                     mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList = ProcessJobOrderList;
-                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(orderindex);
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(orderindex,false);
                     //ShowJobOrderBiaisInfo();
                     UpdateMachineStatusTotalDateTime();
                     UpdateMachineCompleteDateTime();
@@ -2465,7 +2465,7 @@ namespace MES_MonitoringClient
                 else
                 {
                     //切换当前工单（显示）
-                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex);
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex,true);
                 }
                 
             }
