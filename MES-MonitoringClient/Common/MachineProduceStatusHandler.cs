@@ -90,6 +90,10 @@ namespace MES_MonitoringClient.Common
         public DateTime addCountTime = DateTime.Now;
 
         /// <summary>
+        /// 手动切换显示缓冲时间
+        /// </summary>
+        private int autoChangeTime = 0;
+        /// <summary>
         /// 订单数量
         /// </summary>
         //public int OrderCount = 0;
@@ -436,7 +440,7 @@ namespace MES_MonitoringClient.Common
                     ProcessMachineProduction(item, 0,DateTime.Now);
                 }
                 //当前工单
-                ChangeCurrentProcessJobOrder(0);
+                ChangeCurrentProcessJobOrder(0,false);
                 //开始工单时间
                 addCountTime = DateTime.Now;
 
@@ -496,10 +500,14 @@ namespace MES_MonitoringClient.Common
         /// 切换当前工单
         /// </summary>
         /// <param name="jobOrderIndex"></param>
-        public void ChangeCurrentProcessJobOrder(int jobOrderIndex)
+        public void ChangeCurrentProcessJobOrder(int jobOrderIndex,bool manual)
         {
             try
             {
+                if (manual)
+                {
+                    autoChangeTime = 5;
+                }
                 //当前工单
                 CurrentProcessJobOrder = ProcessJobOrderList[jobOrderIndex];
 
@@ -1634,6 +1642,7 @@ namespace MES_MonitoringClient.Common
                     //处理找不到产品出数
                     ProcessNoMouldProduc(unProcessJobOrderList, CurrentMouldProduct.ProductList);
                 }
+                changeCurrentProcessJobOrder();
 
             }
             catch (Exception ex)
@@ -1777,6 +1786,61 @@ namespace MES_MonitoringClient.Common
                     }
                 }
             }
+            
+        }
+        //处理同模同产品切换显示
+        private void changeCurrentProcessJobOrder()
+        {
+            List<DataModel.JobOrder> findJobOrderList = ProcessJobOrderList.FindAll(t => t.ProductCode.ToUpper() == CurrentProcessJobOrder.ProductCode.ToUpper() && t.MouldCode.ToUpper() == CurrentProcessJobOrder.MouldCode.ToUpper());
+            if (findJobOrderList!=null&&findJobOrderList.Count> 1)
+            {
+                var sumProductCount = CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
+                var sumErrorCount = CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+                if (CurrentProcessJobOrder.OrderCount <= (sumProductCount - sumErrorCount))
+                {
+                    foreach(var item in findJobOrderList)
+                    {
+                        if (item._id != CurrentProcessJobOrder._id)
+                        {
+                            var itemSumProductCount = item.MachineProcessLog.Sum(t => t.ProduceCount);
+                            var itemSumErrorCount = item.MachineProcessLog.Sum(t => t.ErrorCount);
+                            if (item.OrderCount > (itemSumProductCount - itemSumErrorCount))
+                            {
+                                autoChangeTime--;
+                                if (autoChangeTime < 0)
+                                {
+                                    //当前工单
+                                    CurrentProcessJobOrder = item;
+                                    //通过当前单据找到模具对应产品出数数据
+                                    CurrentMouldProduct = Common.MouldProductHelper.GetMmouldProductByMouldCode(CurrentProcessJobOrder.MouldCode);
+                                    //显示当前工单
+                                    ShowCurrentJobOrder();
+                                    break;
+                                }
+
+                            }
+                            else if(findJobOrderList.IndexOf(item) == findJobOrderList.Count - 1)
+                            {
+                                autoChangeTime--;
+                                if (autoChangeTime < 0)
+                                {
+                                    //当前工单
+                                    CurrentProcessJobOrder = item;
+                                    //通过当前单据找到模具对应产品出数数据
+                                    CurrentMouldProduct = Common.MouldProductHelper.GetMmouldProductByMouldCode(CurrentProcessJobOrder.MouldCode);
+                                    //显示当前工单
+                                    ShowCurrentJobOrder();
+                                    break;
+                                }
+                            }
+                             
+                        }
+                    }
+
+                }
+            }
+           
+              
         }
 
         //自动切换工单
