@@ -83,7 +83,7 @@ namespace MES_MonitoringClient.Common
         /// <summary>
         /// 产品生命周期（计算次数）
         /// </summary>
-        private List<MachineProcedure> _MachineProcedureListForCount = null;
+        public List<MachineProcedure> _MachineProcedureListForCount = null;
         /// <summary>
         /// 计数时间
         /// </summary>
@@ -157,7 +157,10 @@ namespace MES_MonitoringClient.Common
         //当前模具对应产品出数
         public DataModel.MouldProduct CurrentMouldProduct = null;
 
-
+        //当前机器状态（试模）
+        public string machineStatusCode = null;
+        //当前操作id
+        public string MachineStatusLogID = null;
 
         /// <summary>
         /// 更新机器信号后更新界面
@@ -197,6 +200,11 @@ namespace MES_MonitoringClient.Common
         public delegate void UpdateMachineCompleteDateTime();
         public UpdateMachineCompleteDateTime UpdateMachineCompleteDateTimeDelegate;
 
+        /// <summary>
+        /// 更新二维码
+        /// </summary>
+        public delegate void UpdateQRCode();
+        public UpdateQRCode UpdateQRCodeDelegate;
 
         private static readonly object obj = new object();
 
@@ -619,40 +627,75 @@ namespace MES_MonitoringClient.Common
 
                                 if (LastX03SignalGetTime.HasValue)
                                 {
-
-                                    #region 保存生命周期 
-                                    //处理生命周期
-                                    DataModel.MachineProduceLifeCycle produceLifeCycle = new DataModel.MachineProduceLifeCycle();
-                                    produceLifeCycle.LocalMacAddress = Common.CommonFunction.getMacAddress();
-                                    produceLifeCycle.StartDateTime = LastX03SignalGetTime.HasValue ? LastX03SignalGetTime.Value : System.DateTime.Now;
-                                    produceLifeCycle.EndDateTime = System.DateTime.Now;
-
-                                    TimeSpan timeSpan = produceLifeCycle.EndDateTime - produceLifeCycle.StartDateTime;
-                                    if (LastProductUseMilliseconds > 0)
+                                    //试模
+                                    if (machineStatusCode== Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
                                     {
-                                        produceLifeCycle.UseTotalSeconds = (decimal)LastProductUseMilliseconds / 1000;
+                                        CheckMouldRecordHandle checkMouldRecordHandle = new CheckMouldRecordHandle();
+                                        //查找当前调机记录
+                                        DataModel.CheckMouldRecord checkMouldRecord=Common.CheckMouldRecordHandle.QueryCheckMouldRecord(MachineStatusLogID);
+                                        //增加一条记录
+                                        if (checkMouldRecord != null)
+                                        {
+                                            DateTime time = DateTime.Now;
+                                            if (checkMouldRecord.CheckMouldLog == null)
+                                            {
+                                                checkMouldRecord.CheckMouldLog = new List<DataModel.CheckMouldLog>();
+                                            }
+                                            DataModel.CheckMouldLog checkMouldLog = new DataModel.CheckMouldLog();
+                                            checkMouldLog.Beer = checkMouldRecord.CheckMouldLog.Count+1;
+                                            checkMouldLog.ProduceTime = time;
+                                            TimeSpan timeSpan =  time-(LastX03SignalGetTime.HasValue ? LastX03SignalGetTime.Value : time);
+                                            if (LastProductUseMilliseconds > 0)
+                                            {
+                                                checkMouldLog.ProduceCycle = (decimal)LastProductUseMilliseconds / 1000;
+                                            }
+                                            else
+                                            {
+                                                checkMouldLog.ProduceCycle = (decimal)timeSpan.TotalSeconds;
+                                            }
+                                            checkMouldRecord.CheckMouldLog.Add(checkMouldLog);
+                                            checkMouldRecordHandle.addCheckMouldLog(checkMouldRecord);
+                                            //更新二维码
+                                            UpdateQRCodeDelegate();
+                                        }
                                     }
                                     else
                                     {
-                                        produceLifeCycle.UseTotalSeconds = (decimal)timeSpan.TotalSeconds;
+                                        #region 保存生命周期 
+                                        //处理生命周期
+                                        DataModel.MachineProduceLifeCycle produceLifeCycle = new DataModel.MachineProduceLifeCycle();
+                                        produceLifeCycle.LocalMacAddress = Common.CommonFunction.getMacAddress();
+                                        produceLifeCycle.StartDateTime = LastX03SignalGetTime.HasValue ? LastX03SignalGetTime.Value : System.DateTime.Now;
+                                        produceLifeCycle.EndDateTime = System.DateTime.Now;
+
+                                        TimeSpan timeSpan = produceLifeCycle.EndDateTime - produceLifeCycle.StartDateTime;
+                                        if (LastProductUseMilliseconds > 0)
+                                        {
+                                            produceLifeCycle.UseTotalSeconds = (decimal)LastProductUseMilliseconds / 1000;
+                                        }
+                                        else
+                                        {
+                                            produceLifeCycle.UseTotalSeconds = (decimal)timeSpan.TotalSeconds;
+                                        }
+
+
+                                        produceLifeCycle.IsUpdateToServer = false;
+                                        produceLifeCycle.IsUpdateToServer = false;
+
+                                        //保存每一个生命周期数据至数据库
+                                        SaveMachineProduceLifeCycle(produceLifeCycle);
+
+                                        #endregion
+
+                                        #region 处理产品出数
+
+                                        ProcessMouldLifeCycle();
+
+
+                                        #endregion
+                                        addCountTime = DateTime.Now;
                                     }
-
-
-                                    produceLifeCycle.IsUpdateToServer = false;
-                                    produceLifeCycle.IsUpdateToServer = false;
-
-                                    //保存每一个生命周期数据至数据库
-                                    SaveMachineProduceLifeCycle(produceLifeCycle);
-
-                                    #endregion
-
-                                    #region 处理产品出数
-
-                                    ProcessMouldLifeCycle();
-
-
-                                    #endregion
-                                    addCountTime=DateTime.Now;
+                                   
                                 }
 
                                 //订单未完成数量，等于订单数量减去已完成数量

@@ -12,6 +12,7 @@ namespace MES_MonitoringClient.Common
         {
             //未分配
             Produce,
+            CheckMould
         }
     }
 }

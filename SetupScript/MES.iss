@@ -74,7 +74,7 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newto
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\QRCoder.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 ;如果有日志，则复制日志，如果没有，则不复制;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log.log"; DestDir: "{app}\Client"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
 ;Service的文件夹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs

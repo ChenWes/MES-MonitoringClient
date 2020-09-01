@@ -49,6 +49,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.txt_ProductTotalCount = new System.Windows.Forms.TextBox();
+            this.txt_CProductTotalCount = new System.Windows.Forms.TextBox();
             this.txt_TotalRejectsCount = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel24 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel32 = new System.Windows.Forms.TableLayoutPanel();
@@ -56,6 +57,7 @@
             this.label16 = new System.Windows.Forms.Label();
             this.tableLayoutPanel31 = new System.Windows.Forms.TableLayoutPanel();
             this.txt_NondefectiveCount = new System.Windows.Forms.TextBox();
+            this.txt_CNondefectiveCount = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.tableLayoutPanel23 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel30 = new System.Windows.Forms.TableLayoutPanel();
@@ -82,6 +84,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tableLayoutPanel25 = new System.Windows.Forms.TableLayoutPanel();
             this.txt_WorkOrderCount = new System.Windows.Forms.TextBox();
+            this.txt_CWorkOrderCount = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -102,6 +105,7 @@
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel14 = new System.Windows.Forms.TableLayoutPanel();
             this.txt_MouldCode = new System.Windows.Forms.TextBox();
+            this.txt_CMouldCode = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
             this.txt_MaterialCode = new System.Windows.Forms.TextBox();
@@ -135,8 +139,12 @@
             this.pictureBoxCharge = new System.Windows.Forms.PictureBox();
             this.pictureBoxQC = new System.Windows.Forms.PictureBox();
             this.pictureBoxEmp = new System.Windows.Forms.PictureBox();
+            this.pictureBoxMouldCode = new System.Windows.Forms.PictureBox();
             this.label21 = new System.Windows.Forms.Label();
+            this.lab_MouldCodeEmp = new System.Windows.Forms.Label();
+            this.lab_MouldCodeEmpName= new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
+            this.pictureBoxCode = new System.Windows.Forms.PictureBox();
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
@@ -146,6 +154,7 @@
             this.btn_ClockIn = new System.Windows.Forms.Button();
             this.circleProgramBar = new MES_MonitoringClient.Common.Component.CircleProgramBar();
             this.txt_Dept = new System.Windows.Forms.TextBox();
+            txt_ProductCode = new System.Windows.Forms.TextBox(); 
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -467,6 +476,17 @@
             this.txt_ProductTotalCount.Size = new System.Drawing.Size(162, 26);
             this.txt_ProductTotalCount.TabIndex = 1;
             // 
+            // txt_CProductTotalCount
+            // 
+            this.txt_CProductTotalCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_CProductTotalCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_CProductTotalCount.Enabled = false;
+            this.txt_CProductTotalCount.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_CProductTotalCount.Location = new System.Drawing.Point(75, 6);
+            this.txt_CProductTotalCount.Name = "txt_CProductTotalCount";
+            this.txt_CProductTotalCount.Size = new System.Drawing.Size(162, 26);
+            this.txt_CProductTotalCount.TabIndex = 1;
+            // 
             // txt_TotalRejectsCount
             // 
             this.txt_TotalRejectsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -557,6 +577,17 @@
             this.txt_NondefectiveCount.Name = "txt_NondefectiveCount";
             this.txt_NondefectiveCount.Size = new System.Drawing.Size(159, 26);
             this.txt_NondefectiveCount.TabIndex = 2;
+            // 
+            // txt_CNondefectiveCount
+            // 
+            this.txt_CNondefectiveCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_CNondefectiveCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_CNondefectiveCount.Enabled = false;
+            this.txt_CNondefectiveCount.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_CNondefectiveCount.Location = new System.Drawing.Point(73, 4);
+            this.txt_CNondefectiveCount.Name = "txt_CNondefectiveCount";
+            this.txt_CNondefectiveCount.Size = new System.Drawing.Size(159, 26);
+            this.txt_CNondefectiveCount.TabIndex = 2;
             // 
             // label15
             // 
@@ -902,6 +933,17 @@
             this.txt_WorkOrderCount.Size = new System.Drawing.Size(159, 26);
             this.txt_WorkOrderCount.TabIndex = 2;
             // 
+            // txt_CWorkOrderCount
+            // 
+            this.txt_CWorkOrderCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_CWorkOrderCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_CWorkOrderCount.Enabled = false;
+            this.txt_CWorkOrderCount.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_CWorkOrderCount.Location = new System.Drawing.Point(73, 3);
+            this.txt_CWorkOrderCount.Name = "txt_CWorkOrderCount";
+            this.txt_CWorkOrderCount.Size = new System.Drawing.Size(159, 26);
+            this.txt_CWorkOrderCount.TabIndex = 2;
+            // 
             // label9
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -1168,6 +1210,17 @@
             this.txt_MouldCode.Size = new System.Drawing.Size(159, 26);
             this.txt_MouldCode.TabIndex = 2;
             // 
+            // txt_CMouldCode
+            // 
+            this.txt_CMouldCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_CMouldCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_CMouldCode.Enabled = false;
+            this.txt_CMouldCode.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_CMouldCode.Location = new System.Drawing.Point(73, 3);
+            this.txt_CMouldCode.Name = "txt_CMouldCode";
+            this.txt_CMouldCode.Size = new System.Drawing.Size(159, 26);
+            this.txt_CMouldCode.TabIndex = 2;
+            // 
             // label7
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -1205,6 +1258,17 @@
             this.txt_MaterialCode.Name = "txt_MaterialCode";
             this.txt_MaterialCode.Size = new System.Drawing.Size(158, 26);
             this.txt_MaterialCode.TabIndex = 2;
+            // 
+            // txt_ProductCode
+            // 
+            this.txt_ProductCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_ProductCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_ProductCode.Enabled = false;
+            this.txt_ProductCode.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_ProductCode.Location = new System.Drawing.Point(73, 3);
+            this.txt_ProductCode.Name = "txt_ProductCode";
+            this.txt_ProductCode.Size = new System.Drawing.Size(158, 26);
+            this.txt_ProductCode.TabIndex = 2;
             // 
             // label2
             // 
@@ -1483,7 +1547,7 @@
             this.tableLayoutPanel33.ColumnCount = 1;
             this.tableLayoutPanel33.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel33.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel33.Controls.Add(this.circleProgramBar, 0, 0);
+           // this.tableLayoutPanel33.Controls.Add(this.circleProgramBar, 0, 0);
             this.tableLayoutPanel33.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel33.Location = new System.Drawing.Point(498, 319);
             this.tableLayoutPanel33.Name = "tableLayoutPanel33";
@@ -1530,7 +1594,7 @@
             this.tableLayoutPanel34.Controls.Add(this.label18, 0, 2);
             this.tableLayoutPanel34.Controls.Add(this.label19, 1, 2);
             this.tableLayoutPanel34.Controls.Add(this.label20, 2, 2);
-            this.tableLayoutPanel34.Controls.Add(this.label21, 2, 2);
+            this.tableLayoutPanel34.Controls.Add(this.label21, 3, 2);
             this.tableLayoutPanel34.Controls.Add(this.pictureBoxHead, 0, 1);
             this.tableLayoutPanel34.Controls.Add(this.pictureBoxCharge, 1, 1);
             this.tableLayoutPanel34.Controls.Add(this.pictureBoxQC, 2, 1);
@@ -1600,6 +1664,18 @@
             this.label21.TabIndex = 2;
             this.label21.Text = "";
             // 
+            // lab_MouldCodeEmpName
+            // 
+            this.lab_MouldCodeEmpName.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lab_MouldCodeEmpName.AutoSize = true;
+            this.lab_MouldCodeEmpName.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_MouldCodeEmpName.ForeColor = System.Drawing.Color.White;
+            this.lab_MouldCodeEmpName.Location = new System.Drawing.Point(403, 102);
+            this.lab_MouldCodeEmpName.Name = "lab_MouldCodeEmpName";
+            this.lab_MouldCodeEmpName.Size = new System.Drawing.Size(24, 64);
+            this.lab_MouldCodeEmpName.TabIndex = 2;
+            this.lab_MouldCodeEmpName.Text = "";
+            // 
             // label24
             // 
             this.label24.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -1647,6 +1723,18 @@
             this.label27.Size = new System.Drawing.Size(27, 64);
             this.label27.TabIndex = 2;
             this.label27.Text = "员工";
+            // 
+            // lab_MouldCodeEmp
+            // 
+            this.lab_MouldCodeEmp.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.lab_MouldCodeEmp.AutoSize = true;
+            this.lab_MouldCodeEmp.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lab_MouldCodeEmp.ForeColor = System.Drawing.Color.Chartreuse;
+            this.lab_MouldCodeEmp.Location = new System.Drawing.Point(403, 102);
+            this.lab_MouldCodeEmp.Name = "lab_MouldCodeEmp";
+            this.lab_MouldCodeEmp.Size = new System.Drawing.Size(27, 64);
+            this.lab_MouldCodeEmp.TabIndex = 2;
+            this.lab_MouldCodeEmp.Text = "试模员";
             // 
             // tableLayoutPanel37
             // 
@@ -1730,7 +1818,16 @@
             this.pictureBoxEmp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxEmp.TabIndex = 3;
             this.pictureBoxEmp.TabStop = false;
-           
+            // 
+            // pictureBoxMouldCode
+            // 
+            this.pictureBoxMouldCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxMouldCode.Location = new System.Drawing.Point(232, 4);
+            this.pictureBoxMouldCode.Name = "pictureBoxMouldCode";
+            this.pictureBoxMouldCode.Size = new System.Drawing.Size(107, 261);
+            this.pictureBoxMouldCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxMouldCode.TabIndex = 3;
+            this.pictureBoxMouldCode.TabStop = false;
             // 
             // label23
             // 
@@ -1754,6 +1851,16 @@
             this.txt_Dept.Name = "txt_Dept";
             this.txt_Dept.Size = new System.Drawing.Size(159, 26);
             this.txt_Dept.TabIndex = 3;
+            // 
+            // pictureBoxCode
+            // 
+            this.pictureBoxCode.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.pictureBoxCode.Location = new System.Drawing.Point(345, 240);
+            this.pictureBoxCode.Name = "pictureBoxCode";
+            this.pictureBoxCode.Size = new System.Drawing.Size(250, 250);
+            this.pictureBoxCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxCode.TabIndex = 15;
+            this.pictureBoxCode.TabStop = false;
             // 
             // frmMain
             // 
@@ -1839,6 +1946,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEmp)).EndInit();
             this.ResumeLayout(false);
 
+
+
         }
 
         #endregion
@@ -1887,6 +1996,7 @@
         private System.Windows.Forms.TextBox txt_PlanCompleteDateTime;
         private System.Windows.Forms.TextBox txt_StartDateTime;
         private System.Windows.Forms.TextBox txt_MouldCode;
+        private System.Windows.Forms.TextBox txt_CMouldCode;
         private System.Windows.Forms.TextBox txt_MaterialCode;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel24;
@@ -1898,6 +2008,7 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel31;
         private System.Windows.Forms.TextBox txt_NondefectiveCount;
+        private System.Windows.Forms.TextBox txt_CNondefectiveCount;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel30;
         private System.Windows.Forms.TextBox txt_WalkCheck;
@@ -1916,10 +2027,12 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel25;
         private System.Windows.Forms.TextBox txt_WorkOrderCount;
+        private System.Windows.Forms.TextBox txt_CWorkOrderCount;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel22;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox txt_ProductTotalCount;
+        private System.Windows.Forms.TextBox txt_CProductTotalCount;
         private System.Windows.Forms.Button btn_MachineName;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel33;
         private LiveCharts.WinForms.PieChart pieChart_MachineStatus;
@@ -1935,6 +2048,7 @@
         private System.Windows.Forms.PictureBox pictureBoxCharge;
         private System.Windows.Forms.PictureBox pictureBoxQC;
         private System.Windows.Forms.PictureBox pictureBoxEmp;
+        private System.Windows.Forms.PictureBox pictureBoxMouldCode;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button btn_CloseWindow;
         private System.Windows.Forms.Button btn_MinimizeWindows;
@@ -1942,6 +2056,7 @@
         private Common.Component.CircularButton btn_ReceiveDataLight;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label lab_MouldCodeEmp;
         private System.Windows.Forms.TextBox txt_TotalRejectsCount;
         private System.Windows.Forms.Button btn_CompleteJobOrder;
         private System.Windows.Forms.Label lab_Version;
@@ -1957,9 +2072,12 @@
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label lab_MouldCodeEmpName;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel37;
         //private System.Windows.Forms.Button btn_refresh;
         private System.Windows.Forms.Button btn_ClockIn;
+        private System.Windows.Forms.PictureBox pictureBoxCode;
+        private System.Windows.Forms.TextBox txt_ProductCode;
     }
 }
 
