@@ -189,6 +189,12 @@
     <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
     <Compile Include="DataModel\SyncData.cs" />
+    <Compile Include="frmCompleteJobOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCompleteJobOrder.Designer.cs">
+      <DependentUpon>frmCompleteJobOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmAttend.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -240,6 +246,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmCompleteJobOrder.resx">
+      <DependentUpon>frmCompleteJobOrder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmAttend.resx">
       <DependentUpon>frmAttend.cs</DependentUpon>
     </EmbeddedResource>
