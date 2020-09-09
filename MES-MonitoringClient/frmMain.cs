@@ -205,9 +205,6 @@ namespace MES_MonitoringClient
                 CheckMachineRegister();
                 //获取饼图
                 mc_MachineStatusHander.ShowStatusPieChart();
-
-
-             
                 //初始化最后一次机器状态
                 mc_MachineStatusHander.GetLatestMachineStatusLog();
 
@@ -849,7 +846,7 @@ namespace MES_MonitoringClient
                             string data = JsonConvert.SerializeObject(checkMouldRecordDisplay);
                             this.txt_CProductTotalCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
                             this.txt_CNondefectiveCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
-                            this.pictureBoxCode.Image = Common.QRCoder.QRCodeEncoderUtil(data, 10);
+                            this.pictureBoxCode.Image = Common.QRCoder.QRCodeEncoderUtil(data, checkMouldRecordDisplay.ProduceTime, 10);
 
 
                         }
