@@ -3057,5 +3057,39 @@ namespace MES_MonitoringClient
             }
            
         }
+        private void btn_QC_Click(object sender, EventArgs e)
+        {
+            if (mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
+            {
+                frmScanRFID newfrmScanRFID = new frmScanRFID();
+                newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.QC;
+                newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.QC;
+                newfrmScanRFID.currentJobOrder= mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder;
+                newfrmScanRFID.ShowDialog();
+                if (!newfrmScanRFID.MC_IsManualCancel && newfrmScanRFID.QCCheckCounts.Count > 0)
+                {
+                    DataModel.QCRecord QCRecord = new DataModel.QCRecord();
+                    QCRecord.JobOrderID = newfrmScanRFID.currentJobOrder._id;
+                    var machineProcessLog = newfrmScanRFID.currentJobOrder.MachineProcessLog.Find(t => t.ProduceStartDate == t.ProduceEndDate);
+                    QCRecord.MachineProcessLogID = machineProcessLog._id;
+                    QCRecord.MachineID = MC_Machine._id;
+                    QCRecord.QCCheckCounts = newfrmScanRFID.QCCheckCounts;
+                    QCRecord.ErrorCount = newfrmScanRFID.errorCount;
+                    QCRecord.EmployeeID = newfrmScanRFID.MC_EmployeeInfo._id;
+                    QCRecord.QCTime = newfrmScanRFID.QCTime;
+                    QCRecord.IsSyncToServer = false;
+                    Common.QCRecordHandler QCRecordHandler = new Common.QCRecordHandler();
+                    QCRecordHandler.SaveClockInRecord(QCRecord);
+                    int value = 0;
+                    int.TryParse(this.txt_RejectsCount.Text, out value);
+                    this.txt_RejectsCount.Text = (value + newfrmScanRFID.errorCount).ToString();
+                }
+            }
+            else
+            {
+                MessageBox.Show("当前不是在生产中", "误操作提醒", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+         
+        }
     }
 }

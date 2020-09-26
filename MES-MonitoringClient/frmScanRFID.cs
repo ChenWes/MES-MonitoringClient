@@ -38,7 +38,8 @@ namespace MES_MonitoringClient
             ResumeJobOrder,
             OffPower,
             Update,
-            SelectOneToFinish
+            SelectOneToFinish,
+            QC
         }
         //操作类型（修改状态、上班、下班等）
         public OperationType MC_OperationType;
@@ -52,18 +53,30 @@ namespace MES_MonitoringClient
             ChangeMachineType,
             Quit,
             Update,
-            SelectOneToFinish
+            SelectOneToFinish,
+            QC
         }
         //类型提示
         public OperationType_Prompt MC_OperationType_Prompt;
         //工单id
         public string JobOrder = null;
         
+        //工单
+        public DataModel.JobOrder currentJobOrder=null;
+
+        public List<DataModel.QCCheckCount> QCCheckCounts = new List<DataModel.QCCheckCount>();
+
         //是否主动取消刷卡
         public bool MC_IsManualCancel = false;
 
         //刷卡员工信息
         public DataModel.Employee MC_EmployeeInfo = null;
+
+        //QC时间
+        public DateTime QCTime = new DateTime();
+
+        //不良品数 
+        public int errorCount = 0;
 
         //修改机器状态参数
         public DataModel.formParameter.frmChangeMachineStatusPara MC_frmChangeMachineStatusPara = null;
@@ -154,6 +167,10 @@ namespace MES_MonitoringClient
                 else if (MC_OperationType_Prompt == OperationType_Prompt.SelectOneToFinish)
                 {
                     this.lab_ScanStatus.Text = "即将完成工单["+JobOrder+"]，请确认刷卡";
+                }
+                else if (MC_OperationType_Prompt == OperationType_Prompt.QC)
+                {
+                    this.lab_ScanStatus.Text = "即将QC，请确认刷卡";
                 }
                 else
                 {
@@ -445,7 +462,7 @@ namespace MES_MonitoringClient
 
                 //员工信息赋值到公共变量
                 MC_EmployeeInfo = employee;
-
+                DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(MC_EmployeeInfo.JobPostionID);
 
                 MC_CanLoadData = false;
 
@@ -492,10 +509,27 @@ namespace MES_MonitoringClient
                             ShowErrorMessage("对不起，您没有相应权限", "权限认证");
                         }
                         break;
+                    case OperationType.QC:
+                        if (jobPositon.JobPositionCode == frmAttend.JobPositionCode.QC.ToString())
+                        {
+                            QCTime = DateTime.Now;
+                            frmQC frmQC = new frmQC();
+                            frmQC.currentJobOrder = currentJobOrder;
+                            frmQC.ShowDialog();
+                            QCCheckCounts = frmQC.QCCheckCounts;
+                            errorCount = frmQC.errorCount;
+                        }
+                        else
+                        {
+                            ShowErrorMessage("对不起，您没有相应权限", "权限认证");
+                        }
+                        break;
                     case OperationType.SelectOneToFinish:
                         //只完成工单不改机器状态
 
-                    case OperationType.OffPower:                                                
+                    case OperationType.OffPower:
+                   
+
                     default:
                         break;
                 }
