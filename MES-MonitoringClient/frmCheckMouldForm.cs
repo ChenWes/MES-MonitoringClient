@@ -20,9 +20,10 @@ namespace MES_MonitoringClient
     {
         public DataModel.CheckMouldRecord CheckMouldRecord = null;
         public DataModel.Employee Employee = null;
+        public DataModel.Machine machine = null;
 
-        
-        
+
+
 
         public frmCheckMouldForm()
         {
@@ -34,10 +35,14 @@ namespace MES_MonitoringClient
             this.WindowState = FormWindowState.Maximized;
             if (Employee != null)
             {
-                this.txt_EmployeeID.Text = Employee.EmployeeCode;
-                this.txt_EmployeeName.Text = Employee.EmployeeName;
+                this.txt_Employee.Text = Employee.EmployeeName + "(" + Employee.EmployeeCode + ")";
+
             }
-            
+            if (machine != null)
+            {
+                this.txt_Machine.Text = machine.MachineCode + "(" + machine.Tonnage + ")";
+            }
+
 
         }
 
@@ -47,11 +52,11 @@ namespace MES_MonitoringClient
             MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-      
+
 
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
-            
+
 
             this.Close();
         }
@@ -60,8 +65,8 @@ namespace MES_MonitoringClient
         {
             try
             {
-            
-                if (string.IsNullOrEmpty(txt_MouldCode.Text.Trim())) 
+
+                if (string.IsNullOrEmpty(txt_MouldCode.Text.Trim()))
                 {
                     throw new Exception("请输入模具编号");
                 }
@@ -75,11 +80,33 @@ namespace MES_MonitoringClient
                     ShowErrorMessage("请输入预计啤数", "保存失败");
                     return;
                 }
-                int num=0;
+                int num = 0;
                 int.TryParse(this.txt_PlanCount.Text.Trim(), out num);
-                if (num<=0)
+                if (num <= 0)
                 {
                     ShowErrorMessage("预计啤数请输入整数", "保存失败");
+                    return;
+                }
+                if (this.txt_MouldOutput.Text.Trim() == "")
+                {
+                    ShowErrorMessage("请输入型腔穴数", "保存失败");
+                    return;
+                }
+                if (this.txt_PlanCycle.Text.Trim() == "")
+                {
+                    ShowErrorMessage("请输入报价周期", "保存失败");
+                    return;
+                }
+                decimal PlanCycle = 0;
+                decimal.TryParse(this.txt_PlanCycle.Text.Trim(), out PlanCycle);
+                if (PlanCycle <= 0)
+                {
+                    ShowErrorMessage("请输入正确的报价周期", "保存失败");
+                    return;
+                }
+                if (this.txt_Version.Text.Trim() == "")
+                {
+                    ShowErrorMessage("请输入版本", "保存失败");
                     return;
                 }
                 //保存试模记录
@@ -87,8 +114,21 @@ namespace MES_MonitoringClient
                 CheckMouldRecord.MouldCode = this.txt_MouldCode.Text.Trim();
                 CheckMouldRecord.ProductCode = this.txt_ProductCode.Text.Trim();
                 CheckMouldRecord.PlanCount = num;
-                CheckMouldRecord.EmployeeID = this.txt_EmployeeID.Text.Trim();
-                CheckMouldRecord.EmployeeName = this.txt_EmployeeName.Text.Trim();
+
+                if (Employee != null)
+                {
+                    CheckMouldRecord.EmployeeName = Employee.EmployeeName;
+                    CheckMouldRecord.EmployeeID = Employee.EmployeeCode;
+                }
+                if (machine != null)
+                {
+                    CheckMouldRecord.MachineCode = machine.MachineCode;
+                    CheckMouldRecord.MachineTonnage = machine.Tonnage;
+                }
+                CheckMouldRecord.MouldOutput = this.txt_MouldOutput.Text.Trim();
+                CheckMouldRecord.PlanCycle = PlanCycle;
+                CheckMouldRecord.Version = this.txt_Version.Text.Trim();
+
                 this.Close();
 
             }
@@ -99,7 +139,22 @@ namespace MES_MonitoringClient
 
         }
 
-      
-      
+        private void txt_PlanCycle_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!Char.IsDigit(ch) && ch != 8 && ch != 46)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txt_PlanCount_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char ch = e.KeyChar;
+            if (!Char.IsDigit(ch) && ch != 8)
+            {
+                e.Handled = true;
+            }
+        }
     }
 }

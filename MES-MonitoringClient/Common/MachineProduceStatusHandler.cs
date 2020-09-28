@@ -647,12 +647,13 @@ namespace MES_MonitoringClient.Common
                                             TimeSpan timeSpan =  time-(LastX03SignalGetTime.HasValue ? LastX03SignalGetTime.Value : time);
                                             if (LastProductUseMilliseconds > 0)
                                             {
-                                                checkMouldLog.ProduceCycle = (decimal)LastProductUseMilliseconds / 1000;
+                                                checkMouldLog.ProduceCycle = Math.Round((decimal)LastProductUseMilliseconds / 1000,3);
                                             }
                                             else
                                             {
-                                                checkMouldLog.ProduceCycle = (decimal)timeSpan.TotalSeconds;
+                                                checkMouldLog.ProduceCycle = Math.Round((decimal)timeSpan.TotalSeconds,3);
                                             }
+                                            checkMouldLog.DifferenceCycle = Math.Round((checkMouldRecord.PlanCycle - checkMouldLog.ProduceCycle), 3); ;
                                             checkMouldRecord.CheckMouldLog.Add(checkMouldLog);
                                             checkMouldRecordHandle.addCheckMouldLog(checkMouldRecord);
                                             //更新二维码

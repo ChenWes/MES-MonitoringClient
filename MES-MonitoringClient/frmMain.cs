@@ -843,6 +843,20 @@ namespace MES_MonitoringClient
                             checkMouldRecordDisplay.ProduceTime = checkMouldLog.ProduceTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"); ;
                             checkMouldRecordDisplay.Beer = checkMouldLog.Beer;
                             checkMouldRecordDisplay.ProduceCycle = checkMouldLog.ProduceCycle;
+                            if (checkMouldLog.DifferenceCycle < 0)
+                            {
+                                checkMouldRecordDisplay.DifferenceCycle = "-"+checkMouldLog.DifferenceCycle;
+                            }
+                            else
+                            {
+                                checkMouldRecordDisplay.DifferenceCycle = "+"+checkMouldLog.DifferenceCycle;
+                            }
+                           
+                            checkMouldRecordDisplay.MachineCode = checkMouldRecord.MachineCode;
+                            checkMouldRecordDisplay.MachineTonnage = checkMouldRecord.MachineTonnage;
+                            checkMouldRecordDisplay.PlanCycle = checkMouldRecord.PlanCycle;
+                            checkMouldRecordDisplay.Version = checkMouldRecord.Version;
+                            checkMouldRecordDisplay.MouldOutput = checkMouldRecord.MouldOutput;
                             string data = JsonConvert.SerializeObject(checkMouldRecordDisplay);
                             this.txt_CProductTotalCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
                             this.txt_CNondefectiveCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
@@ -2113,6 +2127,7 @@ namespace MES_MonitoringClient
 
                        
                         frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                        frmCheckMouldForm.machine = MC_Machine;
                         frmCheckMouldForm.ShowDialog();
                         if(frmCheckMouldForm.CheckMouldRecord==null)
                         {
@@ -2422,6 +2437,7 @@ namespace MES_MonitoringClient
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
                         {
                             frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                            frmCheckMouldForm.machine = MC_Machine;
                             frmCheckMouldForm.ShowDialog();
                             if (frmCheckMouldForm.CheckMouldRecord == null)
                             {
@@ -2497,6 +2513,7 @@ namespace MES_MonitoringClient
                             if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
                             {
                                 frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                                frmCheckMouldForm.machine = MC_Machine;
                                 frmCheckMouldForm.ShowDialog();
                                 if (frmCheckMouldForm.CheckMouldRecord == null)
                                 {
@@ -2519,7 +2536,7 @@ namespace MES_MonitoringClient
                             //增加试模记录
                             if (frmCheckMouldForm.CheckMouldRecord != null)
                         {
-                            frmCheckMouldForm.CheckMouldRecord.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                                frmCheckMouldForm.CheckMouldRecord.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
                             //增加记录
                             Common.CheckMouldRecordHandle checkMouldRecordHandle = new Common.CheckMouldRecordHandle();
                             checkMouldRecordHandle.SaveClockInRecord(frmCheckMouldForm.CheckMouldRecord);

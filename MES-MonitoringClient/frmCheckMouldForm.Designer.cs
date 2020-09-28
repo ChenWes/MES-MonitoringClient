@@ -39,10 +39,16 @@
             this.txt_PlanCount = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.txt_EmployeeName = new System.Windows.Forms.TextBox();
+            this.txt_Employee = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.txt_EmployeeID = new System.Windows.Forms.TextBox();
+            this.txt_Machine = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txt_MouldOutput = new System.Windows.Forms.TextBox();
+            this.txt_PlanCycle = new System.Windows.Forms.TextBox();
+            this.txt_Version = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -51,9 +57,9 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel1.Controls.Add(this.btn_Cancel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.btn_Confirm, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 1);
@@ -73,7 +79,7 @@
             this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
             this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Cancel.Location = new System.Drawing.Point(61, 643);
+            this.btn_Cancel.Location = new System.Drawing.Point(36, 643);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(75, 75);
             this.btn_Cancel.TabIndex = 14;
@@ -85,7 +91,7 @@
             this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
             this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Confirm.Location = new System.Drawing.Point(855, 643);
+            this.btn_Confirm.Location = new System.Drawing.Point(879, 643);
             this.btn_Confirm.Name = "btn_Confirm";
             this.btn_Confirm.Size = new System.Drawing.Size(75, 75);
             this.btn_Confirm.TabIndex = 14;
@@ -103,20 +109,30 @@
             this.tableLayoutPanel2.Controls.Add(this.txt_PlanCount, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 2);
-            this.tableLayoutPanel2.Controls.Add(this.txt_EmployeeName, 1, 4);
-            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 4);
-            this.tableLayoutPanel2.Controls.Add(this.label7, 0, 3);
-            this.tableLayoutPanel2.Controls.Add(this.txt_EmployeeID, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.txt_Employee, 1, 7);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 7);
+            this.tableLayoutPanel2.Controls.Add(this.label7, 0, 6);
+            this.tableLayoutPanel2.Controls.Add(this.txt_Machine, 1, 6);
+            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 5);
+            this.tableLayoutPanel2.Controls.Add(this.label8, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.label9, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.txt_MouldOutput, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.txt_PlanCycle, 1, 4);
+            this.tableLayoutPanel2.Controls.Add(this.txt_Version, 1, 5);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(201, 203);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(151, 203);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 5;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28816F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 14.28531F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(589, 375);
+            this.tableLayoutPanel2.RowCount = 8;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(688, 375);
             this.tableLayoutPanel2.TabIndex = 16;
             // 
             // label1
@@ -125,7 +141,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(73, 27);
+            this.label1.Location = new System.Drawing.Point(93, 13);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 20);
             this.label1.TabIndex = 4;
@@ -135,28 +151,29 @@
             // 
             this.txt_MouldCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_MouldCode.Font = new System.Drawing.Font("宋体", 15F);
-            this.txt_MouldCode.Location = new System.Drawing.Point(238, 22);
+            this.txt_MouldCode.Location = new System.Drawing.Point(278, 8);
             this.txt_MouldCode.Name = "txt_MouldCode";
-            this.txt_MouldCode.Size = new System.Drawing.Size(348, 30);
+            this.txt_MouldCode.Size = new System.Drawing.Size(407, 30);
             this.txt_MouldCode.TabIndex = 2;
             // 
             // txt_ProductCode
             // 
             this.txt_ProductCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_ProductCode.Font = new System.Drawing.Font("宋体", 15F);
-            this.txt_ProductCode.Location = new System.Drawing.Point(238, 96);
+            this.txt_ProductCode.Location = new System.Drawing.Point(278, 54);
             this.txt_ProductCode.Name = "txt_ProductCode";
-            this.txt_ProductCode.Size = new System.Drawing.Size(348, 30);
+            this.txt_ProductCode.Size = new System.Drawing.Size(407, 30);
             this.txt_ProductCode.TabIndex = 0;
             // 
             // txt_PlanCount
             // 
             this.txt_PlanCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_PlanCount.Font = new System.Drawing.Font("宋体", 15F);
-            this.txt_PlanCount.Location = new System.Drawing.Point(238, 170);
+            this.txt_PlanCount.Location = new System.Drawing.Point(278, 100);
             this.txt_PlanCount.Name = "txt_PlanCount";
-            this.txt_PlanCount.Size = new System.Drawing.Size(348, 30);
+            this.txt_PlanCount.Size = new System.Drawing.Size(407, 30);
             this.txt_PlanCount.TabIndex = 0;
+            this.txt_PlanCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_PlanCount_KeyPress);
             // 
             // label2
             // 
@@ -164,7 +181,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(73, 101);
+            this.label2.Location = new System.Drawing.Point(93, 59);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 20);
             this.label2.TabIndex = 4;
@@ -176,21 +193,21 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(73, 175);
+            this.label3.Location = new System.Drawing.Point(93, 105);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(89, 20);
             this.label3.TabIndex = 4;
             this.label3.Text = "预计啤数";
             // 
-            // txt_EmployeeName
+            // txt_Employee
             // 
-            this.txt_EmployeeName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_EmployeeName.Font = new System.Drawing.Font("宋体", 15F);
-            this.txt_EmployeeName.Location = new System.Drawing.Point(238, 321);
-            this.txt_EmployeeName.Name = "txt_EmployeeName";
-            this.txt_EmployeeName.ReadOnly = true;
-            this.txt_EmployeeName.Size = new System.Drawing.Size(348, 30);
-            this.txt_EmployeeName.TabIndex = 0;
+            this.txt_Employee.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Employee.Font = new System.Drawing.Font("宋体", 15F);
+            this.txt_Employee.Location = new System.Drawing.Point(278, 333);
+            this.txt_Employee.Name = "txt_Employee";
+            this.txt_Employee.ReadOnly = true;
+            this.txt_Employee.Size = new System.Drawing.Size(407, 30);
+            this.txt_Employee.TabIndex = 0;
             // 
             // label6
             // 
@@ -198,11 +215,11 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(93, 326);
+            this.label6.Location = new System.Drawing.Point(73, 338);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(49, 20);
+            this.label6.Size = new System.Drawing.Size(129, 20);
             this.label6.TabIndex = 4;
-            this.label6.Text = "姓名";
+            this.label6.Text = "姓名（工号）";
             // 
             // label7
             // 
@@ -210,21 +227,85 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(93, 249);
+            this.label7.Location = new System.Drawing.Point(63, 289);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(49, 20);
+            this.label7.Size = new System.Drawing.Size(149, 20);
             this.label7.TabIndex = 4;
-            this.label7.Text = "工号";
+            this.label7.Text = "机器编号(吨位)";
             // 
-            // txt_EmployeeID
+            // txt_Machine
             // 
-            this.txt_EmployeeID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_EmployeeID.Font = new System.Drawing.Font("宋体", 15F);
-            this.txt_EmployeeID.Location = new System.Drawing.Point(238, 244);
-            this.txt_EmployeeID.Name = "txt_EmployeeID";
-            this.txt_EmployeeID.ReadOnly = true;
-            this.txt_EmployeeID.Size = new System.Drawing.Size(348, 30);
-            this.txt_EmployeeID.TabIndex = 0;
+            this.txt_Machine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Machine.Font = new System.Drawing.Font("宋体", 15F);
+            this.txt_Machine.Location = new System.Drawing.Point(278, 284);
+            this.txt_Machine.Name = "txt_Machine";
+            this.txt_Machine.ReadOnly = true;
+            this.txt_Machine.Size = new System.Drawing.Size(407, 30);
+            this.txt_Machine.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("宋体", 15F);
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(113, 243);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 20);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "版本";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("宋体", 15F);
+            this.label8.ForeColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(93, 151);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(89, 20);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "型腔穴数";
+            // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("宋体", 15F);
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(93, 197);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(89, 20);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "报价周期";
+            // 
+            // txt_MouldOutput
+            // 
+            this.txt_MouldOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_MouldOutput.Font = new System.Drawing.Font("宋体", 15F);
+            this.txt_MouldOutput.Location = new System.Drawing.Point(278, 146);
+            this.txt_MouldOutput.Name = "txt_MouldOutput";
+            this.txt_MouldOutput.Size = new System.Drawing.Size(407, 30);
+            this.txt_MouldOutput.TabIndex = 8;
+            // 
+            // txt_PlanCycle
+            // 
+            this.txt_PlanCycle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_PlanCycle.Font = new System.Drawing.Font("宋体", 15F);
+            this.txt_PlanCycle.Location = new System.Drawing.Point(278, 192);
+            this.txt_PlanCycle.Name = "txt_PlanCycle";
+            this.txt_PlanCycle.Size = new System.Drawing.Size(407, 30);
+            this.txt_PlanCycle.TabIndex = 9;
+            this.txt_PlanCycle.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_PlanCycle_KeyPress);
+            // 
+            // txt_Version
+            // 
+            this.txt_Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Version.Font = new System.Drawing.Font("宋体", 15F);
+            this.txt_Version.Location = new System.Drawing.Point(278, 238);
+            this.txt_Version.Name = "txt_Version";
+            this.txt_Version.Size = new System.Drawing.Size(407, 30);
+            this.txt_Version.TabIndex = 10;
             // 
             // label4
             // 
@@ -232,7 +313,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("宋体", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(383, 82);
+            this.label4.Location = new System.Drawing.Point(382, 82);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(225, 35);
             this.label4.TabIndex = 17;
@@ -269,10 +350,16 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txt_EmployeeName;
+        private System.Windows.Forms.TextBox txt_Employee;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox txt_EmployeeID;
+        private System.Windows.Forms.TextBox txt_Machine;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txt_MouldOutput;
+        private System.Windows.Forms.TextBox txt_PlanCycle;
+        private System.Windows.Forms.TextBox txt_Version;
     }
 }

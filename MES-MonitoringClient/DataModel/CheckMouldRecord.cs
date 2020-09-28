@@ -18,6 +18,8 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("MachineStatusLogID")]
         public string MachineStatusLogID { get; set; }
 
+        [BsonElement("MachineCode")]
+        public string MachineCode { get; set; }
 
         [BsonElement("MouldCode")]
         public string MouldCode { get; set; }
@@ -34,6 +36,22 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("EmployeeName")]
         public string EmployeeName { get; set; }
 
+        //版本
+        [BsonElement("Version")]
+        public string Version { get; set; }
+
+        //型腔穴数
+        [BsonElement("MouldOutput")]
+        public string MouldOutput { get; set; }
+
+        //机台吨位
+        [BsonElement("MachineTonnage")]
+        public string MachineTonnage { get; set; }
+
+        //报价周期
+        [BsonElement("PlanCycle")]
+        public decimal PlanCycle { get; set; }
+
         [BsonElement("CheckMouldLog")]
         public List<CheckMouldLog> CheckMouldLog { get; set; }
     }
@@ -47,5 +65,9 @@ namespace MES_MonitoringClient.DataModel
 
         [BsonElement("ProduceCycle")]
         public decimal ProduceCycle { get; set; }
+
+        //差异周期
+        [BsonElement("DifferenceCycle")]
+        public decimal DifferenceCycle { get; set; }
     }
 }
