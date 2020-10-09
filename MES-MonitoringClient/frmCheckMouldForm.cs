@@ -109,7 +109,7 @@ namespace MES_MonitoringClient
                     ShowErrorMessage("请输入版本", "保存失败");
                     return;
                 }
-                //保存试模记录
+                //保存首产记录
                 CheckMouldRecord = new DataModel.CheckMouldRecord();
                 CheckMouldRecord.MouldCode = this.txt_MouldCode.Text.Trim();
                 CheckMouldRecord.ProductCode = this.txt_ProductCode.Text.Trim();

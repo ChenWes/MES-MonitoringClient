@@ -2131,7 +2131,7 @@ namespace MES_MonitoringClient
                         frmCheckMouldForm.ShowDialog();
                         if(frmCheckMouldForm.CheckMouldRecord==null)
                         {
-                            throw new Exception("试模状态需要输入试模信息");
+                            throw new Exception("试模状态需要输入首产信息");
                         }
                     }
                         //如果选择的机器状态是[生产中]
@@ -2441,7 +2441,7 @@ namespace MES_MonitoringClient
                             frmCheckMouldForm.ShowDialog();
                             if (frmCheckMouldForm.CheckMouldRecord == null)
                             {
-                                throw new Exception("试模状态需要输入试模信息");
+                                throw new Exception("试模状态需要输入首产信息");
                             }
                         }
                         //暂停工单
@@ -2517,7 +2517,7 @@ namespace MES_MonitoringClient
                                 frmCheckMouldForm.ShowDialog();
                                 if (frmCheckMouldForm.CheckMouldRecord == null)
                                 {
-                                    throw new Exception("试模状态需要输入试模信息");
+                                    throw new Exception("试模状态需要输入首产信息");
                                 }
                             }
                             //清空所有的工单

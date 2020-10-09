@@ -1734,7 +1734,7 @@
             this.lab_MouldCodeEmp.Name = "lab_MouldCodeEmp";
             this.lab_MouldCodeEmp.Size = new System.Drawing.Size(27, 64);
             this.lab_MouldCodeEmp.TabIndex = 2;
-            this.lab_MouldCodeEmp.Text = "试模员";
+            this.lab_MouldCodeEmp.Text = "首产员";
             // 
             // tableLayoutPanel37
             // 

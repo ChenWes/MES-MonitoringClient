@@ -317,7 +317,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(225, 35);
             this.label4.TabIndex = 17;
-            this.label4.Text = "试模资料录入";
+            this.label4.Text = "首产资料录入";
             // 
             // frmCheckMouldForm
             // 
