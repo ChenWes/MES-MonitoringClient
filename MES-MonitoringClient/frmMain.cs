@@ -2498,43 +2498,41 @@ namespace MES_MonitoringClient
             {
                 if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
                 {
-                    frmCompleteJobOrder newfrmScanRFID = new frmCompleteJobOrder();
-                  
-                    newfrmScanRFID.JobOrderList = mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList;
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.StopJobOrder;
+                    newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.finishJobOrder;
                     newfrmScanRFID.ShowDialog();
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
                     {
-                        //清空所有工单
-                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara != null)
+                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
+                        frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
+                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
                         {
-                            if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
-                            frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
-                            if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
+                            frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                            frmCheckMouldForm.machine = MC_Machine;
+                            frmCheckMouldForm.ShowDialog();
+                            if (frmCheckMouldForm.CheckMouldRecord == null)
                             {
-                                frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
-                                frmCheckMouldForm.machine = MC_Machine;
-                                frmCheckMouldForm.ShowDialog();
-                                if (frmCheckMouldForm.CheckMouldRecord == null)
-                                {
-                                    throw new Exception("试模状态需要输入首产信息");
-                                }
+                                throw new Exception("试模状态需要输入首产信息");
                             }
-                            //清空所有的工单
-                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.selectJobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
-                            //更新状态，状态来自于机器状态选择窗体
-                            mc_MachineStatusHander.ChangeStatus(
-                                newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusID,
-                                newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode,
-                                newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusName,
-                                newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusDesc,
-                                newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusColor,
+                        }
+                        //清空工单
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList,newfrmScanRFID.MC_EmployeeInfo._id);
 
-                                newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
-                                newfrmScanRFID.MC_EmployeeInfo._id
-                                );
-                            //增加试模记录
-                            if (frmCheckMouldForm.CheckMouldRecord != null)
+                        //更新状态，状态来自于机器状态选择窗体
+                        mc_MachineStatusHander.ChangeStatus(
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusID,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusName,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusDesc,
+                            newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusColor,
+
+                            newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
+                            newfrmScanRFID.MC_EmployeeInfo._id
+                            );
+                        //增加试模记录
+                        if (frmCheckMouldForm.CheckMouldRecord != null)
                         {
                                 frmCheckMouldForm.CheckMouldRecord.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
                             //增加记录
@@ -2546,15 +2544,6 @@ namespace MES_MonitoringClient
                         mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds = 0;
                         mc_MachineStatusHander.mc_MachineProduceStatusHandler._MachineProcedureListForCount = new List<Common.MachineProcedure>();
                         ifShowCheckMould();
-
-                            
-                        }
-                        else
-                        {
-                            //清空选择的工单
-                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.selectJobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
-                        }
-                       
                     }
                 }
                 else
@@ -2695,9 +2684,32 @@ namespace MES_MonitoringClient
                 int jobOrderIndex = 0;
                 int.TryParse(b1.Tag.ToString(), out jobOrderIndex);
 
-             
-                //切换当前工单（显示）
-                mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex,true);
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID== mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList[jobOrderIndex].JobOrderID)
+                {
+                    frmScanRFID newfrmScanRFID = new frmScanRFID();
+                    //有多张工单，完成一张工单，不需更改机器状态
+                    if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList.Count > 1)
+                    {
+                        //newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.;
+                        newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.SelectOneToFinish;
+                        newfrmScanRFID.JobOrder = mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder.JobOrderID;
+                        newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.SelectOneToFinish;
+                        newfrmScanRFID.ShowDialog();
+                        if (!newfrmScanRFID.MC_IsManualCancel)
+                        {
+                            List<DataModel.JobOrder> jobOrders = new List<DataModel.JobOrder>();
+                            jobOrders.Add(mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder);
+                            //清空工单
+                            mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(jobOrders, newfrmScanRFID.MC_EmployeeInfo._id);
+                        }
+                    }
+                   
+                }
+                else
+                {
+                    //切换当前工单（显示）
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.ChangeCurrentProcessJobOrder(jobOrderIndex,true);
+                }
                 
             }
             catch (Exception ex)
