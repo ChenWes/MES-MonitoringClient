@@ -9,30 +9,30 @@ using System.Threading.Tasks;
 
 namespace MES_MonitoringClient.EntityHelper
 {
-    public class QCCheckHelper
+    public class DefectiveTypeHelper
     {
         /// <summary>
         /// 获取所有的QC项
         /// </summary>
         /// <returns></returns>
-        public static List<DataModel.QCCheck> GetAllQCCheck()
+        public static List<DataModel.DefectiveType> GetAllQCCheck()
         {
             try
             {
-                string jobpositionCollection = Common.ConfigFileHandler.GetAppConfig("QCCheckCollectionName");
+                string DefectiveTypeCollection = Common.ConfigFileHandler.GetAppConfig("DefectiveTypeCollectionName");
 
-                var collection = Common.MongodbHandler.GetInstance().GetCollection(jobpositionCollection);
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(DefectiveTypeCollection);
                 var newfilter = Builders<BsonDocument>.Filter.Exists("_id", true);
 
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
 
                 if (getdocument != null)
                 {
-                    List<DataModel.QCCheck> qCChecks = new List<DataModel.QCCheck>();
+                    List<DataModel.DefectiveType> qCChecks = new List<DataModel.DefectiveType>();
 
                     foreach (var item in getdocument)
                     {
-                        qCChecks.Add(BsonSerializer.Deserialize<DataModel.QCCheck>(item));
+                        qCChecks.Add(BsonSerializer.Deserialize<DataModel.DefectiveType>(item));
                     }
 
                     return qCChecks;

@@ -31,6 +31,7 @@ namespace MES_MonitoringService
         public static string MC_WorkshopResponsiblePersonCollectionName= Common.ConfigFileHandler.GetAppConfig("WorkshopResponsiblePersonCollectionName");
         public static string MC_MachineResponsiblePersonCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineResponsiblePersonCollectionName");
         public static string MC_EmployeeWorkScheduleCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeWorkScheduleCollectionName");
+        public static string MC_DefectiveTypeCollectionName = Common.ConfigFileHandler.GetAppConfig("DefectiveTypeCollectionName");
 
         public enum SyncDataType
         {
@@ -53,7 +54,8 @@ namespace MES_MonitoringService
             JobOrder,
             WorkshopResponsiblePerson,
             MachineResponsiblePerson,
-            EmployeeWorkSchedule
+            EmployeeWorkSchedule,
+            DefectiveType
         }
 
         /// <summary>
@@ -216,7 +218,12 @@ namespace MES_MonitoringService
                     return SyncDataDBHandler.SyncData_DBHandler(MC_EmployeeWorkScheduleCollectionName, dataJson, id, action);
                     #endregion
                 }
-
+                else if (type == SyncDataType.DefectiveType.ToString())
+                {
+                    #region 员工排班正常处理
+                    return SyncDataDBHandler.SyncData_DBHandler(MC_DefectiveTypeCollectionName, dataJson, id, action);
+                    #endregion
+                }
                 return true;
             }
             catch (Exception ex)

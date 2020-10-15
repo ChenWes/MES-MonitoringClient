@@ -41,8 +41,8 @@ namespace MES_MonitoringClient.DataModel
     }
     public class QCCheckCount
     {
-        [BsonElement("QCCheckID")]
-        public string QCCheckID { get; set; }
+        [BsonElement("DefectiveTypeID")]
+        public string DefectiveTypeID { get; set; }
 
         [BsonElement("count")]
         public int Count { get; set; }

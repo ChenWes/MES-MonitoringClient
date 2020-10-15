@@ -131,7 +131,7 @@
     <Compile Include="DataModel\Customer.cs" />
     <Compile Include="DataModel\EmployeeWorkSchedule.cs" />
     <Compile Include="DataModel\NowWorkShift.cs" />
-    <Compile Include="DataModel\QCCheck.cs" />
+    <Compile Include="DataModel\DefectiveType.cs" />
     <Compile Include="DataModel\QCRecord.cs" />
     <Compile Include="DataModel\WorkshopResponsiblePerson.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
@@ -185,7 +185,7 @@
     <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
     <Compile Include="DataModel\SyncData.cs" />
-    <Compile Include="EntityHelper\QCCheckHelper.cs" />
+    <Compile Include="EntityHelper\DefectiveTypeHelper.cs" />
     <Compile Include="frmAttend.cs">
       <SubType>Form</SubType>
     </Compile>

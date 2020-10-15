@@ -22,10 +22,12 @@ namespace MES_MonitoringClient
         List<Button> addButtons10 = new List<Button>();
         List<Button> subButtons1 = new List<Button>();
         List<Button> subButtons10 = new List<Button>();
+        List<Label> labelCodeList = new List<Label>();
         public DataModel.JobOrder currentJobOrder = null;
         public List<DataModel.QCCheckCount> QCCheckCounts = new List<DataModel.QCCheckCount>();
         public int errorCount = 0;
-        List<DataModel.QCCheck> QCChecks = null;
+        List<DataModel.DefectiveType> DefectiveType = null;
+        Panel panel;
         /*主窗口方法*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -52,7 +54,7 @@ namespace MES_MonitoringClient
                 if (value > 0)
                 {
                     DataModel.QCCheckCount QCCheckCount = new DataModel.QCCheckCount();
-                    QCCheckCount.QCCheckID = QCChecks[textBoxes.IndexOf(item)]._id;
+                    QCCheckCount.DefectiveTypeID = DefectiveType[textBoxes.IndexOf(item)]._id;
                     QCCheckCount.Count = value;
                     QCCheckCounts.Add(QCCheckCount);
                 }
@@ -77,21 +79,49 @@ namespace MES_MonitoringClient
                 this.lab_Count.Text = (machineProcessLog.ProduceCount - machineProcessLog.ErrorCount).ToString();
             }
             //获取所有QC项
-            QCChecks = EntityHelper.QCCheckHelper.GetAllQCCheck();
-            if (QCChecks != null)
+            DefectiveType = EntityHelper.DefectiveTypeHelper.GetAllQCCheck().OrderBy(t => t.DefectiveTypeCode).ToList();
+
+            if (DefectiveType != null)
             {
-                foreach (var item in QCChecks)
+                foreach (var item in DefectiveType)
                 {
-                    Label label = new Label();
-                    label.Anchor = System.Windows.Forms.AnchorStyles.Right;
-                    label.AutoSize = true;
-                    label.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-                    label.ForeColor = System.Drawing.Color.White;
-                    label.Text = item.code + "(" + item.desc + ")";
-                    tlp_QCCheck.Controls.Add(label);
+                    panel = new Panel();
+                    panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+                    panel.Dock = System.Windows.Forms.DockStyle.Fill;
+                    tlp_QCCheck.Controls.Add(panel);
+
+                    Label labelCode = new Label();
+                    labelCode.BackColor = Color.Green;
+                    labelCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+                    labelCode.AutoSize = true;
+                    labelCode.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    labelCode.ForeColor = System.Drawing.Color.White;
+                    labelCode.Text = item.DefectiveTypeCode ;
+                    labelCodeList.Add(labelCode);
+                    Label labelName = new Label();
+                    labelName.Anchor = (System.Windows.Forms.AnchorStyles.Right| System.Windows.Forms.AnchorStyles.Top);
+                    labelName.AutoSize = true;
+                    labelName.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    labelName.ForeColor = System.Drawing.Color.LightGray;
+                    labelName.Text =  item.DefectiveTypeName ;
+                    TableLayoutPanel labelTableLayoutPanel = new TableLayoutPanel();
+                    //outTableLayoutPanel.BackColor = Color.Gray;
+                    labelTableLayoutPanel.ColumnCount = 2;
+                    labelTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    labelTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    labelTableLayoutPanel.Controls.Add(labelCode, 0, 0);
+                    labelTableLayoutPanel.Controls.Add(labelName, 1, 0);
+                    labelTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+                    labelTableLayoutPanel.RowCount = 1;
+                    labelTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+                   
+                  
+
                     //文本框
                     TextBox textBox = new TextBox();
                     textBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+                    textBox.BackColor = Color.LightGray;
+                    textBox.MaxLength = 7;
                     textBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
                     textBox.Anchor = System.Windows.Forms.AnchorStyles.None;
                     textBox.Font = new System.Drawing.Font("宋体", 13.5F);
@@ -102,16 +132,16 @@ namespace MES_MonitoringClient
                     textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
                     textBoxes.Add(textBox);
                     //按钮
-                    Button subButton10 = addButton("-10");
+                    Button subButton10 = addButton("<<");
                     subButtons10.Add(subButton10);
                     subButton10.Click += new System.EventHandler(btnAdd_click);
-                    Button subButton1 = addButton("-1");
+                    Button subButton1 = addButton("<");
                     subButtons1.Add(subButton1);
                     subButton1.Click += new System.EventHandler(btnAdd_click);
-                    Button addButton1 = addButton("+1");
+                    Button addButton1 = addButton(">");
                     addButtons1.Add(addButton1);
                     addButton1.Click += new System.EventHandler(btnAdd_click);
-                    Button addButton10 = addButton("+10");
+                    Button addButton10 = addButton(">>");
                     addButtons10.Add(addButton10);
                     addButton10.Click += new System.EventHandler(btnAdd_click);
                     TableLayoutPanel tableLayoutPanel = new TableLayoutPanel();
@@ -129,9 +159,18 @@ namespace MES_MonitoringClient
                     tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
                     tableLayoutPanel.RowCount = 1;
                     tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-                    tlp_QCCheck.Controls.Add(tableLayoutPanel);
-                }
 
+                    TableLayoutPanel outTableLayoutPanel = new TableLayoutPanel();
+                    outTableLayoutPanel.ColumnCount = 1;
+                    outTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+                    outTableLayoutPanel.Controls.Add(labelTableLayoutPanel, 0, 0);
+                    outTableLayoutPanel.Controls.Add(tableLayoutPanel, 0, 1);
+                    outTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+                    outTableLayoutPanel.RowCount = 2;
+                    outTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    outTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+                    panel.Controls.Add(outTableLayoutPanel);
+                }
             }
 
         }
@@ -150,6 +189,10 @@ namespace MES_MonitoringClient
             {
                 int value = 0;
                 int.TryParse(textBoxes[addIndex1].Text, out value);
+                if (value + 1 > 9999999)
+                {
+                    return;
+                }
                 textBoxes[addIndex1].Text =(value+1).ToString();
             }
             //+10
@@ -157,6 +200,10 @@ namespace MES_MonitoringClient
             {
                 int value = 0;
                 int.TryParse(textBoxes[addIndex10].Text, out value);
+                if (value + 10 > 9999999)
+                {
+                    return;
+                }
                 textBoxes[addIndex10].Text = (value + 10).ToString();
             }
             //-1
@@ -209,15 +256,21 @@ namespace MES_MonitoringClient
         private void textBox_TextChanged(object sender, EventArgs e)
         {
             TextBox textBox = (TextBox)sender;
+            int index = textBoxes.IndexOf(textBox);
+            
             int nowValue = 0;
             int.TryParse(textBox.Text, out nowValue);
             if (nowValue > 0)
             {
-                textBox.ForeColor = Color.Red;
+                labelCodeList[index].BackColor = Color.Red;
+                textBox.ForeColor = Color.OrangeRed ;
+                textBox.BackColor = Color.White;
             }
             else
             {
+                labelCodeList[index].BackColor = Color.Green;
                 textBox.ForeColor = Color.Black;
+                textBox.BackColor = Color.LightGray;
             }
             //计数总数
             foreach (var item in textBoxes)
@@ -255,15 +308,19 @@ namespace MES_MonitoringClient
                 this.btn_Confirm.Enabled = true;
             }
         }
+        //添加按钮
         private Button addButton(string text)
         {
             Button button = new Button();
-            button.Size = new System.Drawing.Size(40, 26);
-            button.Anchor = System.Windows.Forms.AnchorStyles.None;
-            button.UseVisualStyleBackColor = true;
-            button.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            button.Margin = new System.Windows.Forms.Padding(0);
+            button.Dock = System.Windows.Forms.DockStyle.Fill;
+            button.FlatAppearance.BorderSize = 0;
+            button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            button.ForeColor = System.Drawing.Color.Gray;
             button.Text = text;
+            button.Margin = new System.Windows.Forms.Padding(0);
+           // button.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            button.Size = new System.Drawing.Size(50, 30);
+            button.UseVisualStyleBackColor = true;
             return button;
         }
     }

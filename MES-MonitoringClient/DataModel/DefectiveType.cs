@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 namespace MES_MonitoringClient.DataModel
 {
     [BsonIgnoreExtraElements]
-    public class QCCheck
+    public class DefectiveType
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
 
-        [BsonElement("code")]
-        public string code{ get; set; }
+        [BsonElement("DefectiveTypeCode")]
+        public string DefectiveTypeCode{ get; set; }
 
-        [BsonElement("desc")]
-        public string desc { get; set; }
+        [BsonElement("DefectiveTypeName")]
+        public string DefectiveTypeName { get; set; }
 
    
     }

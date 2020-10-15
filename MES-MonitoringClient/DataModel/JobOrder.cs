@@ -96,6 +96,8 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("MachineAcceptLog")]
         public List<string> MachineAcceptLog { get; set; }
 
+        [BsonElement("sumErrorCount")]
+        public int sumErrorCount { get; set; }      
 
         public override string getCollectionName()
         {

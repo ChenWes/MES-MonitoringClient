@@ -819,6 +819,8 @@ namespace MES_MonitoringClient.Common
 
                     //更新到工单列表中
                     int currentIndex = ProcessJobOrderList.FindIndex(i => i._id == CurrentProcessJobOrder._id);
+                    var sumErrorCount = CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+                    CurrentProcessJobOrder.sumErrorCount = sumErrorCount;
                     ProcessJobOrderList[currentIndex] = CurrentProcessJobOrder;
 
                     //保存至数据库中

@@ -40,11 +40,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lab_Count = new System.Windows.Forms.Label();
             this.tlp_QCCheck = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.lab_ErrorCount = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tlp_QCCheck.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -162,33 +164,44 @@
             // 
             // tlp_QCCheck
             // 
-            this.tlp_QCCheck.ColumnCount = 6;
-            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.15131F));
-            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.18202F));
-            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.15131F));
-            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.18202F));
-            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.15131F));
-            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.18202F));
-            this.tlp_QCCheck.Controls.Add(this.label3, 4, 11);
-            this.tlp_QCCheck.Controls.Add(this.lab_ErrorCount, 5, 11);
+            this.tlp_QCCheck.ColumnCount = 4;
+            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlp_QCCheck.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlp_QCCheck.Controls.Add(this.tableLayoutPanel3, 3, 9);
             this.tlp_QCCheck.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlp_QCCheck.Location = new System.Drawing.Point(3, 3);
             this.tlp_QCCheck.Name = "tlp_QCCheck";
-            this.tlp_QCCheck.RowCount = 12;
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
-            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.333335F));
+            this.tlp_QCCheck.RowCount = 10;
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.tlp_QCCheck.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tlp_QCCheck.Size = new System.Drawing.Size(1072, 622);
             this.tlp_QCCheck.TabIndex = 1;
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this.label3, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.lab_ErrorCount, 1, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(807, 561);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(262, 58);
+            this.tableLayoutPanel3.TabIndex = 0;
             // 
             // label3
             // 
@@ -196,7 +209,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("宋体", 15F);
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(780, 581);
+            this.label3.Location = new System.Drawing.Point(59, 19);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(69, 20);
             this.label3.TabIndex = 0;
@@ -208,7 +221,7 @@
             this.lab_ErrorCount.AutoSize = true;
             this.lab_ErrorCount.Font = new System.Drawing.Font("宋体", 15F);
             this.lab_ErrorCount.ForeColor = System.Drawing.Color.White;
-            this.lab_ErrorCount.Location = new System.Drawing.Point(855, 581);
+            this.lab_ErrorCount.Location = new System.Drawing.Point(134, 19);
             this.lab_ErrorCount.Name = "lab_ErrorCount";
             this.lab_ErrorCount.Size = new System.Drawing.Size(19, 20);
             this.lab_ErrorCount.TabIndex = 1;
@@ -232,7 +245,8 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.tlp_QCCheck.ResumeLayout(false);
-            this.tlp_QCCheck.PerformLayout();
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -249,6 +263,7 @@
         private System.Windows.Forms.Label lab_JobOrder;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lab_Count;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lab_ErrorCount;
     }
