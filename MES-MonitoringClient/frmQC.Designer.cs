@@ -33,21 +33,21 @@
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lab_Count = new System.Windows.Forms.Label();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.dgv_DefectiveType = new System.Windows.Forms.DataGridView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lab_JobOrder = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.btn_Cancel = new MES_MonitoringClient.Common.Component.CircularButton();
             this.btn_Confirm = new MES_MonitoringClient.Common.Component.CircularButton();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lab_Count = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lab_JobOrder = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.dgv_DefectiveType = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
@@ -96,6 +96,31 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1072, 74);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
+            // btn_Cancel
+            // 
+            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
+            this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Cancel.Location = new System.Drawing.Point(54, 3);
+            this.btn_Cancel.Name = "btn_Cancel";
+            this.btn_Cancel.Size = new System.Drawing.Size(70, 68);
+            this.btn_Cancel.TabIndex = 7;
+            this.btn_Cancel.UseVisualStyleBackColor = true;
+            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
+            // 
+            // btn_Confirm
+            // 
+            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
+            this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Confirm.Enabled = false;
+            this.btn_Confirm.Location = new System.Drawing.Point(946, 3);
+            this.btn_Confirm.Name = "btn_Confirm";
+            this.btn_Confirm.Size = new System.Drawing.Size(70, 68);
+            this.btn_Confirm.TabIndex = 7;
+            this.btn_Confirm.UseVisualStyleBackColor = true;
+            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
+            // 
             // label2
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -119,6 +144,26 @@
             this.lab_Count.Size = new System.Drawing.Size(99, 20);
             this.lab_Count.TabIndex = 11;
             this.lab_Count.Text = "lab_Count";
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(580, 27);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(129, 20);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "不良品总计：";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(715, 27);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(19, 20);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "8";
             // 
             // tableLayoutPanel4
             // 
@@ -145,61 +190,17 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(1072, 54);
             this.tableLayoutPanel4.TabIndex = 2;
             // 
-            // label4
+            // label6
             // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("宋体", 15F);
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(722, 17);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(129, 20);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "疵品类型编号";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Font = new System.Drawing.Font("宋体", 15F);
-            this.textBox1.Location = new System.Drawing.Point(857, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(101, 30);
-            this.textBox1.TabIndex = 1;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.button1.Font = new System.Drawing.Font("宋体", 15F);
-            this.button1.Location = new System.Drawing.Point(964, 13);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(97, 27);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "编号筛选";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // dgv_DefectiveType
-            // 
-            this.dgv_DefectiveType.BackgroundColor = System.Drawing.Color.White;
-            this.dgv_DefectiveType.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_DefectiveType.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_DefectiveType.Location = new System.Drawing.Point(3, 63);
-            this.dgv_DefectiveType.Name = "dgv_DefectiveType";
-            this.dgv_DefectiveType.RowTemplate.Height = 23;
-            this.dgv_DefectiveType.Size = new System.Drawing.Size(1072, 562);
-            this.dgv_DefectiveType.TabIndex = 3;
-            this.dgv_DefectiveType.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_DefectiveType_CellClick);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(56, 17);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 20);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "工单：";
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(356, 17);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(89, 20);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "质检员：";
             // 
             // lab_JobOrder
             // 
@@ -213,37 +214,49 @@
             this.lab_JobOrder.TabIndex = 10;
             this.lab_JobOrder.Text = "lab_JobOrder";
             // 
-            // label3
+            // label1
             // 
-            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(580, 27);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(129, 20);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "不良品总计：";
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(56, 17);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(69, 20);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "工单：";
             // 
-            // label5
+            // button1
             // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(715, 27);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(19, 20);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "8";
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.button1.Font = new System.Drawing.Font("宋体", 15F);
+            this.button1.Location = new System.Drawing.Point(964, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(97, 27);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "编号筛选";
+            this.button1.UseVisualStyleBackColor = true;
             // 
-            // label6
+            // textBox1
             // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(356, 17);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(89, 20);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "质检员：";
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Font = new System.Drawing.Font("宋体", 15F);
+            this.textBox1.Location = new System.Drawing.Point(857, 12);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(101, 30);
+            this.textBox1.TabIndex = 1;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("宋体", 15F);
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(722, 17);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(129, 20);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "疵品类型编号";
             // 
             // label7
             // 
@@ -257,30 +270,18 @@
             this.label7.TabIndex = 12;
             this.label7.Text = "18001373(叶浩文)";
             // 
-            // btn_Cancel
+            // dgv_DefectiveType
             // 
-            this.btn_Cancel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Cancel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Cancel.BackgroundImage")));
-            this.btn_Cancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Cancel.Location = new System.Drawing.Point(54, 3);
-            this.btn_Cancel.Name = "btn_Cancel";
-            this.btn_Cancel.Size = new System.Drawing.Size(70, 68);
-            this.btn_Cancel.TabIndex = 7;
-            this.btn_Cancel.UseVisualStyleBackColor = true;
-            this.btn_Cancel.Click += new System.EventHandler(this.btn_Cancel_Click);
-            // 
-            // btn_Confirm
-            // 
-            this.btn_Confirm.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_Confirm.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_Confirm.BackgroundImage")));
-            this.btn_Confirm.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btn_Confirm.Enabled = false;
-            this.btn_Confirm.Location = new System.Drawing.Point(946, 3);
-            this.btn_Confirm.Name = "btn_Confirm";
-            this.btn_Confirm.Size = new System.Drawing.Size(70, 68);
-            this.btn_Confirm.TabIndex = 7;
-            this.btn_Confirm.UseVisualStyleBackColor = true;
-            this.btn_Confirm.Click += new System.EventHandler(this.btn_Confirm_Click);
+            this.dgv_DefectiveType.BackgroundColor = System.Drawing.Color.White;
+            this.dgv_DefectiveType.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_DefectiveType.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgv_DefectiveType.Location = new System.Drawing.Point(3, 63);
+            this.dgv_DefectiveType.Name = "dgv_DefectiveType";
+            this.dgv_DefectiveType.RowTemplate.Height = 23;
+            this.dgv_DefectiveType.Size = new System.Drawing.Size(1072, 562);
+            this.dgv_DefectiveType.TabIndex = 3;
+            this.dgv_DefectiveType.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_DefectiveType_CellClick);
+            this.dgv_DefectiveType.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_DefectiveType_CellContentClick);
             // 
             // frmQC
             // 

@@ -35,10 +35,6 @@ namespace MES_MonitoringClient.EntityHelper
                     {
                         i++;
                         qCChecks.Add(BsonSerializer.Deserialize<DataModel.DefectiveType>(item));
-                        if (i == 5)
-                        {
-                            break;
-                        }
                     }
 
                     return qCChecks;

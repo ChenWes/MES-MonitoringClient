@@ -339,8 +339,10 @@ namespace MES_MonitoringClient
             dgv_DefectiveType.AllowUserToAddRows = false;
             dgv_DefectiveType.AllowUserToDeleteRows = false;
             dgv_DefectiveType.ReadOnly = true;
+            dgv_DefectiveType.AllowUserToResizeColumns = false;
+            dgv_DefectiveType.AllowUserToResizeRows = false;
             // 列手工排序
-            dgv_DefectiveType.AllowUserToOrderColumns = true;
+            // dgv_DefectiveType.AllowUserToOrderColumns = true;
             // 列头系统样式，设置为false，自定义才生效
             dgv_DefectiveType.EnableHeadersVisualStyles = false;
             // 列头高度大小模式
@@ -357,7 +359,7 @@ namespace MES_MonitoringClient
             // 列头前景色
             dgv_DefectiveType.ColumnHeadersDefaultCellStyle.ForeColor = ColorTranslator.FromHtml("#FFFFFF");
             // 列宽自适应
-            dgv_DefectiveType.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+           // dgv_DefectiveType.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             // 网格线颜色
             dgv_DefectiveType.GridColor = ColorTranslator.FromHtml("#000000");
             // 背景色
@@ -380,8 +382,8 @@ namespace MES_MonitoringClient
             // 隔行背景色
             dgv_DefectiveType.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromHtml("#F2F2F2");
             // 行高自适应
-           // dgv_DefectiveType.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.;                
-
+            // dgv_DefectiveType.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.;                
+           
 
             //选择模式为整行选择
             dgv_DefectiveType.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -408,6 +410,19 @@ namespace MES_MonitoringClient
             defectiveTypeName_Column.DataPropertyName = "DefectiveTypeName";
             dgv_DefectiveType.Columns.Add(defectiveTypeName_Column);
 
+            DataGridViewButtonColumn btn_Sub10 = new DataGridViewButtonColumn();
+            btn_Sub10.Name = "btn_Sub10";
+            btn_Sub10.HeaderText = "-10";
+            btn_Sub10.DefaultCellStyle.NullValue = "<<";
+            dgv_DefectiveType.Columns.Add(btn_Sub10);
+
+            DataGridViewButtonColumn btn_Sub = new DataGridViewButtonColumn();
+            btn_Sub.Name = "btn_Sub";
+            btn_Sub.HeaderText = "-1";
+            btn_Sub.DefaultCellStyle.NullValue = "<";
+            dgv_DefectiveType.Columns.Add(btn_Sub);
+
+
             DataGridViewTextBoxColumn count_Column = new DataGridViewTextBoxColumn();
             count_Column.HeaderText = "数量";
             //count_Column.Width = 200;
@@ -415,10 +430,26 @@ namespace MES_MonitoringClient
             dgv_DefectiveType.Columns.Add(count_Column);
 
 
-         
-            //dgv_DefectiveType.BeginEdit(true);
+            DataGridViewButtonColumn btn_Add = new DataGridViewButtonColumn();
+            btn_Add.Name = "btn_Add";
+            btn_Add.HeaderText = "修改";
+            btn_Add.DefaultCellStyle.NullValue = ">";
+            dgv_DefectiveType.Columns.Add(btn_Add);
 
+            DataGridViewButtonColumn btn_Add10 = new DataGridViewButtonColumn();
+            btn_Add10.Name = "btn_Add10";
+            btn_Add10.HeaderText = "+10";
+            btn_Add10.DefaultCellStyle.NullValue = ">>";
+            dgv_DefectiveType.Columns.Add(btn_Add10);
 
+            dgv_DefectiveType.Columns[0].FillWeight = 8;
+            dgv_DefectiveType.Columns[1].FillWeight = 18;
+            dgv_DefectiveType.Columns[2].FillWeight = 32;
+            dgv_DefectiveType.Columns[3].FillWeight = 8;
+            dgv_DefectiveType.Columns[4].FillWeight = 8;
+            dgv_DefectiveType.Columns[5].FillWeight = 10;
+            dgv_DefectiveType.Columns[6].FillWeight = 8;
+            dgv_DefectiveType.Columns[7].FillWeight = 8;
         }
 
         private void dgv_DefectiveType_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -427,7 +458,7 @@ namespace MES_MonitoringClient
             {
                 return;
             }
-            if (e.ColumnIndex == 3)
+            if (e.ColumnIndex == 5)
             {
                 dgv_DefectiveType.ReadOnly = false;
                 dgv_DefectiveType.EditMode = DataGridViewEditMode.EditOnEnter;
@@ -435,6 +466,77 @@ namespace MES_MonitoringClient
             else
             {
                 dgv_DefectiveType.ReadOnly = true;
+            }
+        }
+
+        private void dgv_DefectiveType_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            if (e.RowIndex == -1)
+            {
+                return;
+            }
+            //-10
+            if (e.ColumnIndex == 3)
+            {
+                if(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value != null)
+                {
+                    int value = 0;
+                    int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
+                    if (value - 10 >= 0)
+                    {
+                        dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value - 10;
+                    }
+                    else
+                    {
+                        dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = "0";
+                    }
+                }
+            }
+            //-1
+            else if(e.ColumnIndex == 4)
+            {
+                if (dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value != null)
+                {
+                    int value = 0;
+                    int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
+                    if (value - 1>= 0)
+                    {
+                        dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value - 1;
+                    }
+                    else
+                    {
+                        dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = "0";
+                    }
+                }
+            }
+            //+1
+            else if(e.ColumnIndex == 6)
+            {
+                if (dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value != null)
+                {
+                    int value = 0;
+                    int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
+                    dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value + 1;
+                }
+                else
+                {
+                    dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value =  1;
+                }
+            }
+            //+10
+            else if (e.ColumnIndex == 7)
+            {
+                if (dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value != null)
+                {
+                    int value = 0;
+                    int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
+                    dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value + 10;
+                }
+                else
+                {
+                    dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = 10;
+                }
             }
         }
     }
