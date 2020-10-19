@@ -30,9 +30,15 @@ namespace MES_MonitoringClient.EntityHelper
                 {
                     List<DataModel.DefectiveType> qCChecks = new List<DataModel.DefectiveType>();
 
+                    int i = 0;
                     foreach (var item in getdocument)
                     {
+                        i++;
                         qCChecks.Add(BsonSerializer.Deserialize<DataModel.DefectiveType>(item));
+                        if (i == 5)
+                        {
+                            break;
+                        }
                     }
 
                     return qCChecks;
