@@ -92,6 +92,9 @@ namespace MES_MonitoringService.Model
         [BsonElement("MouldLifecycle")]
         public int MouldLifecycle { get; set; }
 
+        [BsonElement("SumErrorCount")]
+        public int SumErrorCount { get; set; }
+
         public JobOrder_JSON(Model.JobOrder jobOrder)
         {
             _id = jobOrder._id;
@@ -140,6 +143,7 @@ namespace MES_MonitoringService.Model
             Sort = jobOrder.Sort;
             ServiceDepartment = jobOrder.ServiceDepartment;
             MouldLifecycle = jobOrder.MouldLifecycle;
+            SumErrorCount = jobOrder.SumErrorCount;
         }
 
 

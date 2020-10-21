@@ -26,8 +26,12 @@ namespace MES_MonitoringClient
         public DataModel.JobOrder currentJobOrder = null;
         public List<DataModel.QCCheckCount> QCCheckCounts = new List<DataModel.QCCheckCount>();
         public int errorCount = 0;
+        //全部
         List<DataModel.DefectiveType> DefectiveType = null;
-        Panel panel;
+        //筛选
+        List<DataModel.DefectiveType> defectiveTypes = null;
+        DataGridViewTextBoxEditingControl CellEdit = null;
+        public DataModel.Employee employee = null;
         /*主窗口方法*/
         /*---------------------------------------------------------------------------------------*/
 
@@ -36,29 +40,21 @@ namespace MES_MonitoringClient
             InitializeComponent();
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-          
-           
-        }
-
+ 
         private void btn_Confirm_Click(object sender, EventArgs e)
         {
             //总数
-          //  int.TryParse(this.lab_ErrorCount.Text, out errorCount);
+            //  int.TryParse(this.lab_ErrorCount.Text, out errorCount);
             //保存大于0的项
-            foreach (var item in textBoxes)
+            for (int i = 0; i < DefectiveType.Count; i++)
             {
-                int value = 0;
-                int.TryParse(item.Text, out value);
-                if (value > 0)
+                if (DefectiveType[i].count>0)
                 {
                     DataModel.QCCheckCount QCCheckCount = new DataModel.QCCheckCount();
-                    QCCheckCount.DefectiveTypeID = DefectiveType[textBoxes.IndexOf(item)]._id;
-                    QCCheckCount.Count = value;
+                    QCCheckCount.DefectiveTypeID = DefectiveType[i]._id;
+                    QCCheckCount.Count = DefectiveType[i].count;
                     QCCheckCounts.Add(QCCheckCount);
                 }
-                
             }
             this.Close();
            
@@ -79,255 +75,21 @@ namespace MES_MonitoringClient
             {
                 this.lab_Count.Text = (machineProcessLog.ProduceCount - machineProcessLog.ErrorCount).ToString();
             }
+            if (employee != null)
+            {
+                this.lab_employee.Text = employee.EmployeeName + "(" + employee.EmployeeCode + ")";
+            }
             //获取所有QC项
             DefectiveType = EntityHelper.DefectiveTypeHelper.GetAllQCCheck().OrderBy(t => t.DefectiveTypeCode).ToList();
 
             for(int i = 0; i < DefectiveType.Count; i++)
             {
+                DefectiveType[i].count = 0;
                 DefectiveType[i].sort = i + 1;
             }
+            defectiveTypes = new List<DataModel.DefectiveType>();
+            defectiveTypes = DefectiveType;
             this.dgv_DefectiveType.DataSource = DefectiveType;
-            /* if (DefectiveType != null)
-             {
-                 foreach (var item in DefectiveType)
-                 {
-                     panel = new Panel();
-                     panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-                     panel.Dock = System.Windows.Forms.DockStyle.Fill;
-                    // tlp_QCCheck.Controls.Add(panel);
-
-                     Label labelCode = new Label();
-                     labelCode.BackColor = Color.Green;
-                     labelCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-                     labelCode.AutoSize = true;
-                     labelCode.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-                     labelCode.ForeColor = System.Drawing.Color.White;
-                     labelCode.Text = item.DefectiveTypeCode ;
-                     labelCodeList.Add(labelCode);
-                     Label labelName = new Label();
-                     labelName.Anchor = (System.Windows.Forms.AnchorStyles.Right| System.Windows.Forms.AnchorStyles.Top);
-                     labelName.AutoSize = true;
-                     labelName.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-                     labelName.ForeColor = System.Drawing.Color.LightGray;
-                     labelName.Text =  item.DefectiveTypeName ;
-                     TableLayoutPanel labelTableLayoutPanel = new TableLayoutPanel();
-                     //outTableLayoutPanel.BackColor = Color.Gray;
-                     labelTableLayoutPanel.ColumnCount = 2;
-                     labelTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-                     labelTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-                     labelTableLayoutPanel.Controls.Add(labelCode, 0, 0);
-                     labelTableLayoutPanel.Controls.Add(labelName, 1, 0);
-                     labelTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-                     labelTableLayoutPanel.RowCount = 1;
-                     labelTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-
-
-
-                     //文本框
-                     TextBox textBox = new TextBox();
-                     textBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-                     textBox.BackColor = Color.LightGray;
-                     textBox.MaxLength = 7;
-                     textBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-                     textBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-                     textBox.Font = new System.Drawing.Font("宋体", 13.5F);
-                     textBox.Size = new System.Drawing.Size(200, 35);
-                     textBox.Margin = new System.Windows.Forms.Padding(0);
-                     textBox.Text = "0";
-                     textBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
-                    // textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
-                     textBoxes.Add(textBox);
-                     //按钮
-                     Button subButton10 = addButton("<<");
-                     subButtons10.Add(subButton10);
-                     subButton10.Click += new System.EventHandler(btnAdd_click);
-                     Button subButton1 = addButton("<");
-                     subButtons1.Add(subButton1);
-                     subButton1.Click += new System.EventHandler(btnAdd_click);
-                     Button addButton1 = addButton(">");
-                     addButtons1.Add(addButton1);
-                     addButton1.Click += new System.EventHandler(btnAdd_click);
-                     Button addButton10 = addButton(">>");
-                     addButtons10.Add(addButton10);
-                     addButton10.Click += new System.EventHandler(btnAdd_click);
-                     TableLayoutPanel tableLayoutPanel = new TableLayoutPanel();
-                     tableLayoutPanel.ColumnCount = 5;
-                     tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-                     tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-                     tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-                     tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-                     tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-                     tableLayoutPanel.Controls.Add(subButton10, 0, 0);
-                     tableLayoutPanel.Controls.Add(subButton1, 1, 0);
-                     tableLayoutPanel.Controls.Add(textBox, 2, 0);
-                     tableLayoutPanel.Controls.Add(addButton1, 3, 0);
-                     tableLayoutPanel.Controls.Add(addButton10, 4, 0);
-                     tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-                     tableLayoutPanel.RowCount = 1;
-                     tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-
-                     TableLayoutPanel outTableLayoutPanel = new TableLayoutPanel();
-                     outTableLayoutPanel.ColumnCount = 1;
-                     outTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-                     outTableLayoutPanel.Controls.Add(labelTableLayoutPanel, 0, 0);
-                     outTableLayoutPanel.Controls.Add(tableLayoutPanel, 0, 1);
-                     outTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-                     outTableLayoutPanel.RowCount = 2;
-                     outTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-                     outTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-                     panel.Controls.Add(outTableLayoutPanel);
-                 }
-             }*/
-
-        }
-        private void btnAdd_click(object sender, System.EventArgs e)
-        {
-
-            //将触发此事件的对象转换为该Button对象
-            Button b1 = (Button)sender;
-            int subIndex10 = subButtons10.IndexOf(b1);
-            int subIndex1 = subButtons1.IndexOf(b1);
-            int addIndex1 = addButtons1.IndexOf(b1);
-            int addIndex10= addButtons10.IndexOf(b1);
-            
-            //+1
-            if (addIndex1 >= 0)
-            {
-                int value = 0;
-                int.TryParse(textBoxes[addIndex1].Text, out value);
-                if (value + 1 > 9999999)
-                {
-                    return;
-                }
-                textBoxes[addIndex1].Text =(value+1).ToString();
-            }
-            //+10
-            else if (addIndex10 >= 0)
-            {
-                int value = 0;
-                int.TryParse(textBoxes[addIndex10].Text, out value);
-                if (value + 10 > 9999999)
-                {
-                    return;
-                }
-                textBoxes[addIndex10].Text = (value + 10).ToString();
-            }
-            //-1
-            else if (subIndex1 >= 0)
-            {
-                int value = 0;
-                int.TryParse(textBoxes[subIndex1].Text, out value);
-                textBoxes[subIndex1].Text = (value-1).ToString();
-                int.TryParse(textBoxes[subIndex1].Text, out value);
-                if (value < 0)
-                {
-                    textBoxes[subIndex1].Text = "0";
-                }
-            }
-            //-10
-            else
-            {
-                int value = 0;
-                int.TryParse(textBoxes[subIndex10].Text, out value);
-                textBoxes[subIndex10].Text = (value - 10).ToString();
-                int.TryParse(textBoxes[subIndex10].Text, out value);
-                if (value < 0)
-                {
-                    textBoxes[subIndex10].Text = "0";
-                }
-
-            }
-            
-        }
-
-        /// <summary>
-        /// 只能输入数字
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            char ch = e.KeyChar;
-
-            if (!Char.IsDigit(ch) && ch != 8)
-            {
-                e.Handled = true;
-            }
-        }
-        /// <summary>
-        /// 计数总数
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-      /*  private void textBox_TextChanged(object sender, EventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            int index = textBoxes.IndexOf(textBox);
-            
-            int nowValue = 0;
-            int.TryParse(textBox.Text, out nowValue);
-            if (nowValue > 0)
-            {
-                labelCodeList[index].BackColor = Color.Red;
-                textBox.ForeColor = Color.OrangeRed ;
-                textBox.BackColor = Color.White;
-            }
-            else
-            {
-                labelCodeList[index].BackColor = Color.Green;
-                textBox.ForeColor = Color.Black;
-                textBox.BackColor = Color.LightGray;
-            }
-            //计数总数
-            foreach (var item in textBoxes)
-            {
-                int value = 0;
-                int.TryParse(item.Text, out value);
-                errorCount = 0;
-                int.TryParse(lab_ErrorCount.Text, out errorCount);
-                if (textBoxes.IndexOf(item) == 0)
-                {
-                    this.lab_ErrorCount.Text =  value.ToString();
-                }
-                else{
-                    this.lab_ErrorCount.Text = (errorCount+value).ToString();
-                }
-            }
-            errorCount = 0;
-            int.TryParse(lab_ErrorCount.Text, out errorCount);
-            //良品数
-            int count = 0;
-            int.TryParse(lab_Count.Text, out count);
-            if (errorCount > count)
-            {
-                this.lab_ErrorCount.ForeColor = Color.Red;
-                this.btn_Confirm.Enabled = false;
-            }
-            else if (errorCount == 0)
-            {
-                this.lab_ErrorCount.ForeColor = System.Drawing.Color.White;
-                this.btn_Confirm.Enabled = false;
-            }
-            else
-            {
-                this.lab_ErrorCount.ForeColor = System.Drawing.Color.White;
-                this.btn_Confirm.Enabled = true;
-            }
-        }*/
-        //添加按钮
-        private Button addButton(string text)
-        {
-            Button button = new Button();
-            button.Dock = System.Windows.Forms.DockStyle.Fill;
-            button.FlatAppearance.BorderSize = 0;
-            button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            button.ForeColor = System.Drawing.Color.Gray;
-            button.Text = text;
-            button.Margin = new System.Windows.Forms.Padding(0);
-           // button.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            button.Size = new System.Drawing.Size(50, 30);
-            button.UseVisualStyleBackColor = true;
-            return button;
         }
         /// <summary>
         /// 设置页面样式
@@ -422,17 +184,16 @@ namespace MES_MonitoringClient
             btn_Sub.DefaultCellStyle.NullValue = "<";
             dgv_DefectiveType.Columns.Add(btn_Sub);
 
-
+            
             DataGridViewTextBoxColumn count_Column = new DataGridViewTextBoxColumn();
             count_Column.HeaderText = "数量";
-            //count_Column.Width = 200;
-            count_Column.Name = "textBoxe";
+            //count_Column.DataPropertyName = "count";
             dgv_DefectiveType.Columns.Add(count_Column);
 
 
             DataGridViewButtonColumn btn_Add = new DataGridViewButtonColumn();
             btn_Add.Name = "btn_Add";
-            btn_Add.HeaderText = "修改";
+            btn_Add.HeaderText = "+1";
             btn_Add.DefaultCellStyle.NullValue = ">";
             dgv_DefectiveType.Columns.Add(btn_Add);
 
@@ -452,6 +213,7 @@ namespace MES_MonitoringClient
             dgv_DefectiveType.Columns[7].FillWeight = 8;
         }
 
+        //可编辑文本
         private void dgv_DefectiveType_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex == -1)
@@ -469,6 +231,7 @@ namespace MES_MonitoringClient
             }
         }
 
+        //+1按钮事件
         private void dgv_DefectiveType_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -485,11 +248,15 @@ namespace MES_MonitoringClient
                     int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
                     if (value - 10 >= 0)
                     {
+                        DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = value - 10;
                         dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value - 10;
+                        
                     }
                     else
                     {
+                        DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = 0;
                         dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = "0";
+                       
                     }
                 }
             }
@@ -502,11 +269,15 @@ namespace MES_MonitoringClient
                     int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
                     if (value - 1>= 0)
                     {
+                        DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = value - 1;
                         dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value - 1;
+                       
                     }
                     else
                     {
+                        DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = 0;
                         dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = "0";
+                      
                     }
                 }
             }
@@ -517,11 +288,19 @@ namespace MES_MonitoringClient
                 {
                     int value = 0;
                     int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
+                    if (value >= 999999)
+                    {
+                        return;
+                    }
+                    DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = value + 1;
                     dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value + 1;
+                  
                 }
                 else
                 {
+                    DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = 1;
                     dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value =  1;
+                    
                 }
             }
             //+10
@@ -531,12 +310,168 @@ namespace MES_MonitoringClient
                 {
                     int value = 0;
                     int.TryParse(dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value.ToString(), out value);
+                    if (value+10 > 999999)
+                    {
+                        DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = 999999;
+                        dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = 999999;
+                       
+                        return;
+                    }
+                    DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = value + 10;
                     dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = value + 10;
+                    
                 }
                 else
                 {
+                    DefectiveType[(int)dgv_DefectiveType.Rows[e.RowIndex].Cells[0].Value - 1].count = 10;
                     dgv_DefectiveType.Rows[e.RowIndex].Cells[5].Value = 10;
+                    
                 }
+            }
+        }
+
+        //单元格更改事件
+        private void dgv_DefectiveType_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            int count = 0;
+            foreach (var item in DefectiveType)
+            {
+                count = count + item.count;
+            }
+            errorCount = count;
+            this.lab_errorCount.Text = count.ToString();
+            //验证不良品数量
+            checkErrorCount();
+        }
+
+        //单元格编辑事件
+        private void dgv_DefectiveType_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (dgv_DefectiveType.CurrentCellAddress.X == 5)//获取当前处于活动状态的单元格索引
+            {
+                //解绑之前单元格
+                if (CellEdit != null)
+                {
+                    CellEdit.KeyPress -= Cells_KeyPress; //解绑
+                    CellEdit.TextChanged -= Cells_TextChanged;
+                }
+                CellEdit = (DataGridViewTextBoxEditingControl)e.Control;
+                //CellEdit.SelectAll();
+                CellEdit.KeyPress += Cells_KeyPress; //绑定事件
+                CellEdit.TextChanged += Cells_TextChanged;
+               
+            }
+        }
+
+        //自定义键盘事件
+        private void Cells_KeyPress(object sender, KeyPressEventArgs e) 
+        {
+            if (dgv_DefectiveType.CurrentCellAddress.X == 5)//获取当前处于活动状态的单元格索引
+            {
+                char ch = e.KeyChar;
+
+                if (!Char.IsDigit(ch) && ch != 8)
+                {
+                  
+                    e.Handled = true;
+                   
+                }
+            }
+        }
+
+        //自定义更改事件
+        private void Cells_TextChanged(object sender, EventArgs e)
+        {
+            if (dgv_DefectiveType.CurrentCellAddress.X == 5)//获取当前处于活动状态的单元格索引
+            {
+                TextBox textBox = (TextBox)sender;
+                int textBoxValue = 0;
+                int.TryParse(textBox.Text, out textBoxValue);
+                if (textBoxValue > 999999)
+                {
+                    textBox.Text = "999999";
+                    textBoxValue = 999999;
+                }
+                DefectiveType[(int)dgv_DefectiveType.Rows[dgv_DefectiveType.CurrentCellAddress.Y].Cells[0].Value - 1].count = textBoxValue;
+                int count = 0;
+                foreach(var item in DefectiveType)
+                {
+                    count = count + item.count;
+                }
+                errorCount = count;
+                this.lab_errorCount.Text = count.ToString();
+
+                checkErrorCount();
+            }
+        }
+        //验证不良品数量
+        private void checkErrorCount()
+        {
+            int sum_count = 0;
+            int.TryParse(lab_Count.Text, out sum_count);
+            if (errorCount > sum_count)
+            {
+                this.lab_errorCount.ForeColor = Color.Red;
+                this.btn_Confirm.Enabled = false;
+            }
+            else if (errorCount == 0)
+            {
+                this.lab_errorCount.ForeColor = System.Drawing.Color.White;
+                this.btn_Confirm.Enabled = false;
+            }
+            else
+            {
+                this.lab_errorCount.ForeColor = System.Drawing.Color.White;
+                this.btn_Confirm.Enabled = true;
+            }
+        }
+
+        private void txt_code_TextChanged(object sender, EventArgs e)
+        {
+            this.btn_Check.Text = "核对";
+            defectiveTypes = new List<DataModel.DefectiveType>();
+            foreach (var item in DefectiveType)
+            {
+                if (item.DefectiveTypeCode.ToUpper().IndexOf(this.txt_code.Text.ToUpper()) != -1)
+                {
+                    defectiveTypes.Add(item);
+                }
+            }
+            this.dgv_DefectiveType.DataSource = defectiveTypes;
+            initCount();
+        }
+        //给数量赋初始值
+        private void initCount()
+        {
+            for(int i = 0; i < dgv_DefectiveType.RowCount; i++)
+            {
+                dgv_DefectiveType.Rows[i].Cells[5].Value = DefectiveType[(int)dgv_DefectiveType.Rows[i].Cells[0].Value - 1].count;
+            }
+        }
+
+        private void btn_Check_Click(object sender, EventArgs e)
+        {
+           ;
+            if (this.btn_Check.Text == "核对")
+            {
+                this.btn_Check.Text = "返回";
+                List<DataModel.DefectiveType> checkDefectiveType = new List<DataModel.DefectiveType>();
+                foreach (var item in DefectiveType)
+                {
+                    if (item.count>0)
+                    {
+                        checkDefectiveType.Add(item);
+                    }
+                }
+                this.dgv_DefectiveType.DataSource = checkDefectiveType;
+                initCount();
+
+            }
+            else
+            {
+                this.btn_Check.Text = "核对";
+                this.dgv_DefectiveType.DataSource = defectiveTypes;
+                initCount();
             }
         }
     }

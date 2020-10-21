@@ -515,6 +515,7 @@ namespace MES_MonitoringClient
                             QCTime = DateTime.Now;
                             frmQC frmQC = new frmQC();
                             frmQC.currentJobOrder = currentJobOrder;
+                            frmQC.employee = employee;
                             frmQC.ShowDialog();
                             QCCheckCounts = frmQC.QCCheckCounts;
                             errorCount = frmQC.errorCount;

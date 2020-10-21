@@ -18,7 +18,7 @@ namespace MES_MonitoringClient.DataModel
 
         public int sort { get; set; }
         
-
+        public int count { get; set; }
 
         [BsonElement("DefectiveTypeCode")]
         public string DefectiveTypeCode{ get; set; }

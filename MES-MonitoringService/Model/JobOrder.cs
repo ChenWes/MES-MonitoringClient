@@ -94,6 +94,9 @@ namespace MES_MonitoringService.Model
         [BsonElement("MouldLifecycle")]
         public int MouldLifecycle { get; set; }
 
+        [BsonElement("SumErrorCount")]
+        public int SumErrorCount { get; set; }
+
 
         public override string getCollectionName()
         {
