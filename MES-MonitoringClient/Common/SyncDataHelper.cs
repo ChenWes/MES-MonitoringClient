@@ -26,6 +26,7 @@ namespace MES_MonitoringClient.Common
         public static string MC_WorkshopResponsiblePersonCollectionName = Common.ConfigFileHandler.GetAppConfig("WorkshopResponsiblePersonCollectionName");
         public static string MC_MachineResponsiblePersonCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineResponsiblePersonCollectionName");
         public static string MC_EmployeeWorkScheduleCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeWorkScheduleCollectionName");
+        public static string MC_DefectiveTypeCollectionName = Common.ConfigFileHandler.GetAppConfig("DefectiveTypeCollectionName");
         /// <summary>
         /// 基础表同步
         /// </summary>
@@ -87,7 +88,9 @@ namespace MES_MonitoringClient.Common
 
                 //员工排班
                 SyncDataDBHelper.SyncData_Process(MC_EmployeeWorkScheduleCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "EmployeeWorkScheduleList"));
-                
+
+                //疵品类型
+                SyncDataDBHelper.SyncData_Process(MC_DefectiveTypeCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "DefectiveType"));
 
                 TimeSpan timeSpan = System.DateTime.Now - startTime;
                 Common.LogHandler.WriteLog("首次同步总运行时间：" + timeSpan.TotalSeconds.ToString());
