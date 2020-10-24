@@ -533,8 +533,8 @@
             this.txt_RejectsCount.Name = "txt_RejectsCount";
             this.txt_RejectsCount.Size = new System.Drawing.Size(159, 26);
             this.txt_RejectsCount.TabIndex = 2;
-            this.txt_RejectsCount.TextChanged += new System.EventHandler(this.txt_RejectsCount_TextChanged);
-            this.txt_RejectsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_RejectsCount_KeyPress);
+            //this.txt_RejectsCount.TextChanged += new System.EventHandler(this.txt_RejectsCount_TextChanged);
+            //this.txt_RejectsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_RejectsCount_KeyPress);
             // 
             // label16
             // 

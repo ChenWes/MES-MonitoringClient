@@ -806,7 +806,7 @@ namespace MES_MonitoringClient.Common
         /// 界面输入不良品数量
         /// </summary>
         /// <param name="rejectProductCount"></param>
-        public bool SettingProductErrorCount(int intProductErrorCount)
+        public bool SettingProductErrorCount(int intProductErrorCount,DateTime QCTime)
         {
             if (CurrentProcessJobOrder != null)
             {
@@ -826,7 +826,7 @@ namespace MES_MonitoringClient.Common
                     //保存至数据库中
                     JobOrderHelper.UpdateJobOrder(CurrentProcessJobOrder, false);
                     //处理不良品
-                    UpdateErrorCount(findMachineProcessLog, intProductErrorCount);
+                    UpdateErrorCount(findMachineProcessLog, intProductErrorCount, QCTime);
                     //更新未完成数量（一起更新良品数量）
                     SettingMachineNoCompleteCount();
                 }
@@ -1531,23 +1531,31 @@ namespace MES_MonitoringClient.Common
             return employeeProductionTimeLists;
         }
         //更新不良品
-        private void UpdateErrorCount(DataModel.JobOrder_MachineProcessLog jobOrder_MachineProcessLog, int count)
+        public void UpdateErrorCount(DataModel.JobOrder_MachineProcessLog jobOrder_MachineProcessLog, int count,DateTime QCTime)
         {
             try
             {
                 //找到当前工单生产记录Id
                 List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByProcessID(jobOrder_MachineProcessLog._id, CurrentProcessJobOrder._id);
                 int errorCount = 0;
-                //最后记录不算
-                for (int i = 0; i < machineProductions.Count - 1; i++)
+                DataModel.MachineProduction machineProduction = new DataModel.MachineProduction();
+                //找到QC时生产记录
+                for (int i = 0; i < machineProductions.Count; i++)
                 {
-                    errorCount = errorCount + machineProductions[i].JobOrderProductionLog[machineProductions[i].JobOrderProductionLog.Count - 1].ErrorCount;
+                    if(machineProductions[i].StartDateTime.ToLocalTime()<QCTime&& machineProductions[i].EndDateTime.ToLocalTime() >= QCTime)
+                    {
+                        machineProduction = machineProductions[i];
+                    }
+                    else
+                    {
+                        errorCount = errorCount + machineProductions[i].JobOrderProductionLog[machineProductions[i].JobOrderProductionLog.Count - 1].ErrorCount;
+                    }
                 }
+                //新的不良品
                 errorCount = count - errorCount;
-                //更新最后一条记录
+                //更新QC时对应的生产记录
                 if (machineProductions.Count > 0)
                 {
-                    DataModel.MachineProduction machineProduction = machineProductions[machineProductions.Count - 1];
                     //最后一条生产记录的不良品数
                     machineProduction.JobOrderProductionLog[machineProduction.JobOrderProductionLog.Count - 1].ErrorCount = errorCount;
                     machineProduction.ErrorCount = 0;

@@ -2018,12 +2018,12 @@ namespace MES_MonitoringClient
         /*文本框事件*/
         /*---------------------------------------------------------------------------------------*/
 
-        /// <summary>
+        /*/// <summary>
         /// 不良品只能输入数字
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txt_RejectsCount_KeyPress(object sender, KeyPressEventArgs e)
+       private void txt_RejectsCount_KeyPress(object sender, KeyPressEventArgs e)
         {
             char ch = e.KeyChar;
 
@@ -2031,10 +2031,10 @@ namespace MES_MonitoringClient
             {
                 e.Handled = true;
             }
-        }
+        }*/
 
 
-        /// <summary>
+        /*/// <summary>
         /// 不良品==》修改
         /// </summary>
         /// <param name="sender"></param>
@@ -2072,7 +2072,7 @@ namespace MES_MonitoringClient
             {
                 txt_RejectsCount.Text = "";
             }
-        }
+        }*/
 
 
         /*菜单按钮事件*/
@@ -3083,6 +3083,8 @@ namespace MES_MonitoringClient
                     int value = 0;
                     int.TryParse(this.txt_RejectsCount.Text, out value);
                     this.txt_RejectsCount.Text = (value + newfrmScanRFID.errorCount).ToString();
+                    //更新工单和生产数不良品
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.SettingProductErrorCount(value + newfrmScanRFID.errorCount, newfrmScanRFID.QCTime);
                 }
             }
             else
