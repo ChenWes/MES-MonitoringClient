@@ -21,6 +21,7 @@ namespace MES_MonitoringClient
         public DataModel.CheckMouldRecord CheckMouldRecord = null;
         public DataModel.Employee Employee = null;
         public DataModel.Machine machine = null;
+        public string MouldCode = "";
 
 
 
@@ -33,6 +34,7 @@ namespace MES_MonitoringClient
         {
             this.StartPosition = FormStartPosition.CenterScreen;
             this.WindowState = FormWindowState.Maximized;
+            this.txt_MouldCode.Text = MouldCode;
             if (Employee != null)
             {
                 this.txt_Employee.Text = Employee.EmployeeName + "(" + Employee.EmployeeCode + ")";

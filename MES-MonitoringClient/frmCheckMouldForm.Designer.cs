@@ -153,6 +153,7 @@
             this.txt_MouldCode.Font = new System.Drawing.Font("宋体", 15F);
             this.txt_MouldCode.Location = new System.Drawing.Point(278, 8);
             this.txt_MouldCode.Name = "txt_MouldCode";
+            this.txt_MouldCode.ReadOnly = true;
             this.txt_MouldCode.Size = new System.Drawing.Size(407, 30);
             this.txt_MouldCode.TabIndex = 2;
             // 
