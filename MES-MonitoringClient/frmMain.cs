@@ -2444,12 +2444,21 @@ namespace MES_MonitoringClient
                         frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
                         {
-                            frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
-                            frmCheckMouldForm.machine = MC_Machine;
-                            frmCheckMouldForm.ShowDialog();
-                            if (frmCheckMouldForm.CheckMouldRecord == null)
+                            string str = Microsoft.VisualBasic.Interaction.InputBox("请输入模具编号", "提示", "");
+                            if (str.Trim().Length == 0)
                             {
-                                throw new Exception("试模状态需要输入首产信息");
+                                throw new Exception("试模状态需要先输入模具编号");
+                            }
+                            if (str.Length >= 2 && str.Substring(0, 2).ToUpper() == "FH")
+                            {
+                                frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                                frmCheckMouldForm.MouldCode = str.ToUpper();
+                                frmCheckMouldForm.machine = MC_Machine;
+                                frmCheckMouldForm.ShowDialog();
+                                if (frmCheckMouldForm.CheckMouldRecord == null)
+                                {
+                                    throw new Exception("试模状态需要输入首产信息");
+                                }
                             }
                         }
                         //暂停工单
@@ -2517,12 +2526,21 @@ namespace MES_MonitoringClient
                         frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
                         {
-                            frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
-                            frmCheckMouldForm.machine = MC_Machine;
-                            frmCheckMouldForm.ShowDialog();
-                            if (frmCheckMouldForm.CheckMouldRecord == null)
+                            string str = Microsoft.VisualBasic.Interaction.InputBox("请输入模具编号", "提示", "");
+                            if (str.Trim().Length == 0)
                             {
-                                throw new Exception("试模状态需要输入首产信息");
+                                throw new Exception("试模状态需要先输入模具编号");
+                            }
+                            if (str.Length >= 2 && str.Substring(0, 2).ToUpper() == "FH")
+                            {
+                                frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                                frmCheckMouldForm.MouldCode = str.ToUpper();
+                                frmCheckMouldForm.machine = MC_Machine;
+                                frmCheckMouldForm.ShowDialog();
+                                if (frmCheckMouldForm.CheckMouldRecord == null)
+                                {
+                                    throw new Exception("试模状态需要输入首产信息");
+                                }
                             }
                         }
                         //清空工单
