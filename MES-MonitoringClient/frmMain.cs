@@ -199,17 +199,16 @@ namespace MES_MonitoringClient
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNondefectiveCountDelegate += UpdateMachineNondefectiveCount;//良品更新方法（良品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateMachineNoCompleteCountDelegate += UpdateMachineNoCompletedCount;//未完成产品数量更新方法（未完成产品数量）
                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.ShowJobOrderBasicInfoDelegate += ShowJobOrderBiaisInfo;//显示工单基本信息
+                frmMain.mc_MachineStatusHander.mc_MachineProduceStatusHandler.UpdateQRCodeDelegate += UpdateQRCode;//更新二维码
 
                 //显示机器名称                
                 CheckMachineRegister();
                 //获取饼图
                 mc_MachineStatusHander.ShowStatusPieChart();
-
-
-             
                 //初始化最后一次机器状态
                 mc_MachineStatusHander.GetLatestMachineStatusLog();
 
+               
               
                 //打开端口
                 if (!serialPort6.IsOpen)
@@ -262,7 +261,7 @@ namespace MES_MonitoringClient
 
                 if (MC_Machine != null)
                 {
-                   
+                    ifShowCheckMould();
                     //显示最后一次工单信息
                     ShowLastJobOrderBiaisInfo(0);
                     //增加记录
@@ -814,6 +813,67 @@ namespace MES_MonitoringClient
         }
 
         /// <summary>
+        /// 更新二维码委托
+        /// </summary>
+        delegate void UpdateQRCodeDelegate();
+        private void UpdateQRCode()
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new UpdateQRCodeDelegate(UpdateQRCode));
+            }
+            else
+            {
+                bool havaRecord = false;
+                if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID != null)
+                {
+                    DataModel.CheckMouldRecord checkMouldRecord = Common.CheckMouldRecordHandle.QueryCheckMouldRecord(mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID);
+                    if (checkMouldRecord != null)
+                    {
+                        if (checkMouldRecord.CheckMouldLog != null)
+                        {
+                            havaRecord = true;
+                            DataModel.CheckMouldLog checkMouldLog = checkMouldRecord.CheckMouldLog.FindLast(t => true);
+                            DataModel.CheckMouldRecordDisplay checkMouldRecordDisplay = new DataModel.CheckMouldRecordDisplay();
+                            checkMouldRecordDisplay.EmployeeID = checkMouldRecord.EmployeeID;
+                            checkMouldRecordDisplay.EmployeeName = checkMouldRecord.EmployeeName;
+                            checkMouldRecordDisplay.MouldCode = checkMouldRecord.MouldCode;
+                            checkMouldRecordDisplay.ProductCode = checkMouldRecord.ProductCode;
+                            checkMouldRecordDisplay.PlanCount = checkMouldRecord.PlanCount;
+                            checkMouldRecordDisplay.ProduceTime = checkMouldLog.ProduceTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"); ;
+                            checkMouldRecordDisplay.Beer = checkMouldLog.Beer;
+                            checkMouldRecordDisplay.ProduceCycle = checkMouldLog.ProduceCycle;
+                            if (checkMouldLog.DifferenceCycle < 0)
+                            {
+                                checkMouldRecordDisplay.DifferenceCycle = "-"+checkMouldLog.DifferenceCycle;
+                            }
+                            else
+                            {
+                                checkMouldRecordDisplay.DifferenceCycle = "+"+checkMouldLog.DifferenceCycle;
+                            }
+                           
+                            checkMouldRecordDisplay.MachineCode = checkMouldRecord.MachineCode;
+                            checkMouldRecordDisplay.MachineTonnage = checkMouldRecord.MachineTonnage;
+                            checkMouldRecordDisplay.PlanCycle = checkMouldRecord.PlanCycle;
+                            checkMouldRecordDisplay.Version = checkMouldRecord.Version;
+                            checkMouldRecordDisplay.MouldOutput = checkMouldRecord.MouldOutput;
+                            string data = JsonConvert.SerializeObject(checkMouldRecordDisplay);
+                            this.txt_CProductTotalCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
+                            this.txt_CNondefectiveCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
+                            this.pictureBoxCode.Image = Common.QRCoder.QRCodeEncoderUtil(data, checkMouldRecordDisplay.ProduceTime, 10);
+
+
+                        }
+                    }
+                }
+                if (!havaRecord)
+                {
+                    this.pictureBoxCode.Image = null;
+                }
+
+            }
+        }
+        /// <summary>
         /// 发送信号及接收信号状态灯委托
         /// </summary>
         private delegate void SetStatusLightDelegate();
@@ -1170,6 +1230,107 @@ namespace MES_MonitoringClient
                 btn_StatusLight.ForeColor = Common.CommonFunction.getReverseForeColor(btn_StatusLight.BackColor);
 
                 #endregion
+            }
+        }
+        ///<summary>
+        ///判断是不是试模，并更新界面
+        /// </summary>
+        private void ifShowCheckMould()
+        {
+            this.tableLayoutPanel33.Controls.Clear();
+            this.tableLayoutPanel34.Controls.Remove(this.pictureBoxMouldCode);
+            this.tableLayoutPanel34.Controls.Remove(this.pictureBoxEmp);
+            this.tableLayoutPanel34.Controls.Remove(this.label27);
+            this.tableLayoutPanel34.Controls.Remove(this.lab_MouldCodeEmp);
+            this.tableLayoutPanel34.Controls.Remove(this.label21);
+            this.tableLayoutPanel34.Controls.Remove(this.lab_MouldCodeEmpName);
+            this.tableLayoutPanel13.Controls.Remove(this.txt_MaterialCode);
+            this.tableLayoutPanel13.Controls.Remove(this.txt_ProductCode);
+            this.tableLayoutPanel14.Controls.Remove(this.txt_MouldCode);
+            this.tableLayoutPanel14.Controls.Remove(this.txt_CMouldCode);
+            this.tableLayoutPanel22.Controls.Remove(this.txt_ProductTotalCount);
+            this.tableLayoutPanel22.Controls.Remove(this.txt_CProductTotalCount);
+            this.tableLayoutPanel25.Controls.Remove(this.txt_WorkOrderCount);
+            this.tableLayoutPanel25.Controls.Remove(this.txt_CWorkOrderCount);
+            this.tableLayoutPanel31.Controls.Remove(this.txt_CNondefectiveCount);
+            this.tableLayoutPanel31.Controls.Remove(this.txt_NondefectiveCount);
+            //判断是不是试模
+            if (mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
+            {
+                UpdateQRCode();
+                this.tableLayoutPanel33.Controls.Add(this.pictureBoxCode, 0, 0);
+                DataModel.MachineStatusLog latestMachineStatusLog = Common.MachineStatusLogHelper.GetLatestMachineStatusLog();
+                if (latestMachineStatusLog != null)
+                {
+                    DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(latestMachineStatusLog.CardID);
+                    if (employee != null)
+                    {
+                        if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
+                        {
+                            pictureBoxMouldCode.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                        }
+                        else
+                        {
+                            pictureBoxMouldCode.Image = null;
+                        }
+                        this.lab_MouldCodeEmpName.Text = employee.EmployeeName;
+                    }
+                    else
+                    {
+                        pictureBoxMouldCode.Image = null;
+                    }
+                }
+                if(mc_MachineStatusHander!=null&& mc_MachineStatusHander.mc_MachineProduceStatusHandler != null)
+                {
+                    DataModel.CheckMouldRecord checkMouldRecord = Common.CheckMouldRecordHandle.QueryCheckMouldRecord(mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID);
+                    if (checkMouldRecord != null)
+                    {
+                        this.txt_ProductCode.Text = checkMouldRecord.ProductCode;
+                        this.txt_CMouldCode.Text = checkMouldRecord.MouldCode;
+                        this.txt_CWorkOrderCount.Text = checkMouldRecord.PlanCount.ToString();
+                        if (checkMouldRecord.CheckMouldLog != null)
+                        {
+                            this.txt_CProductTotalCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
+                            this.txt_CNondefectiveCount.Text = checkMouldRecord.CheckMouldLog.Count.ToString();
+                        }
+                        else
+                        {
+                            this.txt_CProductTotalCount.Text = "0";
+                            this.txt_CNondefectiveCount.Text = "0";
+                        }
+                       
+                    }
+                    else
+                    {
+                        this.txt_ProductCode.Text = "";
+                        this.txt_CMouldCode.Text ="";
+                        this.txt_CProductTotalCount.Text = "";
+                        this.txt_CWorkOrderCount.Text = "";
+                        this.txt_CNondefectiveCount.Text = "";
+                    }
+                }
+                this.tableLayoutPanel34.Controls.Add(this.pictureBoxMouldCode,3,1);
+                this.tableLayoutPanel34.Controls.Add(this.lab_MouldCodeEmp, 3, 0);
+                this.tableLayoutPanel34.Controls.Add(this.lab_MouldCodeEmpName, 3, 2);
+                this.tableLayoutPanel13.Controls.Add(this.txt_ProductCode,1,0);
+                this.tableLayoutPanel14.Controls.Add(this.txt_CMouldCode, 1, 0);
+                this.tableLayoutPanel22.Controls.Add(this.txt_CProductTotalCount,1,0);
+                this.tableLayoutPanel25.Controls.Add(this.txt_CWorkOrderCount,1,0);
+                this.tableLayoutPanel31.Controls.Add(this.txt_CNondefectiveCount, 1, 0);
+
+            }
+            else
+            {
+               
+                this.tableLayoutPanel33.Controls.Add(this.circleProgramBar, 0, 0);
+                this.tableLayoutPanel34.Controls.Add(this.pictureBoxEmp, 3, 1);
+                this.tableLayoutPanel34.Controls.Add(this.label27, 3, 0);
+                this.tableLayoutPanel34.Controls.Add(this.label21, 3, 2);
+                this.tableLayoutPanel13.Controls.Add(this.txt_MaterialCode, 1, 0);
+                this.tableLayoutPanel14.Controls.Add(this.txt_MouldCode, 1, 0);
+                this.tableLayoutPanel22.Controls.Add(this.txt_ProductTotalCount, 1, 0);
+                this.tableLayoutPanel25.Controls.Add(this.txt_WorkOrderCount, 1, 0);
+                this.tableLayoutPanel31.Controls.Add(this.txt_NondefectiveCount, 1, 0);
             }
         }
         /// <summary>
@@ -1960,10 +2121,29 @@ namespace MES_MonitoringClient
                     {
                         throw new Exception("用户未选择机器状态");
                     }
+                    frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
+                    if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
+                    {
 
-
-                    //如果选择的机器状态是[生产中]
-                    if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
+                        string str = Microsoft.VisualBasic.Interaction.InputBox("请输入模具编号", "提示", "");
+                        if (str.Trim().Length == 0)
+                        {
+                            throw new Exception("试模状态需要先输入模具编号");
+                        }
+                        if (str.Length>=2&&str.Substring(0, 2).ToUpper() == "FH")
+                        {
+                            frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                            frmCheckMouldForm.MouldCode = str.ToUpper();
+                            frmCheckMouldForm.machine = MC_Machine;
+                            frmCheckMouldForm.ShowDialog();
+                            if (frmCheckMouldForm.CheckMouldRecord == null)
+                            {
+                                throw new Exception("试模状态需要输入首产信息");
+                            }
+                        }
+                    }
+                        //如果选择的机器状态是[生产中]
+                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
                     {
                         //生产中
                         if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList != null && mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList.Count > 0)
@@ -1993,6 +2173,20 @@ namespace MES_MonitoringClient
                         newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                         newfrmScanRFID.MC_EmployeeInfo._id
                         );
+                    //增加试模记录
+                    if (frmCheckMouldForm.CheckMouldRecord != null)
+                    {
+                        frmCheckMouldForm.CheckMouldRecord.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                        //增加记录
+                        Common.CheckMouldRecordHandle checkMouldRecordHandle = new Common.CheckMouldRecordHandle();
+                        checkMouldRecordHandle.SaveClockInRecord(frmCheckMouldForm.CheckMouldRecord);
+                     
+                    }
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.machineStatusCode = newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds = 0;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler._MachineProcedureListForCount = new List<Common.MachineProcedure>();
+                    ifShowCheckMould();
                     showNoEmployee();
                 }
 
@@ -2206,6 +2400,11 @@ namespace MES_MonitoringClient
 							newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
 							newfrmScanRFID.MC_EmployeeInfo._id
 						);
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.machineStatusCode = Common.MachineStatus.eumMachineStatus.Produce.ToString();
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds = 0;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler._MachineProcedureListForCount = new List<Common.MachineProcedure>();
+                    ifShowCheckMould();
                         showNoEmployee();
                     }
 				//}
@@ -2241,8 +2440,27 @@ namespace MES_MonitoringClient
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
                     {
-                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("暂停工单时，机器状态不可选择为[生产中]"); 
-
+                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("暂停工单时，机器状态不可选择为[生产中]");
+                        frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
+                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
+                        {
+                            string str = Microsoft.VisualBasic.Interaction.InputBox("请输入模具编号", "提示", "");
+                            if (str.Trim().Length == 0)
+                            {
+                                throw new Exception("试模状态需要先输入模具编号");
+                            }
+                            if (str.Length >= 2 && str.Substring(0, 2).ToUpper() == "FH")
+                            {
+                                frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                                frmCheckMouldForm.MouldCode = str.ToUpper();
+                                frmCheckMouldForm.machine = MC_Machine;
+                                frmCheckMouldForm.ShowDialog();
+                                if (frmCheckMouldForm.CheckMouldRecord == null)
+                                {
+                                    throw new Exception("试模状态需要输入首产信息");
+                                }
+                            }
+                        }
                         //暂停工单
                         mc_MachineStatusHander.mc_MachineProduceStatusHandler.StopJobOrder();
 
@@ -2257,6 +2475,20 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                             );
+                        //增加试模记录
+                        if (frmCheckMouldForm.CheckMouldRecord != null)
+                        {
+                            frmCheckMouldForm.CheckMouldRecord.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                            //增加记录
+                            Common.CheckMouldRecordHandle checkMouldRecordHandle = new Common.CheckMouldRecordHandle();
+                            checkMouldRecordHandle.SaveClockInRecord(frmCheckMouldForm.CheckMouldRecord);
+                         
+                        }
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.machineStatusCode = newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode;
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds = 0;
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler._MachineProcedureListForCount = new List<Common.MachineProcedure>();
+                        ifShowCheckMould();
                         showNoEmployee();
                     }
                 }
@@ -2291,7 +2523,26 @@ namespace MES_MonitoringClient
                     if (!newfrmScanRFID.MC_IsManualCancel)
                     {
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
-
+                        frmCheckMouldForm frmCheckMouldForm = new frmCheckMouldForm();
+                        if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.CheckMould.ToString())
+                        {
+                            string str = Microsoft.VisualBasic.Interaction.InputBox("请输入模具编号", "提示", "");
+                            if (str.Trim().Length == 0)
+                            {
+                                throw new Exception("试模状态需要先输入模具编号");
+                            }
+                            if (str.Length >= 2 && str.Substring(0, 2).ToUpper() == "FH")
+                            {
+                                frmCheckMouldForm.Employee = newfrmScanRFID.MC_EmployeeInfo;
+                                frmCheckMouldForm.MouldCode = str.ToUpper();
+                                frmCheckMouldForm.machine = MC_Machine;
+                                frmCheckMouldForm.ShowDialog();
+                                if (frmCheckMouldForm.CheckMouldRecord == null)
+                                {
+                                    throw new Exception("试模状态需要输入首产信息");
+                                }
+                            }
+                        }
                         //清空工单
                         mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(mc_MachineStatusHander.mc_MachineProduceStatusHandler.ProcessJobOrderList,newfrmScanRFID.MC_EmployeeInfo._id);
 
@@ -2306,6 +2557,19 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                             );
+                        //增加试模记录
+                        if (frmCheckMouldForm.CheckMouldRecord != null)
+                        {
+                                frmCheckMouldForm.CheckMouldRecord.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                            //增加记录
+                            Common.CheckMouldRecordHandle checkMouldRecordHandle = new Common.CheckMouldRecordHandle();
+                            checkMouldRecordHandle.SaveClockInRecord(frmCheckMouldForm.CheckMouldRecord);
+                        }
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.machineStatusCode = newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode;
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds = 0;
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler._MachineProcedureListForCount = new List<Common.MachineProcedure>();
+                        ifShowCheckMould();
                     }
                 }
                 else
@@ -2365,6 +2629,11 @@ namespace MES_MonitoringClient
                             newfrmScanRFID.MC_EmployeeInfo.EmployeeName,
                             newfrmScanRFID.MC_EmployeeInfo._id
                         );
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.machineStatusCode = Common.MachineStatus.eumMachineStatus.Produce.ToString();
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.MachineStatusLogID = mc_MachineStatusHander.LastOperationMachineStatusLogID;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.LastProductUseMilliseconds = 0;
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler._MachineProcedureListForCount = new List<Common.MachineProcedure>();
+                    ifShowCheckMould();
                     showNoEmployee();
                     }
 				//}
@@ -3057,5 +3326,7 @@ namespace MES_MonitoringClient
             }
            
         }
+
+       
     }
 }

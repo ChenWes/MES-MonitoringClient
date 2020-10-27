@@ -11,7 +11,7 @@ AppId={{F6C5E189-481C-4249-96B0-D30C7E6CB320}
 ;应用名称
 AppName=MES Monitoring Client
 ;应用版本号
-AppVersion=1.2.14
+AppVersion=1.2.16
 ;AppVerName=MES Monitoring Client 1.0
 ;应用发布方
 AppPublisher=广东翠峰机器人科技股份有限公司
@@ -74,7 +74,7 @@ Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newto
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\Newtonsoft.Json.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log4net.xml"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
-
+Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\QRCoder.dll"; DestDir: "{app}\Client"; Flags: ignoreversion; Components:Client
 ;如果有日志，则复制日志，如果没有，则不复制;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringClient\bin\Debug\log.log"; DestDir: "{app}\Client"; Flags: ignoreversion skipifsourcedoesntexist; Components:Service 
 ;Service的文件夹
 ;Source: "D:\report\wes\MES-MonitoringClient\MES-MonitoringService\bin\Debug\*"; DestDir: "{app}\Service"; Flags: ignoreversion recursesubdirs createallsubdirs

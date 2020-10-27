@@ -276,6 +276,9 @@ namespace MES_MonitoringClient.Common
 
                     //更新界面
                     UpdateMachineStatusLightDelegate();
+
+                    mc_MachineProduceStatusHandler.machineStatusCode= latestMachineStatusLog.StatusCode;
+                    mc_MachineProduceStatusHandler.MachineStatusLogID = latestMachineStatusLog.Id.ToString();
                 }
             }
             catch (Exception ex)

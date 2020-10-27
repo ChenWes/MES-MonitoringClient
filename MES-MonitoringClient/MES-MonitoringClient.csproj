@@ -73,6 +73,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.3.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.3.9\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="RabbitMQ.Client, Version=3.6.14.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>DLL\RabbitMQ.Client.dll</HintPath>
@@ -106,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\BsonHelper.cs" />
+    <Compile Include="Common\CheckMouldRecordHandle.cs" />
     <Compile Include="Common\MachineProductionHandler.cs" />
     <Compile Include="Common\MachineResponsiblePersonHandler.cs" />
     <Compile Include="Common\ColorDesign.cs" />
@@ -119,11 +123,14 @@
     <Compile Include="Common\ConfigFileHandler.cs" />
     <Compile Include="Common\ClockInRecordHandler.cs" />
     <Compile Include="Common\EmployeeWorkScheduleHandler.cs" />
+    <Compile Include="Common\QRCoder.cs" />
     <Compile Include="Common\WorkshopResponsiblePersonHandler.cs" />
     <Compile Include="Common\LastJobOrderHandler.cs" />
     <Compile Include="Common\MachineStatus.cs" />
     <Compile Include="Common\JobOrderStatus.cs" />
     <Compile Include="Common\WorkShiftHandler.cs" />
+    <Compile Include="DataModel\CheckMouldRecord.cs" />
+    <Compile Include="DataModel\CheckMouldRecordDisplay.cs" />
     <Compile Include="DataModel\displayClockInRecord.cs" />
     <Compile Include="DataModel\MachineResponsiblePerson.cs" />
     <Compile Include="DataModel\ClockInRecord.cs" />
@@ -194,6 +201,12 @@
     <Compile Include="frmChangeStatus.Designer.cs">
       <DependentUpon>frmChangeStatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmCheckMouldForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCheckMouldForm.Designer.cs">
+      <DependentUpon>frmCheckMouldForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMachineRegister.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,6 +245,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmChangeStatus.resx">
       <DependentUpon>frmChangeStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCheckMouldForm.resx">
+      <DependentUpon>frmCheckMouldForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMachineRegister.resx">
       <DependentUpon>frmMachineRegister.cs</DependentUpon>
@@ -275,6 +291,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLL\System.ServiceProcess.dll" />
+    <None Include="Resources\btn_Print.png" />
     <None Include="Resources\rednoemployee.png" />
     <None Include="Resources\noemployee.png" />
     <None Include="Resources\noimage.png" />
