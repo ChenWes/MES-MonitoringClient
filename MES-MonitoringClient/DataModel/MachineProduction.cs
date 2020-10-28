@@ -24,13 +24,12 @@ namespace MES_MonitoringClient.DataModel
         //工单
         [BsonElement("JobOrderID")]
         public string JobOrderID { get; set; }
-        //开始时间
-        [BsonElement("StartDateTime")]
-        public DateTime StartDateTime { get; set; }
-        //结束时间
-        [BsonElement("EndDateTime")]
-        public DateTime EndDateTime { get; set; }
-        //工单数
+
+        //生产明细
+        [BsonElement("ProductionDetails")]
+        public List<ProductionDetails> ProductionDetails { get; set; }
+       
+        //生产数
         [BsonElement("ProduceCount")]
         public int ProduceCount { get; set; }
         //班次
@@ -42,9 +41,7 @@ namespace MES_MonitoringClient.DataModel
         //周期
         [BsonElement("ProduceSecond")]
         public double ProduceSecond { get; set; }
-        //最后机器生产记录
-        [BsonElement("MachineProcessLogID")]
-        public string MachineProcessLogID { get; set; }
+
         //工单生产工时
         [BsonElement("JobOrderProductionTime")]
         public double JobOrderProductionTime { get; set; }
@@ -64,16 +61,23 @@ namespace MES_MonitoringClient.DataModel
         
     }
 
+    public class ProductionDetails
+    {
+        //开始时间
+        [BsonElement("StartDateTime")]
+        public DateTime StartDateTime { get; set; }
+        //结束时间
+        [BsonElement("EndDateTime")]
+        public DateTime EndDateTime { get; set; }
+        //生产数
+        [BsonElement("ProduceCount")]
+        public int ProduceCount { get; set; }
+    }
+
     public class JobOrderProductionLog
     {
         [BsonElement("MachineProcessLogID")]
         public string MachineProcessLogID { get; set; }
-
-        [BsonElement("ProduceCount")]
-        public int ProduceCount { get; set; }
-
-        [BsonElement("ErrorCount")]
-        public int ErrorCount { get; set; }
 
         [BsonElement("ProduceStartDate")]
         public DateTime ProduceStartDate { get; set; }

@@ -253,7 +253,7 @@ namespace MES_MonitoringClient.Common
         ///<summary>
         ///按最后机器处理记录id及工单id查找
         /// </summary>
-        public List<DataModel.MachineProduction> findRecordByProcessID(string machineProcessLogID,string jobOrderID)
+        public List<DataModel.MachineProduction> findRecordByProcessID(string jobOrderID)
         {
 
             try
@@ -261,7 +261,6 @@ namespace MES_MonitoringClient.Common
                 List<DataModel.MachineProduction> machineProductions = new List<DataModel.MachineProduction>();
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(defaulttMachineProductionMongodbCollectionName);
                 var newfilter = Builders<BsonDocument>.Filter.And(
-                      Builders<BsonDocument>.Filter.Eq("MachineProcessLogID", machineProcessLogID),
                       Builders<BsonDocument>.Filter.Eq("JobOrderID", jobOrderID)
                    );
                 var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).ToList();
