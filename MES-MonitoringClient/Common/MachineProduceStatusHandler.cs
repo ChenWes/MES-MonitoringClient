@@ -958,6 +958,8 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+                //切换显示
+                changeCurrentProcessJobOrder(jobOrder);
                 //采集次数加1
                 jobOrder.MouldLifecycle = jobOrder.MouldLifecycle + 1;
                 //加数时，处理的是同一机器且未结束的记录==》同一机器生产多次，加数在最后一次（即未完成的那一次）
@@ -1768,7 +1770,7 @@ namespace MES_MonitoringClient.Common
                     //处理找不到产品出数
                     ProcessNoMouldProduc(unProcessJobOrderList, CurrentMouldProduct.ProductList);
                 }
-                changeCurrentProcessJobOrder();
+             
 
             }
             catch (Exception ex)
@@ -1915,9 +1917,25 @@ namespace MES_MonitoringClient.Common
             
         }
         //处理同模同产品切换显示
-        private void changeCurrentProcessJobOrder()
+        private void changeCurrentProcessJobOrder(DataModel.JobOrder jobOrder)
         {
-            List<DataModel.JobOrder> findJobOrderList = ProcessJobOrderList.FindAll(t => t.ProductCode.ToUpper() == CurrentProcessJobOrder.ProductCode.ToUpper() && t.MouldCode.ToUpper() == CurrentProcessJobOrder.MouldCode.ToUpper());
+            if (jobOrder != null)
+            {
+                if(jobOrder.ProductCode== CurrentProcessJobOrder.ProductCode && jobOrder._id != CurrentProcessJobOrder._id)
+                {
+                    autoChangeTime--;
+                    if (autoChangeTime < 0)
+                    {
+                        //当前工单
+                        CurrentProcessJobOrder = jobOrder;
+                        //通过当前单据找到模具对应产品出数数据
+                        CurrentMouldProduct = Common.MouldProductHelper.GetMmouldProductByMouldCode(CurrentProcessJobOrder.MouldCode);
+                        //显示当前工单
+                        ShowCurrentJobOrder();
+                    }
+                }
+            }
+           /* List<DataModel.JobOrder> findJobOrderList = ProcessJobOrderList.FindAll(t => t.ProductCode.ToUpper() == CurrentProcessJobOrder.ProductCode.ToUpper() && t.MouldCode.ToUpper() == CurrentProcessJobOrder.MouldCode.ToUpper());
             if (findJobOrderList!=null&&findJobOrderList.Count> 1)
             {
                 var sumProductCount = CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
@@ -1964,7 +1982,7 @@ namespace MES_MonitoringClient.Common
                     }
 
                 }
-            }
+            }*/
            
               
         }
