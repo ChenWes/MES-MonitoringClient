@@ -3071,6 +3071,8 @@ namespace MES_MonitoringClient
                  {*/
                     item.EndDate = DateTime.Now;
                     clockInRecordHandler.UpdateClockInRecord(item, true);
+                    //结束计算工时
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(item.EmployeeID, item.EndDate);
                 }
                 else
                 {
@@ -3107,9 +3109,9 @@ namespace MES_MonitoringClient
                                 }
 
                             }
-                            if (now > employeeScheduling.endTime.AddMinutes(10) && employeeScheduling.endTime > item.StartDate.ToLocalTime())
+                            if (now > employeeScheduling.endTime && employeeScheduling.endTime > item.StartDate.ToLocalTime())
                             {
-                                item.EndDate = employeeScheduling.endTime.AddMinutes(10);
+                                item.EndDate = employeeScheduling.endTime;
                                 clockInRecordHandler.UpdateClockInRecord(item, true);
                                 //结束计算工时
                                 mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(item.EmployeeID, item.EndDate);
