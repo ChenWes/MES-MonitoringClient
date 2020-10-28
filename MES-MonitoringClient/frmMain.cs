@@ -589,7 +589,8 @@ namespace MES_MonitoringClient
                 foreach (var item in machineProduction)
                 {
                     BsonDocument bsons = item.ToBsonDocument();
-                    if (item.EndDateTime.ToLocalTime() < now)
+                    DateTime endDateTime= mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID,item.Date,now,2);
+                    if (endDateTime < now)
                     {
                         //结束员工记录
                         int i = 0;
@@ -598,9 +599,9 @@ namespace MES_MonitoringClient
 
                             if (employeeProductionTimeList.StartTime == employeeProductionTimeList.EndTime)
                             {
-                                item.EmployeeProductionTimeList[i].EndTime = item.EndDateTime.ToLocalTime();
+                                item.EmployeeProductionTimeList[i].EndTime = endDateTime;
                                 //计算员工工时
-                                item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EndDateTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
+                                item.EmployeeProductionTimeList[i].WorkHour = Math.Round((endDateTime- item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
                             }
                             i++;
                         }
@@ -612,7 +613,7 @@ namespace MES_MonitoringClient
 
                             if (jobOrderProductionLog.ProduceStartDate == jobOrderProductionLog.ProduceEndDate)
                             {
-                                item.JobOrderProductionLog[j].ProduceEndDate = item.EndDateTime.ToLocalTime();
+                                item.JobOrderProductionLog[j].ProduceEndDate = endDateTime;
                             }
                             jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
                             j++;
@@ -2212,12 +2213,12 @@ namespace MES_MonitoringClient
         /*文本框事件*/
         /*---------------------------------------------------------------------------------------*/
 
-        /// <summary>
+        /*/// <summary>
         /// 不良品只能输入数字
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void txt_RejectsCount_KeyPress(object sender, KeyPressEventArgs e)
+       private void txt_RejectsCount_KeyPress(object sender, KeyPressEventArgs e)
         {
             char ch = e.KeyChar;
 
@@ -2225,10 +2226,10 @@ namespace MES_MonitoringClient
             {
                 e.Handled = true;
             }
-        }
+        }*/
 
 
-        /// <summary>
+        /*/// <summary>
         /// 不良品==》修改
         /// </summary>
         /// <param name="sender"></param>
@@ -2266,7 +2267,7 @@ namespace MES_MonitoringClient
             {
                 txt_RejectsCount.Text = "";
             }
-        }
+        }*/
 
 
         /*菜单按钮事件*/
@@ -3326,7 +3327,54 @@ namespace MES_MonitoringClient
             }
            
         }
-
-       
+        private void btn_QC_Click(object sender, EventArgs e)
+        {
+            if (mc_MachineStatusHander.MachineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString())
+            {
+                frmScanRFID newfrmScanRFID = new frmScanRFID();
+                newfrmScanRFID.MC_OperationType = frmScanRFID.OperationType.QC;
+                newfrmScanRFID.MC_OperationType_Prompt = frmScanRFID.OperationType_Prompt.QC;
+                newfrmScanRFID.currentJobOrder= mc_MachineStatusHander.mc_MachineProduceStatusHandler.CurrentProcessJobOrder;
+                newfrmScanRFID.ShowDialog();
+                if (!newfrmScanRFID.MC_IsManualCancel && newfrmScanRFID.QCCheckCounts.Count > 0)
+                {
+                    DataModel.QCRecord QCRecord = new DataModel.QCRecord();
+                    QCRecord.JobOrderID = newfrmScanRFID.currentJobOrder._id;
+                    var machineProcessLog = newfrmScanRFID.currentJobOrder.MachineProcessLog.Find(t => t.ProduceStartDate == t.ProduceEndDate);
+                    QCRecord.MachineProcessLogID = machineProcessLog._id;
+                    QCRecord.MachineID = MC_Machine._id;
+                    QCRecord.QCCheckCounts = newfrmScanRFID.QCCheckCounts;
+                    QCRecord.ErrorCount = newfrmScanRFID.errorCount;
+                    QCRecord.EmployeeID = newfrmScanRFID.MC_EmployeeInfo._id;
+                    QCRecord.QCTime = newfrmScanRFID.QCTime;
+                    QCRecord.IsSyncToServer = false;
+                    //找到当前工单生产记录
+                    Common.MachineProductionHandler machineProductionHandler = new Common.MachineProductionHandler();
+                    List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByProcessID(newfrmScanRFID.currentJobOrder._id);
+                    foreach (var item in machineProductions)
+                    {
+                        //找到QC时生产记录
+                        if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID, item.Date, newfrmScanRFID.QCTime, 1) < newfrmScanRFID.QCTime && mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID, item.Date, newfrmScanRFID.QCTime, 2) >= newfrmScanRFID.QCTime)
+                        {
+                            //更新QC时对应的生产记录
+                            QCRecord.Date = item.Date;
+                            QCRecord.WorkShiftID = item.WorkShiftID;
+                        }
+                    }
+                    Common.QCRecordHandler QCRecordHandler = new Common.QCRecordHandler();
+                    QCRecordHandler.SaveClockInRecord(QCRecord);
+                    int value = 0;
+                    int.TryParse(this.txt_RejectsCount.Text, out value);
+                    this.txt_RejectsCount.Text = (value + newfrmScanRFID.errorCount).ToString();
+                    //更新工单和生产数不良品
+                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.SettingProductErrorCount(newfrmScanRFID.errorCount, newfrmScanRFID.QCTime);
+                }
+            }
+            else
+            {
+                MessageBox.Show("当前不是在生产中", "误操作提醒", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+         
+        }
     }
 }

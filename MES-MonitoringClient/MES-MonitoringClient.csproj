@@ -124,6 +124,7 @@
     <Compile Include="Common\ClockInRecordHandler.cs" />
     <Compile Include="Common\EmployeeWorkScheduleHandler.cs" />
     <Compile Include="Common\QRCoder.cs" />
+    <Compile Include="Common\QCRecordHandler.cs" />
     <Compile Include="Common\WorkshopResponsiblePersonHandler.cs" />
     <Compile Include="Common\LastJobOrderHandler.cs" />
     <Compile Include="Common\MachineStatus.cs" />
@@ -137,6 +138,8 @@
     <Compile Include="DataModel\Customer.cs" />
     <Compile Include="DataModel\EmployeeWorkSchedule.cs" />
     <Compile Include="DataModel\NowWorkShift.cs" />
+    <Compile Include="DataModel\DefectiveType.cs" />
+    <Compile Include="DataModel\QCRecord.cs" />
     <Compile Include="DataModel\WorkshopResponsiblePerson.cs" />
     <Compile Include="DataModel\JobOrderDisplay.cs" />
     <Compile Include="DataModel\JobOrderFirstProduceLog.cs" />
@@ -189,6 +192,7 @@
     <Compile Include="DataModel\MachineStatusLog.cs" />
     <Compile Include="DataModel\MachineTemperature.cs" />
     <Compile Include="DataModel\SyncData.cs" />
+    <Compile Include="EntityHelper\DefectiveTypeHelper.cs" />
     <Compile Include="frmAttend.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -218,6 +222,12 @@
     </Compile>
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmQC.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmQC.Designer.cs">
+      <DependentUpon>frmQC.cs</DependentUpon>
     </Compile>
     <Compile Include="frmScanRFID.cs">
       <SubType>Form</SubType>
@@ -254,6 +264,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQC.resx">
+      <DependentUpon>frmQC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmScanRFID.resx">
       <DependentUpon>frmScanRFID.cs</DependentUpon>
@@ -292,6 +305,7 @@
   <ItemGroup>
     <Content Include="DLL\System.ServiceProcess.dll" />
     <None Include="Resources\btn_Print.png" />
+    <None Include="Resources\QC.png" />
     <None Include="Resources\rednoemployee.png" />
     <None Include="Resources\noemployee.png" />
     <None Include="Resources\noimage.png" />

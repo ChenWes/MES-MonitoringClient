@@ -35,6 +35,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lab_Title = new System.Windows.Forms.Label();
             this.lab_DateTime = new System.Windows.Forms.Label();
+            this.btn_QC = new System.Windows.Forms.Button();
             this.btn_Version = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
@@ -78,6 +79,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.txt_JobOrderCode = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel36 = new System.Windows.Forms.TableLayoutPanel();
+            this.txt_Dept = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
             this.tableLayoutPanel20 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel26 = new System.Windows.Forms.TableLayoutPanel();
             this.txt_NoCompletedCount = new System.Windows.Forms.TextBox();
@@ -130,31 +133,28 @@
             this.lab_Version = new System.Windows.Forms.Label();
             this.lab_log = new System.Windows.Forms.Label();
             this.tableLayoutPanel33 = new System.Windows.Forms.TableLayoutPanel();
-            this.pieChart_MachineStatus = new LiveCharts.WinForms.PieChart();
+            this.circleProgramBar = new MES_MonitoringClient.Common.Component.CircleProgramBar();
             this.tableLayoutPanel34 = new System.Windows.Forms.TableLayoutPanel();
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
             this.pictureBoxHead = new System.Windows.Forms.PictureBox();
             this.pictureBoxCharge = new System.Windows.Forms.PictureBox();
             this.pictureBoxQC = new System.Windows.Forms.PictureBox();
             this.pictureBoxEmp = new System.Windows.Forms.PictureBox();
             this.pictureBoxMouldCode = new System.Windows.Forms.PictureBox();
-            this.label21 = new System.Windows.Forms.Label();
             this.lab_MouldCodeEmp = new System.Windows.Forms.Label();
             this.lab_MouldCodeEmpName= new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
             this.pictureBoxCode = new System.Windows.Forms.PictureBox();
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.tableLayoutPanel37 = new System.Windows.Forms.TableLayoutPanel();
-            //this.btn_refresh = new System.Windows.Forms.Button();
             this.btn_ClockIn = new System.Windows.Forms.Button();
-            this.circleProgramBar = new MES_MonitoringClient.Common.Component.CircleProgramBar();
-            this.txt_Dept = new System.Windows.Forms.TextBox();
             txt_ProductCode = new System.Windows.Forms.TextBox(); 
+            this.pieChart_MachineStatus = new LiveCharts.WinForms.PieChart();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -176,7 +176,6 @@
             this.tableLayoutPanel20.SuspendLayout();
             this.tableLayoutPanel26.SuspendLayout();
             this.tableLayoutPanel25.SuspendLayout();
-            this.tableLayoutPanel37.SuspendLayout();
             this.panel8.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel12.SuspendLayout();
@@ -199,6 +198,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCharge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxQC)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEmp)).BeginInit();
+            this.tableLayoutPanel37.SuspendLayout();
             this.SuspendLayout();
             // 
             // serialPort6
@@ -221,25 +221,27 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
-            this.tableLayoutPanel1.ColumnCount = 9;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 6F));
+            this.tableLayoutPanel1.ColumnCount = 10;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
             this.tableLayoutPanel1.Controls.Add(this.lab_Title, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lab_DateTime, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Version, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel5, 8, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_QC, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Version, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel5, 9, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 8, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 6, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -254,7 +256,7 @@
             this.lab_Title.AutoSize = true;
             this.lab_Title.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_Title.ForeColor = System.Drawing.Color.White;
-            this.lab_Title.Location = new System.Drawing.Point(24, 17);
+            this.lab_Title.Location = new System.Drawing.Point(14, 17);
             this.lab_Title.Name = "lab_Title";
             this.lab_Title.Size = new System.Drawing.Size(248, 16);
             this.lab_Title.TabIndex = 7;
@@ -267,21 +269,34 @@
             this.lab_DateTime.AutoSize = true;
             this.lab_DateTime.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_DateTime.ForeColor = System.Drawing.Color.White;
-            this.lab_DateTime.Location = new System.Drawing.Point(300, 17);
+            this.lab_DateTime.Location = new System.Drawing.Point(280, 17);
             this.lab_DateTime.Name = "lab_DateTime";
             this.lab_DateTime.Size = new System.Drawing.Size(72, 16);
             this.lab_DateTime.TabIndex = 9;
             this.lab_DateTime.Text = "当前时间";
+            // 
+            // btn_QC
+            // 
+            this.btn_QC.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_QC.FlatAppearance.BorderSize = 0;
+            this.btn_QC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_QC.Image = ((System.Drawing.Image)(resources.GetObject("btn_QC.Image")));
+            this.btn_QC.Location = new System.Drawing.Point(557, 3);
+            this.btn_QC.Name = "btn_QC";
+            this.btn_QC.Size = new System.Drawing.Size(48, 44);
+            this.btn_QC.TabIndex = 13;
+            this.btn_QC.UseVisualStyleBackColor = true;
+            this.btn_QC.Click += new System.EventHandler(this.btn_QC_Click);
             // 
             // btn_Version
             // 
             this.btn_Version.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_Version.FlatAppearance.BorderSize = 0;
             this.btn_Version.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Version.Image = ((System.Drawing.Image)(resources.GetObject("btn_Update.Image")));
-            this.btn_Version.Location = new System.Drawing.Point(577, 3);
+            this.btn_Version.Image = ((System.Drawing.Image)(resources.GetObject("btn_Version.Image")));
+            this.btn_Version.Location = new System.Drawing.Point(611, 3);
             this.btn_Version.Name = "btn_Version";
-            this.btn_Version.Size = new System.Drawing.Size(53, 44);
+            this.btn_Version.Size = new System.Drawing.Size(48, 44);
             this.btn_Version.TabIndex = 14;
             this.btn_Version.UseVisualStyleBackColor = true;
             this.btn_Version.Click += new System.EventHandler(this.btn_Version_Click);
@@ -290,9 +305,9 @@
             // 
             this.panel5.Controls.Add(this.btn_CloseWindow);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(931, 3);
+            this.panel5.Location = new System.Drawing.Point(935, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(57, 44);
+            this.panel5.Size = new System.Drawing.Size(53, 44);
             this.panel5.TabIndex = 3;
             // 
             // btn_CloseWindow
@@ -304,7 +319,7 @@
             this.btn_CloseWindow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_CloseWindow.Location = new System.Drawing.Point(0, 0);
             this.btn_CloseWindow.Name = "btn_CloseWindow";
-            this.btn_CloseWindow.Size = new System.Drawing.Size(57, 44);
+            this.btn_CloseWindow.Size = new System.Drawing.Size(53, 44);
             this.btn_CloseWindow.TabIndex = 0;
             this.btn_CloseWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_CloseWindow.UseVisualStyleBackColor = true;
@@ -316,9 +331,9 @@
             this.btn_Start.FlatAppearance.BorderSize = 0;
             this.btn_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_Start.Image = ((System.Drawing.Image)(resources.GetObject("btn_Start.Image")));
-            this.btn_Start.Location = new System.Drawing.Point(636, 3);
+            this.btn_Start.Location = new System.Drawing.Point(665, 3);
             this.btn_Start.Name = "btn_Start";
-            this.btn_Start.Size = new System.Drawing.Size(53, 44);
+            this.btn_Start.Size = new System.Drawing.Size(48, 44);
             this.btn_Start.TabIndex = 11;
             this.btn_Start.UseVisualStyleBackColor = true;
             this.btn_Start.Click += new System.EventHandler(this.btn_Start_Click);
@@ -329,9 +344,9 @@
             this.btn_Stop.FlatAppearance.BorderSize = 0;
             this.btn_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_Stop.Image = ((System.Drawing.Image)(resources.GetObject("btn_Stop.Image")));
-            this.btn_Stop.Location = new System.Drawing.Point(695, 3);
+            this.btn_Stop.Location = new System.Drawing.Point(719, 3);
             this.btn_Stop.Name = "btn_Stop";
-            this.btn_Stop.Size = new System.Drawing.Size(53, 44);
+            this.btn_Stop.Size = new System.Drawing.Size(48, 44);
             this.btn_Stop.TabIndex = 11;
             this.btn_Stop.UseVisualStyleBackColor = true;
             this.btn_Stop.Click += new System.EventHandler(this.btn_Stop_Click);
@@ -342,9 +357,9 @@
             this.btn_Recovery.FlatAppearance.BorderSize = 0;
             this.btn_Recovery.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_Recovery.Image = ((System.Drawing.Image)(resources.GetObject("btn_Recovery.Image")));
-            this.btn_Recovery.Location = new System.Drawing.Point(813, 3);
+            this.btn_Recovery.Location = new System.Drawing.Point(827, 3);
             this.btn_Recovery.Name = "btn_Recovery";
-            this.btn_Recovery.Size = new System.Drawing.Size(53, 44);
+            this.btn_Recovery.Size = new System.Drawing.Size(48, 44);
             this.btn_Recovery.TabIndex = 11;
             this.btn_Recovery.UseVisualStyleBackColor = true;
             this.btn_Recovery.Click += new System.EventHandler(this.btn_Recovery_Click);
@@ -355,9 +370,9 @@
             this.btn_MinimizeWindows.FlatAppearance.BorderSize = 0;
             this.btn_MinimizeWindows.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_MinimizeWindows.Image = ((System.Drawing.Image)(resources.GetObject("btn_MinimizeWindows.Image")));
-            this.btn_MinimizeWindows.Location = new System.Drawing.Point(872, 3);
+            this.btn_MinimizeWindows.Location = new System.Drawing.Point(881, 3);
             this.btn_MinimizeWindows.Name = "btn_MinimizeWindows";
-            this.btn_MinimizeWindows.Size = new System.Drawing.Size(53, 44);
+            this.btn_MinimizeWindows.Size = new System.Drawing.Size(48, 44);
             this.btn_MinimizeWindows.TabIndex = 12;
             this.btn_MinimizeWindows.UseVisualStyleBackColor = true;
             this.btn_MinimizeWindows.Click += new System.EventHandler(this.btn_MinimizeWindows_Click);
@@ -368,9 +383,9 @@
             this.btn_CompleteJobOrder.FlatAppearance.BorderSize = 0;
             this.btn_CompleteJobOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_CompleteJobOrder.Image = ((System.Drawing.Image)(resources.GetObject("btn_CompleteJobOrder.Image")));
-            this.btn_CompleteJobOrder.Location = new System.Drawing.Point(754, 3);
+            this.btn_CompleteJobOrder.Location = new System.Drawing.Point(773, 3);
             this.btn_CompleteJobOrder.Name = "btn_CompleteJobOrder";
-            this.btn_CompleteJobOrder.Size = new System.Drawing.Size(53, 44);
+            this.btn_CompleteJobOrder.Size = new System.Drawing.Size(48, 44);
             this.btn_CompleteJobOrder.TabIndex = 13;
             this.btn_CompleteJobOrder.UseVisualStyleBackColor = true;
             this.btn_CompleteJobOrder.Click += new System.EventHandler(this.btn_CompleteJobOrder_Click);
@@ -532,13 +547,14 @@
             // txt_RejectsCount
             // 
             this.txt_RejectsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_RejectsCount.Enabled = false;
             this.txt_RejectsCount.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txt_RejectsCount.Location = new System.Drawing.Point(73, 4);
             this.txt_RejectsCount.Name = "txt_RejectsCount";
             this.txt_RejectsCount.Size = new System.Drawing.Size(159, 26);
             this.txt_RejectsCount.TabIndex = 2;
-            this.txt_RejectsCount.TextChanged += new System.EventHandler(this.txt_RejectsCount_TextChanged);
-            this.txt_RejectsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_RejectsCount_KeyPress);
+            //this.txt_RejectsCount.TextChanged += new System.EventHandler(this.txt_RejectsCount_TextChanged);
+            //this.txt_RejectsCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_RejectsCount_KeyPress);
             // 
             // label16
             // 
@@ -724,11 +740,11 @@
             // 
             this.txt_ActualWorkTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_ActualWorkTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            txt_ActualWorkTime.Enabled = false;
-            this.txt_ActualWorkTime.ReadOnly =true ;
+            this.txt_ActualWorkTime.Enabled = false;
             this.txt_ActualWorkTime.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txt_ActualWorkTime.Location = new System.Drawing.Point(73, 3);
             this.txt_ActualWorkTime.Name = "txt_ActualWorkTime";
+            this.txt_ActualWorkTime.ReadOnly = true;
             this.txt_ActualWorkTime.Size = new System.Drawing.Size(159, 26);
             this.txt_ActualWorkTime.TabIndex = 2;
             // 
@@ -820,9 +836,9 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(17, 9);
+            this.label8.Location = new System.Drawing.Point(3, 9);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(35, 14);
+            this.label8.Size = new System.Drawing.Size(63, 14);
             this.label8.TabIndex = 1;
             this.label8.Text = "工单编号";
             // 
@@ -832,7 +848,7 @@
             this.txt_JobOrderCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.txt_JobOrderCode.Enabled = false;
             this.txt_JobOrderCode.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_JobOrderCode.Location = new System.Drawing.Point(75, 6);
+            this.txt_JobOrderCode.Location = new System.Drawing.Point(73, 3);
             this.txt_JobOrderCode.Name = "txt_JobOrderCode";
             this.txt_JobOrderCode.Size = new System.Drawing.Size(159, 26);
             this.txt_JobOrderCode.TabIndex = 2;
@@ -852,6 +868,29 @@
             this.tableLayoutPanel36.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
             this.tableLayoutPanel36.Size = new System.Drawing.Size(235, 33);
             this.tableLayoutPanel36.TabIndex = 1;
+            // 
+            // txt_Dept
+            // 
+            this.txt_Dept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txt_Dept.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_Dept.Enabled = false;
+            this.txt_Dept.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txt_Dept.Location = new System.Drawing.Point(73, 3);
+            this.txt_Dept.Name = "txt_Dept";
+            this.txt_Dept.Size = new System.Drawing.Size(159, 26);
+            this.txt_Dept.TabIndex = 3;
+            // 
+            // label23
+            // 
+            this.label23.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label23.ForeColor = System.Drawing.Color.White;
+            this.label23.Location = new System.Drawing.Point(3, 9);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(63, 14);
+            this.label23.TabIndex = 2;
+            this.label23.Text = "送达部门";
             // 
             // tableLayoutPanel20
             // 
@@ -1150,11 +1189,11 @@
             // 
             this.txt_StartDateTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_StartDateTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txt_StartDateTime.Enabled = false;
             this.txt_StartDateTime.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txt_StartDateTime.Location = new System.Drawing.Point(73, 3);
             this.txt_StartDateTime.Name = "txt_StartDateTime";
             this.txt_StartDateTime.Size = new System.Drawing.Size(158, 26);
-            this.txt_StartDateTime.Enabled = false;
             this.txt_StartDateTime.TabIndex = 2;
             // 
             // label3
@@ -1511,33 +1550,33 @@
             this.lab_UploadDataServiceStatus.AutoSize = true;
             this.lab_UploadDataServiceStatus.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_UploadDataServiceStatus.ForeColor = System.Drawing.Color.White;
-            this.lab_UploadDataServiceStatus.Location = new System.Drawing.Point(4, 5);
+            this.lab_UploadDataServiceStatus.Location = new System.Drawing.Point(4, 1);
             this.lab_UploadDataServiceStatus.Name = "lab_UploadDataServiceStatus";
-            this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(482, 14);
+            this.lab_UploadDataServiceStatus.Size = new System.Drawing.Size(188, 22);
             this.lab_UploadDataServiceStatus.TabIndex = 17;
             this.lab_UploadDataServiceStatus.Text = "正在查找数据上传服务运行状态";
             // 
             // lab_Version
             // 
-            this.lab_Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_Version.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lab_Version.AutoSize = true;
             this.lab_Version.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_Version.ForeColor = System.Drawing.Color.White;
-            this.lab_Version.Location = new System.Drawing.Point(199, 5);
+            this.lab_Version.Location = new System.Drawing.Point(261, 5);
             this.lab_Version.Name = "lab_Version";
-            this.lab_Version.Size = new System.Drawing.Size(139, 14);
+            this.lab_Version.Size = new System.Drawing.Size(77, 14);
             this.lab_Version.TabIndex = 18;
             this.lab_Version.Text = "当前版本：";
             // 
             // lab_log
             // 
-            this.lab_log.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Right)));
+            this.lab_log.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lab_log.AutoSize = true;
             this.lab_log.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_log.ForeColor = System.Drawing.Color.White;
-            this.lab_log.Location = new System.Drawing.Point(345, 5);
+            this.lab_log.Location = new System.Drawing.Point(430, 5);
             this.lab_log.Name = "lab_log";
-            this.lab_log.Size = new System.Drawing.Size(141, 14);
+            this.lab_log.Size = new System.Drawing.Size(56, 14);
             this.lab_log.TabIndex = 19;
             this.lab_log.Text = "lab_log";
             // 
@@ -1556,7 +1595,6 @@
             this.tableLayoutPanel33.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 309F));
             this.tableLayoutPanel33.Size = new System.Drawing.Size(490, 310);
             this.tableLayoutPanel33.TabIndex = 8;
-
             // 
             // circleProgramBar
             // 
@@ -1573,15 +1611,6 @@
             this.circleProgramBar.TabIndex = 0;
             this.circleProgramBar.Text = "circleProgramBar1";
             this.circleProgramBar.TopColor = System.Drawing.Color.Lime;
-            // 
-            // pieChart_MachineStatus
-            // 
-            this.pieChart_MachineStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pieChart_MachineStatus.Location = new System.Drawing.Point(4, 4);
-            this.pieChart_MachineStatus.Name = "pieChart_MachineStatus";
-            this.pieChart_MachineStatus.Size = new System.Drawing.Size(482, 302);
-            this.pieChart_MachineStatus.TabIndex = 9;
-            this.pieChart_MachineStatus.Text = "pieChart1";
             // 
             // tableLayoutPanel34
             // 
@@ -1608,7 +1637,6 @@
             this.tableLayoutPanel34.Location = new System.Drawing.Point(3, 319);
             this.tableLayoutPanel34.Name = "tableLayoutPanel34";
             this.tableLayoutPanel34.RowCount = 4;
-            
             this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel34.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
@@ -1622,11 +1650,10 @@
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(13, 273);
+            this.label18.Location = new System.Drawing.Point(61, 240);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(88, 32);
+            this.label18.Size = new System.Drawing.Size(0, 16);
             this.label18.TabIndex = 2;
-            this.label18.Text = "";
             // 
             // label19
             // 
@@ -1634,11 +1661,10 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label19.ForeColor = System.Drawing.Color.White;
-            this.label19.Location = new System.Drawing.Point(127, 273);
+            this.label19.Location = new System.Drawing.Point(183, 240);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(88, 32);
+            this.label19.Size = new System.Drawing.Size(0, 16);
             this.label19.TabIndex = 2;
-            this.label19.Text = "";
             // 
             // label20
             // 
@@ -1646,11 +1672,10 @@
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.Color.White;
-            this.label20.Location = new System.Drawing.Point(241, 273);
+            this.label20.Location = new System.Drawing.Point(305, 240);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(88, 32);
+            this.label20.Size = new System.Drawing.Size(0, 16);
             this.label20.TabIndex = 2;
-            this.label20.Text = "";
             // 
             // label21
             // 
@@ -1658,11 +1683,50 @@
             this.label21.AutoSize = true;
             this.label21.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.ForeColor = System.Drawing.Color.White;
-            this.label21.Location = new System.Drawing.Point(403, 102);
+            this.label21.Location = new System.Drawing.Point(427, 240);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(24, 64);
+            this.label21.Size = new System.Drawing.Size(0, 16);
             this.label21.TabIndex = 2;
-            this.label21.Text = "";
+            // 
+            // pictureBoxHead
+            // 
+            this.pictureBoxHead.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxHead.Location = new System.Drawing.Point(4, 45);
+            this.pictureBoxHead.Name = "pictureBoxHead";
+            this.pictureBoxHead.Size = new System.Drawing.Size(115, 179);
+            this.pictureBoxHead.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxHead.TabIndex = 3;
+            this.pictureBoxHead.TabStop = false;
+            // 
+            // pictureBoxCharge
+            // 
+            this.pictureBoxCharge.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxCharge.Location = new System.Drawing.Point(126, 45);
+            this.pictureBoxCharge.Name = "pictureBoxCharge";
+            this.pictureBoxCharge.Size = new System.Drawing.Size(115, 179);
+            this.pictureBoxCharge.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxCharge.TabIndex = 3;
+            this.pictureBoxCharge.TabStop = false;
+            // 
+            // pictureBoxQC
+            // 
+            this.pictureBoxQC.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxQC.Location = new System.Drawing.Point(248, 45);
+            this.pictureBoxQC.Name = "pictureBoxQC";
+            this.pictureBoxQC.Size = new System.Drawing.Size(115, 179);
+            this.pictureBoxQC.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxQC.TabIndex = 3;
+            this.pictureBoxQC.TabStop = false;
+            // 
+            // pictureBoxEmp
+            // 
+            this.pictureBoxEmp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBoxEmp.Location = new System.Drawing.Point(370, 45);
+            this.pictureBoxEmp.Name = "pictureBoxEmp";
+            this.pictureBoxEmp.Size = new System.Drawing.Size(115, 179);
+            this.pictureBoxEmp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxEmp.TabIndex = 3;
+            this.pictureBoxEmp.TabStop = false;
             // 
             // lab_MouldCodeEmpName
             // 
@@ -1682,9 +1746,9 @@
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label24.ForeColor = System.Drawing.Color.White;
-            this.label24.Location = new System.Drawing.Point(13, 273);
+            this.label24.Location = new System.Drawing.Point(41, 13);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(88, 32);
+            this.label24.Size = new System.Drawing.Size(40, 16);
             this.label24.TabIndex = 2;
             this.label24.Text = "领班";
             // 
@@ -1694,9 +1758,9 @@
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label25.ForeColor = System.Drawing.Color.White;
-            this.label25.Location = new System.Drawing.Point(127, 273);
+            this.label25.Location = new System.Drawing.Point(163, 13);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(88, 32);
+            this.label25.Size = new System.Drawing.Size(40, 16);
             this.label25.TabIndex = 2;
             this.label25.Text = "组长";
             // 
@@ -1706,9 +1770,9 @@
             this.label26.AutoSize = true;
             this.label26.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label26.ForeColor = System.Drawing.Color.White;
-            this.label26.Location = new System.Drawing.Point(241, 273);
+            this.label26.Location = new System.Drawing.Point(293, 13);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(88, 32);
+            this.label26.Size = new System.Drawing.Size(24, 16);
             this.label26.TabIndex = 2;
             this.label26.Text = "QC";
             // 
@@ -1718,9 +1782,9 @@
             this.label27.AutoSize = true;
             this.label27.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label27.ForeColor = System.Drawing.Color.White;
-            this.label27.Location = new System.Drawing.Point(403, 102);
+            this.label27.Location = new System.Drawing.Point(407, 13);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(27, 64);
+            this.label27.Size = new System.Drawing.Size(40, 16);
             this.label27.TabIndex = 2;
             this.label27.Text = "员工";
             // 
@@ -1739,32 +1803,17 @@
             // tableLayoutPanel37
             // 
             this.tableLayoutPanel37.ColumnCount = 1;
+            this.tableLayoutPanel34.SetColumnSpan(this.tableLayoutPanel37, 4);
             this.tableLayoutPanel37.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            //this.tableLayoutPanel37.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-           // this.tableLayoutPanel37.Controls.Add(this.btn_refresh, 0, 0);
             this.tableLayoutPanel37.Controls.Add(this.btn_ClockIn, 0, 0);
             this.tableLayoutPanel37.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel37.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel37.Location = new System.Drawing.Point(1, 269);
+            this.tableLayoutPanel37.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel37.Name = "tableLayoutPanel37";
             this.tableLayoutPanel37.RowCount = 1;
             this.tableLayoutPanel37.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel37.Size = new System.Drawing.Size(235, 33);
+            this.tableLayoutPanel37.Size = new System.Drawing.Size(487, 40);
             this.tableLayoutPanel37.TabIndex = 0;
-            this.tableLayoutPanel34.SetColumnSpan(this.tableLayoutPanel37, 4);
-            this.tableLayoutPanel37.Margin = new System.Windows.Forms.Padding(0);
-            // 
-            // btn_refresh
-            // 
-            /*this.btn_refresh.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_refresh.FlatAppearance.BorderSize = 0;
-            this.btn_refresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_refresh.Image = ((System.Drawing.Image)(resources.GetObject("btn_refresh.Image")));
-            this.btn_refresh.Location = new System.Drawing.Point(872, 3);
-            this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(53, 44);
-            this.btn_refresh.TabIndex = 12;
-            this.btn_refresh.UseVisualStyleBackColor = true;
-            this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);*/
             // 
             // btn_ClockIn
             // 
@@ -1772,9 +1821,9 @@
             this.btn_ClockIn.FlatAppearance.BorderSize = 0;
             this.btn_ClockIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_ClockIn.Image = ((System.Drawing.Image)(resources.GetObject("btn_ClockIn.Image")));
-            this.btn_ClockIn.Location = new System.Drawing.Point(872, 3);
-            this.btn_ClockIn.Name = "btn_clockIn";
-            this.btn_ClockIn.Size = new System.Drawing.Size(53, 44);
+            this.btn_ClockIn.Location = new System.Drawing.Point(3, 3);
+            this.btn_ClockIn.Name = "btn_ClockIn";
+            this.btn_ClockIn.Size = new System.Drawing.Size(481, 34);
             this.btn_ClockIn.TabIndex = 12;
             this.btn_ClockIn.UseVisualStyleBackColor = true;
             this.btn_ClockIn.Click += new System.EventHandler(this.btn_ClockIn_Click);
@@ -1842,15 +1891,15 @@
             this.label23.Text = "送达部门";
             // 
             // txt_Dept
+
+            // pieChart_MachineStatus
             // 
-            this.txt_Dept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Dept.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txt_Dept.Enabled = false;
-            this.txt_Dept.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txt_Dept.Location = new System.Drawing.Point(73, 3);
-            this.txt_Dept.Name = "txt_Dept";
-            this.txt_Dept.Size = new System.Drawing.Size(159, 26);
-            this.txt_Dept.TabIndex = 3;
+            this.pieChart_MachineStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pieChart_MachineStatus.Location = new System.Drawing.Point(4, 4);
+            this.pieChart_MachineStatus.Name = "pieChart_MachineStatus";
+            this.pieChart_MachineStatus.Size = new System.Drawing.Size(482, 302);
+            this.pieChart_MachineStatus.TabIndex = 9;
+            this.pieChart_MachineStatus.Text = "pieChart1";
             // 
             // pictureBoxCode
             // 
@@ -1900,7 +1949,6 @@
             this.tableLayoutPanel27.ResumeLayout(false);
             this.tableLayoutPanel27.PerformLayout();
             this.tableLayoutPanel19.ResumeLayout(false);
-            this.tableLayoutPanel19.PerformLayout();
             this.tableLayoutPanel35.ResumeLayout(false);
             this.tableLayoutPanel35.PerformLayout();
             this.tableLayoutPanel36.ResumeLayout(false);
@@ -1938,12 +1986,11 @@
             this.tableLayoutPanel33.ResumeLayout(false);
             this.tableLayoutPanel34.ResumeLayout(false);
             this.tableLayoutPanel34.PerformLayout();
-            this.tableLayoutPanel37.ResumeLayout(false);
-            this.tableLayoutPanel37.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxHead)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCharge)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxQC)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEmp)).EndInit();
+            this.tableLayoutPanel37.ResumeLayout(false);
             this.ResumeLayout(false);
 
 
@@ -2059,6 +2106,7 @@
         private System.Windows.Forms.Label lab_MouldCodeEmp;
         private System.Windows.Forms.TextBox txt_TotalRejectsCount;
         private System.Windows.Forms.Button btn_CompleteJobOrder;
+        private System.Windows.Forms.Button btn_QC;
         private System.Windows.Forms.Label lab_Version;
         private System.Windows.Forms.Label lab_log;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel35;
