@@ -1005,7 +1005,10 @@ namespace MES_MonitoringClient.Common
                             if (now >= findDateTime(item.WorkShiftID,item.Date,now,1) && now <= findDateTime(item.WorkShiftID, item.Date, now, 2))
                             {
                                 //周期
-                                item.ProduceSecond = LastProductUseMilliseconds * 1.000 / 1000;
+                                if (LastProductUseMilliseconds != 0)
+                                {
+                                    item.ProduceSecond = LastProductUseMilliseconds * 1.000 / 1000;
+                                }
                                 //员工工时
                                 int i = 0;
                                 foreach (var employeeProductionTimeList in item.EmployeeProductionTimeList.ToArray())
