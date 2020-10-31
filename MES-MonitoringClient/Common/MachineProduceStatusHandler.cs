@@ -1065,7 +1065,7 @@ namespace MES_MonitoringClient.Common
                                         jobOrderProductionLog.ProduceEndDate = now;
                                         item.JobOrderProductionLog.Add(jobOrderProductionLog);
                                         //增加员工记录
-                                        foreach (var EmployeeProductionTime in getEmployeeProductionTimeList(now))
+                                        foreach (var EmployeeProductionTime in getEmployeeProductionTimeList(item.Date,item.WorkShiftID,now))
                                         {
                                             item.EmployeeProductionTimeList.Add(EmployeeProductionTime);
                                         }
@@ -1102,6 +1102,7 @@ namespace MES_MonitoringClient.Common
         //新增记录
         private void addMachineProduction(DataModel.JobOrder jobOrder,DateTime now,int addCount)
         {
+            stopAdd(jobOrder,now);
             DataModel.MachineProduction machineProduction = new DataModel.MachineProduction();
             DataModel.NowWorkShift nowWorkShift = findWorkShiftByNow(now);
             if (nowWorkShift != null)
@@ -1147,20 +1148,15 @@ namespace MES_MonitoringClient.Common
             {
                 foreach (var item in machineProductions)
                 {
-                    //
-
+                    //如果存在一个结束时间等于记录开始时间,则连续生产生产
                     if (item.JobOrderProductionLog.Last().MachineProcessLogID == findMachineProcessLog._id)
                     {
-                        if(now >= item.JobOrderProductionLog.Last().ProduceEndDate)
+
+                        if( findDateTime(machineProduction.WorkShiftID, machineProduction.Date, now, 1)== item.JobOrderProductionLog.Last().ProduceEndDate.ToLocalTime())
                         {
                             isContin = true;
-                        }
-                        else
-                        {
-                            isContin = false;
                             break;
                         }
-                       
                     }
 
                 } 
@@ -1178,12 +1174,6 @@ namespace MES_MonitoringClient.Common
                 jobOrderProductionLog.ProduceEndDate = findDateTime(machineProduction.WorkShiftID, machineProduction.Date, now, 1);
                 machineProduction.JobOrderProductionLog = new List<DataModel.JobOrderProductionLog>();
                 machineProduction.JobOrderProductionLog.Add(jobOrderProductionLog);
-                //生产明细
-                DataModel.ProductionDetails productionDetails = new DataModel.ProductionDetails();
-                productionDetails.StartDateTime = jobOrderProductionLog.ProduceStartDate;
-                productionDetails.EndDateTime = jobOrderProductionLog.ProduceStartDate.AddMinutes(30);
-                productionDetails.ProduceCount = 0;
-                productionDetailsList.Add(productionDetails);
             }
             //第一次生产，取当前时间
             else
@@ -1197,25 +1187,27 @@ namespace MES_MonitoringClient.Common
                 jobOrderProductionLog.ProduceEndDate = now;
                 machineProduction.JobOrderProductionLog = new List<DataModel.JobOrderProductionLog>();
                 machineProduction.JobOrderProductionLog.Add(jobOrderProductionLog);
-                //生产明细
-                DataModel.ProductionDetails productionDetails = new DataModel.ProductionDetails();
-                if (now.Minute >= 30)
-                {
-                    productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
-                    productionDetails.EndDateTime = DateTime.Parse(now.AddHours(1).ToString("yyyy-MM-dd HH") + ":00:00");
-                }
-                else
-                {
-                    productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":00:00");
-                    productionDetails.EndDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
-                }
-                productionDetails.ProduceCount = 0;
-                productionDetailsList.Add(productionDetails);
+                
             }
+            //生产明细
+            DataModel.ProductionDetails productionDetails = new DataModel.ProductionDetails();
+            if (now.Minute >= 30)
+            {
+                productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
+                productionDetails.EndDateTime = DateTime.Parse(now.AddHours(1).ToString("yyyy-MM-dd HH") + ":00:00");
+            }
+            else
+            {
+                productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":00:00");
+                productionDetails.EndDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
+            }
+            productionDetails.ProduceCount = addCount;
+            productionDetailsList.Add(productionDetails);
             machineProduction.ProductionDetails = productionDetailsList;
             machineProduction.JobOrderProductionTime = 0;
-            machineProduction.EmployeeProductionTimeList = getEmployeeProductionTimeList(jobOrderProductionLog.ProduceStartDate);
+            machineProduction.EmployeeProductionTimeList = getEmployeeProductionTimeList(machineProduction.Date, machineProduction.WorkShiftID, jobOrderProductionLog.ProduceStartDate);
             machineProductionHandler.SaveMachineProduction(machineProduction);
+
         }
         //根据班次及日期返回开始结束时间
         public DateTime findDateTime(string workShiftID,DateTime workShiftDate, DateTime now,int type)
@@ -1295,19 +1287,22 @@ namespace MES_MonitoringClient.Common
                                 if (startTime >= findDateTime(item.WorkShiftID,item.Date,startTime,1) && startTime <= findDateTime(item.WorkShiftID, item.Date, startTime, 2))
                                 {
                                     //只更新工时
-                                    BsonDocument bsons = item.ToBsonDocument();
-                                    DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
-                                    employeeProductionTimeList.EmployeeID = employeeID;
-                                    employeeProductionTimeList.StartTime = startTime;
-                                    employeeProductionTimeList.EndTime = startTime;
-                                    employeeProductionTimeList.WorkHour = 0;
-                                    item.EmployeeProductionTimeList.Add(employeeProductionTimeList);
-                                    if (machineProductionHandler.AddEmployee(item, bsons) == null)
+                                    DataModel.EmployeeWorkSchedule employeeWorkSchedule = EmployeeWorkScheduleHandler.findRecordByIDAndDate(item.Date.ToString("yyyy-MM-dd")+"T00:00:00Z",employeeID);
+                                    if (employeeWorkSchedule != null && employeeWorkSchedule.WorkShiftID == item.WorkShiftID)
                                     {
-                                        addEmployee(employeeID, startTime);
-                                        break;
+                                        BsonDocument bsons = item.ToBsonDocument();
+                                        DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
+                                        employeeProductionTimeList.EmployeeID = employeeID;
+                                        employeeProductionTimeList.StartTime = startTime;
+                                        employeeProductionTimeList.EndTime = startTime;
+                                        employeeProductionTimeList.WorkHour = 0;
+                                        item.EmployeeProductionTimeList.Add(employeeProductionTimeList);
+                                        if (machineProductionHandler.AddEmployee(item, bsons) == null)
+                                        {
+                                            addEmployee(employeeID, startTime);
+                                            break;
+                                        }
                                     }
-
                                 }
                             }
                         }
@@ -1389,7 +1384,7 @@ namespace MES_MonitoringClient.Common
                             item.EmployeeProductionTimeList[i].EndTime = endDateTime;
                         }
                         //计算员工工时
-                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EmployeeProductionTimeList[i].EndTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
+                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EmployeeProductionTimeList[i].EndTime - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
 
                     }
                     i++;
@@ -1412,9 +1407,14 @@ namespace MES_MonitoringClient.Common
                             item.JobOrderProductionLog[j].ProduceEndDate = endDateTime;
                             //计算工单时间
                         }
-
+                        //不加8
+                        jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours, 3);
                     }
-                    jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
+                    else
+                    {
+                        jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours, 3);
+                    }
+                    
                     j++;
                 }
             item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
@@ -1637,7 +1637,7 @@ namespace MES_MonitoringClient.Common
 
         }
         //新增记录获取员工
-        public List<DataModel.EmployeeProductionTimeList> getEmployeeProductionTimeList(DateTime startTime)
+        public List<DataModel.EmployeeProductionTimeList> getEmployeeProductionTimeList(DateTime date,string workShiftID, DateTime startTime)
         {
             Common.ClockInRecordHandler clockInRecordHandler = new Common.ClockInRecordHandler();
             List<DataModel.ClockInRecord> displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
@@ -1653,12 +1653,16 @@ namespace MES_MonitoringClient.Common
                     {
                         if (jobPositon.JobPositionCode == frmAttend.JobPositionCode.Employee.ToString())
                         {
-                            DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
-                            employeeProductionTimeList.EmployeeID = employee._id;
-                            employeeProductionTimeList.StartTime = startTime;
-                            employeeProductionTimeList.EndTime = startTime;
-                            employeeProductionTimeList.WorkHour = 0;
-                            employeeProductionTimeLists.Add(employeeProductionTimeList);
+                            DataModel.EmployeeWorkSchedule employeeWorkSchedule = EmployeeWorkScheduleHandler.findRecordByIDAndDate(date.ToString("yyyy-MM-dd") + "T00:00:00Z", employee._id);
+                            if (employeeWorkSchedule != null && employeeWorkSchedule.WorkShiftID == workShiftID)
+                            {
+                                DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
+                                employeeProductionTimeList.EmployeeID = employee._id;
+                                employeeProductionTimeList.StartTime = startTime;
+                                employeeProductionTimeList.EndTime = startTime;
+                                employeeProductionTimeList.WorkHour = 0;
+                                employeeProductionTimeLists.Add(employeeProductionTimeList);
+                            }
                         }
                     }
                    
@@ -2056,7 +2060,7 @@ namespace MES_MonitoringClient.Common
                 CurrentProcessJobOrder = findJobOrderList[0];
 
                 //添加新记录
-                ProcessMachineProduction(jobOrder, 0,DateTime.Now);
+               // ProcessMachineProduction(jobOrder, 0,DateTime.Now);
                 //界面显示基本消息
                 SettingJobOrderBasicInfo();
 

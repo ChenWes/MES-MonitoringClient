@@ -11,6 +11,17 @@ namespace MES_MonitoringService.Model
     [BsonIgnoreExtraElements]
     public class QCRecord
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        [BsonElement("Date")]
+        public DateTime Date { get; set; }
+
+        [BsonElement("WorkShiftID")]
+        public string WorkShiftID { get; set; }
+
+
         [BsonElement("JobOrderID")]
         public string JobOrderID { get; set; }
 

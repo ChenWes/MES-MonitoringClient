@@ -613,44 +613,14 @@ namespace MES_MonitoringService
                 {
                     //转换成类
                     var machineProductionEntity = BsonSerializer.Deserialize<Model.MachineProduction>(data);
-                    Model.MachineProduction_JSON machineProduction_JSON = new Model.MachineProduction_JSON();
-                    machineProduction_JSON.Id = machineProductionEntity._id;
-                    machineProduction_JSON.Date = machineProductionEntity.Date.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
-                    machineProduction_JSON.MachineID = machineProductionEntity.MachineID;
-                    machineProduction_JSON.JobOrderID = machineProductionEntity.JobOrderID;
-                    machineProduction_JSON.StartDateTime= machineProductionEntity.StartDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
-                    machineProduction_JSON.EndDateTime=machineProductionEntity.EndDateTime.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
-                    machineProduction_JSON.ProduceCount = machineProductionEntity.ProduceCount;
-                    machineProduction_JSON.WorkShiftID = machineProductionEntity.WorkShiftID;
-                    machineProduction_JSON.EmployeeProductionTimeList = new List<Model.EmployeeProductionTimeList>();
-                    foreach (var oldItem in machineProductionEntity.EmployeeProductionTimeList)
-                    {
-                        //true则新增
-                        bool flag = true;
-                        foreach(var newItem in machineProduction_JSON.EmployeeProductionTimeList)
-                        {
-                            if (newItem.EmployeeID == oldItem.EmployeeID)
-                            {
-                                newItem.WorkHour = Math.Round(newItem.WorkHour + oldItem.WorkHour,3);
-                                flag = false;
-                            }
-                        }
-                        if (flag)
-                        {
-                            machineProduction_JSON.EmployeeProductionTimeList.Add(oldItem);
-                        }
-                    }
-                    machineProduction_JSON.JobOrderProductionTime = machineProductionEntity.JobOrderProductionTime;
-                    machineProduction_JSON.ProduceSecond = machineProductionEntity.ProduceSecond;
-                    machineProduction_JSON.ErrorCount = machineProductionEntity.ErrorCount;
-                    machineProduction_JSON.IsStopFlag = machineProductionEntity.IsStopFlag;
+                   
                     //jobOrderEntity.ToJson(jsonWriterSettings)
                     //读取Mongodb机器状态日志并上传至队列中
                     bool sendToServerFlag = Common.RabbitMQClientHandler.GetInstance().DirectExchangePublishMessageToServerAndWaitConfirm(
                             defaultMachineProduction_ExchangeName,
                             defaultMachineProduction_RoutingKey,
                             defaultMachineProduction_QueueName,
-                            Newtonsoft.Json.JsonConvert.SerializeObject(machineProduction_JSON)
+                            Newtonsoft.Json.JsonConvert.SerializeObject(machineProductionEntity)
                         );
 
                     if (sendToServerFlag)

@@ -614,8 +614,14 @@ namespace MES_MonitoringClient
                             if (jobOrderProductionLog.ProduceStartDate == jobOrderProductionLog.ProduceEndDate)
                             {
                                 item.JobOrderProductionLog[j].ProduceEndDate = endDateTime;
+                                //不+8
+                                jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours, 3);
                             }
-                            jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
+                            else
+                            {
+                                jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours, 3);
+                            }
+                           
                             j++;
                         }
                         item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
@@ -2523,8 +2529,7 @@ namespace MES_MonitoringClient
 
                     if (!newfrmScanRFID.MC_IsManualCancel)
                     {
-                        //清空工单
-                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.selectJobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
+                        
                         if (newfrmScanRFID.MC_frmChangeMachineStatusPara != null)
                         {
                             if (newfrmScanRFID.MC_frmChangeMachineStatusPara.machineStatusCode == Common.MachineStatus.eumMachineStatus.Produce.ToString()) throw new Exception("完成工单时，机器状态不可选择为[生产中]");
@@ -2576,7 +2581,9 @@ namespace MES_MonitoringClient
                                 newfrmScanRFID.MC_EmployeeInfo._id
                                 );
                         }
-                       
+                        //清空工单
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.CompleteJobOrder(newfrmScanRFID.selectJobOrderList, newfrmScanRFID.MC_EmployeeInfo._id);
+
                     }
                        
                     
@@ -3337,16 +3344,39 @@ namespace MES_MonitoringClient
                     //找到当前工单生产记录
                     Common.MachineProductionHandler machineProductionHandler = new Common.MachineProductionHandler();
                     List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByProcessID(newfrmScanRFID.currentJobOrder._id);
-                    foreach (var item in machineProductions)
+                    if (machineProductions.Count > 0)
                     {
-                        //找到QC时生产记录
-                        if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID, item.Date, newfrmScanRFID.QCTime, 1) < newfrmScanRFID.QCTime && mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID, item.Date, newfrmScanRFID.QCTime, 2) >= newfrmScanRFID.QCTime)
+                        DataModel.MachineProduction machineProduction = machineProductions[0];
+                        bool isAdd = false;
+                        foreach (var item in machineProductions)
                         {
-                            //更新QC时对应的生产记录
-                            QCRecord.Date = item.Date;
-                            QCRecord.WorkShiftID = item.WorkShiftID;
+                           
+                            //找到QC时生产记录
+                            if (mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID, item.Date, newfrmScanRFID.QCTime, 1) < newfrmScanRFID.QCTime && mc_MachineStatusHander.mc_MachineProduceStatusHandler.findDateTime(item.WorkShiftID, item.Date, newfrmScanRFID.QCTime, 2) >= newfrmScanRFID.QCTime)
+                            {
+                                //更新QC时对应的生产记录
+                                QCRecord.Date = item.Date;
+                                QCRecord.WorkShiftID = item.WorkShiftID;
+                                isAdd = true;
+                                break;
+                            }
+                            else
+                            {
+                                if (item.Date > machineProduction.Date)
+                                {
+                                    machineProduction = item;
+                                }
+                            }
+
+                        }
+                        //没找到，则取该工单最后一条生产记录
+                        if (!isAdd)
+                        {
+                            QCRecord.Date = machineProduction.Date;
+                            QCRecord.WorkShiftID = machineProduction.WorkShiftID;
                         }
                     }
+                   
                     Common.QCRecordHandler QCRecordHandler = new Common.QCRecordHandler();
                     QCRecordHandler.SaveClockInRecord(QCRecord);
                     int value = 0;
