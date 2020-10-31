@@ -73,7 +73,7 @@ namespace MES_MonitoringClient.DataModel
         [BsonElement("ProduceCount")]
         public int ProduceCount { get; set; }
     }
-
+    [BsonIgnoreExtraElements]
     public class JobOrderProductionLog
     {
         [BsonElement("MachineProcessLogID")]
