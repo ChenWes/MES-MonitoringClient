@@ -167,7 +167,7 @@ namespace MES_MonitoringClient
 
 
             DataGridViewTextBoxColumn defectiveTypeName_Column = new DataGridViewTextBoxColumn();
-            defectiveTypeName_Column.HeaderText = "報廢原因";
+            defectiveTypeName_Column.HeaderText = "疵品原因";
             defectiveTypeName_Column.ReadOnly = false;
             defectiveTypeName_Column.DataPropertyName = "DefectiveTypeName";
             dgv_DefectiveType.Columns.Add(defectiveTypeName_Column);
