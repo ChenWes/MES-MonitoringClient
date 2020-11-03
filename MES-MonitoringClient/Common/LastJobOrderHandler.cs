@@ -30,6 +30,7 @@ namespace MES_MonitoringClient.Common
         /// 最后操作工单默认Mongodb集合名
         /// </summary>
         private static string defaultLastJobOrderMongodbCollectionName = "LastJobOrder";
+        public static string MC_JobOrderCollectionName = Common.ConfigFileHandler.GetAppConfig("JobOrderCollectionName");
 
         /// <summary>
         /// 构造函数，处理初始化的参数
@@ -64,19 +65,22 @@ namespace MES_MonitoringClient.Common
         {
            
             List<DataModel.LastJobOrder> lastJobOrders=LastJobOrderCollection.AsQueryable().ToList();
+            List<DataModel.JobOrder> jobOrders = new List<DataModel.JobOrder>();
             if (lastJobOrders.Count > 0)
             {
-                string[] list = new string[lastJobOrders.Count];
                 for (int i = 0; i < lastJobOrders.Count; i++)
                 {
-                    list[i] = lastJobOrders[i].JobOrderID;
+                    var collection = Common.MongodbHandler.GetInstance().GetCollection(MC_JobOrderCollectionName);
+                    var newfilter = Builders<BsonDocument>.Filter.Eq("JobOrderID", lastJobOrders[i].JobOrderID);
+                    var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
+
+                    if (getdocument != null)
+                    {
+                        DataModel.JobOrder jobOrder = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<DataModel.JobOrder>(getdocument);
+                        jobOrders.Add(jobOrder);
+                    }
                 }
-
-                var filterID = Builders<DataModel.JobOrder>.Filter.In("JobOrderID", list);
-
-
-
-                return MongodbHandler.GetInstance().mc_MongoDatabase.GetCollection<DataModel.JobOrder>("JobOrder").Find(filterID).ToList();
+                return jobOrders;
             }
             else
             {

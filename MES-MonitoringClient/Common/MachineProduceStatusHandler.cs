@@ -850,7 +850,7 @@ namespace MES_MonitoringClient.Common
         /// 界面输入不良品数量
         /// </summary>
         /// <param name="rejectProductCount"></param>
-        public bool SettingProductErrorCount(int intProductErrorCount)
+        public bool SettingProductErrorCount(int intProductErrorCount,DateTime QCTime)
         {
             if (CurrentProcessJobOrder != null)
             {
@@ -859,16 +859,18 @@ namespace MES_MonitoringClient.Common
 
                 if (findMachineProcessLog != null)
                 {
-                    findMachineProcessLog.ErrorCount = intProductErrorCount;
+                    findMachineProcessLog.ErrorCount = findMachineProcessLog.ErrorCount+intProductErrorCount;
 
                     //更新到工单列表中
                     int currentIndex = ProcessJobOrderList.FindIndex(i => i._id == CurrentProcessJobOrder._id);
+                    var sumErrorCount = CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ErrorCount);
+                    CurrentProcessJobOrder.SumErrorCount = sumErrorCount;
                     ProcessJobOrderList[currentIndex] = CurrentProcessJobOrder;
 
                     //保存至数据库中
                     JobOrderHelper.UpdateJobOrder(CurrentProcessJobOrder, false);
                     //处理不良品
-                    UpdateErrorCount(findMachineProcessLog, intProductErrorCount);
+                    UpdateErrorCount(intProductErrorCount, QCTime);
                     //更新未完成数量（一起更新良品数量）
                     SettingMachineNoCompleteCount();
                 }
@@ -956,6 +958,8 @@ namespace MES_MonitoringClient.Common
         {
             try
             {
+                //切换显示
+                changeCurrentProcessJobOrder(jobOrder);
                 //采集次数加1
                 jobOrder.MouldLifecycle = jobOrder.MouldLifecycle + 1;
                 //加数时，处理的是同一机器且未结束的记录==》同一机器生产多次，加数在最后一次（即未完成的那一次）
@@ -991,84 +995,86 @@ namespace MES_MonitoringClient.Common
                     
                     //是否已经增加
                     bool isAdd = false;
+                    //找到当前工单生产记录
                     List<DataModel.MachineProduction> newMachineProductions = machineProductionHandler.findNewRecordByID(jobOrder._id);
                     if (newMachineProductions.Count > 0)
                     {
                         foreach (var item in newMachineProductions)
                         {
-                            if (now >= item.StartDateTime.ToLocalTime() && now <= item.EndDateTime.ToLocalTime())
+                            //找到班次对应时间
+                            if (now >= findDateTime(item.WorkShiftID,item.Date,now,1) && now <= findDateTime(item.WorkShiftID, item.Date, now, 2))
                             {
                                 //周期
-                                item.ProduceSecond = LastProductUseMilliseconds * 1.000 / 1000;
+                                if (LastProductUseMilliseconds != 0)
+                                {
+                                    item.ProduceSecond = LastProductUseMilliseconds * 1.000 / 1000;
+                                }
                                 //员工工时
                                 int i = 0;
                                 foreach (var employeeProductionTimeList in item.EmployeeProductionTimeList.ToArray())
                                 {
                                     if (employeeProductionTimeList.StartTime == employeeProductionTimeList.EndTime)
                                     {
-                                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((now - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
+                                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((now - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours, 3);
                                     }
                                     i++;
                                 }
+
                                 //生产工时
                                 double jobOrderTime = 0;
                                 foreach (var log in item.JobOrderProductionLog.ToArray())
                                 {
                                     if (log.ProduceStartDate == log.ProduceEndDate)
                                     {
-                                        jobOrderTime = jobOrderTime + Math.Round((now - log.ProduceStartDate.ToLocalTime()).TotalHours,3);
+                                        jobOrderTime = jobOrderTime + Math.Round((now - log.ProduceStartDate.ToLocalTime()).TotalHours, 3);
                                     }
                                     else
                                     {
-                                        jobOrderTime = jobOrderTime + Math.Round((log.ProduceEndDate.ToLocalTime() - log.ProduceStartDate.ToLocalTime()).TotalHours,3);
+                                        jobOrderTime = jobOrderTime + Math.Round((log.ProduceEndDate.ToLocalTime() - log.ProduceStartDate.ToLocalTime()).TotalHours, 3);
                                     }
                                 }
-                                item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
-                                //判断生产记录id是否一致
+                                item.JobOrderProductionTime = Math.Round(jobOrderTime, 3);
+                                //生产明细
+                                var findProductionDetails = item.ProductionDetails.Last();
+                                if (now >= findProductionDetails.StartDateTime.ToLocalTime() && now <= findProductionDetails.EndDateTime.ToLocalTime())
+                                {
+                                    item.ProductionDetails.Last().ProduceCount = item.ProductionDetails.Last().ProduceCount + addCount;
+                                }
+                                else
+                                {
+                                    DataModel.ProductionDetails productionDetails = new DataModel.ProductionDetails();
+                                    if (now.Minute >= 30)
+                                    {
+                                        productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
+                                        productionDetails.EndDateTime = DateTime.Parse(now.AddHours(1).ToString("yyyy-MM-dd HH") + ":00:00");
+                                    }
+                                    else
+                                    {
+                                        productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":00:00");
+                                        productionDetails.EndDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
+                                    }
+                                    productionDetails.ProduceCount = addCount;
+                                    item.ProductionDetails.Add(productionDetails);
+                                }
                                 var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
                                 if (findMachineProcessLog != null)
                                 {
-                                    if (findMachineProcessLog._id != item.MachineProcessLogID)
+                                    //实际生产时间,判断最后一条记录时间是否相等，不相等新增，相等不处理（其他地方处理）
+                                    if (item.JobOrderProductionLog.Last().ProduceStartDate != item.JobOrderProductionLog.Last().ProduceEndDate)
                                     {
-                                        //修改最近生产记录
-                                        item.MachineProcessLogID = findMachineProcessLog._id;
-                                        //增加工单生产记录
                                         DataModel.JobOrderProductionLog jobOrderProductionLog = new DataModel.JobOrderProductionLog();
                                         jobOrderProductionLog.MachineProcessLogID = findMachineProcessLog._id;
-                                        jobOrderProductionLog.ProduceCount = 0;
-                                        jobOrderProductionLog.ErrorCount = 0;
                                         jobOrderProductionLog.ProduceStartDate = now;
                                         jobOrderProductionLog.ProduceEndDate = now;
                                         item.JobOrderProductionLog.Add(jobOrderProductionLog);
                                         //增加员工记录
-                                        foreach (var employeeProductionTime in getEmployeeProductionTimeList(now))
+                                        foreach (var EmployeeProductionTime in getEmployeeProductionTimeList(item.Date,item.WorkShiftID,now))
                                         {
-                                            item.EmployeeProductionTimeList.Add(employeeProductionTime);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //应对工单满数后，输入不良品，又再次生产情况
-                                        //判断有无结束的记录
-                                        var findProductionLog = item.JobOrderProductionLog.Find(t => t.ProduceStartDate == t.ProduceEndDate);
-                                        if (findProductionLog == null)
-                                        {
-                                            //增加工单生产记录
-                                            DataModel.JobOrderProductionLog jobOrderProductionLog = new DataModel.JobOrderProductionLog();
-                                            jobOrderProductionLog.MachineProcessLogID = findMachineProcessLog._id;
-                                            jobOrderProductionLog.ProduceCount = 0;
-                                            jobOrderProductionLog.ErrorCount = 0;
-                                            jobOrderProductionLog.ProduceStartDate = now;
-                                            jobOrderProductionLog.ProduceEndDate = now;
-                                            item.JobOrderProductionLog.Add(jobOrderProductionLog);
-                                            //增加员工记录
-                                            foreach (var employeeProductionTime in getEmployeeProductionTimeList(now))
-                                            {
-                                                item.EmployeeProductionTimeList.Add(employeeProductionTime);
-                                            }
+                                            item.EmployeeProductionTimeList.Add(EmployeeProductionTime);
                                         }
                                     }
                                 }
+
                                 //生产数
                                 int count = item.ProduceCount + addCount;
                                 //修改停止状态为false,并加数
@@ -1076,6 +1082,7 @@ namespace MES_MonitoringClient.Common
                                 isAdd = true;
                                 break;
                             }
+
                         }
                         if (!isAdd)
                         {
@@ -1098,6 +1105,7 @@ namespace MES_MonitoringClient.Common
         //新增记录
         private void addMachineProduction(DataModel.JobOrder jobOrder,DateTime now,int addCount)
         {
+            stopAdd(jobOrder,now);
             DataModel.MachineProduction machineProduction = new DataModel.MachineProduction();
             DataModel.NowWorkShift nowWorkShift = findWorkShiftByNow(now);
             if (nowWorkShift != null)
@@ -1117,17 +1125,8 @@ namespace MES_MonitoringClient.Common
                 }
                
             }
-            if (now.Minute >= 30)
-            {
-                machineProduction.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH")+":30:00");
-                machineProduction.EndDateTime = DateTime.Parse(now.AddHours(1).ToString("yyyy-MM-dd HH") + ":00:00");
-            }
-            else
-            {
-                machineProduction.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":00:00");
-                machineProduction.EndDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
-            }
-           
+          
+
             machineProduction.MachineID = MC_machine._id;
             machineProduction.JobOrderID = jobOrder._id;
             machineProduction.IsStopFlag = false;
@@ -1139,49 +1138,137 @@ namespace MES_MonitoringClient.Common
             }
             else
             {
-                machineProduction.ProduceSecond = LastProductUseMilliseconds * 1.00 / 1000;
+                machineProduction.ProduceSecond = LastProductUseMilliseconds * 1.000 / 1000;
             }
             machineProduction.ErrorCount = 0;
             var findMachineProcessLog = jobOrder.MachineProcessLog.Find(t => t.MachineID == MC_machine._id && t.ProduceStartDate == t.ProduceEndDate);
-            if (findMachineProcessLog != null)
-            {
-                machineProduction.MachineProcessLogID = findMachineProcessLog._id;
-            }
             DataModel.JobOrderProductionLog jobOrderProductionLog = new DataModel.JobOrderProductionLog();
+
             
-            //连续生产，取整数时间
-            if (machineProductionHandler.findRecordByProcessID(findMachineProcessLog._id,jobOrder._id).Count>0)
+            List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByProcessID(jobOrder._id);
+            bool isContin = false;
+            if (machineProductions.Count > 0)
             {
-             
+                foreach (var item in machineProductions)
+                {
+                    //如果存在一个结束时间等于记录开始时间,则连续生产生产
+                    if (item.JobOrderProductionLog.Last().MachineProcessLogID == findMachineProcessLog._id)
+                    {
+
+                        if( findDateTime(machineProduction.WorkShiftID, machineProduction.Date, now, 1)== item.JobOrderProductionLog.Last().ProduceEndDate.ToLocalTime())
+                        {
+                            isContin = true;
+                            break;
+                        }
+                    }
+
+                } 
+
+            }
+            //连续生产，取整数时间
+            List<DataModel.ProductionDetails> productionDetailsList = new List<DataModel.ProductionDetails>();
+            if (isContin)
+            {
                 if (findMachineProcessLog != null)
                 {
                     jobOrderProductionLog.MachineProcessLogID = findMachineProcessLog._id;
                 }
-                jobOrderProductionLog.ProduceCount = 0;
-                jobOrderProductionLog.ErrorCount = 0;
-                jobOrderProductionLog.ProduceStartDate = machineProduction.StartDateTime;
-                jobOrderProductionLog.ProduceEndDate = machineProduction.StartDateTime;
+                jobOrderProductionLog.ProduceStartDate = findDateTime(machineProduction.WorkShiftID,machineProduction.Date,now,1);
+                jobOrderProductionLog.ProduceEndDate = findDateTime(machineProduction.WorkShiftID, machineProduction.Date, now, 1);
                 machineProduction.JobOrderProductionLog = new List<DataModel.JobOrderProductionLog>();
                 machineProduction.JobOrderProductionLog.Add(jobOrderProductionLog);
-
             }
             //第一次生产，取当前时间
-            else{
+            else
+            {
                
                 if (findMachineProcessLog != null)
                 {
                     jobOrderProductionLog.MachineProcessLogID = findMachineProcessLog._id;
                 }
-                jobOrderProductionLog.ProduceCount = 0;
-                jobOrderProductionLog.ErrorCount = 0;
                 jobOrderProductionLog.ProduceStartDate = now;
                 jobOrderProductionLog.ProduceEndDate = now;
                 machineProduction.JobOrderProductionLog = new List<DataModel.JobOrderProductionLog>();
                 machineProduction.JobOrderProductionLog.Add(jobOrderProductionLog);
+                
             }
+            //生产明细
+            DataModel.ProductionDetails productionDetails = new DataModel.ProductionDetails();
+            if (now.Minute >= 30)
+            {
+                productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
+                productionDetails.EndDateTime = DateTime.Parse(now.AddHours(1).ToString("yyyy-MM-dd HH") + ":00:00");
+            }
+            else
+            {
+                productionDetails.StartDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":00:00");
+                productionDetails.EndDateTime = DateTime.Parse(now.ToString("yyyy-MM-dd HH") + ":30:00");
+            }
+            productionDetails.ProduceCount = addCount;
+            productionDetailsList.Add(productionDetails);
+            machineProduction.ProductionDetails = productionDetailsList;
             machineProduction.JobOrderProductionTime = 0;
-            machineProduction.EmployeeProductionTimeList = getEmployeeProductionTimeList(jobOrderProductionLog.ProduceStartDate);
+            machineProduction.EmployeeProductionTimeList = getEmployeeProductionTimeList(machineProduction.Date, machineProduction.WorkShiftID, jobOrderProductionLog.ProduceStartDate);
             machineProductionHandler.SaveMachineProduction(machineProduction);
+
+        }
+        //根据班次及日期返回开始结束时间
+        public DateTime findDateTime(string workShiftID,DateTime workShiftDate, DateTime now,int type)
+        {
+            if (workShiftID != null)
+            {
+                DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(workShiftID);
+                if (workShift != null)
+                {
+                    if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
+                    {
+
+                        if (type == 1)
+                        {
+                            return Convert.ToDateTime(workShiftDate.ToLocalTime().ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                        }
+                        else
+                        {
+                            return Convert.ToDateTime(workShiftDate.ToLocalTime().ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                        }
+                    }
+                    else
+                    {
+                        if (type == 1)
+                        {
+                            return Convert.ToDateTime(workShiftDate.ToLocalTime().ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                        }
+                        else
+                        {
+                            return Convert.ToDateTime(workShiftDate.ToLocalTime().AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                        }
+                    }
+                }
+            }
+            if (now.Hour > 19 || (now.Hour == 19 && now.Minute > 30))
+            {
+                if (type == 1)
+                {
+                    return Convert.ToDateTime(workShiftDate.ToLocalTime().ToString("yyyy-MM-dd") + " " + "19:30:00");
+                }
+                else
+                {
+                    return Convert.ToDateTime(workShiftDate.ToLocalTime().AddDays(1).ToString("yyyy-MM-dd") + " " + "7:30:00");
+                }
+
+            }
+            else
+            {
+                if (type == 1)
+                {
+                    return Convert.ToDateTime(workShiftDate.ToLocalTime().ToString("yyyy-MM-dd") + " " + "7:30:00");
+                }
+                else
+                {
+                    return Convert.ToDateTime(workShiftDate.ToLocalTime().ToString("yyyy-MM-dd") + " " + "19:30:00");
+                }
+            }
+                
         }
         //刷卡新增员工记录
         public void addEmployee(string employeeID,DateTime startTime)
@@ -1196,25 +1283,29 @@ namespace MES_MonitoringClient.Common
                         List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByID(processJobOrder._id);
                         if (machineProductions.Count > 0)
                         {
+                            //开始时
                             //增加数量
                             foreach (var item in machineProductions)
                             {
-                                if (startTime >= item.StartDateTime.ToLocalTime() && startTime <= item.EndDateTime.ToLocalTime())
+                                if (startTime >= findDateTime(item.WorkShiftID,item.Date,startTime,1) && startTime <= findDateTime(item.WorkShiftID, item.Date, startTime, 2))
                                 {
                                     //只更新工时
-                                    BsonDocument bsons = item.ToBsonDocument();
-                                    DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
-                                    employeeProductionTimeList.EmployeeID = employeeID;
-                                    employeeProductionTimeList.StartTime = startTime;
-                                    employeeProductionTimeList.EndTime = startTime;
-                                    employeeProductionTimeList.WorkHour = 0;
-                                    item.EmployeeProductionTimeList.Add(employeeProductionTimeList);
-                                    if (machineProductionHandler.AddEmployee(item, bsons) == null)
+                                    DataModel.EmployeeWorkSchedule employeeWorkSchedule = EmployeeWorkScheduleHandler.findRecordByIDAndDate(item.Date.ToString("yyyy-MM-dd")+"T00:00:00Z",employeeID);
+                                    if (employeeWorkSchedule != null && employeeWorkSchedule.WorkShiftID == item.WorkShiftID)
                                     {
-                                        addEmployee(employeeID, startTime);
-                                        break;
+                                        BsonDocument bsons = item.ToBsonDocument();
+                                        DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
+                                        employeeProductionTimeList.EmployeeID = employeeID;
+                                        employeeProductionTimeList.StartTime = startTime;
+                                        employeeProductionTimeList.EndTime = startTime;
+                                        employeeProductionTimeList.WorkHour = 0;
+                                        item.EmployeeProductionTimeList.Add(employeeProductionTimeList);
+                                        if (machineProductionHandler.AddEmployee(item, bsons) == null)
+                                        {
+                                            addEmployee(employeeID, startTime);
+                                            break;
+                                        }
                                     }
-
                                 }
                             }
                         }
@@ -1243,7 +1334,7 @@ namespace MES_MonitoringClient.Common
                             foreach (var item in machineProductions)
                             {
                                 BsonDocument bsons = item.ToBsonDocument();
-                                if (endTime >= item.StartDateTime.ToLocalTime() && endTime <= item.EndDateTime.ToLocalTime())
+                                if (endTime >= findDateTime(item.WorkShiftID, item.Date, endTime, 1) && endTime <= findDateTime(item.WorkShiftID, item.Date, endTime, 2))
                                 {
                                     int i = 0;
                                     foreach (var employeeProductionTime in item.EmployeeProductionTimeList.ToArray())
@@ -1280,22 +1371,23 @@ namespace MES_MonitoringClient.Common
             foreach (var item in machineProductions)
             {
                 //结束员工记录
+                DateTime endDateTime = findDateTime(item.WorkShiftID, item.Date, now, 2);
                 int i = 0;
                 foreach (var employeeProductionTimeList in item.EmployeeProductionTimeList.ToArray())
                 {
 
                     if (employeeProductionTimeList.StartTime == employeeProductionTimeList.EndTime)
                     {
-                        if (item.EndDateTime.ToLocalTime() > now)
+                        if (endDateTime > now)
                         {
                             item.EmployeeProductionTimeList[i].EndTime = now;
                         }
                         else
                         {
-                            item.EmployeeProductionTimeList[i].EndTime = item.EndDateTime.ToLocalTime();
+                            item.EmployeeProductionTimeList[i].EndTime = endDateTime;
                         }
                         //计算员工工时
-                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EmployeeProductionTimeList[i].EndTime.ToLocalTime() - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
+                        item.EmployeeProductionTimeList[i].WorkHour = Math.Round((item.EmployeeProductionTimeList[i].EndTime - item.EmployeeProductionTimeList[i].StartTime.ToLocalTime()).TotalHours,3);
 
                     }
                     i++;
@@ -1308,19 +1400,24 @@ namespace MES_MonitoringClient.Common
 
                     if (jobOrderProductionLog.ProduceStartDate == jobOrderProductionLog.ProduceEndDate)
                     {
-                        if (item.EndDateTime.ToLocalTime() > now)
+                        if (endDateTime > now)
                         {
                             item.JobOrderProductionLog[j].ProduceEndDate = now;
                             //计算工单时间
                         }
                         else
                         {
-                            item.JobOrderProductionLog[j].ProduceEndDate = item.EndDateTime.ToLocalTime();
+                            item.JobOrderProductionLog[j].ProduceEndDate = endDateTime;
                             //计算工单时间
                         }
-
+                        //不加8
+                        jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours, 3);
                     }
-                    jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours,3);
+                    else
+                    {
+                        jobOrderTime = jobOrderTime + Math.Round((item.JobOrderProductionLog[j].ProduceEndDate.ToLocalTime() - jobOrderProductionLog.ProduceStartDate.ToLocalTime()).TotalHours, 3);
+                    }
+                    
                     j++;
                 }
             item.JobOrderProductionTime = Math.Round(jobOrderTime,3);
@@ -1543,7 +1640,7 @@ namespace MES_MonitoringClient.Common
 
         }
         //新增记录获取员工
-        public List<DataModel.EmployeeProductionTimeList> getEmployeeProductionTimeList(DateTime startTime)
+        public List<DataModel.EmployeeProductionTimeList> getEmployeeProductionTimeList(DateTime date,string workShiftID, DateTime startTime)
         {
             Common.ClockInRecordHandler clockInRecordHandler = new Common.ClockInRecordHandler();
             List<DataModel.ClockInRecord> displayClockInRecords = clockInRecordHandler.GetClockInRecordList();
@@ -1559,12 +1656,16 @@ namespace MES_MonitoringClient.Common
                     {
                         if (jobPositon.JobPositionCode == frmAttend.JobPositionCode.Employee.ToString())
                         {
-                            DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
-                            employeeProductionTimeList.EmployeeID = employee._id;
-                            employeeProductionTimeList.StartTime = startTime;
-                            employeeProductionTimeList.EndTime = startTime;
-                            employeeProductionTimeList.WorkHour = 0;
-                            employeeProductionTimeLists.Add(employeeProductionTimeList);
+                            DataModel.EmployeeWorkSchedule employeeWorkSchedule = EmployeeWorkScheduleHandler.findRecordByIDAndDate(date.ToString("yyyy-MM-dd") + "T00:00:00Z", employee._id);
+                            if (employeeWorkSchedule != null && employeeWorkSchedule.WorkShiftID == workShiftID)
+                            {
+                                DataModel.EmployeeProductionTimeList employeeProductionTimeList = new DataModel.EmployeeProductionTimeList();
+                                employeeProductionTimeList.EmployeeID = employee._id;
+                                employeeProductionTimeList.StartTime = startTime;
+                                employeeProductionTimeList.EndTime = startTime;
+                                employeeProductionTimeList.WorkHour = 0;
+                                employeeProductionTimeLists.Add(employeeProductionTimeList);
+                            }
                         }
                     }
                    
@@ -1573,32 +1674,22 @@ namespace MES_MonitoringClient.Common
             return employeeProductionTimeLists;
         }
         //更新不良品
-        private void UpdateErrorCount(DataModel.JobOrder_MachineProcessLog jobOrder_MachineProcessLog, int count)
+        public void UpdateErrorCount(int count,DateTime QCTime)
         {
             try
             {
-                //找到当前工单生产记录Id
-                List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByProcessID(jobOrder_MachineProcessLog._id, CurrentProcessJobOrder._id);
-                int errorCount = 0;
-                //最后记录不算
-                for (int i = 0; i < machineProductions.Count - 1; i++)
+                //找到当前工单生产记录
+                List<DataModel.MachineProduction> machineProductions = machineProductionHandler.findRecordByProcessID(CurrentProcessJobOrder._id);
+                foreach(var item in machineProductions)
                 {
-                    errorCount = errorCount + machineProductions[i].JobOrderProductionLog[machineProductions[i].JobOrderProductionLog.Count - 1].ErrorCount;
-                }
-                errorCount = count - errorCount;
-                //更新最后一条记录
-                if (machineProductions.Count > 0)
-                {
-                    DataModel.MachineProduction machineProduction = machineProductions[machineProductions.Count - 1];
-                    //最后一条生产记录的不良品数
-                    machineProduction.JobOrderProductionLog[machineProduction.JobOrderProductionLog.Count - 1].ErrorCount = errorCount;
-                    machineProduction.ErrorCount = 0;
-                    //更新该时间段总不良品数
-                    foreach (var item in machineProduction.JobOrderProductionLog)
+                    //找到QC时生产记录
+                    if (findDateTime(item.WorkShiftID,item.Date,QCTime,1) < QCTime && findDateTime(item.WorkShiftID, item.Date, QCTime, 2) >= QCTime)
                     {
-                        machineProduction.ErrorCount = machineProduction.ErrorCount+item.ErrorCount;
+                        //更新QC时对应的生产记录
+                        item.ErrorCount = item.ErrorCount + count;
+                        machineProductionHandler.UpdateError(item);
+                        break;
                     }
-                    machineProductionHandler.UpdateError(machineProduction);
                 }
             }
               catch (Exception ex)
@@ -1686,7 +1777,7 @@ namespace MES_MonitoringClient.Common
                     //处理找不到产品出数
                     ProcessNoMouldProduc(unProcessJobOrderList, CurrentMouldProduct.ProductList);
                 }
-                changeCurrentProcessJobOrder();
+             
 
             }
             catch (Exception ex)
@@ -1833,9 +1924,25 @@ namespace MES_MonitoringClient.Common
             
         }
         //处理同模同产品切换显示
-        private void changeCurrentProcessJobOrder()
+        private void changeCurrentProcessJobOrder(DataModel.JobOrder jobOrder)
         {
-            List<DataModel.JobOrder> findJobOrderList = ProcessJobOrderList.FindAll(t => t.ProductCode.ToUpper() == CurrentProcessJobOrder.ProductCode.ToUpper() && t.MouldCode.ToUpper() == CurrentProcessJobOrder.MouldCode.ToUpper());
+            if (jobOrder != null)
+            {
+                if(jobOrder.ProductCode== CurrentProcessJobOrder.ProductCode && jobOrder._id != CurrentProcessJobOrder._id)
+                {
+                    autoChangeTime--;
+                    if (autoChangeTime < 0)
+                    {
+                        //当前工单
+                        CurrentProcessJobOrder = jobOrder;
+                        //通过当前单据找到模具对应产品出数数据
+                        CurrentMouldProduct = Common.MouldProductHelper.GetMmouldProductByMouldCode(CurrentProcessJobOrder.MouldCode);
+                        //显示当前工单
+                        ShowCurrentJobOrder();
+                    }
+                }
+            }
+           /* List<DataModel.JobOrder> findJobOrderList = ProcessJobOrderList.FindAll(t => t.ProductCode.ToUpper() == CurrentProcessJobOrder.ProductCode.ToUpper() && t.MouldCode.ToUpper() == CurrentProcessJobOrder.MouldCode.ToUpper());
             if (findJobOrderList!=null&&findJobOrderList.Count> 1)
             {
                 var sumProductCount = CurrentProcessJobOrder.MachineProcessLog.Sum(t => t.ProduceCount);
@@ -1882,7 +1989,7 @@ namespace MES_MonitoringClient.Common
                     }
 
                 }
-            }
+            }*/
            
               
         }
@@ -1956,7 +2063,7 @@ namespace MES_MonitoringClient.Common
                 CurrentProcessJobOrder = findJobOrderList[0];
 
                 //添加新记录
-                ProcessMachineProduction(jobOrder, 0,DateTime.Now);
+               // ProcessMachineProduction(jobOrder, 0,DateTime.Now);
                 //界面显示基本消息
                 SettingJobOrderBasicInfo();
 

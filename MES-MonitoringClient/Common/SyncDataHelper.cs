@@ -23,7 +23,10 @@ namespace MES_MonitoringClient.Common
         public static string MC_MaterialCollectionName = Common.ConfigFileHandler.GetAppConfig("MaterialCollectionName");
         public static string MC_MouldCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldCollectionName");
         public static string MC_MouldProductCollectionName = Common.ConfigFileHandler.GetAppConfig("MouldProductCollectionName");
-
+        public static string MC_WorkshopResponsiblePersonCollectionName = Common.ConfigFileHandler.GetAppConfig("WorkshopResponsiblePersonCollectionName");
+        public static string MC_MachineResponsiblePersonCollectionName = Common.ConfigFileHandler.GetAppConfig("MachineResponsiblePersonCollectionName");
+        public static string MC_EmployeeWorkScheduleCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeWorkScheduleCollectionName");
+        public static string MC_DefectiveTypeCollectionName = Common.ConfigFileHandler.GetAppConfig("DefectiveTypeCollectionName");
         /// <summary>
         /// 基础表同步
         /// </summary>
@@ -77,7 +80,17 @@ namespace MES_MonitoringClient.Common
                 //模具对应产品出数
                 SyncDataDBHelper.SyncData_Process(MC_MouldProductCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "mouldProduct"));
 
+                //车间负责人
+                SyncDataDBHelper.SyncData_Process(MC_WorkshopResponsiblePersonCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "WorkshopResponsiblePerson"));
 
+                //机器负责人
+                SyncDataDBHelper.SyncData_Process(MC_MachineResponsiblePersonCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "MachineResponsiblePerson"));
+
+                //员工排班
+                SyncDataDBHelper.SyncData_Process(MC_EmployeeWorkScheduleCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "EmployeeWorkScheduleList"));
+
+                //疵品类型
+                SyncDataDBHelper.SyncData_Process(MC_DefectiveTypeCollectionName, Common.JsonHelper.GetJsonValue(jsonString, "DefectiveType"));
 
                 TimeSpan timeSpan = System.DateTime.Now - startTime;
                 Common.LogHandler.WriteLog("首次同步总运行时间：" + timeSpan.TotalSeconds.ToString());

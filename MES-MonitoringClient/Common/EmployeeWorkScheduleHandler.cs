@@ -20,7 +20,35 @@ namespace MES_MonitoringClient.Common
         /// </summary>
         public static string defaulttEmployeeWorkScheduleMongodbCollectionName = Common.ConfigFileHandler.GetAppConfig("EmployeeWorkScheduleCollectionName");
 
-    
+        ///<summary>
+        ///通过日期及员工查找
+        /// </summary>
+        public static DataModel.EmployeeWorkSchedule findRecordByIDAndDate(string Date, string employeeID)
+        {
+
+            try
+            {
+                var collection = Common.MongodbHandler.GetInstance().GetCollection(defaulttEmployeeWorkScheduleMongodbCollectionName);
+                var newfilter = Builders<BsonDocument>.Filter.And(
+                    Builders<BsonDocument>.Filter.Eq("EmployeeID", employeeID),
+                    Builders<BsonDocument>.Filter.Eq("ScheduleDate", Date)
+                   );
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
+
+                if (getdocument != null)
+                {
+                    //转换成类
+                    var EmployeeSchedulingEntity = BsonSerializer.Deserialize<DataModel.EmployeeWorkSchedule>(getdocument);
+                    return EmployeeSchedulingEntity;
+                }
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         ///<summary>
         ///通过时间及员工查找
         /// </summary>
