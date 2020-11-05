@@ -97,7 +97,13 @@ namespace MES_MonitoringClient.DataModel
         public List<string> MachineAcceptLog { get; set; }
 
         [BsonElement("SumErrorCount")]
-        public int SumErrorCount { get; set; }      
+        public int SumErrorCount { get; set; }
+
+        [BsonElement("FirstProduceMachineID")]
+        public string FirstProduceMachineID { get; set; }
+
+        [BsonElement("FirstProduceDate")]
+        public DateTime FirstProduceDate { get; set; }
 
         public override string getCollectionName()
         {
