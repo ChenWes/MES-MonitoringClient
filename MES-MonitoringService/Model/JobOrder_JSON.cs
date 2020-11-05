@@ -95,11 +95,7 @@ namespace MES_MonitoringService.Model
         [BsonElement("SumErrorCount")]
         public int SumErrorCount { get; set; }
 
-        [BsonElement("FirstProduceMachineID")]
-        public string FirstProduceMachineID { get; set; }
-
-        [BsonElement("FirstProduceDate")]
-        public DateTime FirstProduceDate { get; set; }
+   
 
         public JobOrder_JSON(Model.JobOrder jobOrder)
         {
@@ -150,8 +146,6 @@ namespace MES_MonitoringService.Model
             ServiceDepartment = jobOrder.ServiceDepartment;
             MouldLifecycle = jobOrder.MouldLifecycle;
             SumErrorCount = jobOrder.SumErrorCount;
-            FirstProduceMachineID = jobOrder.FirstProduceMachineID;
-            FirstProduceDate = jobOrder.FirstProduceDate;
         }
 
 
