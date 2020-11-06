@@ -95,6 +95,8 @@ namespace MES_MonitoringService.Model
         [BsonElement("SumErrorCount")]
         public int SumErrorCount { get; set; }
 
+   
+
         public JobOrder_JSON(Model.JobOrder jobOrder)
         {
             _id = jobOrder._id;

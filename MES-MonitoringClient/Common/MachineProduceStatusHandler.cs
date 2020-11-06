@@ -348,6 +348,7 @@ namespace MES_MonitoringClient.Common
             try
             {
 
+                DateTime now = DateTime.Now;
 
                 //处理生产中的工单并传入的工单参数
                 ProcessJobOrderList = StopOtherJobOrder(jobOrderList);
@@ -372,9 +373,9 @@ namespace MES_MonitoringClient.Common
                     newJobOrder_MachineProcessLog.MachineID = MC_machine._id;
 
                     //开始及结束取同一个值
-                    DateTime orderStartDate = System.DateTime.Now;
-                    newJobOrder_MachineProcessLog.ProduceStartDate = orderStartDate;
-                    newJobOrder_MachineProcessLog.ProduceEndDate = orderStartDate;
+                 
+                    newJobOrder_MachineProcessLog.ProduceStartDate = now;
+                    newJobOrder_MachineProcessLog.ProduceEndDate = now;
 
                     newJobOrder_MachineProcessLog.ProduceCount = 0;
                     newJobOrder_MachineProcessLog.ErrorCount = 0;
@@ -392,22 +393,26 @@ namespace MES_MonitoringClient.Common
                 {
                     //获取工单状态
                     string status = jobOrderItem.Status;
+
+                    //保存第一次生产记录
+                    if (status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() &&jobOrderItem.FirstProduceMachineID==null)
+                    {
+                        jobOrderItem.FirstProduceMachineID= MC_machine._id;
+                        jobOrderItem.FirstProduceDate = now;
+                        DataModel.JobOrderFirstProduceLog jobOrderFirstProduceLog = new DataModel.JobOrderFirstProduceLog();
+                        jobOrderFirstProduceLog.JobOrderID = jobOrderItem._id;
+                        jobOrderFirstProduceLog.MachineID = MC_machine._id;
+                        jobOrderFirstProduceLog.StartDateTime = now;
+                        jobOrderFirstProduceLog.IsSyncToServer = false;
+                        jobOrderFirstProduceLogCollection.InsertOne(jobOrderFirstProduceLog);
+                    }
                     jobOrderItem.Status = Common.JobOrderStatus.eumJobOrderStatus.Producing.ToString();
 
                     //需要返回值，并更新回class
                     DataModel.JobOrder jobOrder = JobOrderHelper.UpdateJobOrder(jobOrderItem, true);
                     newJobOrderList.Add(jobOrder);
                    
-                    //保存第一次生产记录
-                    if (status== Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString())
-                    {
-                        DataModel.JobOrderFirstProduceLog jobOrderFirstProduceLog = new DataModel.JobOrderFirstProduceLog();
-                        jobOrderFirstProduceLog.JobOrderID = jobOrderItem._id;
-                        jobOrderFirstProduceLog.MachineID= MC_machine._id;
-                        jobOrderFirstProduceLog.StartDateTime = DateTime.Now;
-                        jobOrderFirstProduceLog.IsSyncToServer = false;
-                        jobOrderFirstProduceLogCollection.InsertOne(jobOrderFirstProduceLog);
-                    }
+                  
 
                 }
 
@@ -445,12 +450,12 @@ namespace MES_MonitoringClient.Common
                 }
                foreach(var item in addMachineProductionJobOrders)
                 {
-                    ProcessMachineProduction(item, 0,DateTime.Now);
+                    ProcessMachineProduction(item, 0,now);
                 }
                 //当前工单
                 ChangeCurrentProcessJobOrder(0,false);
                 //开始工单时间
-                addCountTime = DateTime.Now;
+                addCountTime = now;
 
             }
             catch (Exception ex)
