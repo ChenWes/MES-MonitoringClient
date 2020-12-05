@@ -95,7 +95,13 @@ namespace MES_MonitoringService.Model
         [BsonElement("SumErrorCount")]
         public int SumErrorCount { get; set; }
 
-   
+        [BsonElement("FirstProduceMachineID")]
+        public string FirstProduceMachineID { get; set; }
+
+        [BsonElement("FirstProduceDate")]
+        public string FirstProduceDate { get; set; }
+
+
 
         public JobOrder_JSON(Model.JobOrder jobOrder)
         {
@@ -146,6 +152,11 @@ namespace MES_MonitoringService.Model
             ServiceDepartment = jobOrder.ServiceDepartment;
             MouldLifecycle = jobOrder.MouldLifecycle;
             SumErrorCount = jobOrder.SumErrorCount;
+            if (jobOrder.FirstProduceMachineID != null&& jobOrder.FirstProduceMachineID!="")
+            {
+                FirstProduceMachineID = jobOrder.FirstProduceMachineID;
+                FirstProduceDate = jobOrder.FirstProduceDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+            }
         }
 
 
