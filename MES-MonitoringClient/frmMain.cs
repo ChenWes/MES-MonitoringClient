@@ -253,9 +253,9 @@ namespace MES_MonitoringClient
                 MachineProductionThreadClass.Start();//启动新线程
 
                 //检查信号
-                //ShowWarnThreadFunction = new ThreadStart(ShowWarnTimer);
-                //ShowWarnThreadClass = new Thread(ShowWarnThreadFunction);
-                //ShowWarnThreadClass.Start();//启动新线程
+                ShowWarnThreadFunction = new ThreadStart(ShowWarnTimer);
+                ShowWarnThreadClass = new Thread(ShowWarnThreadFunction);
+                ShowWarnThreadClass.Start();//启动新线程
                 //显示打卡
                 showClockIn();
 
@@ -271,12 +271,10 @@ namespace MES_MonitoringClient
                     UpdateImageThreadClass.Start();//启动新线程
 
                 }
-
-
-                frmProtect newfrmProtect = new frmProtect();
-                newfrmProtect.ShowDialog();
+              
+             
                 //NowVersion();
-
+                
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
 
                 //txt_WorkOrderCount.Text = "999999";
@@ -573,8 +571,8 @@ namespace MES_MonitoringClient
                 TimeSpan timeSpan = DateTime.Now - mc_MachineStatusHander.mc_MachineProduceStatusHandler.addCountTime;
                 if (timeSpan> new TimeSpan(TimeSpan.TicksPerMinute*5))
                 {
-                    //frmWarn frmWarn = new frmWarn();
-                    //frmWarn.ShowDialog();
+                    frmWarn frmWarn = new frmWarn();
+                    frmWarn.ShowDialog();
                 }
             }
             ShowWarnTimerClass.StartTimmer();
@@ -3393,13 +3391,6 @@ namespace MES_MonitoringClient
                 MessageBox.Show("当前不是在生产中", "误操作提醒", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
          
-        }
-
-
-        private void btn_Protect_Click(object sender, EventArgs e)
-        {
-            frmProtect newfrmProtect = new frmProtect();
-            newfrmProtect.ShowDialog();
         }
     }
 }
