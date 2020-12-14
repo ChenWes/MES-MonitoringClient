@@ -155,7 +155,7 @@ namespace MES_MonitoringService.Model
             if (jobOrder.FirstProduceMachineID != null&& jobOrder.FirstProduceMachineID!="")
             {
                 FirstProduceMachineID = jobOrder.FirstProduceMachineID;
-                FirstProduceDate = jobOrder.FirstProduceDate.ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
+                FirstProduceDate = jobOrder.FirstProduceDate.GetValueOrDefault().ToString("yyyy-MM-dd HH:mm:ss.fffffffK");
             }
         }
 

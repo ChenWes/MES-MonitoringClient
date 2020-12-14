@@ -101,7 +101,7 @@ namespace MES_MonitoringService.Model
         public string FirstProduceMachineID { get; set; }
 
         [BsonElement("FirstProduceDate")]
-        public DateTime FirstProduceDate { get; set; }
+        public DateTime? FirstProduceDate { get; set; }
 
         public override string getCollectionName()
         {
