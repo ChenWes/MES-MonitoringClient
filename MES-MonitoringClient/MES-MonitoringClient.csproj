@@ -235,12 +235,6 @@
     <Compile Include="frmQC.Designer.cs">
       <DependentUpon>frmQC.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmProtect.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmProtect.Designer.cs">
-      <DependentUpon>frmProtect.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmScanRFID.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -283,9 +277,6 @@
     <EmbeddedResource Include="frmQC.resx">
       <DependentUpon>frmQC.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmProtect.resx">
-      <DependentUpon>frmProtect.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmScanRFID.resx">
       <DependentUpon>frmScanRFID.cs</DependentUpon>
     </EmbeddedResource>
@@ -322,7 +313,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLL\System.ServiceProcess.dll" />
-    <None Include="Resources\btn_Protect.png" />
     <None Include="Resources\btn_Print.png" />
     <None Include="Resources\QC.png" />
     <None Include="Resources\rednoemployee.png" />
