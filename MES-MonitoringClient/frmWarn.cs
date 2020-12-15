@@ -40,7 +40,7 @@ namespace MES_MonitoringClient
             {
                 this.Close();
             }
-            this.btn_light.Text = string.Format("{0:00}:{1:00}:{2:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+            this.btn_light.Text = string.Format("{0:00}:{1:00}:{2:00}",timeSpan.Days*24+timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
 
             if (num == 0)
             {
