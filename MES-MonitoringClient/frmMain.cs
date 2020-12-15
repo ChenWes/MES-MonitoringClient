@@ -266,15 +266,16 @@ namespace MES_MonitoringClient
                     ShowLastJobOrderBiaisInfo(0);
                     //增加记录
                     MachineProduction();
-                    UpdateImageThreadFunction = new ThreadStart(UpdateImageTimer);
-                    UpdateImageThreadClass = new Thread(UpdateImageThreadFunction);
-                    UpdateImageThreadClass.Start();//启动新线程
+                  
 
                 }
-              
-             
+                UpdateImageThreadFunction = new ThreadStart(UpdateImageTimer);
+                UpdateImageThreadClass = new Thread(UpdateImageThreadFunction);
+                UpdateImageThreadClass.Start();//启动新线程
+
+
                 //NowVersion();
-                
+
                 #region 开机后设置默认参数，直接运行，该功能只作为收集机器信号稳定性测试，正式功能需要删除该代码
 
                 //txt_WorkOrderCount.Text = "999999";
@@ -3185,133 +3186,136 @@ namespace MES_MonitoringClient
                 }
                 else
                 {
-                    //找到本机器负责员工
-                    List<DataModel.WorkshopResponsiblePerson> headAreas = Common.WorkshopResponsiblePersonHandler.findEmployeeByWorkshopID(MC_Machine.WorkshopID);
-                    //找到组长
-                    List<DataModel.MachineResponsiblePerson> chargeAreas = Common.MachineResponsiblePersonHandler.findChargeAreaByMachineID(MC_Machine._id);
-                    DateTime now = DateTime.Now;
-                    string today = now.ToString("yyyy-MM-dd");
-                    string lastday = now.AddDays(-1).ToString("yyyy-MM-dd");
-                    string maxTime = today + "T23:59:59Z";
-                    string minTime = lastday + "T00:00:00Z";
-                    haveHead = false;
-                    haveCharge = false;
-                    nowStartTime = null;
-                    nowEndTime = null;
-                    foreach (var item in headAreas)
+                    if (MC_Machine != null)
                     {
-                        foreach (var employeeID in item.ResponsiblePersonID)
+                        //找到本机器负责员工
+                        List<DataModel.WorkshopResponsiblePerson> headAreas = Common.WorkshopResponsiblePersonHandler.findEmployeeByWorkshopID(MC_Machine.WorkshopID);
+                        //找到组长
+                        List<DataModel.MachineResponsiblePerson> chargeAreas = Common.MachineResponsiblePersonHandler.findChargeAreaByMachineID(MC_Machine._id);
+                        DateTime now = DateTime.Now;
+                        string today = now.ToString("yyyy-MM-dd");
+                        string lastday = now.AddDays(-1).ToString("yyyy-MM-dd");
+                        string maxTime = today + "T23:59:59Z";
+                        string minTime = lastday + "T00:00:00Z";
+                        haveHead = false;
+                        haveCharge = false;
+                        nowStartTime = null;
+                        nowEndTime = null;
+                        foreach (var item in headAreas)
+                        {
+                            foreach (var employeeID in item.ResponsiblePersonID)
+                            {
+                                //通过班次找到适合该时间的该员工
+                                //通过（员工，时间）找到今天和昨天的班次
+                                List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, employeeID);
+                                foreach (var employeeScheduling in employeeSchedulings)
+                                {
+                                    //找到班次对应时间
+                                    DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
+                                    if (workShift != null)
+                                    {
+                                        DateTime dt;
+                                        DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
+                                        if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
+                                        {
+                                            //同一天
+                                            employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                            employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                        }
+                                        else
+                                        {
+
+                                            employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                            employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                        }
+                                        //当前时间谁值班
+                                        if (employeeScheduling.startTime <= now && employeeScheduling.endTime >= now)
+                                        {
+                                            DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
+                                            if (employee != null)
+                                            {
+                                                nowStartTime = employeeScheduling.startTime;
+                                                nowEndTime = employeeScheduling.endTime;
+                                                head = employee;
+                                                haveHead = true;
+                                                this.label18.Text = employee.EmployeeName;
+                                                if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
+                                                {
+                                                    pictureBoxHead.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                }
+                                                else
+                                                {
+                                                    this.pictureBoxHead.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        foreach (var item in chargeAreas)
                         {
                             //通过班次找到适合该时间的该员工
                             //通过（员工，时间）找到今天和昨天的班次
-                            List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, employeeID);
-                            foreach (var employeeScheduling in employeeSchedulings)
+                            foreach (var employeeID in item.ResponsiblePersonID)
                             {
-                                //找到班次对应时间
-                                DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
-                                if (workShift != null)
+                                List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, employeeID);
+                                foreach (var employeeScheduling in employeeSchedulings)
                                 {
-                                    DateTime dt;
-                                    DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
-                                    if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
-                                    {
-                                        //同一天
-                                        employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
-                                        employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
-                                    }
-                                    else
-                                    {
 
-                                        employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
-                                        employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
-                                    }
-                                    //当前时间谁值班
-                                    if (employeeScheduling.startTime <= now && employeeScheduling.endTime >= now)
+                                    //找到班次对应时间
+                                    DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
+                                    if (workShift != null)
                                     {
-                                        DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
-                                        if (employee != null)
+                                        DateTime dt;
+                                        DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
+                                        if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
                                         {
-                                            nowStartTime = employeeScheduling.startTime;
-                                            nowEndTime = employeeScheduling.endTime;
-                                            head = employee;
-                                            haveHead = true;
-                                            this.label18.Text = employee.EmployeeName;
-                                            if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
+                                            //同一天
+                                            employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                            employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                        }
+                                        else
+                                        {
+
+                                            employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                            employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                        }
+                                        //当前时间谁值班
+                                        if (employeeScheduling.startTime <= now && employeeScheduling.endTime >= now)
+                                        {
+                                            DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
+                                            if (employee != null)
                                             {
-                                                pictureBoxHead.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                nowStartTime = employeeScheduling.startTime;
+                                                nowEndTime = employeeScheduling.endTime;
+                                                charge = employee;
+                                                haveCharge = true;
+                                                this.label19.Text = employee.EmployeeName;
+                                                if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
+                                                {
+                                                    pictureBoxCharge.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                }
+                                                else
+                                                {
+                                                    this.pictureBoxCharge.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
+                                                }
+                                                break;
                                             }
-                                            else
-                                            {
-                                                this.pictureBoxHead.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
-                                            }
-                                            break;
                                         }
                                     }
+
                                 }
-                            }
-                        }
-                    }
 
-                    foreach (var item in chargeAreas)
-                    {
-                        //通过班次找到适合该时间的该员工
-                        //通过（员工，时间）找到今天和昨天的班次
-                        foreach (var employeeID in item.ResponsiblePersonID)
-                        {
-                            List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, employeeID);
-                            foreach (var employeeScheduling in employeeSchedulings)
-                            {
-
-                                //找到班次对应时间
-                                DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
-                                if (workShift != null)
-                                {
-                                    DateTime dt;
-                                    DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
-                                    if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
-                                    {
-                                        //同一天
-                                        employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
-                                        employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
-                                    }
-                                    else
-                                    {
-
-                                        employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
-                                        employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
-                                    }
-                                    //当前时间谁值班
-                                    if (employeeScheduling.startTime <= now && employeeScheduling.endTime >= now)
-                                    {
-                                        DataModel.Employee employee = Common.EmployeeHelper.QueryEmployeeByEmployeeID(employeeScheduling.EmployeeID);
-                                        if (employee != null)
-                                        {
-                                            nowStartTime = employeeScheduling.startTime;
-                                            nowEndTime = employeeScheduling.endTime;
-                                            charge = employee;
-                                            haveCharge = true;
-                                            this.label19.Text = employee.EmployeeName;
-                                            if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
-                                            {
-                                                pictureBoxCharge.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
-                                            }
-                                            else
-                                            {
-                                                this.pictureBoxCharge.Image = ((System.Drawing.Image)(resources.GetObject("noimage.Image")));
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                              
                             }
 
                         }
-
+                        autoSignOut();
+                        showClockIn();
+                        showNoEmployee();
                     }
-                    autoSignOut();
-                    showClockIn();
-                    showNoEmployee();
                 }
             }
             catch(Exception ex)
