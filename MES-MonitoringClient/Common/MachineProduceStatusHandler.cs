@@ -2054,7 +2054,18 @@ namespace MES_MonitoringClient.Common
                 //机器处理记录
                 findJobOrderList[0].MachineProcessLog.Add(newJobOrder_MachineProcessLog);
 
-
+                //保存第一次生产记录
+                if (findJobOrderList[0].Status == Common.JobOrderStatus.eumJobOrderStatus.Assigned.ToString() && findJobOrderList[0].FirstProduceMachineID == null)
+                {
+                    findJobOrderList[0].FirstProduceMachineID = MC_machine._id;
+                    findJobOrderList[0].FirstProduceDate = now;
+                    DataModel.JobOrderFirstProduceLog jobOrderFirstProduceLog = new DataModel.JobOrderFirstProduceLog();
+                    jobOrderFirstProduceLog.JobOrderID = findJobOrderList[0]._id;
+                    jobOrderFirstProduceLog.MachineID = MC_machine._id;
+                    jobOrderFirstProduceLog.StartDateTime = now;
+                    jobOrderFirstProduceLog.IsSyncToServer = false;
+                    jobOrderFirstProduceLogCollection.InsertOne(jobOrderFirstProduceLog);
+                }
 
                 //更新至数据库
 
