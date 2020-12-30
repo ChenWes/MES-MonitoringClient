@@ -367,6 +367,9 @@ namespace MES_MonitoringClient.Common
                                        CreateBy=jo.CreateBy,
                                        LastUpdateAt=jo.LastUpdateAt,
                                        LastUpdateBy=jo.LastUpdateBy,
+                                       FirstProduceDate=jo.FirstProduceDate,
+                                       FirstProduceMachineID=jo.FirstProduceMachineID,
+                                       SumErrorCount=jo.SumErrorCount,
                                    }
                                    ).ToEnumerable().ToList().OrderBy(t => t.ReceiveDate).ToList();
                 return getdocument;
