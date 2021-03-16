@@ -2973,10 +2973,18 @@ namespace MES_MonitoringClient
         {
             frmAttend newfrmAttend = new frmAttend();
             newfrmAttend.ShowDialog();
-            if (!newfrmAttend.MC_IsManualCancel)
+            if (newfrmAttend.COM1_Error)
             {
-                showClockIn();
+                ShowErrorMessage("刷卡失败，请重试", "serialPort1_ErrorReceived");
             }
+            else
+            {
+                if (!newfrmAttend.MC_IsManualCancel)
+                {
+                    showClockIn();
+                }
+            }
+           
         }
         private void btn_refresh_Click(object sender, EventArgs e)
         {

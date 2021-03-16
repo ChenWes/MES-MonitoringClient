@@ -36,7 +36,7 @@ namespace MES_MonitoringClient
         //刷卡员工信息
         public DataModel.Employee MC_EmployeeInfo = null;
 
-   
+        public bool COM1_Error = false;
 
         //开始订单参数
         public List<DataModel.JobOrder> MC_frmChangeJobOrderPara = null;
@@ -202,6 +202,18 @@ namespace MES_MonitoringClient
                         MC_EmployeeInfo = null;
                         this.Close();
                     }
+                    else
+                    {
+                        //com口有错误关闭
+                        if (COM1_Error)
+                        {
+                            //取消操作
+                            MC_IsManualCancel = true;
+                            MC_EmployeeInfo = null;
+                            this.Close();
+                        }
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -538,11 +550,10 @@ namespace MES_MonitoringClient
                 //写日志
                 Common.LogHandler.WriteLog("RFID串口获取数据时出错", ex);
                 //委托主线程报错，防止报错消息被隐藏
-                this.Invoke(new Action(() =>
-                {
-                    ShowErrorMessage("RFID串口获取数据时出错，请重试", "serialPort1_DataReceived");
-                }));
-
+               
+                COM1_Error = true;
+                
+               
                 //响铃并显示异常给用户
                 System.Media.SystemSounds.Beep.Play();
             }
