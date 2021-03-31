@@ -77,6 +77,11 @@ namespace MES_MonitoringClient
         //判断是否员工打卡
         private bool isEmployee = false;
 
+        
+       
+        //判断是否有错误，有错误则不自动关闭窗口
+        private bool isError = false;
+        int closeTime = 0;
         /*---------------------------------------------------------------------------------------*/
         //private long COM1_ReceiveDataCount = 0;
         //private StringBuilder COM1_DataStringBuilder = new StringBuilder();
@@ -117,7 +122,8 @@ namespace MES_MonitoringClient
                 }
                 else
                 {
-                    throw new Exception("请先注册机器");
+                    ShowErrorMessage("请先注册机器", "初始化失败");
+                    return;
                 }
                 //RFID配置端口默认配置
                 // RFIDSerialPortGetDefaultSetting();
@@ -138,6 +144,9 @@ namespace MES_MonitoringClient
                 classify(displayClockInRecords);
                 showQCImage(displayQCClockInRecord);
                 showEmployeeImage(displayEmployeeClockInRecords, page);
+
+                
+                int.TryParse(Common.ConfigFileHandler.GetAppConfig("CloseTime"), out closeTime);
                 //开始后台进程（更新时间）                
                 DateTimeThreadFunction = new ThreadStart(DateTimeTimer);
                 DateTimeThreadClass = new Thread(DateTimeThreadFunction);
@@ -194,8 +203,13 @@ namespace MES_MonitoringClient
                 else
                 {
                     lab_DateTime.Text = string.Format(DateTime.Now.ToString("MM-dd HH:mm:ss"));
+                    //重置
+                    if (isError)
+                    {
+                        startTime = DateTime.Now;
+                    }
                     //2分钟自动关闭
-                    if ((DateTime.Now - startTime) >= new TimeSpan(0, 2, 0))
+                    if ((DateTime.Now - startTime) >= new TimeSpan(0, closeTime, 0) && !isError)
                     {
                         //取消操作
                         MC_IsManualCancel = true;
@@ -334,9 +348,15 @@ namespace MES_MonitoringClient
         /// <param name="errorMessage">错误</param>
         private void ShowErrorMessage(string errorMessage, string errorTitle)
         {
-            MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Common.LogHandler.WriteLog(errorMessage);
+            isError = true;
+            Thread.Sleep(50);
+            if (!this.closing)
+            {
+                MessageBox.Show(errorMessage, errorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            isError = false;
         }
-
         /// <summary>
         /// 设置窗口按钮是否可用
         /// </summary>
@@ -815,12 +835,23 @@ namespace MES_MonitoringClient
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("搜索员工出错，原因是：" + ex.Message);
+                    //throw new Exception("搜索员工出错，原因是：" + ex.Message);
+                    ShowErrorMessage(ex.Message, "搜索员工出错，原因是：");
+                    return;
                 }
 
                 //员工检测
-                if (employee == null) throw new Exception("未知员工");
-                if (!employee.IsActive) throw new Exception("员工已被禁止访问系统");
+                if (employee == null)
+                {
+                    ShowErrorMessage("未知员工", "刷卡失败");
+                    return;
+                }
+                if (!employee.IsActive)
+                {
+                    //throw new Exception("员工已被禁止访问系统");
+                    ShowErrorMessage("员工已被禁止访问系统", "刷卡失败");
+                    return;
+                }
 
                 //员工信息赋值到公共变量
                 MC_EmployeeInfo = employee;
