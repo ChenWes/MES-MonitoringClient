@@ -47,7 +47,8 @@ namespace MES_MonitoringClient.Common
             {               
                 var collection = Common.MongodbHandler.GetInstance().GetCollection(Common.ConfigFileHandler.GetAppConfig("EmployeeCollectionName"));
                 var newfilter = Builders<BsonDocument>.Filter.Eq("CardID", cardID);
-                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).FirstOrDefault();
+                var sort = Builders<BsonDocument>.Sort.Descending("IsActive");
+                var getdocument = Common.MongodbHandler.GetInstance().Find(collection, newfilter).Sort(sort).FirstOrDefault();
 
                 if (getdocument != null) return BsonSerializer.Deserialize<DataModel.Employee>(getdocument);
 

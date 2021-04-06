@@ -1570,15 +1570,16 @@
             // 
             // lab_log
             // 
-            this.lab_log.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lab_log.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lab_log.AutoSize = true;
             this.lab_log.Font = new System.Drawing.Font("宋体", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lab_log.ForeColor = System.Drawing.Color.White;
-            this.lab_log.Location = new System.Drawing.Point(430, 5);
+            this.lab_log.Location = new System.Drawing.Point(4, 1);
             this.lab_log.Name = "lab_log";
-            this.lab_log.Size = new System.Drawing.Size(56, 14);
+            this.lab_log.Size = new System.Drawing.Size(188, 22);
+            this.lab_log.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lab_log.TabIndex = 19;
-            this.lab_log.Text = "lab_log";
+            this.lab_log.Text = "正在检测";
             // 
             // tableLayoutPanel33
             // 

@@ -2901,6 +2901,9 @@ namespace MES_MonitoringClient
             this.Invoke(new Action(() =>
             {
                 this.lab_log.Text = "正在检测";
+                this.lab_log.ForeColor = Color.White;
+                this.lab_log.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
+
             }));
             try
             {
@@ -2912,6 +2915,8 @@ namespace MES_MonitoringClient
                 this.Invoke(new Action(() => 
                 { 
                     this.lab_log.Text = "检测失败";
+                    this.lab_log.ForeColor = Color.White;
+                    this.lab_log.BackColor =  System.Drawing.Color.FromArgb(255, 61, 0);
                 }));
 
             return;
@@ -2925,19 +2930,24 @@ namespace MES_MonitoringClient
                 {
                     // this.lab_Version.Text = "版本：" + Application.ProductVersion.ToString();
                     this.lab_log.Text = "最新版本";
+                    this.lab_log.ForeColor = Color.Black;
+                    this.lab_log.BackColor = System.Drawing.Color.FromArgb(0, 230, 118);
                 }
                 else
                 {
                     // this.lab_Version.Text = "当前版本：" + Application.ProductVersion.ToString();
                     this.lab_log.Text = "可升级";
-                    this.lab_log.ForeColor = Color.Green;
+                    this.lab_log.ForeColor = Color.Black;
+                    this.lab_log.BackColor = System.Drawing.Color.FromArgb(221, 221, 0);
                 }
 
                }
                else
                {
-                this.lab_log.Text = "无信息";
-               }
+                    this.lab_log.Text = "无信息";
+                    this.lab_log.ForeColor = Color.White;
+                    this.lab_log.BackColor = System.Drawing.Color.FromArgb(255, 61, 0);
+                }
             }));
 
         }

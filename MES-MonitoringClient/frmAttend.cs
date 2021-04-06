@@ -827,6 +827,8 @@ namespace MES_MonitoringClient
         {
             try
             {
+                this.lab_wait.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+                this.lab_wait.Text = "卡号：" + cardID;
                 DataModel.Employee employee;
                 try
                 {
@@ -848,6 +850,7 @@ namespace MES_MonitoringClient
                 }
                 if (!employee.IsActive)
                 {
+                    this.lab_wait.Text = this.lab_wait.Text + "\n\n工号："+ employee.EmployeeCode+ "\n\n姓名："+employee.EmployeeName;
                     //throw new Exception("员工已被禁止访问系统");
                     ShowErrorMessage("员工已被禁止访问系统", "刷卡失败");
                     return;
