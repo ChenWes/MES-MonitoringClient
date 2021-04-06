@@ -439,6 +439,8 @@ namespace MES_MonitoringClient
         /// <param name="e"></param>
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
+        
+            if (e.EventType == System.IO.Ports.SerialData.Eof) return;
             if (closing) return;//如果正在关闭，忽略操作，直接返回，尽快的完成串口监听线程的一次循环
             try
             {
