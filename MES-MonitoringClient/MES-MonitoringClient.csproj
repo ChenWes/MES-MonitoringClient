@@ -110,6 +110,7 @@
   <ItemGroup>
     <Compile Include="Common\BsonHelper.cs" />
     <Compile Include="Common\CheckMouldRecordHandle.cs" />
+    <Compile Include="Common\ImageHelp.cs" />
     <Compile Include="Common\MachineProductionHandler.cs" />
     <Compile Include="Common\MachineResponsiblePersonHandler.cs" />
     <Compile Include="Common\ColorDesign.cs" />

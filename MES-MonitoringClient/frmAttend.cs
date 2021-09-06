@@ -279,7 +279,7 @@ namespace MES_MonitoringClient
             if (System.IO.File.Exists(Application.StartupPath + "\\image\\" + imagePath))
             {
                
-                pictureBox.Image = Image.FromFile(Application.StartupPath + "\\image\\" + imagePath);
+                pictureBox.Image = Common.ImageHelp.GetImage(Application.StartupPath + "\\image\\" + imagePath);
               
             }
             else
