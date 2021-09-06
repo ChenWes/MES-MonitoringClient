@@ -68,6 +68,17 @@ namespace MES_MonitoringClient.Common
 
 
         /*-------------------------------------------------------------------------------------*/
+        /// <summary>
+        /// 更改定时时间
+        /// </summary>
+        /// <param name="interval"></param>
+        public void SetInterval(long interval)
+        {
+            if(interval != _TTimer.Interval)
+            {
+                _TTimer.Interval = interval;
+            }
+        }
 
         /// <summary>
         /// 定时器是否可用

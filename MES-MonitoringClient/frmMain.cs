@@ -138,6 +138,8 @@ namespace MES_MonitoringClient
         private DateTime? nowEndTime = null;
         //照片地址
         string imagePath= Common.ConfigFileHandler.GetAppConfig("EmployeeImageFolder");
+        //自动检测版本间隔时间
+        private long cheakUpdateInterval = 60 * 60 * 1000;
 
         //安装包名
         //private string nstallation_package_name = null;
@@ -520,11 +522,11 @@ namespace MES_MonitoringClient
         private void CheckUpdateTimer()
         {
             //1小时检测
-            getJson();
-            checkUpdateTimerClass = new Common.TimmerHandler(60*60*1000, true, (o, a) =>
+            checkUpdateTimerClass = new Common.TimmerHandler(cheakUpdateInterval, true, (o, a) =>
             {
-                getJson();
+               getJson();
             }, true);
+            getJson();
         }
 
         /// <summary>
@@ -2899,13 +2901,6 @@ namespace MES_MonitoringClient
         /// </summary>
         private void getJson()
         {
-            this.Invoke(new Action(() =>
-            {
-                this.lab_log.Text = "正在检测";
-                this.lab_log.ForeColor = Color.White;
-                this.lab_log.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
-
-            }));
             try
             {
                 jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
@@ -2919,9 +2914,11 @@ namespace MES_MonitoringClient
                     this.lab_log.ForeColor = Color.White;
                     this.lab_log.BackColor =  System.Drawing.Color.FromArgb(255, 61, 0);
                 }));
-
-            return;
+                ///访问失败，则5s检测
+                checkUpdateTimerClass.SetInterval(5 * 1000);
+                return;
             }
+            checkUpdateTimerClass.SetInterval(cheakUpdateInterval);
             this.Invoke(new Action(() =>
             {
                string newVersion = GetJsonDate("ClientVersionCode");
