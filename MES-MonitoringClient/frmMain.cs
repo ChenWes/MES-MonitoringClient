@@ -22,6 +22,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Globalization;
+using MES_MonitoringClient.Common;
 
 namespace MES_MonitoringClient
 {
@@ -1275,7 +1276,7 @@ namespace MES_MonitoringClient
                     {
                         if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
                         {
-                            pictureBoxMouldCode.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                            pictureBoxMouldCode.Image = ImageHelp.GetImage(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
                         }
                         else
                         {
@@ -3019,7 +3020,7 @@ namespace MES_MonitoringClient
                             this.label21.Text = employee.EmployeeName;
                             if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
-                                pictureBoxEmp.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
+                                pictureBoxEmp.Image = ImageHelp.GetImage(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
                             }
                             else
                             {
@@ -3034,7 +3035,7 @@ namespace MES_MonitoringClient
                             this.label20.Text = employee.EmployeeName;
                             if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
-                                pictureBoxQC.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
+                                pictureBoxQC.Image = ImageHelp.GetImage(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
                             }
                             else
                             {
@@ -3251,7 +3252,7 @@ namespace MES_MonitoringClient
                                                 this.label18.Text = employee.EmployeeName;
                                                 if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
                                                 {
-                                                    pictureBoxHead.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                    pictureBoxHead.Image = ImageHelp.GetImage(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
                                                 }
                                                 else
                                                 {
@@ -3306,7 +3307,7 @@ namespace MES_MonitoringClient
                                                 this.label19.Text = employee.EmployeeName;
                                                 if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
                                                 {
-                                                    pictureBoxCharge.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                    pictureBoxCharge.Image = ImageHelp.GetImage(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
                                                 }
                                                 else
                                                 {
