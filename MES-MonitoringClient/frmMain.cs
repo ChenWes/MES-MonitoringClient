@@ -2306,9 +2306,14 @@ namespace MES_MonitoringClient
                     TimeSpan span = DateTime.Now - clickTime;
                     if (span.Milliseconds < SystemInformation.DoubleClickTime)
                     {
+                        string str = Microsoft.VisualBasic.Interaction.InputBox("请输入密码", "提示", "");
+                        if (str == "admin123")
+                        {
                             ThreadStart threadStart_SyncData = new ThreadStart(start_SyncData);//通过ThreadStart委托告诉子线程执行什么方法　　
                             Thread thread_SyncData = new Thread(threadStart_SyncData);
                             thread_SyncData.Start();//启动新线程
+                        }
+                            
                     }
                 }
                 else
