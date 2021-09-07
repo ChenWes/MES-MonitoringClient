@@ -22,6 +22,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Globalization;
+using MES_MonitoringClient.Common;
 
 namespace MES_MonitoringClient
 {
@@ -137,6 +138,8 @@ namespace MES_MonitoringClient
         private DateTime? nowEndTime = null;
         //照片地址
         string imagePath= Common.ConfigFileHandler.GetAppConfig("EmployeeImageFolder");
+        //自动检测版本间隔时间
+        private long cheakUpdateInterval = 60 * 60 * 1000;
 
         //安装包名
         //private string nstallation_package_name = null;
@@ -519,11 +522,11 @@ namespace MES_MonitoringClient
         private void CheckUpdateTimer()
         {
             //1小时检测
-            getJson();
-            checkUpdateTimerClass = new Common.TimmerHandler(60*60*1000, true, (o, a) =>
+            checkUpdateTimerClass = new Common.TimmerHandler(cheakUpdateInterval, true, (o, a) =>
             {
-                getJson();
+               getJson();
             }, true);
+            getJson();
         }
 
         /// <summary>
@@ -531,7 +534,7 @@ namespace MES_MonitoringClient
         /// </summary>
         private void UpdateImageTimer()
         {
-            //1分钟检测
+            //10s检测
             showHeadAndCharge();
             UpdateImageTimerClass = new Common.TimmerHandler(10*1000, true, (o, a) =>
             {
@@ -1275,7 +1278,7 @@ namespace MES_MonitoringClient
                     {
                         if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
                         {
-                            pictureBoxMouldCode.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                            pictureBoxMouldCode.Image = ImageHelp.GetImage(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
                         }
                         else
                         {
@@ -2304,9 +2307,14 @@ namespace MES_MonitoringClient
                     TimeSpan span = DateTime.Now - clickTime;
                     if (span.Milliseconds < SystemInformation.DoubleClickTime)
                     {
+                        string str = Microsoft.VisualBasic.Interaction.InputBox("请输入密码", "提示", "");
+                        if (str == "admin123")
+                        {
                             ThreadStart threadStart_SyncData = new ThreadStart(start_SyncData);//通过ThreadStart委托告诉子线程执行什么方法　　
                             Thread thread_SyncData = new Thread(threadStart_SyncData);
                             thread_SyncData.Start();//启动新线程
+                        }
+                            
                     }
                 }
                 else
@@ -2898,13 +2906,6 @@ namespace MES_MonitoringClient
         /// </summary>
         private void getJson()
         {
-            this.Invoke(new Action(() =>
-            {
-                this.lab_log.Text = "正在检测";
-                this.lab_log.ForeColor = Color.White;
-                this.lab_log.BackColor = System.Drawing.Color.FromArgb(38, 45, 58);
-
-            }));
             try
             {
                 jsonString = Common.HttpHelper.HttpGetWithToken(Common.ConfigFileHandler.GetAppConfig("UpdatePath"));
@@ -2918,9 +2919,11 @@ namespace MES_MonitoringClient
                     this.lab_log.ForeColor = Color.White;
                     this.lab_log.BackColor =  System.Drawing.Color.FromArgb(255, 61, 0);
                 }));
-
-            return;
+                ///访问失败，则5s检测
+                checkUpdateTimerClass.SetInterval(5 * 1000);
+                return;
             }
+            checkUpdateTimerClass.SetInterval(cheakUpdateInterval);
             this.Invoke(new Action(() =>
             {
                string newVersion = GetJsonDate("ClientVersionCode");
@@ -3019,7 +3022,7 @@ namespace MES_MonitoringClient
                             this.label21.Text = employee.EmployeeName;
                             if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
-                                pictureBoxEmp.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
+                                pictureBoxEmp.Image = ImageHelp.GetImage(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
                             }
                             else
                             {
@@ -3034,7 +3037,7 @@ namespace MES_MonitoringClient
                             this.label20.Text = employee.EmployeeName;
                             if (System.IO.File.Exists(Application.StartupPath + imagePath+"\\" + employee.LocalFileName))
                             {
-                                pictureBoxQC.Image = Image.FromFile(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
+                                pictureBoxQC.Image = ImageHelp.GetImage(Application.StartupPath + imagePath+"\\" + employee.LocalFileName);
                             }
                             else
                             {
@@ -3078,49 +3081,61 @@ namespace MES_MonitoringClient
                 }
                 else
                 {
-                    DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
-                    //QC不处理
-                    if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
+                    //员工停用，直接签退
+                    if (employee.IsActive)
                     {
-                        //获取当天和昨天的班次
-                        DateTime now = DateTime.Now;
-                        string today = now.ToString("yyyy-MM-dd");
-                        string lastday = now.AddDays(-1).ToString("yyyy-MM-dd");
-                        string maxTime = today + "T23:59:59Z";
-                        string minTime = lastday + "T00:00:00Z";
-                        List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, item.EmployeeID);
-
-                        foreach (var employeeScheduling in employeeSchedulings)
+                        DataModel.JobPositon jobPositon = Common.JobPositionHelper.GetJobPositon(employee.JobPostionID);
+                        //QC不处理
+                        if (jobPositon.JobPositionCode != frmAttend.JobPositionCode.QC.ToString())
                         {
-                            //找到班次对应时间
-                            DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
-                            if (workShift != null)
-                            {
-                                DateTime dt;
-                                DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
-                                if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
-                                {
-                                    //同一天
-                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
-                                    employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
-                                }
-                                else
-                                {
-                                    employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
-                                    employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
-                                }
+                            //获取当天和昨天的班次
+                            DateTime now = DateTime.Now;
+                            string today = now.ToString("yyyy-MM-dd");
+                            string lastday = now.AddDays(-1).ToString("yyyy-MM-dd");
+                            string maxTime = today + "T23:59:59Z";
+                            string minTime = lastday + "T00:00:00Z";
+                            List<DataModel.EmployeeWorkSchedule> employeeSchedulings = Common.EmployeeWorkScheduleHandler.findRecordByIDAndTime(maxTime, minTime, item.EmployeeID);
 
-                            }
-                            if (now > employeeScheduling.endTime && employeeScheduling.endTime > item.StartDate.ToLocalTime())
+                            foreach (var employeeScheduling in employeeSchedulings)
                             {
-                                item.EndDate = employeeScheduling.endTime;
-                                clockInRecordHandler.UpdateClockInRecord(item, true);
-                                //结束计算工时
-                                mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(item.EmployeeID, item.EndDate);
-                                break;
+                                //找到班次对应时间
+                                DataModel.WorkShift workShift = Common.WorkShiftHandler.QueryWorkShiftByid(employeeScheduling.WorkShiftID);
+                                if (workShift != null)
+                                {
+                                    DateTime dt;
+                                    DateTime.TryParse(employeeScheduling.ScheduleDate, out dt);
+                                    if (string.Compare(workShift.WorkShiftStartTime, workShift.WorkShiftEndTime, true) == -1)
+                                    {
+                                        //同一天
+                                        employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                        employeeScheduling.endTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                    }
+                                    else
+                                    {
+                                        employeeScheduling.startTime = Convert.ToDateTime(dt.ToString("yyyy-MM-dd") + " " + workShift.WorkShiftStartTime + ":00");
+                                        employeeScheduling.endTime = Convert.ToDateTime(dt.AddDays(1).ToString("yyyy-MM-dd") + " " + workShift.WorkShiftEndTime + ":00");
+                                    }
+
+                                }
+                                if (now > employeeScheduling.endTime && employeeScheduling.endTime > item.StartDate.ToLocalTime())
+                                {
+                                    item.EndDate = employeeScheduling.endTime;
+                                    clockInRecordHandler.UpdateClockInRecord(item, true);
+                                    //结束计算工时
+                                    mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(item.EmployeeID, item.EndDate);
+                                    break;
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        item.EndDate = DateTime.Now;
+                        clockInRecordHandler.UpdateClockInRecord(item, true);
+                        //结束计算工时
+                        mc_MachineStatusHander.mc_MachineProduceStatusHandler.endEmployee(item.EmployeeID, item.EndDate);
+                    }
+                   
                 }
             }
         }
@@ -3251,7 +3266,7 @@ namespace MES_MonitoringClient
                                                 this.label18.Text = employee.EmployeeName;
                                                 if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
                                                 {
-                                                    pictureBoxHead.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                    pictureBoxHead.Image = ImageHelp.GetImage(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
                                                 }
                                                 else
                                                 {
@@ -3306,7 +3321,7 @@ namespace MES_MonitoringClient
                                                 this.label19.Text = employee.EmployeeName;
                                                 if (System.IO.File.Exists(Application.StartupPath + imagePath + "\\" + employee.LocalFileName))
                                                 {
-                                                    pictureBoxCharge.Image = Image.FromFile(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
+                                                    pictureBoxCharge.Image = ImageHelp.GetImage(Application.StartupPath + imagePath + "\\" + employee.LocalFileName);
                                                 }
                                                 else
                                                 {
