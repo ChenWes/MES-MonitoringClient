@@ -131,7 +131,7 @@ namespace MES_MonitoringService.Common
             catch (Exception ex)
             {
                 Common.LogHandler.WriteLog("HTTP请求出错，原因是：" + ex.Message, ex);
-                throw ex;
+                return false;
             }
         }
 
