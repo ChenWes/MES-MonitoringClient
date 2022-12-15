@@ -256,9 +256,9 @@ namespace MES_MonitoringClient
                 MachineProductionThreadClass.Start();//启动新线程
 
                 //检查信号
-                ShowWarnThreadFunction = new ThreadStart(ShowWarnTimer);
-                ShowWarnThreadClass = new Thread(ShowWarnThreadFunction);
-                ShowWarnThreadClass.Start();//启动新线程
+                //ShowWarnThreadFunction = new ThreadStart(ShowWarnTimer);
+                //ShowWarnThreadClass = new Thread(ShowWarnThreadFunction);
+                //ShowWarnThreadClass.Start();//启动新线程
                 //显示打卡
                 showClockIn();
 
@@ -275,6 +275,9 @@ namespace MES_MonitoringClient
                 UpdateImageThreadFunction = new ThreadStart(UpdateImageTimer);
                 UpdateImageThreadClass = new Thread(UpdateImageThreadFunction);
                 UpdateImageThreadClass.Start();//启动新线程
+
+                frmProtect newfrmProtect = new frmProtect();
+                newfrmProtect.ShowDialog();
 
 
                 //NowVersion();
@@ -575,8 +578,8 @@ namespace MES_MonitoringClient
                 TimeSpan timeSpan = DateTime.Now - mc_MachineStatusHander.mc_MachineProduceStatusHandler.addCountTime;
                 if (timeSpan> new TimeSpan(TimeSpan.TicksPerMinute*5))
                 {
-                    frmWarn frmWarn = new frmWarn();
-                    frmWarn.ShowDialog();
+                    //frmWarn frmWarn = new frmWarn();
+                    //frmWarn.ShowDialog();
                 }
             }
             ShowWarnTimerClass.StartTimmer();
@@ -2995,6 +2998,17 @@ namespace MES_MonitoringClient
         {
 
         }
+
+        private void btn_Protect_Click(object sender, EventArgs e)
+        {
+            frmProtect newfrmProtect = new frmProtect();
+            newfrmProtect.ShowDialog();
+        }
+
+
+
+        
+
         ///<summary>
         ///显示QC和员工
         ///</summary>

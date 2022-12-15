@@ -36,6 +36,7 @@
             this.lab_Title = new System.Windows.Forms.Label();
             this.lab_DateTime = new System.Windows.Forms.Label();
             this.btn_QC = new System.Windows.Forms.Button();
+            this.btn_Protect = new System.Windows.Forms.Button();
             this.btn_Version = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.btn_CloseWindow = new System.Windows.Forms.Button();
@@ -221,27 +222,29 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(155)))), ((int)(((byte)(213)))));
-            this.tableLayoutPanel1.ColumnCount = 10;
+            this.tableLayoutPanel1.ColumnCount = 11;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.5F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.0F));
             this.tableLayoutPanel1.Controls.Add(this.lab_Title, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.lab_DateTime, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_QC, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Version, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel5, 9, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 8, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Protect, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_QC, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Version, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel5, 10, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Start, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Stop, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_Recovery, 8, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_MinimizeWindows, 9, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btn_CompleteJobOrder, 7, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -287,6 +290,19 @@
             this.btn_QC.TabIndex = 13;
             this.btn_QC.UseVisualStyleBackColor = true;
             this.btn_QC.Click += new System.EventHandler(this.btn_QC_Click);
+            // 
+            // btn_Protect
+            // 
+            this.btn_Protect.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_Protect.FlatAppearance.BorderSize = 0;
+            this.btn_Protect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_Protect.Image = ((System.Drawing.Image)(resources.GetObject("btn_Protect.Image")));
+            this.btn_Protect.Location = new System.Drawing.Point(557, 3);
+            this.btn_Protect.Name = "btn_Protect";
+            this.btn_Protect.Size = new System.Drawing.Size(48, 44);
+            this.btn_Protect.TabIndex = 13;
+            this.btn_Protect.UseVisualStyleBackColor = true;
+            this.btn_Protect.Click += new System.EventHandler(this.btn_Protect_Click);
             // 
             // btn_Version
             // 
@@ -2108,6 +2124,7 @@
         private System.Windows.Forms.TextBox txt_TotalRejectsCount;
         private System.Windows.Forms.Button btn_CompleteJobOrder;
         private System.Windows.Forms.Button btn_QC;
+        private System.Windows.Forms.Button btn_Protect;
         private System.Windows.Forms.Label lab_Version;
         private System.Windows.Forms.Label lab_log;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel35;
